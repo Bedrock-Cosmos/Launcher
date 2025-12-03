@@ -28,25 +28,36 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.StartButton = new System.Windows.Forms.Button();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BedrockCosmos));
+            this.StartButtonOld = new System.Windows.Forms.Button();
             this.StopButton = new System.Windows.Forms.Button();
             this.StatusLabel = new System.Windows.Forms.Label();
             this.DownloadButton = new System.Windows.Forms.Button();
+            this.TabControl = new System.Windows.Forms.TabControl();
+            this.HomePage = new System.Windows.Forms.TabPage();
+            this.SettingsPage = new System.Windows.Forms.TabPage();
+            this.TopPanel = new System.Windows.Forms.Panel();
+            this.CloseButton = new System.Windows.Forms.Button();
+            this.MinimizeButton = new System.Windows.Forms.Button();
+            this.TopLabel = new System.Windows.Forms.Label();
+            this.TabControl.SuspendLayout();
+            this.HomePage.SuspendLayout();
+            this.TopPanel.SuspendLayout();
             this.SuspendLayout();
             // 
-            // StartButton
+            // StartButtonOld
             // 
-            this.StartButton.Location = new System.Drawing.Point(12, 12);
-            this.StartButton.Name = "StartButton";
-            this.StartButton.Size = new System.Drawing.Size(75, 23);
-            this.StartButton.TabIndex = 0;
-            this.StartButton.Text = "Start";
-            this.StartButton.UseVisualStyleBackColor = true;
-            this.StartButton.Click += new System.EventHandler(this.StartButton_Click);
+            this.StartButtonOld.Location = new System.Drawing.Point(60, 108);
+            this.StartButtonOld.Name = "StartButtonOld";
+            this.StartButtonOld.Size = new System.Drawing.Size(75, 23);
+            this.StartButtonOld.TabIndex = 0;
+            this.StartButtonOld.Text = "Start";
+            this.StartButtonOld.UseVisualStyleBackColor = true;
+            this.StartButtonOld.Click += new System.EventHandler(this.StartButton_Click);
             // 
             // StopButton
             // 
-            this.StopButton.Location = new System.Drawing.Point(12, 41);
+            this.StopButton.Location = new System.Drawing.Point(60, 137);
             this.StopButton.Name = "StopButton";
             this.StopButton.Size = new System.Drawing.Size(75, 23);
             this.StopButton.TabIndex = 1;
@@ -57,7 +68,8 @@
             // StatusLabel
             // 
             this.StatusLabel.AutoSize = true;
-            this.StatusLabel.Location = new System.Drawing.Point(12, 108);
+            this.StatusLabel.ForeColor = System.Drawing.Color.White;
+            this.StatusLabel.Location = new System.Drawing.Point(60, 204);
             this.StatusLabel.Name = "StatusLabel";
             this.StatusLabel.Size = new System.Drawing.Size(52, 13);
             this.StatusLabel.TabIndex = 2;
@@ -65,7 +77,7 @@
             // 
             // DownloadButton
             // 
-            this.DownloadButton.Location = new System.Drawing.Point(12, 70);
+            this.DownloadButton.Location = new System.Drawing.Point(60, 166);
             this.DownloadButton.Name = "DownloadButton";
             this.DownloadButton.Size = new System.Drawing.Size(75, 23);
             this.DownloadButton.TabIndex = 3;
@@ -73,28 +85,135 @@
             this.DownloadButton.UseVisualStyleBackColor = true;
             this.DownloadButton.Click += new System.EventHandler(this.DownloadButton_Click);
             // 
+            // TabControl
+            // 
+            this.TabControl.Controls.Add(this.HomePage);
+            this.TabControl.Controls.Add(this.SettingsPage);
+            this.TabControl.Location = new System.Drawing.Point(-5, -5);
+            this.TabControl.Name = "TabControl";
+            this.TabControl.SelectedIndex = 0;
+            this.TabControl.Size = new System.Drawing.Size(814, 466);
+            this.TabControl.TabIndex = 5;
+            // 
+            // HomePage
+            // 
+            this.HomePage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.HomePage.Controls.Add(this.StartButtonOld);
+            this.HomePage.Controls.Add(this.StopButton);
+            this.HomePage.Controls.Add(this.DownloadButton);
+            this.HomePage.Controls.Add(this.StatusLabel);
+            this.HomePage.Location = new System.Drawing.Point(4, 22);
+            this.HomePage.Name = "HomePage";
+            this.HomePage.Padding = new System.Windows.Forms.Padding(3);
+            this.HomePage.Size = new System.Drawing.Size(806, 440);
+            this.HomePage.TabIndex = 0;
+            this.HomePage.Text = "Home Page";
+            // 
+            // SettingsPage
+            // 
+            this.SettingsPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.SettingsPage.Location = new System.Drawing.Point(4, 22);
+            this.SettingsPage.Name = "SettingsPage";
+            this.SettingsPage.Padding = new System.Windows.Forms.Padding(3);
+            this.SettingsPage.Size = new System.Drawing.Size(806, 440);
+            this.SettingsPage.TabIndex = 1;
+            this.SettingsPage.Text = "Settings Page";
+            // 
+            // TopPanel
+            // 
+            this.TopPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
+            this.TopPanel.Controls.Add(this.TopLabel);
+            this.TopPanel.Controls.Add(this.MinimizeButton);
+            this.TopPanel.Controls.Add(this.CloseButton);
+            this.TopPanel.Location = new System.Drawing.Point(-1, 0);
+            this.TopPanel.Name = "TopPanel";
+            this.TopPanel.Size = new System.Drawing.Size(803, 40);
+            this.TopPanel.TabIndex = 6;
+            this.TopPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseDown);
+            this.TopPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseMove);
+            this.TopPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseUp);
+            // 
+            // CloseButton
+            // 
+            this.CloseButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.CloseButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("CloseButton.BackgroundImage")));
+            this.CloseButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.CloseButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
+            this.CloseButton.FlatAppearance.BorderSize = 0;
+            this.CloseButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
+            this.CloseButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
+            this.CloseButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CloseButton.Location = new System.Drawing.Point(769, 7);
+            this.CloseButton.Name = "CloseButton";
+            this.CloseButton.Size = new System.Drawing.Size(25, 25);
+            this.CloseButton.TabIndex = 0;
+            this.CloseButton.UseVisualStyleBackColor = true;
+            this.CloseButton.Click += new System.EventHandler(this.CloseButton_Click);
+            // 
+            // MinimizeButton
+            // 
+            this.MinimizeButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.MinimizeButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("MinimizeButton.BackgroundImage")));
+            this.MinimizeButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.MinimizeButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
+            this.MinimizeButton.FlatAppearance.BorderSize = 0;
+            this.MinimizeButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
+            this.MinimizeButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
+            this.MinimizeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.MinimizeButton.Location = new System.Drawing.Point(734, 7);
+            this.MinimizeButton.Name = "MinimizeButton";
+            this.MinimizeButton.Size = new System.Drawing.Size(25, 25);
+            this.MinimizeButton.TabIndex = 1;
+            this.MinimizeButton.UseVisualStyleBackColor = true;
+            this.MinimizeButton.Click += new System.EventHandler(this.MinimizeButton_Click);
+            // 
+            // TopLabel
+            // 
+            this.TopLabel.AutoSize = true;
+            this.TopLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TopLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.TopLabel.Location = new System.Drawing.Point(6, 9);
+            this.TopLabel.Name = "TopLabel";
+            this.TopLabel.Size = new System.Drawing.Size(126, 21);
+            this.TopLabel.TabIndex = 2;
+            this.TopLabel.Text = "Bedrock Cosmos";
+            this.TopLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseDown);
+            this.TopLabel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseMove);
+            this.TopLabel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseUp);
+            // 
             // BedrockCosmos
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.DownloadButton);
-            this.Controls.Add(this.StatusLabel);
-            this.Controls.Add(this.StopButton);
-            this.Controls.Add(this.StartButton);
+            this.ControlBox = false;
+            this.Controls.Add(this.TopPanel);
+            this.Controls.Add(this.TabControl);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "BedrockCosmos";
             this.Text = "Bedrock Cosmos";
+            this.TabControl.ResumeLayout(false);
+            this.HomePage.ResumeLayout(false);
+            this.HomePage.PerformLayout();
+            this.TopPanel.ResumeLayout(false);
+            this.TopPanel.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Button StartButton;
+        private System.Windows.Forms.Button StartButtonOld;
         private System.Windows.Forms.Button StopButton;
         private System.Windows.Forms.Label StatusLabel;
         private System.Windows.Forms.Button DownloadButton;
+        private System.Windows.Forms.TabControl TabControl;
+        private System.Windows.Forms.TabPage HomePage;
+        private System.Windows.Forms.TabPage SettingsPage;
+        private System.Windows.Forms.Panel TopPanel;
+        private System.Windows.Forms.Button CloseButton;
+        private System.Windows.Forms.Button MinimizeButton;
+        private System.Windows.Forms.Label TopLabel;
     }
 }
 
