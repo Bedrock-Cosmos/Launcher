@@ -11,6 +11,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Titanium.Web.Proxy;
 using Titanium.Web.Proxy.Examples.Basic;
@@ -67,9 +69,15 @@ namespace BedrockCosmos
             drag = false;
         }
 
-        private void StartButton_Click(object sender, EventArgs e)
+        private async void StartButton_Click(object sender, EventArgs e)
         {
-            controller.StartProxy();
+            StatusLabel.Text = "Entering the Cosmos...";
+
+            await Task.Run(() =>
+            {
+                controller.StartProxy();
+            });
+
             StatusLabel.Text = "Program started!";
         }
 
@@ -77,19 +85,6 @@ namespace BedrockCosmos
         {
             controller.Stop();
             StatusLabel.Text = "Program stopped!";
-        }
-
-        private void DownloadButton_Click(object sender, EventArgs e)
-        {
-            /*WebClient DownloadZip = new WebClient();
-            DownloadZip.DownloadFileCompleted += new AsyncCompletedEventHandler(ZipCompleted);
-            DownloadZip.DownloadFileAsync(new Uri("https://github.com/Bedrock-Cosmos/Responses/archive/refs/heads/main.zip"), @"AppDirectory + Responses.zip");
-            DownloadZip.Dispose();*/
-        }
-
-        private void ZipCompleted(object sender, AsyncCompletedEventArgs e)
-        {
-            
         }
     }
 }

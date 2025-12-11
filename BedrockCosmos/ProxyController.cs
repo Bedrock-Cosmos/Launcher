@@ -35,6 +35,7 @@ namespace Titanium.Web.Proxy.Examples.Basic
         private ExplicitProxyEndPoint explicitEndPoint;
 
         string currentPathForResponse = AppDomain.CurrentDomain.BaseDirectory + @"Responses-main\";
+        JsonParser parser = new JsonParser();
 
         public ProxyController()
         {
@@ -251,7 +252,6 @@ namespace Titanium.Web.Proxy.Examples.Basic
             return Task.CompletedTask;
         }
 
-        // intercept & cancel redirect or update requests
         private async Task OnRequest(object sender, SessionEventArgs e)
         {
             e.GetState().PipelineInfo.AppendLine(nameof(OnRequest) + ":" + e.HttpClient.Request.RequestUri);
@@ -260,54 +260,13 @@ namespace Titanium.Web.Proxy.Examples.Basic
             if (!clientLocalIp.Equals(IPAddress.Loopback) && !clientLocalIp.Equals(IPAddress.IPv6Loopback))
                 e.HttpClient.UpStreamEndPoint = new IPEndPoint(clientLocalIp, 0);
 
-            //if (e.HttpClient.Request.Url.Contains("yahoo.com"))
-            //    e.CustomUpStreamProxy = new ExternalProxy("localhost", 8888);
-
-            // First check to see if absolute uri exists as a main page
-            //Endpoint urlData = JsonData.MainPages.FirstOrDefault(o => o.url == e.HttpClient.Request.RequestUri.AbsoluteUri);
-
             string body = await e.GetRequestBodyAsString();
             e.UserData = body;
 
             WriteToConsole("Active Client Connections:" + ((ProxyServer)sender).ClientConnectionCount);
             WriteToConsole(e.HttpClient.Request.Url);
-
-            // store it in the UserData property
-            // It can be a simple integer, Guid, or any type
-            //e.UserData = new CustomUserData()
-            //{
-            //    RequestHeaders = e.HttpClient.Request.Headers,
-            //    RequestBody = e.HttpClient.Request.HasBody ? e.HttpClient.Request.Body:null,
-            //    RequestBodyString = e.HttpClient.Request.HasBody? e.HttpClient.Request.BodyString:null
-            //};
-
-            ////This sample shows how to get the multipart form data headers
-            //if (e.HttpClient.Request.Host == "mail.yahoo.com" && e.HttpClient.Request.IsMultipartFormData)
-            //{
-            //    e.MultipartRequestPartSent += MultipartRequestPartSent;
-            //}
-
-            // To cancel a request with a custom HTML content
-            // Filter URL
-            //if (e.HttpClient.Request.RequestUri.AbsoluteUri.Contains("yahoo.com"))
-            //{ 
-            //    e.Ok("<!DOCTYPE html>" +
-            //          "<html><body><h1>" +
-            //          "Website Blocked" +
-            //          "</h1>" +
-            //          "<p>Blocked by titanium web proxy.</p>" +
-            //          "</body>" +
-            //          "</html>");
-            //} 
-
-            ////Redirect example
-            //if (e.HttpClient.Request.RequestUri.AbsoluteUri.Contains("wikipedia.org"))
-            //{ 
-            //   e.Redirect("https://www.paypal.com");
-            //} 
         }
 
-        // Modify response
         private async Task MultipartRequestPartSent(object sender, MultipartRequestPartSentEventArgs e)
         {
             e.GetState().PipelineInfo.AppendLine(nameof(MultipartRequestPartSent));
@@ -333,94 +292,45 @@ namespace Titanium.Web.Proxy.Examples.Basic
 
             Endpoint urlData = JsonData.MainPages.FirstOrDefault(o => o.url == e.HttpClient.Request.RequestUri.AbsoluteUri);
             string requestBody = e.UserData as string;
+            string currentUri = e.HttpClient.Request.RequestUri.AbsoluteUri;
 
             if (e.HttpClient.Request.Method.Equals("POST", StringComparison.OrdinalIgnoreCase) &&
             urlData != null)
             {
                 try
                 {
+                    e.HttpClient.Response.StatusCode = 200; // Set to OK, otherwise stays at a not found error
                     string localPath = currentPathForResponse + urlData.response;
 
                     // Search for UUID if a PlayFab Get Item endpoint and use as response
-                    if (e.HttpClient.Request.RequestUri.AbsoluteUri == "https://20ca2.playfabapi.com/Catalog/GetPublishedItem")
+                    if (currentUri == "https://20ca2.playfabapi.com/Catalog/GetPublishedItem")
                     {
                         PlayfabGetPublishedItemBody getItemBody = JsonConvert.DeserializeObject<PlayfabGetPublishedItemBody>(requestBody);
                         MarketItem mItem = JsonData.MarketItems.FirstOrDefault(o => o.uuid == getItemBody.itemid);
                         if (mItem != null)
                         {
                             localPath = currentPathForResponse + mItem.response;
-                            Console.WriteLine("Local path is now " + localPath);
-                        }
-                    }
+                            //Console.WriteLine("Local path is now " + localPath);
 
-                    // Append custom marketplace button to response if accessing the main page
-                    if (e.HttpClient.Request.RequestUri.AbsoluteUri == "https://store.mktpl.minecraft-services.net/api/v1.0/layout/pages/MultiItemPage_StoreRoot")
-                    {
-                        if (File.Exists(localPath))
-                        {
-                            string jsonContent = File.ReadAllText(localPath);
-                            string responseBody = await e.GetResponseBodyAsString();
-
-                            JObject responseObject = JObject.Parse(responseBody);
-                            JObject appendObject = JObject.Parse(jsonContent);
-
-                            JArray rowsArray = (JArray)responseObject["result"]["rows"];
-
-                            if (rowsArray != null)
-                                rowsArray.Insert(0, appendObject);
-                            string updatedJson = responseObject.ToString();
-                            e.SetResponseBodyString(updatedJson);
-                            Console.WriteLine($"[+] Appended Json for {e.HttpClient.Request.Url}");
-                        }
-                        else
-                        {
-                            Console.WriteLine($"[-] File not found: {localPath}");
-                        }
-                    }
-
-                    if ((e.HttpClient.Request.RequestUri.AbsoluteUri == "https://20ca2.playfabapi.com/Catalog/GetPublishedItem" &&
-                        localPath != currentPathForResponse + "ProcessedInMarketItemsJson") ||
-                        (e.HttpClient.Request.RequestUri.AbsoluteUri != "https://store.mktpl.minecraft-services.net/api/v1.0/layout/pages/MultiItemPage_StoreRoot" &&
-                        e.HttpClient.Request.RequestUri.AbsoluteUri != "https://20ca2.playfabapi.com/Catalog/GetPublishedItem"))
-                    {
-                        if (File.Exists(localPath))
-                        {
-                            e.HttpClient.Response.StatusCode = 200; // Set to OK, otherwise stays at a not found error
-                            string jsonContent = File.ReadAllText(localPath);
+                            string jsonContent = parser.ReadJsonFileContent(localPath);
                             e.SetResponseBodyString(jsonContent); // Replace response with local json
                             Console.WriteLine($"[+] Replaced response for {e.HttpClient.Request.Url}");
                         }
-                        else
-                        {
-                            Console.WriteLine($"[-] File not found: {localPath}");
-                        }
                     }
-                    
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"[!] Error replacing response: {ex.Message}");
-                }
-            }
-            // Test MC response start
-            /*if (e.HttpClient.Request.Method.Equals("POST", StringComparison.OrdinalIgnoreCase) &&
-                e.HttpClient.Request.RequestUri.AbsoluteUri.Contains("https://store.mktpl.minecraft-services.net/api/v1.0/layout/pages/DressingRoom_Capes"))
-            {
-                try
-                {
-                    string localPath = currentPathForResponse + "MainPages\\Capes.json";
-                    if (File.Exists(localPath))
+                    else if (currentUri == "https://store.mktpl.minecraft-services.net/api/v1.0/layout/pages/MultiItemPage_StoreRoot")
                     {
-                        string jsonContent = File.ReadAllText(localPath);
-
-                        // Replace the server response
-                        e.SetResponseBodyString(jsonContent);
-
-                        Console.WriteLine($"[+] Replaced response for {e.HttpClient.Request.Url}");
+                        // Append custom marketplace button to response if accessing the main page
+                        string responseBody = await e.GetResponseBodyAsString();
+                        string location = "result.rows"; // Works the same as ["result"]["rows"]
+                        string appendedJson = parser.AppendJsonToStart(responseBody, localPath, location);
+                        e.SetResponseBodyString(appendedJson);
+                        Console.WriteLine($"[+] Appended response for {e.HttpClient.Request.Url}");
                     }
                     else
                     {
-                        Console.WriteLine($"[-] File not found: {localPath}");
+                        string jsonContent = parser.ReadJsonFileContent(localPath);
+                        e.SetResponseBodyString(jsonContent); // Replace response with local json
+                        Console.WriteLine($"[+] Replaced response for {e.HttpClient.Request.Url}");
                     }
                 }
                 catch (Exception ex)
@@ -428,72 +338,6 @@ namespace Titanium.Web.Proxy.Examples.Basic
                     Console.WriteLine($"[!] Error replacing response: {ex.Message}");
                 }
             }
-
-            if (e.HttpClient.Request.Method.Equals("POST", StringComparison.OrdinalIgnoreCase) &&
-                e.HttpClient.Request.RequestUri.AbsoluteUri.Contains("https://20ca2.playfabapi.com/Catalog/GetPublishedItem"))
-            {
-                try
-                {
-                    string localPath = currentPathForResponse + "Persona\\MillionthSale_cape.json";
-                    if (File.Exists(localPath))
-                    {
-                        string jsonContent = File.ReadAllText(localPath);
-
-                        // Replace the server response
-                        e.SetResponseBodyString(jsonContent);
-
-                        Console.WriteLine($"[+] Replaced response for {e.HttpClient.Request.Url}");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"[-] File not found: {localPath}");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"[!] Error replacing response: {ex.Message}");
-                }
-            }*/
-            // Test MC response end
-
-            // access user data set in request to do something with it
-            //var userData = e.HttpClient.UserData as CustomUserData;
-
-            //if (ext == ".gif" || ext == ".png" || ext == ".jpg")
-            //{ 
-            //    byte[] btBody = Encoding.UTF8.GetBytes("<!DOCTYPE html>" +
-            //                                           "<html><body><h1>" +
-            //                                           "Image is blocked" +
-            //                                           "</h1>" +
-            //                                           "<p>Blocked by Titanium</p>" +
-            //                                           "</body>" +
-            //                                           "</html>");
-
-            //    var response = new OkResponse(btBody);
-            //    response.HttpVersion = e.HttpClient.Request.HttpVersion;
-
-            //    e.Respond(response);
-            //    e.TerminateServerConnection();
-            //} 
-
-            //// print out process id of current session
-            ////WriteToConsole($"PID: {e.HttpClient.ProcessId.Value}");
-
-            ////if (!e.ProxySession.Request.Host.Equals("medeczane.sgk.gov.tr")) return;
-            //if (e.HttpClient.Request.Method == "GET" || e.HttpClient.Request.Method == "POST")
-            //{
-            //    if (e.HttpClient.Response.StatusCode == (int)HttpStatusCode.OK)
-            //    {
-            //        if (e.HttpClient.Response.ContentType != null && e.HttpClient.Response.ContentType.Trim().ToLower().Contains("text/html"))
-            //        {
-            //            var bodyBytes = await e.GetResponseBody();
-            //            e.SetResponseBody(bodyBytes);
-
-            //            string body = await e.GetResponseBodyAsString();
-            //            e.SetResponseBodyString(body);
-            //        }
-            //    }
-            //}
         }
 
         private async Task OnAfterResponse(object sender, SessionEventArgs e)
