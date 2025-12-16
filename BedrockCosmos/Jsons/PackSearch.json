@@ -1,5 +1,9 @@
 [
   {
+    "uuid": "d44ba892-7378-4fcd-a3f1-72de53675d24",
+    "response": "SkinPacks\\Responses\\Festive.json"
+  },
+  {
     "uuid": "55fa75f0-1635-485f-9586-1bdd0cb6a255",
     "response": "SkinPacks\\Responses\\SkinPack4.json"
   },

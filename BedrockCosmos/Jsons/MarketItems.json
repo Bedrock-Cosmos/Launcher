@@ -180,6 +180,10 @@
     "response": "Persona\\Valentine.json"
   },
   {
+    "uuid": "62c68fd4-3075-40ed-8b7b-15dcc7b667ff",
+    "response": "SkinPacks\\Responses\\FestiveBinary.json"
+  },
+  {
     "uuid": "2f60a7a0-8010-49b1-8b57-851ac41f34cf",
     "response": "SkinPacks\\Responses\\SkinPack4Binary.json"
   },
