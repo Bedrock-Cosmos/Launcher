@@ -16,7 +16,7 @@ namespace BedrockCosmos
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new BedrockCosmos());
+            Application.Run(new MainForm());
         }
     }
 }
