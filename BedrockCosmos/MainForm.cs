@@ -1,18 +1,6 @@
-﻿using BedrockCosmos;
-using BedrockCosmos.App;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using BedrockCosmos.App;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Net;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Titanium.Web.Proxy;
@@ -25,7 +13,8 @@ namespace BedrockCosmos
     public partial class MainForm : Form
     {
         private static readonly ProxyController controller = new ProxyController();
-        SettingsManager sManager = new SettingsManager();
+        SettingsManager sManager;
+        string consoleSender = "App";
 
         // For window movement
         bool drag = false;
@@ -34,10 +23,16 @@ namespace BedrockCosmos
         public MainForm()
         {
             InitializeComponent();
+            CosmosConsole.Initialize(DevConsole);
+
+            // Will also log messages to the main console if uncommented.
+            //CosmosConsole.logToMainConsole = true;
 
             if (RunTime.IsWindows)
                 // Fix console hang due to QuickEdit mode
                 ConsoleHelper.DisableQuickEditMode();
+
+            sManager = new SettingsManager();
         }
 
         private void MinimizeButton_Click(object sender, EventArgs e)
@@ -71,22 +66,43 @@ namespace BedrockCosmos
             drag = false;
         }
 
-        private async void StartButton_Click(object sender, EventArgs e)
+        private async void LaunchButton_Click(object sender, EventArgs e)
         {
-            StatusLabel.Text = "Entering the Cosmos...";
-
-            await Task.Run(() =>
+            if (LaunchButton.Text != "RUNNING")
             {
-                controller.StartProxy();
-            });
+                CosmosConsole.WriteLine(consoleSender, "Starting proxy...");
 
-            StatusLabel.Text = "Program started!";
-        }
+                LaunchButton.Text = "Entering The Cosmos...";
+                LaunchButton.FilledBackColorBottom = Color.FromArgb(66, 0, 113);
+                LaunchButton.FilledBackColorTop = Color.FromArgb(138, 0, 234);
+                LaunchButton.HoverBackColor = Color.FromArgb(138, 0, 234);
+                LaunchButton.HoverFillColor = Color.FromArgb(138, 0, 234);
+                LaunchButton.NormalBackColor = Color.FromArgb(138, 0, 234);
+                LaunchButton.PressedBackColor = Color.FromArgb(138, 0, 234);
 
-        private void StopButton_Click(object sender, EventArgs e)
-        {
-            controller.Stop();
-            StatusLabel.Text = "Program stopped!";
+                await Task.Run(() =>
+                {
+                    controller.StartProxy();
+                });
+
+                LaunchButton.Text = "RUNNING";
+                CosmosConsole.WriteLine(consoleSender, "Proxy started!");
+            }
+            else
+            {
+                CosmosConsole.WriteLine(consoleSender, "Stopping proxy...");
+
+                LaunchButton.Text = "LAUNCH";
+                LaunchButton.FilledBackColorBottom = Color.FromArgb(0, 114, 47);
+                LaunchButton.FilledBackColorTop = Color.FromArgb(0, 188, 71);
+                LaunchButton.HoverBackColor = Color.FromArgb(0, 188, 71);
+                LaunchButton.HoverFillColor = Color.FromArgb(0, 188, 71);
+                LaunchButton.NormalBackColor = Color.FromArgb(0, 188, 71);
+                LaunchButton.PressedBackColor = Color.FromArgb(0, 188, 71);
+                controller.Stop();
+
+                CosmosConsole.WriteLine(consoleSender, "Proxy stopped!");
+            }
         }
 
         private void AppIcon_Click(object sender, EventArgs e)
@@ -105,7 +121,27 @@ namespace BedrockCosmos
             TabControl.SelectedTab = HomePage;
         }
 
-        private void rippleButton1_Click(object sender, EventArgs e)
+        public void UpdateCosmosConsole(string logs)
+        {
+            DevConsole.Text = logs;
+        }
+
+        private void DownloadZipButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void EnableLoggingSwitch_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ClearLogsButton_Click(object sender, EventArgs e)
+        {
+            DevConsole.Text = "";
+        }
+
+        private void ExportLogsButton_Click(object sender, EventArgs e)
         {
 
         }

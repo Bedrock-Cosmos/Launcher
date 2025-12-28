@@ -1,11 +1,7 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BedrockCosmos
 {
@@ -17,14 +13,14 @@ namespace BedrockCosmos
 
         public static List<Endpoint> MainPages =
             JsonConvert.DeserializeObject<List<Endpoint>>
-            (File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\Jsons\MainPages.json"));
+            (File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\Jsons\MainResponses.json"));
 
         public static List<MarketItem> MarketItems =
             JsonConvert.DeserializeObject<List<MarketItem>>
-            (File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\Jsons\MarketItems.json"));
+            (File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\Jsons\PlayfabGetPublishItemResponses.json"));
 
         public static List<MarketItem> PackSearchIds =
             JsonConvert.DeserializeObject<List<MarketItem>>
-            (File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\Jsons\PackSearch.json"));
+            (File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\Jsons\PlayfabSearchResponses.json"));
     }
 }

@@ -103,7 +103,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App\CosmosConsole.cs" />
     <Compile Include="App\SettingsManager.cs" />
+    <Compile Include="App\UI\Switch.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -118,7 +122,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProxyEventArgsBaseExtensions.cs" />
     <Compile Include="ProxyController.cs" />
-    <Compile Include="RoundButton.cs">
+    <Compile Include="App\UI\RoundGradientButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="App\UI\RoundButton.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SampleClientState.cs" />
@@ -135,16 +142,16 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <None Include="Jsons\AllowedUrls.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Jsons\MarketItems.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Jsons\PlayfabGetPublishItemResponses.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Jsons\MainPages.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Jsons\MainResponses.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Jsons\PackSearch.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Jsons\PlayfabSearchResponses.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

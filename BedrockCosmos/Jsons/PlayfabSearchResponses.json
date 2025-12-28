@@ -1,0 +1,18 @@
+[
+  {
+    "uuid": "d44ba892-7378-4fcd-a3f1-72de53675d24",
+    "response": "SkinPacks\\Responses\\Festive.json"
+  },
+  {
+    "uuid": "55fa75f0-1635-485f-9586-1bdd0cb6a255",
+    "response": "SkinPacks\\Responses\\SkinPack4.json"
+  },
+  {
+    "uuid": "cc59b688-7cfb-4fa0-a76e-84aa55b92cae",
+    "response": "SkinPacks\\Responses\\SkinPack5.json"
+  },
+  {
+    "uuid": "0037a29f-876e-4709-8bb8-a388738e6f51",
+    "response": "SkinPacks\\Responses\\SkinPack6.json"
+  }
+]

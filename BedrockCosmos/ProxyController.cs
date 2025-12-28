@@ -1,4 +1,5 @@
 ﻿using BedrockCosmos;
+using BedrockCosmos.App;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -18,8 +19,6 @@ using Titanium.Web.Proxy.Http;
 using Titanium.Web.Proxy.Http.Responses;
 using Titanium.Web.Proxy.Models;
 using Titanium.Web.Proxy.StreamExtended.Network;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 namespace Titanium.Web.Proxy.Examples.Basic
 {
@@ -35,6 +34,7 @@ namespace Titanium.Web.Proxy.Examples.Basic
         private ExplicitProxyEndPoint explicitEndPoint;
 
         string currentPathForResponse = AppDomain.CurrentDomain.BaseDirectory + @"Responses-main\";
+        string consoleSender = "Proxy";
         JsonParser parser = new JsonParser();
 
         public ProxyController()
@@ -54,9 +54,9 @@ namespace Titanium.Web.Proxy.Examples.Basic
             proxyServer.ExceptionFunc = async exception =>
             {
                 if (exception is ProxyHttpException phex)
-                    WriteToConsole(exception.Message + ": " + phex.InnerException?.Message, ConsoleColor.Red);
+                    CosmosConsole.WriteLine(consoleSender, exception.Message + ": " + phex.InnerException?.Message);
                 else
-                    WriteToConsole(exception.Message, ConsoleColor.Red);
+                    CosmosConsole.WriteLine(consoleSender, exception.Message);
             };
 
             proxyServer.TcpTimeWaitSeconds = 10;
@@ -143,8 +143,8 @@ namespace Titanium.Web.Proxy.Examples.Basic
             //proxyServer.AddEndPoint(socksEndPoint);
 
             foreach (var endPoint in proxyServer.ProxyEndPoints)
-                Console.WriteLine("Listening on '{0}' endpoint at Ip {1} and port: {2} ", endPoint.GetType().Name,
-                    endPoint.IpAddress, endPoint.Port);
+                CosmosConsole.WriteLine(consoleSender, $"Listening on '{endPoint.GetType().Name}' endpoint at Ip {endPoint.IpAddress}" +
+                    $" and port: {endPoint.Port}");
 
             // Only explicit proxies can be set as system proxy!
             //proxyServer.SetAsSystemHttpProxy(explicitEndPoint);
@@ -204,7 +204,7 @@ namespace Titanium.Web.Proxy.Examples.Basic
         {
             var hostname = e.HttpClient.Request.RequestUri.Host;
             e.GetState().PipelineInfo.AppendLine(nameof(OnBeforeTunnelConnectRequest) + ":" + hostname);
-            WriteToConsole("Tunnel to: " + hostname);
+            CosmosConsole.WriteLine(consoleSender, "Tunnel to: " + hostname);
 
             var clientLocalIp = e.ClientLocalEndPoint.Address;
             if (!clientLocalIp.Equals(IPAddress.Loopback) && !clientLocalIp.Equals(IPAddress.IPv6Loopback))
@@ -237,10 +237,10 @@ namespace Titanium.Web.Proxy.Examples.Basic
                 {
                     var data = frame.Data.ToArray();
                     var str = string.Join(",", data.ToArray().Select(x => x.ToString("X2")));
-                    WriteToConsole(str, color);
+                    CosmosConsole.WriteLine(consoleSender, str);
                 }
 
-                if (frame.OpCode == WebsocketOpCode.Text) WriteToConsole(frame.GetText(), color);
+                if (frame.OpCode == WebsocketOpCode.Text) CosmosConsole.WriteLine(consoleSender, frame.GetText());
             }
         }
 
@@ -263,8 +263,8 @@ namespace Titanium.Web.Proxy.Examples.Basic
             string body = await e.GetRequestBodyAsString();
             e.UserData = body;
 
-            WriteToConsole("Active Client Connections:" + ((ProxyServer)sender).ClientConnectionCount);
-            WriteToConsole(e.HttpClient.Request.Url);
+            CosmosConsole.WriteLine(consoleSender, "Active Client Connections:" + ((ProxyServer)sender).ClientConnectionCount);
+            CosmosConsole.WriteLine(consoleSender, e.HttpClient.Request.Url);
         }
 
         private async Task MultipartRequestPartSent(object sender, MultipartRequestPartSentEventArgs e)
@@ -272,8 +272,8 @@ namespace Titanium.Web.Proxy.Examples.Basic
             e.GetState().PipelineInfo.AppendLine(nameof(MultipartRequestPartSent));
 
             var session = (SessionEventArgs)sender;
-            WriteToConsole("Multipart form data headers:");
-            foreach (var header in e.Headers) WriteToConsole(header.ToString());
+            CosmosConsole.WriteLine(consoleSender, "Multipart form data headers:");
+            foreach (var header in e.Headers) CosmosConsole.WriteLine(consoleSender, header.ToString());
         }
 
         private async Task OnResponse(object sender, SessionEventArgs e)
@@ -286,7 +286,7 @@ namespace Titanium.Web.Proxy.Examples.Basic
                 e.DataReceived += WebSocket_DataReceived;
             }
 
-            WriteToConsole("Active Server Connections:" + ((ProxyServer)sender).ServerConnectionCount);
+            CosmosConsole.WriteLine(consoleSender, "Active Server Connections:" + ((ProxyServer)sender).ServerConnectionCount);
 
             var ext = Path.GetExtension(e.HttpClient.Request.RequestUri.AbsolutePath);
 
@@ -310,11 +310,11 @@ namespace Titanium.Web.Proxy.Examples.Basic
                         if (mItem != null)
                         {
                             localPath = currentPathForResponse + mItem.response;
-                            //Console.WriteLine("Local path is now " + localPath);
+                            //CosmosConsole.WriteLine(consoleSender, "Local path is now " + localPath);
 
                             string jsonContent = parser.ReadJsonFileContent(localPath);
                             e.SetResponseBodyString(jsonContent);
-                            Console.WriteLine($"[+] Replaced response for {e.HttpClient.Request.Url}");
+                            CosmosConsole.WriteLine(consoleSender, $"Replaced response for {e.HttpClient.Request.Url}");
                         }
                     }
                     else if (currentUri == "https://20ca2.playfabapi.com/Catalog/Search")
@@ -326,11 +326,11 @@ namespace Titanium.Web.Proxy.Examples.Basic
                         if (mItem != null)
                         {
                             localPath = currentPathForResponse + mItem.response;
-                            //Console.WriteLine("Local path is now " + localPath);
+                            //CosmosConsole.WriteLine(consoleSender, "Local path is now " + localPath);
 
                             string jsonContent = parser.ReadJsonFileContent(localPath);
                             e.SetResponseBodyString(jsonContent);
-                            Console.WriteLine($"[+] Replaced response for {e.HttpClient.Request.Url}");
+                            CosmosConsole.WriteLine(consoleSender, $"Replaced response for {e.HttpClient.Request.Url}");
                         }
                     }
                     else if (currentUri == "https://store.mktpl.minecraft-services.net/api/v1.0/layout/pages/MultiItemPage_StoreRoot")
@@ -340,25 +340,25 @@ namespace Titanium.Web.Proxy.Examples.Basic
                         string location = "result.rows"; // Works the same as ["result"]["rows"]
                         string appendedJson = parser.AppendJsonToStart(responseBody, localPath, location);
                         e.SetResponseBodyString(appendedJson);
-                        Console.WriteLine($"[+] Appended response for {e.HttpClient.Request.Url}");
+                        CosmosConsole.WriteLine(consoleSender, $"Appended response for {e.HttpClient.Request.Url}");
                     }
                     else
                     {
                         string jsonContent = parser.ReadJsonFileContent(localPath);
                         e.SetResponseBodyString(jsonContent);
-                        Console.WriteLine($"[+] Replaced response for {e.HttpClient.Request.Url}");
+                        CosmosConsole.WriteLine(consoleSender, $"Replaced response for {e.HttpClient.Request.Url}");
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"[!] Error replacing response: {ex.Message}");
+                    CosmosConsole.WriteLine(consoleSender, $"Error replacing response: {ex.Message}");
                 }
             }
         }
 
         private async Task OnAfterResponse(object sender, SessionEventArgs e)
         {
-            WriteToConsole($"Pipelineinfo: {e.GetState().PipelineInfo}", ConsoleColor.Yellow);
+            CosmosConsole.WriteLine(consoleSender, $"Pipelineinfo: {e.GetState().PipelineInfo}");
         }
 
         /// <summary>
@@ -390,10 +390,11 @@ namespace Titanium.Web.Proxy.Examples.Basic
             return Task.CompletedTask;
         }
 
-        private void WriteToConsole(string message, ConsoleColor? consoleColor = null)
+        // Original Proxy Console
+        /*private void WriteToConsole(string message, ConsoleColor? consoleColor = null)
         {
             consoleMessageQueue.Enqueue(new Tuple<ConsoleColor?, string>(consoleColor, message));
-        }
+        }*/
 
         private async Task ListenToConsole()
         {
@@ -408,12 +409,12 @@ namespace Titanium.Web.Proxy.Examples.Basic
                     {
                         var existing = Console.ForegroundColor;
                         Console.ForegroundColor = consoleColor.Value;
-                        Console.WriteLine(message);
+                        CosmosConsole.WriteLine(consoleSender, message);
                         Console.ForegroundColor = existing;
                     }
                     else
                     {
-                        Console.WriteLine(message);
+                        CosmosConsole.WriteLine(consoleSender, message);
                     }
                 }
 
