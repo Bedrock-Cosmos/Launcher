@@ -1,34 +1,116 @@
 ﻿using System;
+using System.Drawing;
+using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace BedrockCosmos.App
 {
-    public class CosmosConsole
+    internal class CosmosConsole
     {
-        private static TextBox _console;
-        public static bool enableLogging = false;
-        public static bool logToMainConsole = false;
+        private static RichTextBox _console;
+        private static bool _logToMainConsole = false;
 
-        public static void Initialize(TextBox textBox)
+        // Scroll locking variables/imports
+        private const int WM_SETREDRAW = 0x0b;
+        private const int EM_GETSCROLLPOS = 0x0400 + 221;
+        private const int EM_SETSCROLLPOS = 0x0400 + 222;
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct POINT
+        {
+            public int X;
+            public int Y;
+        }
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr SendMessage(
+            IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr SendMessage(
+            IntPtr hWnd, int msg, IntPtr wParam, ref POINT lParam);
+
+        internal static void Initialize(RichTextBox textBox)
         {
             _console = textBox;
         }
 
-        public static void WriteLine(string sender, string message)
+        internal static bool LogToMainConsole
         {
-            string log = $"[{sender}] {message}";
+            get { return _logToMainConsole; }
+            set { _logToMainConsole = value; }
+        }
 
-            if (_console != null)
+        private static bool IsScrolledToBottom(RichTextBox textBox)
+        {
+            int lastVisibleChar = textBox.GetCharIndexFromPosition(
+                new Point(1, textBox.ClientSize.Height - 1));
+
+            return lastVisibleChar >= textBox.TextLength - 1;
+        }
+
+        internal static void WriteLine(string sender, string message)
+        {
+            if (SettingsManager.EnableLogging)
             {
-                if (_console.InvokeRequired)
-                    _console.Invoke(new Action<string, string>(WriteLine), sender, message);
-                else
-                    _console.AppendText(log + Environment.NewLine);
-            }
+                string log = $"[{sender}] {message}";
 
-            if (logToMainConsole)
-                Console.WriteLine(log);
+                if (_console != null)
+                {
+                    if (_console.InvokeRequired)
+                    {
+                        _console.Invoke(new Action<string, string>(WriteLine), sender, message);
+                    }
+                    else
+                    {
+                        bool shouldAutoScroll = IsScrolledToBottom(_console);
+                        
+                        POINT scrollPos = new POINT();
+                        SendMessage(_console.Handle, EM_GETSCROLLPOS, IntPtr.Zero, ref scrollPos); // Save scroll position
+                        SendMessage(_console.Handle, WM_SETREDRAW, IntPtr.Zero, IntPtr.Zero); // Suspend redraw
+
+                        _console.AppendText(log + Environment.NewLine);
+
+                        if (!shouldAutoScroll)
+                        {
+                            SendMessage(_console.Handle, EM_SETSCROLLPOS, IntPtr.Zero, ref scrollPos);
+                        }
+                        else
+                        {
+                            _console.SelectionStart = _console.TextLength;
+                            _console.ScrollToCaret();
+                        }
+
+                        SendMessage(_console.Handle, WM_SETREDRAW, new IntPtr(1), IntPtr.Zero); // Resume redraw
+                        _console.Invalidate();
+                    }
+                }
+
+                if (_logToMainConsole)
+                    Console.WriteLine(log);
+            }
+        }
+
+        internal static void ExportLogs()
+        {
+            try
+            {
+                string logsFolder = AppDomain.CurrentDomain.BaseDirectory + @"Logs\";
+
+                if (!Directory.Exists(logsFolder))
+                    Directory.CreateDirectory(logsFolder);
+
+                int fileCount = Directory.GetFiles(logsFolder).Length;
+                string logPath = logsFolder + @"\log" + fileCount.ToString() + ".txt";
+
+                File.WriteAllText(logPath, _console.Text);
+                WriteLine("App", $"Exported log to {logPath}");
+            }
+            catch (Exception)
+            {
+                WriteLine("App", "Failed to create log.");
+            }
         }
     }
 }
-

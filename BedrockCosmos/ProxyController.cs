@@ -231,16 +231,22 @@ namespace Titanium.Web.Proxy.Examples.Basic
         {
             var color = sent ? ConsoleColor.Green : ConsoleColor.Blue;
 
-            foreach (var frame in args.WebSocketDecoder.Decode(e.Buffer, e.Offset, e.Count))
+            var decoder = sent
+                ? args.WebSocketDecoderSend
+                : args.WebSocketDecoderReceive;
+
+            foreach (var frame in decoder.Decode(e.Buffer, e.Offset, e.Count))
             {
                 if (frame.OpCode == WebsocketOpCode.Binary)
                 {
                     var data = frame.Data.ToArray();
-                    var str = string.Join(",", data.ToArray().Select(x => x.ToString("X2")));
+                    var str = string.Join(",", data.Select(x => x.ToString("X2")));
                     CosmosConsole.WriteLine(consoleSender, str);
                 }
-
-                if (frame.OpCode == WebsocketOpCode.Text) CosmosConsole.WriteLine(consoleSender, frame.GetText());
+                else if (frame.OpCode == WebsocketOpCode.Text)
+                {
+                    CosmosConsole.WriteLine(consoleSender, frame.GetText());
+                }
             }
         }
 

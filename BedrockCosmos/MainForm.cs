@@ -1,8 +1,11 @@
 ﻿using BedrockCosmos.App;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
+using System.IO.Compression;
 using Titanium.Web.Proxy;
 using Titanium.Web.Proxy.Examples.Basic;
 using Titanium.Web.Proxy.Examples.Basic.Helpers;
@@ -13,7 +16,7 @@ namespace BedrockCosmos
     public partial class MainForm : Form
     {
         private static readonly ProxyController controller = new ProxyController();
-        SettingsManager sManager;
+        private readonly AsyncFileDownload asyncDownload;
         string consoleSender = "App";
 
         // For window movement
@@ -24,15 +27,14 @@ namespace BedrockCosmos
         {
             InitializeComponent();
             CosmosConsole.Initialize(DevConsole);
+            asyncDownload = new AsyncFileDownload();
 
             // Will also log messages to the main console if uncommented.
-            //CosmosConsole.logToMainConsole = true;
+            //CosmosConsole.LogToMainConsole = true;
 
             if (RunTime.IsWindows)
                 // Fix console hang due to QuickEdit mode
                 ConsoleHelper.DisableQuickEditMode();
-
-            sManager = new SettingsManager();
         }
 
         private void MinimizeButton_Click(object sender, EventArgs e)
@@ -42,6 +44,7 @@ namespace BedrockCosmos
 
         private void CloseButton_Click(object sender, EventArgs e)
         {
+            asyncDownload.Dispose();
             this.Close();
             Application.Exit();
         }
@@ -107,7 +110,7 @@ namespace BedrockCosmos
 
         private void AppIcon_Click(object sender, EventArgs e)
         {
-            bool isDevMenuEnabled = sManager.DevMenuCheck();
+            bool isDevMenuEnabled = SettingsManager.DevMenuCheck();
             if (isDevMenuEnabled)
             {
                 AppIcon.Cursor = Cursors.Default;
@@ -121,19 +124,34 @@ namespace BedrockCosmos
             TabControl.SelectedTab = HomePage;
         }
 
-        public void UpdateCosmosConsole(string logs)
+        private async void DownloadZipButton_Click(object sender, EventArgs e)
         {
-            DevConsole.Text = logs;
-        }
+            string fileUrl = "https://github.com/Bedrock-Cosmos/Responses/archive/refs/heads/main.zip";
+            string downloadPath = AppDomain.CurrentDomain.BaseDirectory + @"main.zip";
+            string extractPath = AppDomain.CurrentDomain.BaseDirectory;
+            DownloadZipProgressLabel.Visible = true;
 
-        private void DownloadZipButton_Click(object sender, EventArgs e)
-        {
+            DownloadZipProgressLabel.Text = "Downloading...";
+            await asyncDownload.DownloadFileAsync(fileUrl, downloadPath);
 
+            DownloadZipProgressLabel.Text = "Extracting...";
+            await asyncDownload.ExtractFileAsync(downloadPath, extractPath, true);
+
+            DownloadZipProgressLabel.Text = "Done!";
         }
 
         private void EnableLoggingSwitch_CheckedChanged(object sender, EventArgs e)
         {
-
+            if (EnableLoggingSwitch.Checked)
+            {
+                SettingsManager.EnableLogging = true;
+                CosmosConsole.WriteLine(consoleSender, "Logging enabled.");
+            }
+            else
+            {
+                CosmosConsole.WriteLine(consoleSender, "Logging disabled.");
+                SettingsManager.EnableLogging = false;
+            }
         }
 
         private void ClearLogsButton_Click(object sender, EventArgs e)
@@ -143,7 +161,13 @@ namespace BedrockCosmos
 
         private void ExportLogsButton_Click(object sender, EventArgs e)
         {
+            CosmosConsole.ExportLogs();
+        }
 
+        private void DisableDevMenuButton_Click(object sender, EventArgs e)
+        {
+            SettingsManager.DisableDevMenu();
+            TabControl.SelectedTab = HomePage;
         }
     }
 }

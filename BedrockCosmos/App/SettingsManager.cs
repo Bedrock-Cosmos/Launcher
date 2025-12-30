@@ -7,23 +7,53 @@ using System.Threading.Tasks;
 
 namespace BedrockCosmos.App
 {
-    public class SettingsManager
+    internal class SettingsManager
     {
-        public int devMenuClicks = 0;
-        public bool devMenuEnabled = false;
+        private static int _devMenuClicks = 0;
+        private static bool _devMenuEnabled = false;
+        private static bool _enableLogging = false;
+        private static string consoleSender = "App";
 
-        public bool DevMenuCheck()
+        internal static int DevMenuClicks
         {
-            if (devMenuClicks < 7)
+            get { return _devMenuClicks; }
+            set { _devMenuClicks = value; }
+        }
+
+        internal static bool DevMenuEnabled
+        {
+            get { return _devMenuEnabled; }
+            set { _devMenuEnabled = value; }
+        }
+
+        internal static bool EnableLogging
+        {
+            get { return _enableLogging; }
+            set { _enableLogging = value; }
+        }
+
+        internal static bool DevMenuCheck()
+        {
+            if (_devMenuClicks < 7)
             { 
-                devMenuClicks++;
+                _devMenuClicks++;
                 return false;
             }
             else
             {
-                devMenuEnabled = true;
+                if (!_devMenuEnabled)
+                    CosmosConsole.WriteLine(consoleSender, "Developer mode enabled.");
+
+                _devMenuEnabled = true;
                 return true;
             }
+        }
+
+        internal static void DisableDevMenu()
+        {
+            _devMenuClicks = 0;
+            _devMenuEnabled = false;
+            CosmosConsole.WriteLine(consoleSender, "Developer mode disabled.");
         }
     }
 }

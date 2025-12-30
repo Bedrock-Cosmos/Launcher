@@ -34,21 +34,21 @@
             this.HomePage = new System.Windows.Forms.TabPage();
             this.SettingsPage = new System.Windows.Forms.TabPage();
             this.DevPage = new System.Windows.Forms.TabPage();
-            this.DevConsole = new System.Windows.Forms.TextBox();
-            this.DownloadZipProgressLabel = new System.Windows.Forms.Label();
-            this.DownloadZipProgressBar = new System.Windows.Forms.ProgressBar();
             this.DevBackButton = new System.Windows.Forms.Button();
+            this.DevConsole = new System.Windows.Forms.RichTextBox();
+            this.EnableLoggingLabel = new System.Windows.Forms.Label();
+            this.DownloadZipProgressLabel = new System.Windows.Forms.Label();
             this.TopPanel = new System.Windows.Forms.Panel();
             this.AppIcon = new System.Windows.Forms.PictureBox();
             this.TopLabel = new System.Windows.Forms.Label();
             this.MinimizeButton = new System.Windows.Forms.Button();
             this.CloseButton = new System.Windows.Forms.Button();
             this.LaunchButton = new BedrockCosmos.App.UI.RoundGradientButton();
+            this.DisableDevMenuButton = new BedrockCosmos.App.UI.RoundButton();
+            this.ClearLogsButton = new BedrockCosmos.App.UI.RoundButton();
             this.EnableLoggingSwitch = new BedrockCosmos.App.UI.Switch();
             this.DownloadZipButton = new BedrockCosmos.App.UI.RoundButton();
             this.ExportLogsButton = new BedrockCosmos.App.UI.RoundButton();
-            this.EnableLoggingLabel = new System.Windows.Forms.Label();
-            this.ClearLogsButton = new BedrockCosmos.App.UI.RoundButton();
             this.TabControl.SuspendLayout();
             this.HomePage.SuspendLayout();
             this.DevPage.SuspendLayout();
@@ -104,62 +104,74 @@
             // DevPage
             // 
             this.DevPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.DevPage.Controls.Add(this.DevBackButton);
+            this.DevPage.Controls.Add(this.DisableDevMenuButton);
+            this.DevPage.Controls.Add(this.DevConsole);
             this.DevPage.Controls.Add(this.ClearLogsButton);
             this.DevPage.Controls.Add(this.EnableLoggingLabel);
             this.DevPage.Controls.Add(this.EnableLoggingSwitch);
             this.DevPage.Controls.Add(this.DownloadZipButton);
             this.DevPage.Controls.Add(this.ExportLogsButton);
-            this.DevPage.Controls.Add(this.DevConsole);
             this.DevPage.Controls.Add(this.DownloadZipProgressLabel);
-            this.DevPage.Controls.Add(this.DownloadZipProgressBar);
-            this.DevPage.Controls.Add(this.DevBackButton);
             this.DevPage.Location = new System.Drawing.Point(4, 22);
             this.DevPage.Name = "DevPage";
             this.DevPage.Size = new System.Drawing.Size(806, 440);
             this.DevPage.TabIndex = 2;
             this.DevPage.Text = "Dev Page";
             // 
+            // DevBackButton
+            // 
+            this.DevBackButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.DevBackButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("DevBackButton.BackgroundImage")));
+            this.DevBackButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.DevBackButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.DevBackButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
+            this.DevBackButton.FlatAppearance.BorderSize = 0;
+            this.DevBackButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
+            this.DevBackButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
+            this.DevBackButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.DevBackButton.Location = new System.Drawing.Point(15, 391);
+            this.DevBackButton.Name = "DevBackButton";
+            this.DevBackButton.Size = new System.Drawing.Size(25, 25);
+            this.DevBackButton.TabIndex = 4;
+            this.DevBackButton.UseVisualStyleBackColor = true;
+            this.DevBackButton.Click += new System.EventHandler(this.DevBackButton_Click);
+            // 
             // DevConsole
             // 
             this.DevConsole.BackColor = System.Drawing.Color.Black;
             this.DevConsole.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.DevConsole.ForeColor = System.Drawing.Color.White;
-            this.DevConsole.Location = new System.Drawing.Point(354, 35);
-            this.DevConsole.Multiline = true;
+            this.DevConsole.Location = new System.Drawing.Point(290, 41);
             this.DevConsole.Name = "DevConsole";
             this.DevConsole.ReadOnly = true;
-            this.DevConsole.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.DevConsole.Size = new System.Drawing.Size(435, 340);
-            this.DevConsole.TabIndex = 5;
+            this.DevConsole.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.DevConsole.Size = new System.Drawing.Size(499, 340);
+            this.DevConsole.TabIndex = 13;
+            this.DevConsole.Text = "";
+            // 
+            // EnableLoggingLabel
+            // 
+            this.EnableLoggingLabel.AutoSize = true;
+            this.EnableLoggingLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.EnableLoggingLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.EnableLoggingLabel.Location = new System.Drawing.Point(641, 394);
+            this.EnableLoggingLabel.Name = "EnableLoggingLabel";
+            this.EnableLoggingLabel.Size = new System.Drawing.Size(103, 19);
+            this.EnableLoggingLabel.TabIndex = 11;
+            this.EnableLoggingLabel.Text = "Enable Logging";
             // 
             // DownloadZipProgressLabel
             // 
-            this.DownloadZipProgressLabel.AutoSize = true;
             this.DownloadZipProgressLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.DownloadZipProgressLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.DownloadZipProgressLabel.Location = new System.Drawing.Point(305, 53);
+            this.DownloadZipProgressLabel.Location = new System.Drawing.Point(161, 43);
             this.DownloadZipProgressLabel.Name = "DownloadZipProgressLabel";
-            this.DownloadZipProgressLabel.Size = new System.Drawing.Size(28, 19);
+            this.DownloadZipProgressLabel.Size = new System.Drawing.Size(121, 38);
             this.DownloadZipProgressLabel.TabIndex = 4;
-            this.DownloadZipProgressLabel.Text = "0%";
-            // 
-            // DownloadZipProgressBar
-            // 
-            this.DownloadZipProgressBar.Location = new System.Drawing.Point(163, 52);
-            this.DownloadZipProgressBar.Name = "DownloadZipProgressBar";
-            this.DownloadZipProgressBar.Size = new System.Drawing.Size(136, 23);
-            this.DownloadZipProgressBar.TabIndex = 3;
-            // 
-            // DevBackButton
-            // 
-            this.DevBackButton.BackColor = System.Drawing.Color.Transparent;
-            this.DevBackButton.Location = new System.Drawing.Point(13, 394);
-            this.DevBackButton.Name = "DevBackButton";
-            this.DevBackButton.Size = new System.Drawing.Size(75, 25);
-            this.DevBackButton.TabIndex = 1;
-            this.DevBackButton.Text = "Back";
-            this.DevBackButton.UseVisualStyleBackColor = false;
-            this.DevBackButton.Click += new System.EventHandler(this.DevBackButton_Click);
+            this.DownloadZipProgressLabel.Text = "Downloading...";
+            this.DownloadZipProgressLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.DownloadZipProgressLabel.Visible = false;
             // 
             // TopPanel
             // 
@@ -265,6 +277,58 @@
             this.LaunchButton.Text = "LAUNCH";
             this.LaunchButton.Click += new System.EventHandler(this.LaunchButton_Click);
             // 
+            // DisableDevMenuButton
+            // 
+            this.DisableDevMenuButton.BackColor = System.Drawing.Color.Transparent;
+            this.DisableDevMenuButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.DisableDevMenuButton.DialogResult = System.Windows.Forms.DialogResult.None;
+            this.DisableDevMenuButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.DisableDevMenuButton.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.DisableDevMenuButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.DisableDevMenuButton.HoverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.DisableDevMenuButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.DisableDevMenuButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.DisableDevMenuButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            this.DisableDevMenuButton.Location = new System.Drawing.Point(13, 190);
+            this.DisableDevMenuButton.MinimumSize = new System.Drawing.Size(144, 47);
+            this.DisableDevMenuButton.Name = "DisableDevMenuButton";
+            this.DisableDevMenuButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.DisableDevMenuButton.PixelOffsetType = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            this.DisableDevMenuButton.PressedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.DisableDevMenuButton.PressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.DisableDevMenuButton.Radius = 5;
+            this.DisableDevMenuButton.Size = new System.Drawing.Size(144, 47);
+            this.DisableDevMenuButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            this.DisableDevMenuButton.TabIndex = 14;
+            this.DisableDevMenuButton.Text = "Disable Dev Menu";
+            this.DisableDevMenuButton.Click += new System.EventHandler(this.DisableDevMenuButton_Click);
+            // 
+            // ClearLogsButton
+            // 
+            this.ClearLogsButton.BackColor = System.Drawing.Color.Transparent;
+            this.ClearLogsButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.ClearLogsButton.DialogResult = System.Windows.Forms.DialogResult.None;
+            this.ClearLogsButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.ClearLogsButton.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.ClearLogsButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.ClearLogsButton.HoverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.ClearLogsButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.ClearLogsButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.ClearLogsButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            this.ClearLogsButton.Location = new System.Drawing.Point(13, 90);
+            this.ClearLogsButton.MinimumSize = new System.Drawing.Size(144, 47);
+            this.ClearLogsButton.Name = "ClearLogsButton";
+            this.ClearLogsButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.ClearLogsButton.PixelOffsetType = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            this.ClearLogsButton.PressedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.ClearLogsButton.PressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.ClearLogsButton.Radius = 5;
+            this.ClearLogsButton.Size = new System.Drawing.Size(144, 47);
+            this.ClearLogsButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            this.ClearLogsButton.TabIndex = 12;
+            this.ClearLogsButton.Text = "Clear Logs";
+            this.ClearLogsButton.Click += new System.EventHandler(this.ClearLogsButton_Click);
+            // 
             // EnableLoggingSwitch
             // 
             this.EnableLoggingSwitch.AutoSize = true;
@@ -332,43 +396,6 @@
             this.ExportLogsButton.Text = "Export Logs";
             this.ExportLogsButton.Click += new System.EventHandler(this.ExportLogsButton_Click);
             // 
-            // EnableLoggingLabel
-            // 
-            this.EnableLoggingLabel.AutoSize = true;
-            this.EnableLoggingLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.EnableLoggingLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.EnableLoggingLabel.Location = new System.Drawing.Point(641, 394);
-            this.EnableLoggingLabel.Name = "EnableLoggingLabel";
-            this.EnableLoggingLabel.Size = new System.Drawing.Size(103, 19);
-            this.EnableLoggingLabel.TabIndex = 11;
-            this.EnableLoggingLabel.Text = "Enable Logging";
-            // 
-            // ClearLogsButton
-            // 
-            this.ClearLogsButton.BackColor = System.Drawing.Color.Transparent;
-            this.ClearLogsButton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.ClearLogsButton.DialogResult = System.Windows.Forms.DialogResult.None;
-            this.ClearLogsButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.ClearLogsButton.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.ClearLogsButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.ClearLogsButton.HoverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
-            this.ClearLogsButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
-            this.ClearLogsButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.ClearLogsButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.ClearLogsButton.Location = new System.Drawing.Point(13, 90);
-            this.ClearLogsButton.MinimumSize = new System.Drawing.Size(144, 47);
-            this.ClearLogsButton.Name = "ClearLogsButton";
-            this.ClearLogsButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
-            this.ClearLogsButton.PixelOffsetType = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-            this.ClearLogsButton.PressedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
-            this.ClearLogsButton.PressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.ClearLogsButton.Radius = 5;
-            this.ClearLogsButton.Size = new System.Drawing.Size(144, 47);
-            this.ClearLogsButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            this.ClearLogsButton.TabIndex = 12;
-            this.ClearLogsButton.Text = "Clear Logs";
-            this.ClearLogsButton.Click += new System.EventHandler(this.ClearLogsButton_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -404,16 +431,16 @@
         private System.Windows.Forms.Label TopLabel;
         private System.Windows.Forms.PictureBox AppIcon;
         private System.Windows.Forms.TabPage DevPage;
-        private System.Windows.Forms.Button DevBackButton;
         private System.Windows.Forms.Label DownloadZipProgressLabel;
-        private System.Windows.Forms.ProgressBar DownloadZipProgressBar;
         private BedrockCosmos.App.UI.RoundGradientButton LaunchButton;
-        private System.Windows.Forms.TextBox DevConsole;
         private BedrockCosmos.App.UI.RoundButton ExportLogsButton;
         private BedrockCosmos.App.UI.RoundButton DownloadZipButton;
         private App.UI.Switch EnableLoggingSwitch;
         private System.Windows.Forms.Label EnableLoggingLabel;
         private App.UI.RoundButton ClearLogsButton;
+        private System.Windows.Forms.RichTextBox DevConsole;
+        private App.UI.RoundButton DisableDevMenuButton;
+        private System.Windows.Forms.Button DevBackButton;
     }
 }
 
