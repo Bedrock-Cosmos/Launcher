@@ -1,0 +1,62 @@
+[
+  {
+    "uuid": "d532b9b3-eddc-4f98-96fc-5fe5e227c426",
+    "response": "SkinPacks\\Responses\\2ndBirthdaySkinPack2015.json"
+  },
+  {
+    "uuid": "d44ba892-7378-4fcd-a3f1-72de53675d24",
+    "response": "SkinPacks\\Responses\\Festive.json"
+  },
+  {
+    "uuid": "0f2e08ee-8ef2-4521-b03d-9f89c907c70e",
+    "response": "SkinPacks\\Responses\\LittleBigPlanetMashup.json"
+  },
+  {
+    "uuid": "47ca6989-81db-404b-a9f1-f3391258b8a2",
+    "response": "SkinPacks\\Responses\\MarioMashUp.json"
+  },
+  {
+    "uuid": "083c0c90-cd38-46ad-a473-881f2a7cc069",
+    "response": "SkinPacks\\Responses\\MarvelAvengersSkinPack.json"
+  },
+  {
+    "uuid": "1d3e88a9-617c-45a8-83ba-b4abef5fda4e",
+    "response": "SkinPacks\\Responses\\MarvelGuardiansoftheGalaxySkinPack.json"
+  },
+  {
+    "uuid": "8eba8968-4ad4-446c-8717-36c38cae0edb",
+    "response": "SkinPacks\\Responses\\MarvelSpiderManSkinPack.json"
+  },
+  {
+    "uuid": "720ee1f3-dc46-4ffc-a390-8bb035e7be26",
+    "response": "SkinPacks\\Responses\\SkinPack1.json"
+  },
+  {
+    "uuid": "f73518e4-10b6-4eaa-a088-7b246483694e",
+    "response": "SkinPacks\\Responses\\SkinPack1Classic.json"
+  },
+  {
+    "uuid": "d78aa7a2-9680-417c-97da-01c9cfbf0c4b",
+    "response": "SkinPacks\\Responses\\SkinPack2.json"
+  },
+  {
+    "uuid": "640f444e-0d59-4d9a-9502-d64658a9b51b",
+    "response": "SkinPacks\\Responses\\SkinPack3.json"
+  },
+  {
+    "uuid": "55fa75f0-1635-485f-9586-1bdd0cb6a255",
+    "response": "SkinPacks\\Responses\\SkinPack4.json"
+  },
+  {
+    "uuid": "cc59b688-7cfb-4fa0-a76e-84aa55b92cae",
+    "response": "SkinPacks\\Responses\\SkinPack5.json"
+  },
+  {
+    "uuid": "0037a29f-876e-4709-8bb8-a388738e6f51",
+    "response": "SkinPacks\\Responses\\SkinPack6.json"
+  },
+  {
+    "uuid": "4f4a0dfa-6e3a-4a2b-bad1-eb84b1b76ee9",
+    "response": "SkinPacks\\Responses\\TheSimpsonsSkinPack.json"
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "url": "https://store.mktpl.minecraft-services.net/api/v1.0/layout/pages/MultiItemPage_StoreRoot",
+    "response": "MainPages\\MainMarketplaceButton_append.json"
+  },
+  {
+    "url": "https://store.mktpl.minecraft-services.net/api/v1.0/layout/pages/DressingRoom_Capes",
+    "response": "MainPages\\Capes.json"
+  },
+  {
+    "url": "https://store.mktpl.minecraft-services.net/api/v1.0/layout/pages/MultiItemPage_BedrockCosmosMarketplaceCategoryPage",
+    "response": "MainPages\\MinecraftHidden.json"
+  },
+  {
+    "url": "https://20ca2.playfabapi.com/Catalog/GetPublishedItem",
+    "response": "ProcessedInMarketItemsJson"
+  }
+]
