@@ -148,14 +148,14 @@ namespace BedrockCosmos.App
             }
         }
 
-        internal async void UpdateResponses()
+        internal async Task UpdateResponses()
         {
             string fileUrl = "https://github.com/Bedrock-Cosmos/Responses/archive/refs/heads/main.zip";
             string downloadPath = AppDomain.CurrentDomain.BaseDirectory + @"main.zip";
             string extractPath = AppDomain.CurrentDomain.BaseDirectory;
 
             if (_launchButton != null)
-                UpdateLaunchButtonText("Updating...");
+                UpdateLaunchButtonText(LanguageHandler.Home_LaunchButton_Updating);
 
             try
             {
@@ -219,7 +219,7 @@ namespace BedrockCosmos.App
 
             if (_launchButton != null)
             {
-                UpdateLaunchButtonText("LAUNCH");
+                UpdateLaunchButtonText(LanguageHandler.Home_LaunchButton_Launch);
                 UpdateLaunchButtonColor("green");
                 _launchButton.Enabled = true;
             }

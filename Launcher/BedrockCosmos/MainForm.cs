@@ -3,12 +3,8 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.IO.Compression;
-using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Titanium.Web.Proxy;
 using Titanium.Web.Proxy.Examples.Basic;
 using Titanium.Web.Proxy.Examples.Basic.Helpers;
 using Titanium.Web.Proxy.Helpers;
@@ -17,8 +13,8 @@ namespace BedrockCosmos
 {
     public partial class MainForm : Form
     {
-        private LaunchManager launchManager = new LaunchManager();
-        private static ProxyController controller = new ProxyController();
+        private LaunchManager launchManager;
+        private static ProxyController controller;
         private readonly AsyncFileDownload asyncDownload;
 
         // For window movement
@@ -29,6 +25,8 @@ namespace BedrockCosmos
         {
             InitializeComponent();
             CosmosConsole.Initialize(DevConsole);
+            launchManager = new LaunchManager();
+            controller = new ProxyController();
             asyncDownload = new AsyncFileDownload();
             StatusLabel.Text = "";
 
@@ -40,6 +38,7 @@ namespace BedrockCosmos
             launchManager.InitializeMgrVersionLabel(VersionLabel);
             launchManager.SetCurrentVersions();
 
+            LanguageHandler.Load(AppDomain.CurrentDomain.BaseDirectory + @"Texts\" + SettingsManager.Language + ".lang");
             SettingsManager.LoadSettings();
             ApplySettings();
 
@@ -50,15 +49,27 @@ namespace BedrockCosmos
 
         private void ApplySettings()
         {
-            EnableLoggingSwitch.Checked = SettingsManager.EnableLogging;
+            // Language
+            if (SettingsManager.Language == "en_US")
+                LanguageComboBox.SelectedItem = "English";
+            else if (SettingsManager.Language == "es_ES")
+                LanguageComboBox.SelectedItem = "Español";
+            else if (SettingsManager.Language == "ja_JP")
+                LanguageComboBox.SelectedItem = "日本語";
+
+            // Background Mode
             BackgroundModeSwitch.Checked = SettingsManager.BackgroundMode;
 
+            // Dev Menu
             if (SettingsManager.DevMenuEnabled)
             {
                 SettingsManager.DevMenuClicks = 7;
                 AppIcon.Cursor = Cursors.Hand;
                 CosmosConsole.WriteLine("Developer mode enabled.");
             }
+
+            // Logging
+            EnableLoggingSwitch.Checked = SettingsManager.EnableLogging;
         }
 
         private void MinimizeButton_Click(object sender, EventArgs e)
@@ -133,7 +144,7 @@ namespace BedrockCosmos
                 StatusLabel.Text = "";
 
                 CosmosConsole.WriteLine("Starting proxy...");
-                LaunchButton.Text = "Entering The Cosmos...";
+                LaunchButton.Text = LanguageHandler.Home_LaunchButton_Entering;
                 launchManager.UpdateLaunchButtonColor("purple");
                 await launchManager.InternetCheck();
 
@@ -151,14 +162,16 @@ namespace BedrockCosmos
                     else
                     {
                         if (launchManager.CheckResponsesUpdate() && !updateLauncher)
-                            launchManager.UpdateResponses();
+                            await launchManager.UpdateResponses();
+
+                        JsonData.InitializeJsons();
 
                         await Task.Run(() =>
                         {
                             controller.StartProxy();
                         });
 
-                        LaunchButton.Text = "RUNNING";
+                        LaunchButton.Text = LanguageHandler.Home_LaunchButton_Running;
                         CosmosConsole.WriteLine("Proxy started!");
 
                         SettingsManager.ProxyStarted = true;
@@ -168,7 +181,7 @@ namespace BedrockCosmos
                 else
                 {
                     launchManager.ResetLaunchStatus();
-                    StatusLabel.Text = "Error: Unable to connect to the Internet.\nBedrock Cosmos requires an active Internet connection to function.";
+                    StatusLabel.Text = LanguageHandler.Home_StatusLabel_NoInternet;
                 }
 
                 LaunchButton.Enabled = true;
@@ -230,12 +243,12 @@ namespace BedrockCosmos
             if (SettingsManager.BackgroundMode)
             {
                 LaunchButton.Enabled = false;
-                LaunchButton.Text = "LISTENING";
+                LaunchButton.Text = LanguageHandler.Home_LaunchButton_Listening;
 
                 if (SettingsManager.ProxyStarted)
-                    StatusLabel.Text = "Proxy is enabled.\nClose Minecraft to stop the service.";
+                    StatusLabel.Text = LanguageHandler.Home_StatusLabel_ProxyEnabled;
                 else
-                    StatusLabel.Text = "Proxy is disabled.\nOpen Minecraft to start the service.";
+                    StatusLabel.Text = LanguageHandler.Home_StatusLabel_ProxyDisabled;
 
                 BackgroundModeTimer.Start();
                 CosmosConsole.WriteLine("Background Mode enabled.");
@@ -245,9 +258,9 @@ namespace BedrockCosmos
                 LaunchButton.Enabled = true;
 
                 if (SettingsManager.ProxyStarted)
-                    LaunchButton.Text = "RUNNING";
+                    LaunchButton.Text = LanguageHandler.Home_LaunchButton_Running;
                 else
-                    LaunchButton.Text = "LAUNCH";
+                    LaunchButton.Text = LanguageHandler.Home_LaunchButton_Launch;
 
                 StatusLabel.Text = "";
                 BackgroundModeTimer.Stop();
@@ -281,24 +294,26 @@ namespace BedrockCosmos
                         else
                         {
                             if (launchManager.CheckResponsesUpdate() && !updateLauncher)
-                                launchManager.UpdateResponses();
+                                await launchManager.UpdateResponses();
+
+                            JsonData.InitializeJsons();
 
                             await Task.Run(() =>
                             {
                                 controller.StartProxy();
                             });
 
-                            LaunchButton.Text = "LISTENING";
+                            LaunchButton.Text = LanguageHandler.Home_LaunchButton_Listening;
                             CosmosConsole.WriteLine("Proxy started!");
 
                             SettingsManager.ProxyStarted = true;
                             launchManager.UpdateLaunchButtonColor("purple");
-                            StatusLabel.Text = "Proxy is enabled.\nClose Minecraft to stop the service.";
+                            StatusLabel.Text = LanguageHandler.Home_StatusLabel_ProxyEnabled;
                         }
                     }
                     else
                     {
-                        StatusLabel.Text = "Error: Unable to connect to the Internet.\nBedrock Cosmos requires an active Internet connection to function.";
+                        StatusLabel.Text = LanguageHandler.Home_StatusLabel_NoInternet;
                     }
                 }
                 //CosmosConsole.WriteLine("Minecraft is open.");
@@ -309,11 +324,52 @@ namespace BedrockCosmos
                 {
                     SettingsManager.ProxyStarted = false;
                     launchManager.UpdateLaunchButtonColor("green");
-                    StatusLabel.Text = "Proxy is disabled.\nOpen Minecraft to start the service.";
+                    StatusLabel.Text = LanguageHandler.Home_StatusLabel_ProxyDisabled;
                     controller.Stop();
                 }
                 //CosmosConsole.WriteLine("Minecraft is closed.");
             }
+        }
+
+        private void LanguageComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string selectedLanguage = LanguageComboBox.SelectedItem.ToString();
+
+            if (selectedLanguage == "English")
+                SettingsManager.Language = "en_US";
+            else if (selectedLanguage == "Español")
+                SettingsManager.Language = "es_ES";
+            else if (selectedLanguage == "日本語")
+                SettingsManager.Language = "ja_JP";
+
+            LanguageHandler.Load(AppDomain.CurrentDomain.BaseDirectory + @"Texts\" + SettingsManager.Language + ".lang");
+            UpdateLauncherLanguage();
+        }
+
+        private void UpdateLauncherLanguage()
+        {
+            TopLabel.Text = LanguageHandler.App_TopLabel_Name;
+            AboutLabel.Text = LanguageHandler.About_AboutLabel_Text;
+            DiscordLabel.Text = LanguageHandler.About_DiscordLabel_Text;
+            GitHubLabel.Text = LanguageHandler.About_GitHubLabel_Text;
+            BackgroundModeTitleLabel.Text = LanguageHandler.Settings_BackgroundMode_Title;
+            BackgroundModeDescriptionLabel.Text = LanguageHandler.Settings_BackgroundMode_Description;
+            LanguageTitleLabel.Text = LanguageHandler.Settings_Language_Title;
+            LanguageDescriptionLabel.Text = LanguageHandler.Settings_Language_Description;
+
+            if (!SettingsManager.ProxyStarted && !SettingsManager.BackgroundMode)
+                LaunchButton.Text = LanguageHandler.Home_LaunchButton_Launch;
+            else if (SettingsManager.ProxyStarted && !SettingsManager.BackgroundMode)
+                LaunchButton.Text = LanguageHandler.Home_LaunchButton_Running;
+            else
+                LaunchButton.Text = LanguageHandler.Home_LaunchButton_Listening;
+
+            if (!SettingsManager.ProxyStarted && SettingsManager.BackgroundMode)
+                StatusLabel.Text = LanguageHandler.Home_StatusLabel_ProxyDisabled;
+            else if (SettingsManager.ProxyStarted && SettingsManager.BackgroundMode)
+                StatusLabel.Text = LanguageHandler.Home_StatusLabel_ProxyEnabled;
+            else
+                StatusLabel.Text = "";
         }
 
         private async void DownloadZipButton_Click(object sender, EventArgs e)
@@ -358,11 +414,9 @@ namespace BedrockCosmos
             }
         }
 
-        private void ResetNewsButton_Click(object sender, EventArgs e)
+        private void ExportLogsButton_Click(object sender, EventArgs e)
         {
-            //NewsManager.RetrieveNewsHistory();
-            //NewsManager.RetrieveCurrentNews();
-            //NewsManager.CheckForNews();
+            CosmosConsole.ExportLogs();
         }
 
         private void ClearLogsButton_Click(object sender, EventArgs e)
@@ -370,9 +424,25 @@ namespace BedrockCosmos
             DevConsole.Text = "";
         }
 
-        private void ExportLogsButton_Click(object sender, EventArgs e)
+        private async void FixProxyHangButton_Click(object sender, EventArgs e)
         {
-            CosmosConsole.ExportLogs();
+            if (!SettingsManager.ProxyStarted)
+            {
+                await Task.Run(() =>
+                {
+                    controller.StartProxy();
+                });
+
+                controller.Stop();
+                CosmosConsole.WriteLine("Reset proxy.");
+            }
+        }
+
+        private void ResetNewsButton_Click(object sender, EventArgs e)
+        {
+            //NewsManager.RetrieveNewsHistory();
+            //NewsManager.RetrieveCurrentNews();
+            //NewsManager.CheckForNews();
         }
 
         private void DisableDevMenuButton_Click(object sender, EventArgs e)

@@ -57,6 +57,7 @@
             this.UpdateLabel = new System.Windows.Forms.Label();
             this.UpdateButton = new BedrockCosmos.App.UI.RoundButton();
             this.DevPage = new System.Windows.Forms.TabPage();
+            this.FixProxyHangButton = new BedrockCosmos.App.UI.RoundButton();
             this.ResetNewsButton = new BedrockCosmos.App.UI.RoundButton();
             this.DevBackButton = new System.Windows.Forms.Button();
             this.DevConsole = new System.Windows.Forms.RichTextBox();
@@ -326,14 +327,14 @@
             // 
             // LanguageTitleLabel
             // 
-            this.LanguageTitleLabel.AutoSize = true;
             this.LanguageTitleLabel.Font = new System.Drawing.Font("Segoe UI", 16F);
             this.LanguageTitleLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.LanguageTitleLabel.Location = new System.Drawing.Point(157, 109);
+            this.LanguageTitleLabel.Location = new System.Drawing.Point(160, 109);
             this.LanguageTitleLabel.Name = "LanguageTitleLabel";
             this.LanguageTitleLabel.Size = new System.Drawing.Size(107, 30);
             this.LanguageTitleLabel.TabIndex = 17;
             this.LanguageTitleLabel.Text = "Language";
+            this.LanguageTitleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // LanguageComboBox
             // 
@@ -363,9 +364,10 @@
             "日本語"});
             this.LanguageComboBox.Location = new System.Drawing.Point(19, 113);
             this.LanguageComboBox.Name = "LanguageComboBox";
-            this.LanguageComboBox.Size = new System.Drawing.Size(126, 26);
+            this.LanguageComboBox.Size = new System.Drawing.Size(132, 26);
             this.LanguageComboBox.StartIndex = 0;
             this.LanguageComboBox.TabIndex = 16;
+            this.LanguageComboBox.SelectedIndexChanged += new System.EventHandler(this.LanguageComboBox_SelectedIndexChanged);
             // 
             // SettingsBackButton
             // 
@@ -399,14 +401,14 @@
             // 
             // BackgroundModeTitleLabel
             // 
-            this.BackgroundModeTitleLabel.AutoSize = true;
             this.BackgroundModeTitleLabel.Font = new System.Drawing.Font("Segoe UI", 16F);
             this.BackgroundModeTitleLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.BackgroundModeTitleLabel.Location = new System.Drawing.Point(71, 52);
+            this.BackgroundModeTitleLabel.Location = new System.Drawing.Point(74, 40);
             this.BackgroundModeTitleLabel.Name = "BackgroundModeTitleLabel";
-            this.BackgroundModeTitleLabel.Size = new System.Drawing.Size(193, 30);
+            this.BackgroundModeTitleLabel.Size = new System.Drawing.Size(193, 61);
             this.BackgroundModeTitleLabel.TabIndex = 13;
             this.BackgroundModeTitleLabel.Text = "Background Mode";
+            this.BackgroundModeTitleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // BackgroundModeSwitch
             // 
@@ -415,7 +417,7 @@
             this.BackgroundModeSwitch.BaseOffColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.BackgroundModeSwitch.BaseOnColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.BackgroundModeSwitch.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.BackgroundModeSwitch.Location = new System.Drawing.Point(19, 58);
+            this.BackgroundModeSwitch.Location = new System.Drawing.Point(19, 61);
             this.BackgroundModeSwitch.Name = "BackgroundModeSwitch";
             this.BackgroundModeSwitch.Size = new System.Drawing.Size(40, 20);
             this.BackgroundModeSwitch.TabIndex = 12;
@@ -501,6 +503,7 @@
             // DevPage
             // 
             this.DevPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.DevPage.Controls.Add(this.FixProxyHangButton);
             this.DevPage.Controls.Add(this.ResetNewsButton);
             this.DevPage.Controls.Add(this.DevBackButton);
             this.DevPage.Controls.Add(this.DevConsole);
@@ -517,6 +520,32 @@
             this.DevPage.TabIndex = 2;
             this.DevPage.Text = "Dev";
             // 
+            // FixProxyHangButton
+            // 
+            this.FixProxyHangButton.BackColor = System.Drawing.Color.Transparent;
+            this.FixProxyHangButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.FixProxyHangButton.DialogResult = System.Windows.Forms.DialogResult.None;
+            this.FixProxyHangButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.FixProxyHangButton.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.FixProxyHangButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.FixProxyHangButton.HoverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.FixProxyHangButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.FixProxyHangButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.FixProxyHangButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            this.FixProxyHangButton.Location = new System.Drawing.Point(13, 190);
+            this.FixProxyHangButton.MinimumSize = new System.Drawing.Size(144, 47);
+            this.FixProxyHangButton.Name = "FixProxyHangButton";
+            this.FixProxyHangButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.FixProxyHangButton.PixelOffsetType = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            this.FixProxyHangButton.PressedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.FixProxyHangButton.PressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.FixProxyHangButton.Radius = 5;
+            this.FixProxyHangButton.Size = new System.Drawing.Size(144, 47);
+            this.FixProxyHangButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            this.FixProxyHangButton.TabIndex = 16;
+            this.FixProxyHangButton.Text = "Fix Proxy Hang";
+            this.FixProxyHangButton.Click += new System.EventHandler(this.FixProxyHangButton_Click);
+            // 
             // ResetNewsButton
             // 
             this.ResetNewsButton.BackColor = System.Drawing.Color.Transparent;
@@ -529,7 +558,7 @@
             this.ResetNewsButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.ResetNewsButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.ResetNewsButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.ResetNewsButton.Location = new System.Drawing.Point(13, 90);
+            this.ResetNewsButton.Location = new System.Drawing.Point(13, 240);
             this.ResetNewsButton.MinimumSize = new System.Drawing.Size(144, 47);
             this.ResetNewsButton.Name = "ResetNewsButton";
             this.ResetNewsButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
@@ -609,7 +638,7 @@
             this.DisableDevMenuButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.DisableDevMenuButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.DisableDevMenuButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.DisableDevMenuButton.Location = new System.Drawing.Point(13, 240);
+            this.DisableDevMenuButton.Location = new System.Drawing.Point(13, 290);
             this.DisableDevMenuButton.MinimumSize = new System.Drawing.Size(144, 47);
             this.DisableDevMenuButton.Name = "DisableDevMenuButton";
             this.DisableDevMenuButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
@@ -701,7 +730,7 @@
             this.ExportLogsButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.ExportLogsButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.ExportLogsButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.ExportLogsButton.Location = new System.Drawing.Point(13, 190);
+            this.ExportLogsButton.Location = new System.Drawing.Point(13, 90);
             this.ExportLogsButton.MinimumSize = new System.Drawing.Size(144, 47);
             this.ExportLogsButton.Name = "ExportLogsButton";
             this.ExportLogsButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
@@ -879,6 +908,7 @@
         private App.UI.GradientComboBox LanguageComboBox;
         private System.Windows.Forms.Label LanguageDescriptionLabel;
         private System.Windows.Forms.Label LanguageTitleLabel;
+        private App.UI.RoundButton FixProxyHangButton;
     }
 }
 

@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace BedrockCosmos.App
 {
-    internal class CosmosConsole
+    internal static class CosmosConsole
     {
         private static RichTextBox _console;
         private static bool _logToMainConsole = false;

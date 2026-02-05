@@ -1,0 +1,17 @@
+App.TopLabel.Name=Bedrock Cosmos
+Home.LaunchButton.Launch=LANZAR
+Home.LaunchButton.Updating=Actualizando...
+Home.LaunchButton.Entering=Entrando en el Cosmos...
+Home.LaunchButton.Running=EJECUTANDO
+Home.LaunchButton.Listening=ESCUCHANDO
+Home.StatusLabel.Waiting=Esperando...
+Home.StatusLabel.NoInternet=Error: No se pudo conectar a Internet.\nBedrock Cosmos requiere una conexión activa a Internet para funcionar.
+Home.StatusLabel.ProxyDisabled=El proxy está desactivado.\nAbre Minecraft para empezar a usar el servicio.
+Home.StatusLabel.ProxyEnabled=El proxy está activado.\nCierra minecraft para apagar el servicio.
+About.AboutLabel.Text=Bedrock Cosmos es un proxy local para la Marketplace de Minecraft Bedrock Edition que añade diferentes Capas y Paquetes de Aspectos directamente al juego!\n\nBedrock Cosmos siempre se mantendrá gratis y de código abierto. Nuestro Discord y Github está debajo, donde te podrás inscribir para convertirte en creador, reportar errores o unirte a nuestra comunidad!
+About.DiscordLabel.Text=Discord
+About.GitHubLabel.Text=GitHub
+Settings.BackgroundMode.Title=Modo en segundo plano
+Settings.BackgroundMode.Description=Cuando está activado, Bedrock Cosmos se minimizará en la bandeja del sistema en lugar de la barra de tareas. El servicio del proxy también se iniciará/detendrá cuando Minecraft esté abierto/cerrado, respectivamente.
+Settings.Language.Title=Idioma
+Settings.Language.Description=Cambia el idioma usado en el Lanzador de Bedrock Cosmos.

@@ -4,10 +4,11 @@ using System.IO;
 
 namespace BedrockCosmos.App
 {
-    internal class SettingsManager
+    internal static class SettingsManager
     {
         private static bool _proxyStarted = false;
         private static bool _backgroundMode = false;
+        private static string _language = "en_US";
         private static int _devMenuClicks = 0;
         private static bool _devMenuEnabled = false;
         private static bool _enableLogging = false;
@@ -23,6 +24,12 @@ namespace BedrockCosmos.App
         {
             get { return _backgroundMode; }
             set { _backgroundMode = value; SaveSettings(); }
+        }
+
+        internal static string Language
+        {
+            get { return _language; }
+            set { _language = value; SaveSettings(); }
         }
 
         internal static int DevMenuClicks
@@ -79,6 +86,7 @@ namespace BedrockCosmos.App
             var savedSettings = new
             {
                 BackgroundMode = _backgroundMode,
+                Language = _language,
                 DevMenuEnabled = _devMenuEnabled,
                 EnableLogging = _enableLogging
             };
@@ -99,6 +107,7 @@ namespace BedrockCosmos.App
                 var settings = JsonConvert.DeserializeObject<dynamic>(json);
 
                 _backgroundMode = settings.BackgroundMode;
+                _language = settings.Language;
                 _devMenuEnabled = settings.DevMenuEnabled;
                 _enableLogging = settings.EnableLogging;
 

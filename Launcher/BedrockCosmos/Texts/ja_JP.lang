@@ -1,0 +1,17 @@
+App.TopLabel.Name=Bedrock Cosmos
+Home.LaunchButton.Launch=ローンチ
+Home.LaunchButton.Updating=アップデート中...
+Home.LaunchButton.Entering=コスモスを起動しています...
+Home.LaunchButton.Running=実行中
+Home.LaunchButton.Listening=リスニング中
+Home.StatusLabel.Waiting=待ち...
+Home.StatusLabel.NoInternet=エラー: インターネットに接続できません。\nBedrock Cosmos を利用するには、アクティブなインターネット接続が必要です。
+Home.StatusLabel.ProxyDisabled=プロキシは無効です。\nサービスを開始するにはMinecraftを開いてください。
+Home.StatusLabel.ProxyEnabled=プロキシが有効です。\nサービスを停止するには、Minecraftを終了してください。
+About.AboutLabel.Text=Bedrock Cosmos は、Minecraft Bedrock Edition 向けのローカルマーケットプレイスプロキシです。ゲーム内に 無料のケープやスキンパック を直接追加して、キャラクターをもっと自由にカスタマイズできます！\n\n完全無料・オープンソース なので、誰でも安心して使えます。下記の Discord と GitHub からは、クリエイター応募・バグ報告・コミュニティ参加 が可能です！
+About.DiscordLabel.Text=Discord
+About.GitHubLabel.Text=GitHub
+Settings.BackgroundMode.Title=バックグラウンドモード
+Settings.BackgroundMode.Description=有効にすると、Bedrock Cosmos はタスクバーではなく、システムトレイに最小化されます。また、プロキシサービスは Minecraft を開いたときに自動で起動し、閉じたときに自動で停止します。
+Settings.Language.Title=言語
+Settings.Language.Description=Bedrock Cosmosランチャーで使用する言語を変更する
