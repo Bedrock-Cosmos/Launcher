@@ -25,6 +25,7 @@ namespace BedrockCosmos.App
         public static string About_AboutLabel_Text { get; set; }
         public static string About_DiscordLabel_Text { get; set; }
         public static string About_GitHubLabel_Text { get; set; }
+        public static string About_WebsiteLabel_Text { get; set; }
 
         // Settings
         public static string Settings_BackgroundMode_Title { get; set; }
@@ -34,6 +35,7 @@ namespace BedrockCosmos.App
 
         // Update
         public static string Update_UpdateLabel_Text { get; set; }
+        public static string Update_ChangelogLabel_Text { get; set; }
         public static string Update_UpdateButton_Text { get; set; }
         public static string Update_CancelUpdateButton_Text { get; set; }
 
