@@ -334,15 +334,10 @@ namespace BedrockCosmos
         private void LanguageComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             string selectedLanguage = LanguageComboBox.SelectedItem.ToString();
+            string langFile = LanguageHandler.GetLangFileName(selectedLanguage);
+            SettingsManager.Language = langFile;
 
-            if (selectedLanguage == "English")
-                SettingsManager.Language = "en_US";
-            else if (selectedLanguage == "Español")
-                SettingsManager.Language = "es_ES";
-            else if (selectedLanguage == "日本語")
-                SettingsManager.Language = "ja_JP";
-
-            LanguageHandler.Load(AppDomain.CurrentDomain.BaseDirectory + @"Texts\" + SettingsManager.Language + ".lang");
+            LanguageHandler.Load(AppDomain.CurrentDomain.BaseDirectory + @"Texts\" + langFile + ".lang");
             UpdateLauncherLanguage();
         }
 

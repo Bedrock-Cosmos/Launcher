@@ -64,5 +64,17 @@ namespace BedrockCosmos.App
                 }
             }
         }
+
+        public static string GetLangFileName(string selectedLang)
+        {
+            if (selectedLang == "English")
+                return "en_US";
+            else if (selectedLang == "Español")
+                return "es_ES";
+            else if (selectedLang == "日本語")
+                return "ja_JP";
+            else
+                return "en_US";
+        }
     }
 }
