@@ -319,11 +319,12 @@
             // 
             this.LanguageDescriptionLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.LanguageDescriptionLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.LanguageDescriptionLabel.Location = new System.Drawing.Point(270, 117);
+            this.LanguageDescriptionLabel.Location = new System.Drawing.Point(270, 115);
             this.LanguageDescriptionLabel.Name = "LanguageDescriptionLabel";
             this.LanguageDescriptionLabel.Size = new System.Drawing.Size(506, 23);
             this.LanguageDescriptionLabel.TabIndex = 18;
             this.LanguageDescriptionLabel.Text = "Change the language used in the Bedrock Cosmos Launcher.";
+            this.LanguageDescriptionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // LanguageTitleLabel
             // 
@@ -398,6 +399,7 @@
             this.BackgroundModeDescriptionLabel.Text = "When enabled, Bedrock Cosmos will minimize to the system tray instead of the task" +
     "bar. The proxy service will also automatically start/stop when Minecraft is open" +
     "ed/closed, respectively.";
+            this.BackgroundModeDescriptionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // BackgroundModeTitleLabel
             // 
