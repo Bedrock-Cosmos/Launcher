@@ -676,7 +676,7 @@
   <data name="WebsiteIcon.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        EQAACxEBf2RfkQAAZ4NJREFUeF7tvXm8t9XYv//lEQqZUxkazBEy5UGmMpRklkeICJnLkClkOsxDxmSK
+        DwAACw8BkvkDpQAAZ4NJREFUeF7tvXm8t9XYv//lEQqZUxkazBEy5UGmMpRklkeICJnLkClkOsxDxmSK
         KGTOHKIQIpFZZYzImHl4fr/Xed9rP3t3Ou/d3vtc6xrfx+t1/EP3572udV37M1zXWuf5//6fEEIIIYQQ
         QgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQ
         QgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBADAbgYcGXgJsAewKOBVwBHAh8FvgB8FfgW
@@ -1890,7 +1890,7 @@ Bedrock Cosmos will always remain free and open-source. Our Discord and GitHub i
   <data name="AppIcon.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccqhmAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        DwAACw8BkvkDpQAAHYFJREFUeF7tnQeUdHdZhwFBAUEQQYoUBUGkSQlIB6WD9ACH3on0Kg9SpYN0Akix
+        DQAACw0B7QfALAAAHYFJREFUeF7tnQeUdHdZhwFBAUEQQYoUBUGkSQlIB6WD9ACH3on0Kg9SpYN0Akix
         AJ7QW6QdWqRLaKH3egJBqkBoFtTzfLwTbv7Mzt6ZuXdzZ+f3nLNns192596dvW8v/xOdKIQQQgghhBBC
         CCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBC
         OD7AiYGTAL8GnBQ4WX32a//9xO3PhBA2nBJuBf3kwKmA0wKnB85Qn/3af/f/+30naV8jhLCBlPD/OnBq

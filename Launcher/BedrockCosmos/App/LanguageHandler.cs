@@ -71,6 +71,8 @@ namespace BedrockCosmos.App
                 return "en_US";
             else if (selectedLang == "Español")
                 return "es_ES";
+            else if (selectedLang == "Indonesia")
+                return "id_ID";
             else if (selectedLang == "日本語")
                 return "ja_JP";
             else

@@ -54,6 +54,8 @@ namespace BedrockCosmos
                 LanguageComboBox.SelectedItem = "English";
             else if (SettingsManager.Language == "es_ES")
                 LanguageComboBox.SelectedItem = "Español";
+            else if (SettingsManager.Language == "id_ID")
+                LanguageComboBox.SelectedItem = "Indonesia";
             else if (SettingsManager.Language == "ja_JP")
                 LanguageComboBox.SelectedItem = "日本語";
 
@@ -344,6 +346,7 @@ namespace BedrockCosmos
 
             LanguageHandler.Load(AppDomain.CurrentDomain.BaseDirectory + @"Texts\" + langFile + ".lang");
             UpdateLauncherLanguage();
+            CosmosConsole.WriteLine($"Language set to {selectedLanguage}.");
         }
 
         private void UpdateLauncherLanguage()

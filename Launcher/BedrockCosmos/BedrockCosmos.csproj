@@ -197,6 +197,9 @@
     <None Include="Texts\es_ES.lang">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Texts\id_ID.lang">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Texts\ja_JP.lang">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

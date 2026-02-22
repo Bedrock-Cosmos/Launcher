@@ -55,6 +55,7 @@
             this.BackgroundModeTitleLabel = new System.Windows.Forms.Label();
             this.BackgroundModeSwitch = new BedrockCosmos.App.UI.Switch();
             this.UpdatePage = new System.Windows.Forms.TabPage();
+            this.ChangelogLabel = new System.Windows.Forms.LinkLabel();
             this.CancelUpdateButton = new BedrockCosmos.App.UI.RoundButton();
             this.UpdateLabel = new System.Windows.Forms.Label();
             this.UpdateButton = new BedrockCosmos.App.UI.RoundButton();
@@ -77,7 +78,6 @@
             this.CloseButton = new System.Windows.Forms.Button();
             this.TrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.BackgroundModeTimer = new System.Windows.Forms.Timer(this.components);
-            this.ChangelogLabel = new System.Windows.Forms.LinkLabel();
             this.TabControl.SuspendLayout();
             this.HomePage.SuspendLayout();
             this.AboutPage.SuspendLayout();
@@ -395,6 +395,7 @@
             this.LanguageComboBox.Items.AddRange(new object[] {
             "English",
             "Español",
+            "Indonesia",
             "日本語"});
             this.LanguageComboBox.Location = new System.Drawing.Point(19, 113);
             this.LanguageComboBox.Name = "LanguageComboBox";
@@ -471,6 +472,21 @@
             this.UpdatePage.Size = new System.Drawing.Size(806, 440);
             this.UpdatePage.TabIndex = 4;
             this.UpdatePage.Text = "Update";
+            // 
+            // ChangelogLabel
+            // 
+            this.ChangelogLabel.ActiveLinkColor = System.Drawing.Color.Cyan;
+            this.ChangelogLabel.Font = new System.Drawing.Font("Segoe UI", 12F);
+            this.ChangelogLabel.LinkColor = System.Drawing.Color.LightSkyBlue;
+            this.ChangelogLabel.Location = new System.Drawing.Point(334, 220);
+            this.ChangelogLabel.Name = "ChangelogLabel";
+            this.ChangelogLabel.Size = new System.Drawing.Size(133, 36);
+            this.ChangelogLabel.TabIndex = 13;
+            this.ChangelogLabel.TabStop = true;
+            this.ChangelogLabel.Text = "Changelog";
+            this.ChangelogLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.ChangelogLabel.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.ChangelogLabel.Click += new System.EventHandler(this.ChangelogLabel_Click);
             // 
             // CancelUpdateButton
             // 
@@ -867,21 +883,6 @@
             // 
             this.BackgroundModeTimer.Interval = 2500;
             this.BackgroundModeTimer.Tick += new System.EventHandler(this.BackgroundModeTimer_Tick);
-            // 
-            // ChangelogLabel
-            // 
-            this.ChangelogLabel.ActiveLinkColor = System.Drawing.Color.Cyan;
-            this.ChangelogLabel.Font = new System.Drawing.Font("Segoe UI", 12F);
-            this.ChangelogLabel.LinkColor = System.Drawing.Color.LightSkyBlue;
-            this.ChangelogLabel.Location = new System.Drawing.Point(334, 220);
-            this.ChangelogLabel.Name = "ChangelogLabel";
-            this.ChangelogLabel.Size = new System.Drawing.Size(133, 36);
-            this.ChangelogLabel.TabIndex = 13;
-            this.ChangelogLabel.TabStop = true;
-            this.ChangelogLabel.Text = "Changelog";
-            this.ChangelogLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.ChangelogLabel.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.ChangelogLabel.Click += new System.EventHandler(this.ChangelogLabel_Click);
             // 
             // MainForm
             // 
