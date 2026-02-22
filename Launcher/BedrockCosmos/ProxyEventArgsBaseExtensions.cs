@@ -1,6 +1,6 @@
 ﻿using Titanium.Web.Proxy.EventArguments;
 
-namespace Titanium.Web.Proxy.Examples.Basic
+namespace BedrockCosmos
 {
     public static class ProxyEventArgsBaseExtensions
     {

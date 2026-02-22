@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Titanium.Web.Proxy.Examples.Basic
+namespace BedrockCosmos
 {
     public class SampleClientState
     {

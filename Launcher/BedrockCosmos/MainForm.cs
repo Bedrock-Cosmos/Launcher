@@ -5,9 +5,6 @@ using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Titanium.Web.Proxy.Examples.Basic;
-using Titanium.Web.Proxy.Examples.Basic.Helpers;
-using Titanium.Web.Proxy.Helpers;
 
 namespace BedrockCosmos
 {
@@ -41,10 +38,6 @@ namespace BedrockCosmos
             LanguageHandler.Load(AppDomain.CurrentDomain.BaseDirectory + @"Texts\" + SettingsManager.Language + ".lang");
             SettingsManager.LoadSettings();
             ApplySettings();
-
-            if (RunTime.IsWindows)
-                // Fix console hang due to QuickEdit mode
-                ConsoleHelper.DisableQuickEditMode();
         }
 
         private void ApplySettings()

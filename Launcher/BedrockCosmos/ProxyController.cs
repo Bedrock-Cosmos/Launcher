@@ -1,12 +1,9 @@
-﻿using BedrockCosmos;
-using BedrockCosmos.App;
+﻿using BedrockCosmos.App;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -14,11 +11,11 @@ using Titanium.Web.Proxy.EventArguments;
 using Titanium.Web.Proxy.Exceptions;
 using Titanium.Web.Proxy.Helpers;
 using Titanium.Web.Proxy.Http;
-using Titanium.Web.Proxy.Http.Responses;
 using Titanium.Web.Proxy.Models;
 using Titanium.Web.Proxy.StreamExtended.Network;
+using Titanium.Web.Proxy;
 
-namespace Titanium.Web.Proxy.Examples.Basic
+namespace BedrockCosmos
 {
     public class ProxyController : IDisposable
     {
@@ -26,13 +23,13 @@ namespace Titanium.Web.Proxy.Examples.Basic
 
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
-        private readonly ConcurrentQueue<Tuple<ConsoleColor?, string>> consoleMessageQueue
-            = new ConcurrentQueue<Tuple<ConsoleColor?, string>>();
+        private readonly ConcurrentQueue<Tuple<string, string>> consoleMessageQueue
+            = new ConcurrentQueue<Tuple<string, string>>();
 
         private ExplicitProxyEndPoint explicitEndPoint;
 
-        string currentPathForResponse = AppDomain.CurrentDomain.BaseDirectory + @"Responses-main\";
-        string consoleSender = "Proxy";
+        private string currentPathForResponse = AppDomain.CurrentDomain.BaseDirectory + @"Responses-main\";
+        private string consoleSender = "Proxy";
 
         public ProxyController()
         {
@@ -40,20 +37,12 @@ namespace Titanium.Web.Proxy.Examples.Basic
 
             proxyServer = new ProxyServer();
 
-            //proxyServer.EnableHttp2 = true;
-
-            // generate root certificate without storing it in file system
-            //proxyServer.CertificateManager.CreateRootCertificate(false);
-
-            //proxyServer.CertificateManager.TrustRootCertificate();
-            //proxyServer.CertificateManager.TrustRootCertificateAsAdmin();
-
             proxyServer.ExceptionFunc = async exception =>
             {
                 if (exception is ProxyHttpException phex)
-                    CosmosConsole.WriteLine(consoleSender, exception.Message + ": " + phex.InnerException?.Message);
+                    ProxyConsoleWriteLine(consoleSender, exception.Message + ": " + phex.InnerException?.Message);
                 else
-                    CosmosConsole.WriteLine(consoleSender, exception.Message);
+                    ProxyConsoleWriteLine(consoleSender, exception.Message);
             };
 
             proxyServer.TcpTimeWaitSeconds = 10;
@@ -62,21 +51,6 @@ namespace Titanium.Web.Proxy.Examples.Basic
             proxyServer.EnableConnectionPool = false;
             proxyServer.ForwardToUpstreamGateway = true;
             proxyServer.CertificateManager.SaveFakeCertificates = true;
-            //proxyServer.ProxyBasicAuthenticateFunc = async (args, userName, password) =>
-            //{
-            //    return true;
-            //};
-
-            // this is just to show the functionality, provided implementations use junk value
-            //proxyServer.GetCustomUpStreamProxyFunc = onGetCustomUpStreamProxyFunc;
-            //proxyServer.CustomUpStreamProxyFailureFunc = onCustomUpStreamProxyFailureFunc;
-
-            // optionally set the Certificate Engine
-            // Under Mono or Non-Windows runtimes only BouncyCastle will be supported
-            //proxyServer.CertificateManager.CertificateEngine = Network.CertificateEngine.BouncyCastle;
-
-            // optionally set the Root Certificate
-            //proxyServer.CertificateManager.RootCertificate = new X509Certificate2("myCert.pfx", string.Empty, X509KeyStorageFlags.Exportable);
         }
 
         private CancellationToken CancellationToken => cancellationTokenSource.Token;
@@ -89,63 +63,23 @@ namespace Titanium.Web.Proxy.Examples.Basic
 
         public void StartProxy()
         {
+            // Hooks for proxy events
             proxyServer.BeforeRequest += OnRequest;
             proxyServer.BeforeResponse += OnResponse;
             proxyServer.AfterResponse += OnAfterResponse;
 
-            proxyServer.ServerCertificateValidationCallback += OnCertificateValidation;
-            proxyServer.ClientCertificateSelectionCallback += OnCertificateSelection;
-
-            //proxyServer.EnableWinAuth = true;
-
             explicitEndPoint = new ExplicitProxyEndPoint(IPAddress.Any, 8000);
 
-            // Fired when a CONNECT request is received
             explicitEndPoint.BeforeTunnelConnectRequest += OnBeforeTunnelConnectRequest;
             explicitEndPoint.BeforeTunnelConnectResponse += OnBeforeTunnelConnectResponse;
 
-            // An explicit endpoint is where the client knows about the existence of a proxy
-            // So client sends request in a proxy friendly manner
             proxyServer.AddEndPoint(explicitEndPoint);
             proxyServer.Start();
 
-            // Transparent endpoint is useful for reverse proxy (client is not aware of the existence of proxy)
-            // A transparent endpoint usually requires a network router port forwarding HTTP(S) packets
-            // or by DNS to send data to this endPoint.
-            //var transparentEndPoint = new TransparentProxyEndPoint(IPAddress.Any, 443, true)
-            //{
-            //    // Generic Certificate hostname to use
-            //    // When SNI is disabled by client
-            //    GenericCertificateName = "localhost"
-            //};
-
-            //proxyServer.AddEndPoint(transparentEndPoint);
-            //proxyServer.UpStreamHttpProxy = new ExternalProxy("localhost", 8888);
-            //proxyServer.UpStreamHttpsProxy = new ExternalProxy("localhost", 8888);
-
-            // SOCKS proxy
-            //proxyServer.UpStreamHttpProxy = new ExternalProxy("127.0.0.1", 1080)
-            //    { ProxyType = ExternalProxyType.Socks5, UserName = "User1", Password = "Pass" };
-            //proxyServer.UpStreamHttpsProxy = new ExternalProxy("127.0.0.1", 1080)
-            //    { ProxyType = ExternalProxyType.Socks5, UserName = "User1", Password = "Pass" };
-
-
-            //var socksEndPoint = new SocksProxyEndPoint(IPAddress.Any, 1080, true)
-            //{
-            //    // Generic Certificate hostname to use
-            //    // When SNI is disabled by client
-            //    GenericCertificateName = "google.com"
-            //};
-
-            //proxyServer.AddEndPoint(socksEndPoint);
-
             foreach (var endPoint in proxyServer.ProxyEndPoints)
-                CosmosConsole.WriteLine(consoleSender, $"Listening on '{endPoint.GetType().Name}' endpoint at Ip {endPoint.IpAddress}" +
+                ProxyConsoleWriteLine(consoleSender, $"Listening on '{endPoint.GetType().Name}' endpoint at Ip {endPoint.IpAddress}" +
                     $" and port: {endPoint.Port}");
 
-            // Only explicit proxies can be set as system proxy!
-            //proxyServer.SetAsSystemHttpProxy(explicitEndPoint);
-            //proxyServer.SetAsSystemHttpsProxy(explicitEndPoint);
             if (RunTime.IsWindows) proxyServer.SetAsSystemProxy(explicitEndPoint, ProxyProtocolType.AllHttp);
         }
 
@@ -156,52 +90,18 @@ namespace Titanium.Web.Proxy.Examples.Basic
 
             proxyServer.BeforeRequest -= OnRequest;
             proxyServer.BeforeResponse -= OnResponse;
-            proxyServer.ServerCertificateValidationCallback -= OnCertificateValidation;
-            proxyServer.ClientCertificateSelectionCallback -= OnCertificateSelection;
 
             proxyServer.Stop();
 
-            // remove the generated certificates
+            // Remove generated certificates
             //proxyServer.CertificateManager.RemoveTrustedRootCertificates();
-        }
-
-        private async Task<IExternalProxy> OnGetCustomUpStreamProxyFunc(SessionEventArgsBase arg)
-        {
-            arg.GetState().PipelineInfo.AppendLine(nameof(OnGetCustomUpStreamProxyFunc));
-
-            // this is just to show the functionality, provided values are junk
-            return new ExternalProxy
-            {
-                BypassLocalhost = false,
-                HostName = "127.0.0.9",
-                Port = 9090,
-                Password = "fake",
-                UserName = "fake",
-                UseDefaultCredentials = false
-            };
-        }
-
-        private async Task<IExternalProxy> OnCustomUpStreamProxyFailureFunc(SessionEventArgsBase arg)
-        {
-            arg.GetState().PipelineInfo.AppendLine(nameof(OnCustomUpStreamProxyFailureFunc));
-
-            // this is just to show the functionality, provided values are junk
-            return new ExternalProxy
-            {
-                BypassLocalhost = false,
-                HostName = "127.0.0.10",
-                Port = 9191,
-                Password = "fake2",
-                UserName = "fake2",
-                UseDefaultCredentials = false
-            };
         }
 
         private async Task OnBeforeTunnelConnectRequest(object sender, TunnelConnectSessionEventArgs e)
         {
             var hostname = e.HttpClient.Request.RequestUri.Host;
             e.GetState().PipelineInfo.AppendLine(nameof(OnBeforeTunnelConnectRequest) + ":" + hostname);
-            CosmosConsole.WriteLine(consoleSender, "Tunnel to: " + hostname);
+            ProxyConsoleWriteLine(consoleSender, "Tunnel to: " + hostname);
 
             var clientLocalIp = e.ClientLocalEndPoint.Address;
             if (!clientLocalIp.Equals(IPAddress.Loopback) && !clientLocalIp.Equals(IPAddress.IPv6Loopback))
@@ -226,8 +126,6 @@ namespace Titanium.Web.Proxy.Examples.Basic
 
         private void WebSocketDataSentReceived(SessionEventArgs args, DataEventArgs e, bool sent)
         {
-            var color = sent ? ConsoleColor.Green : ConsoleColor.Blue;
-
             var decoder = sent
                 ? args.WebSocketDecoderSend
                 : args.WebSocketDecoderReceive;
@@ -238,11 +136,11 @@ namespace Titanium.Web.Proxy.Examples.Basic
                 {
                     var data = frame.Data.ToArray();
                     var str = string.Join(",", data.Select(x => x.ToString("X2")));
-                    CosmosConsole.WriteLine(consoleSender, str);
+                    ProxyConsoleWriteLine(consoleSender, str);
                 }
                 else if (frame.OpCode == WebsocketOpCode.Text)
                 {
-                    CosmosConsole.WriteLine(consoleSender, frame.GetText());
+                    ProxyConsoleWriteLine(consoleSender, frame.GetText());
                 }
             }
         }
@@ -259,15 +157,10 @@ namespace Titanium.Web.Proxy.Examples.Basic
         {
             e.GetState().PipelineInfo.AppendLine(nameof(OnRequest) + ":" + e.HttpClient.Request.RequestUri);
 
-            var clientLocalIp = e.ClientLocalEndPoint.Address;
-            if (!clientLocalIp.Equals(IPAddress.Loopback) && !clientLocalIp.Equals(IPAddress.IPv6Loopback))
-                e.HttpClient.UpStreamEndPoint = new IPEndPoint(clientLocalIp, 0);
-
             string body = await e.GetRequestBodyAsString();
             e.UserData = body;
 
-            CosmosConsole.WriteLine(consoleSender, "Active Client Connections:" + ((ProxyServer)sender).ClientConnectionCount);
-            CosmosConsole.WriteLine(consoleSender, e.HttpClient.Request.Url);
+            ProxyConsoleWriteLine(consoleSender, "Active Client Connections:" + ((ProxyServer)sender).ClientConnectionCount);
         }
 
         private async Task MultipartRequestPartSent(object sender, MultipartRequestPartSentEventArgs e)
@@ -275,8 +168,8 @@ namespace Titanium.Web.Proxy.Examples.Basic
             e.GetState().PipelineInfo.AppendLine(nameof(MultipartRequestPartSent));
 
             var session = (SessionEventArgs)sender;
-            CosmosConsole.WriteLine(consoleSender, "Multipart form data headers:");
-            foreach (var header in e.Headers) CosmosConsole.WriteLine(consoleSender, header.ToString());
+            ProxyConsoleWriteLine(consoleSender, "Multipart form data headers:");
+            foreach (var header in e.Headers) ProxyConsoleWriteLine(consoleSender, header.ToString());
         }
 
         private async Task OnResponse(object sender, SessionEventArgs e)
@@ -289,9 +182,7 @@ namespace Titanium.Web.Proxy.Examples.Basic
                 e.DataReceived += WebSocket_DataReceived;
             }
 
-            CosmosConsole.WriteLine(consoleSender, "Active Server Connections:" + ((ProxyServer)sender).ServerConnectionCount);
-
-            var ext = Path.GetExtension(e.HttpClient.Request.RequestUri.AbsolutePath);
+            ProxyConsoleWriteLine(consoleSender, "Active Server Connections:" + ((ProxyServer)sender).ServerConnectionCount);
 
             Endpoint urlData = JsonData.MainPages.FirstOrDefault(o => o.url == e.HttpClient.Request.RequestUri.AbsoluteUri);
             string requestBody = e.UserData as string;
@@ -313,11 +204,11 @@ namespace Titanium.Web.Proxy.Examples.Basic
                         if (mItem != null)
                         {
                             localPath = currentPathForResponse + mItem.response;
-                            //CosmosConsole.WriteLine(consoleSender, "Local path is now " + localPath);
+                            //ProxyConsoleWriteLine(consoleSender, "Local path is now " + localPath);
 
                             string jsonContent = JsonParser.ReadJsonFileContent(localPath);
                             e.SetResponseBodyString(jsonContent);
-                            CosmosConsole.WriteLine("Parser", $"Replaced response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
+                            ProxyConsoleWriteLine("Parser", $"Replaced response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
                         }
                     }
                     else if (currentUri == "https://20ca2.playfabapi.com/Catalog/Search")
@@ -329,11 +220,11 @@ namespace Titanium.Web.Proxy.Examples.Basic
                         if (mItem != null)
                         {
                             localPath = currentPathForResponse + mItem.response;
-                            //CosmosConsole.WriteLine(consoleSender, "Local path is now " + localPath);
+                            //ProxyConsoleWriteLine(consoleSender, "Local path is now " + localPath);
 
                             string jsonContent = JsonParser.ReadJsonFileContent(localPath);
                             e.SetResponseBodyString(jsonContent);
-                            CosmosConsole.WriteLine("Parser", $"Replaced response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
+                            ProxyConsoleWriteLine("Parser", $"Replaced response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
                         }
                     }
                     else if (currentUri == "https://store.mktpl.minecraft-services.net/api/v1.0/layout/pages/MultiItemPage_StoreRoot" ||
@@ -365,7 +256,7 @@ namespace Titanium.Web.Proxy.Examples.Basic
                         string appendedJson = JsonParser.AppendJsonToStart(responseBody, newsTabDataPath, location);
 
                         e.SetResponseBodyString(appendedJson);
-                        CosmosConsole.WriteLine("Parser", $"Appended response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
+                        ProxyConsoleWriteLine("Parser", $"Appended response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
                     }
                     /*else if (currentUri == "https://store.mktpl.minecraft-services.net/api/v1.0/layout/pages/DressingRoom_PersonaProfile")
                     {
@@ -377,62 +268,32 @@ namespace Titanium.Web.Proxy.Examples.Basic
                         string appendedJson = JsonParser.AppendJsonToStart(responseBody, firstAppendPath, location);
 
                         e.SetResponseBodyString(appendedJson);
-                        CosmosConsole.WriteLine("Parser", appendedJson);
-                        CosmosConsole.WriteLine("Parser", $"Appended response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
+                        ProxyConsoleWriteLine("Parser", appendedJson);
+                        ProxyConsoleWriteLine("Parser", $"Appended response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
                     }*/
                     else
                     {
                         string jsonContent = JsonParser.ReadJsonFileContent(localPath);
                         e.SetResponseBodyString(jsonContent);
-                        CosmosConsole.WriteLine("Parser", $"Replaced response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
+                        ProxyConsoleWriteLine("Parser", $"Replaced response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
                     }
                 }
                 catch (Exception ex)
                 {
-                    CosmosConsole.WriteLine("Parser", $"Error replacing response: {ex.Message}");
+                    ProxyConsoleWriteLine("Parser", $"Error replacing response: {ex.Message}");
                 }
             }
         }
 
         private async Task OnAfterResponse(object sender, SessionEventArgs e)
         {
-            CosmosConsole.WriteLine(consoleSender, $"Pipelineinfo: {e.GetState().PipelineInfo}");
+            ProxyConsoleWriteLine(consoleSender, $"Pipelineinfo: {e.GetState().PipelineInfo}");
         }
 
-        /// <summary>
-        ///     Allows overriding default certificate validation logic
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public Task OnCertificateValidation(object sender, CertificateValidationEventArgs e)
+        private void ProxyConsoleWriteLine(string sender, string message)
         {
-            e.GetState().PipelineInfo.AppendLine(nameof(OnCertificateValidation));
-
-            // set IsValid to true/false based on Certificate Errors
-            if (e.SslPolicyErrors == SslPolicyErrors.None) e.IsValid = true;
-
-            return Task.CompletedTask;
+            consoleMessageQueue.Enqueue(new Tuple<string, string>(sender, message));
         }
-
-        /// <summary>
-        ///     Allows overriding default client certificate selection logic during mutual authentication
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public Task OnCertificateSelection(object sender, CertificateSelectionEventArgs e)
-        {
-            e.GetState().PipelineInfo.AppendLine(nameof(OnCertificateSelection));
-
-            // set e.clientCertificate to override
-
-            return Task.CompletedTask;
-        }
-
-        // Original Proxy Console
-        /*private void WriteToConsole(string message, ConsoleColor? consoleColor = null)
-        {
-            consoleMessageQueue.Enqueue(new Tuple<ConsoleColor?, string>(consoleColor, message));
-        }*/
 
         private async Task ListenToConsole()
         {
@@ -440,36 +301,15 @@ namespace Titanium.Web.Proxy.Examples.Basic
             {
                 while (consoleMessageQueue.TryDequeue(out var item))
                 {
-                    var consoleColor = item.Item1;
+                    var sender = item.Item1;
                     var message = item.Item2;
 
-                    if (consoleColor.HasValue)
-                    {
-                        var existing = Console.ForegroundColor;
-                        Console.ForegroundColor = consoleColor.Value;
-                        CosmosConsole.WriteLine(consoleSender, message);
-                        Console.ForegroundColor = existing;
-                    }
-                    else
-                    {
-                        CosmosConsole.WriteLine(consoleSender, message);
-                    }
+                    CosmosConsole.WriteLine(sender, message);
                 }
 
-                //reduce CPU usage
+                // Reduce CPU usage
                 await Task.Delay(50);
             }
         }
-
-        ///// <summary>
-        ///// User data object as defined by user.
-        ///// User data can be set to each SessionEventArgs.HttpClient.UserData property
-        ///// </summary>
-        //public class CustomUserData
-        //{
-        //    public HeaderCollection RequestHeaders { get; set; }
-        //    public byte[] RequestBody { get; set; }
-        //    public string RequestBodyString { get; set; }
-        //}
     }
 }
