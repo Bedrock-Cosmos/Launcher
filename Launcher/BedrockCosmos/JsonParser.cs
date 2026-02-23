@@ -120,7 +120,8 @@ namespace BedrockCosmos
             }
         }
 
-        internal static string OLD_AppendJsonToSkinPackMenu(string originalJsonContent, string jsonToAppendPath)
+        // Not used right now, may be in the future
+        /*internal static string AppendJsonToPersonaProfile(string originalJsonContent, string jsonToAppendPath)
         {
             if (File.Exists(jsonToAppendPath))
             {
@@ -134,7 +135,7 @@ namespace BedrockCosmos
                 {
                     // Find the SkinPackList inside the rows array (search by controlId)
                     JObject storeRow = rowsArray
-                        .FirstOrDefault(row => row["controlId"]?.ToString() == "SkinPackList") as JObject;
+                        .FirstOrDefault(row => row["controlId"]?.ToString() == "StoreRow") as JObject;
 
                     if (storeRow != null)
                     {
@@ -173,7 +174,7 @@ namespace BedrockCosmos
                 Console.WriteLine($"File not found: {jsonToAppendPath}");
                 return string.Empty;
             }
-        }
+        }*/
 
         internal static string ExtractPlayfabSearchId(string originalPlayfabData)
         {
