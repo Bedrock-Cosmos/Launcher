@@ -106,7 +106,6 @@ namespace BedrockCosmos.App
             string savedResponseVersionPath = _miscDirectory + @"\ResponsesVersion.txt";
             AppVersions ver = null;
 
-            CosmosConsole.WriteLine(versionJsonPath);
             if (File.Exists(versionJsonPath))
             {
                 string json = File.ReadAllText(versionJsonPath);

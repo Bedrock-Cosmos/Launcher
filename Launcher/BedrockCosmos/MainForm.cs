@@ -16,7 +16,7 @@ namespace BedrockCosmos
 
         // For window movement
         bool drag = false;
-        Point start_point = new Point(0, 0);
+        Point startPoint = new Point(0, 0);
 
         public MainForm()
         {
@@ -71,7 +71,7 @@ namespace BedrockCosmos
         {
             if (!SettingsManager.BackgroundMode)
             {
-                this.WindowState = FormWindowState.Minimized;
+                WindowState = FormWindowState.Minimized;
             }
             else
             {
@@ -114,7 +114,7 @@ namespace BedrockCosmos
         private void TopPanel_MouseDown(object sender, MouseEventArgs e)
         {
             drag = true;
-            start_point = new Point(e.X, e.Y);
+            startPoint = new Point(e.X, e.Y);
         }
 
         private void TopPanel_MouseMove(object sender, MouseEventArgs e)
@@ -122,7 +122,7 @@ namespace BedrockCosmos
             if (drag)
             {
                 Point p = PointToScreen(e.Location);
-                this.Location = new Point(p.X - start_point.X, p.Y - start_point.Y);
+                Location = new Point(p.X - startPoint.X, p.Y - startPoint.Y);
             }
         }
 

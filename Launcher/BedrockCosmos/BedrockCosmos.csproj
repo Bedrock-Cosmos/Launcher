@@ -167,7 +167,7 @@
     <Compile Include="App\UI\RoundButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="SampleClientState.cs" />
+    <Compile Include="ProxyClientState.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

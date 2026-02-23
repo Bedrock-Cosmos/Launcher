@@ -7,13 +7,13 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Titanium.Web.Proxy;
 using Titanium.Web.Proxy.EventArguments;
 using Titanium.Web.Proxy.Exceptions;
 using Titanium.Web.Proxy.Helpers;
 using Titanium.Web.Proxy.Http;
 using Titanium.Web.Proxy.Models;
 using Titanium.Web.Proxy.StreamExtended.Network;
-using Titanium.Web.Proxy;
 
 namespace BedrockCosmos
 {
@@ -233,7 +233,7 @@ namespace BedrockCosmos
                         // Append custom marketplace button to response if accessing the main page
                         string responseBody = await e.GetResponseBodyAsString();
                         string location = "result.rows"; // Works the same as ["result"]["rows"]
-                        string appendedJson = JsonParser.AppendJsonToStart(responseBody, localPath, location); ;
+                        string appendedJson = JsonParser.AppendJsonToStart(responseBody, localPath, location);
 
                         e.SetResponseBodyString(appendedJson);
                         CosmosConsole.WriteLine("Parser", $"Appended response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
@@ -271,6 +271,17 @@ namespace BedrockCosmos
                         ProxyConsoleWriteLine("Parser", appendedJson);
                         ProxyConsoleWriteLine("Parser", $"Appended response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
                     }*/
+                    else if (currentUri == "https://store.mktpl.minecraft-services.net/api/v1.0/layout/pages/MultiItemPage_PersonaSkinSelector")
+                    {
+                        // Append custom pack to skin packs menu
+                        string responseBody = await e.GetResponseBodyAsString();
+                        string location = "result.rows"; // Works the same as ["result"]["rows"]
+                        string divider = currentPathForResponse + @"MainPages\VerticalLineDivider_append.json";
+                        string appendedJson = JsonParser.AppendJsonToSkinPackMenu(responseBody, localPath, location);
+
+                        e.SetResponseBodyString(appendedJson);
+                        CosmosConsole.WriteLine("Parser", $"Appended response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
+                    }
                     else
                     {
                         string jsonContent = JsonParser.ReadJsonFileContent(localPath);

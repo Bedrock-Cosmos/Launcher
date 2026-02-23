@@ -4,11 +4,11 @@ namespace BedrockCosmos
 {
     public static class ProxyEventArgsBaseExtensions
     {
-        public static SampleClientState GetState(this ProxyEventArgsBase args)
+        public static ProxyClientState GetState(this ProxyEventArgsBase args)
         {
-            if (args.ClientUserData == null) args.ClientUserData = new SampleClientState();
+            if (args.ClientUserData == null) args.ClientUserData = new ProxyClientState();
 
-            return (SampleClientState)args.ClientUserData;
+            return (ProxyClientState)args.ClientUserData;
         }
     }
 }

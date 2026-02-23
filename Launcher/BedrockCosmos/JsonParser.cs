@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace BedrockCosmos
@@ -82,6 +83,94 @@ namespace BedrockCosmos
             else
             {
                 CosmosConsole.WriteLine(consoleSender, $"File not found: {jsonToAppendPath}");
+                return string.Empty;
+            }
+        }
+
+        internal static string AppendJsonToSkinPackMenu(string originalJsonContent, string jsonToAppendPath, string appendLocation)
+        {
+            string dividerPath = AppDomain.CurrentDomain.BaseDirectory + @"Responses-main\MainPages\VerticalLineDivider_append.json";
+
+            if (File.Exists(jsonToAppendPath))
+            {
+                string dividerToAppendContent = File.ReadAllText(dividerPath); // Method includes divider for skins menu
+                string jsonToAppendContent = File.ReadAllText(jsonToAppendPath);
+                JObject originalJson = JObject.Parse(originalJsonContent);
+                JObject dividerToAppend = JObject.Parse(dividerToAppendContent);
+                JObject jsonToAppend = JObject.Parse(jsonToAppendContent);
+                JArray targetArray = (JArray)originalJson.SelectToken(appendLocation);
+
+                if (targetArray != null)
+                {
+                    targetArray.Insert(3, dividerToAppend);  // Insert divider at position
+                    targetArray.Insert(4, jsonToAppend);  // Insert new content at position
+                    string updatedJson = originalJson.ToString();
+                    return updatedJson;
+                }
+                else
+                {
+                    CosmosConsole.WriteLine(consoleSender, $"Could not find array at path: {appendLocation} in {originalJsonContent}");
+                    return string.Empty;
+                }
+            }
+            else
+            {
+                CosmosConsole.WriteLine(consoleSender, $"File not found: {jsonToAppendPath}");
+                return string.Empty;
+            }
+        }
+
+        internal static string OLD_AppendJsonToSkinPackMenu(string originalJsonContent, string jsonToAppendPath)
+        {
+            if (File.Exists(jsonToAppendPath))
+            {
+                string jsonToAppendContent = File.ReadAllText(jsonToAppendPath);
+
+                JObject originalJson = JObject.Parse(originalJsonContent);
+                JObject jsonToAppend = JObject.Parse(jsonToAppendContent);
+                JArray rowsArray = (JArray)originalJson.SelectToken("result.rows");
+
+                if (rowsArray != null)
+                {
+                    // Find the SkinPackList inside the rows array (search by controlId)
+                    JObject storeRow = rowsArray
+                        .FirstOrDefault(row => row["controlId"]?.ToString() == "SkinPackList") as JObject;
+
+                    if (storeRow != null)
+                    {
+                        // Find the 'items' array inside the SkinPackList
+                        JArray itemsArray = (JArray)storeRow.SelectToken("components[?(@.type == 'itemListComp')].items");
+
+                        if (itemsArray != null)
+                        {
+                            // Append the new content to the 'items' array
+                            itemsArray.Insert(0, jsonToAppend); // Append content
+
+                            // Convert the modified JSON back to string
+                            string updatedJson = originalJson.ToString();
+                            return updatedJson;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Could not find 'items' array in 'StoreRow'.");
+                            return string.Empty;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Could not find 'StoreRow' in 'result.rows'.");
+                        return string.Empty;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Could not find 'result.rows' in the JSON.");
+                    return string.Empty;
+                }
+            }
+            else
+            {
+                Console.WriteLine($"File not found: {jsonToAppendPath}");
                 return string.Empty;
             }
         }
