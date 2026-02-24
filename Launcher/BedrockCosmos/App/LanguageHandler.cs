@@ -1,10 +1,21 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace BedrockCosmos.App
 {
     public static class LanguageHandler
     {
+        // For Lanuage Lookup
+        private static readonly Dictionary<string, string> LanguageDict = new Dictionary<string, string>
+        {
+            { "English", "en_US" },
+            { "Español", "es_ES" },
+            { "Indonesia", "id_ID" },
+            { "日本語", "ja_JP" }
+        };
+
         // App
         public static string App_TopLabel_Name { get; set; }
 
@@ -67,16 +78,13 @@ namespace BedrockCosmos.App
 
         public static string GetLangFileName(string selectedLang)
         {
-            if (selectedLang == "English")
-                return "en_US";
-            else if (selectedLang == "Español")
-                return "es_ES";
-            else if (selectedLang == "Indonesia")
-                return "id_ID";
-            else if (selectedLang == "日本語")
-                return "ja_JP";
-            else
-                return "en_US";
+            return LanguageDict.ContainsKey(selectedLang) ? LanguageDict[selectedLang] : "en_US";
+        }
+
+        public static string GetLanguageName(string selectedLang)
+        {
+            var languageKey = LanguageDict.FirstOrDefault(x => x.Value == selectedLang).Key;
+            return string.IsNullOrEmpty(languageKey) ? "English" : languageKey;
         }
     }
 }

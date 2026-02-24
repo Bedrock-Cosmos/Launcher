@@ -15,7 +15,7 @@ namespace BedrockCosmos
         private static int _cosmosUnreadNewsCount = 0;
         private static int _cosmosNewsCount = 0;
 
-        private static string _newsDirectory = AppDomain.CurrentDomain.BaseDirectory + @"News";
+        private static string _newsDirectory = AppDomain.CurrentDomain.BaseDirectory + @"CustomJsons";
         private static string _newsHistoryPath = _newsDirectory + @"\News.json";
         private static string _receivedNewsPath = _newsDirectory + @"\ReceivedNews.json";
         private static string _currentResponsePath = AppDomain.CurrentDomain.BaseDirectory + @"Responses-main\";

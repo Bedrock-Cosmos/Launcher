@@ -1,6 +1,6 @@
 ﻿using BedrockCosmos.App;
+using BedrockCosmos.Proxy;
 using System;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -44,14 +44,7 @@ namespace BedrockCosmos
         private void ApplySettings()
         {
             // Language
-            if (SettingsManager.Language == "en_US")
-                LanguageComboBox.SelectedItem = "English";
-            else if (SettingsManager.Language == "es_ES")
-                LanguageComboBox.SelectedItem = "Español";
-            else if (SettingsManager.Language == "id_ID")
-                LanguageComboBox.SelectedItem = "Indonesia";
-            else if (SettingsManager.Language == "ja_JP")
-                LanguageComboBox.SelectedItem = "日本語";
+            LanguageComboBox.SelectedItem = LanguageHandler.GetLanguageName(SettingsManager.Language);
 
             // Background Mode
             BackgroundModeSwitch.Checked = SettingsManager.BackgroundMode;
