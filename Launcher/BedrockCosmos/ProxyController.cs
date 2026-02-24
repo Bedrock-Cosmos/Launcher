@@ -258,25 +258,11 @@ namespace BedrockCosmos
                         e.SetResponseBodyString(appendedJson);
                         ProxyConsoleWriteLine("Parser", $"Appended response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
                     }
-                    /*else if (currentUri == "https://store.mktpl.minecraft-services.net/api/v1.0/layout/pages/DressingRoom_PersonaProfile")
-                    {
-                        // Append custom items to main dressing room page
-                        string responseBody = await e.GetResponseBodyAsString();
-                        string location = "result.rows[2].items[0]";
-                        string firstAppendPath = currentPathForResponse + @"MainPages\DressingRoom_PersonaProfile_Persona_append.json";
-
-                        string appendedJson = JsonParser.AppendJsonToStart(responseBody, firstAppendPath, location);
-
-                        e.SetResponseBodyString(appendedJson);
-                        ProxyConsoleWriteLine("Parser", appendedJson);
-                        ProxyConsoleWriteLine("Parser", $"Appended response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
-                    }*/
                     else if (currentUri == "https://store.mktpl.minecraft-services.net/api/v1.0/layout/pages/MultiItemPage_PersonaSkinSelector")
                     {
                         // Append custom pack to skin packs menu
                         string responseBody = await e.GetResponseBodyAsString();
-                        string location = "result.rows"; // Works the same as ["result"]["rows"]
-                        string divider = currentPathForResponse + @"MainPages\VerticalLineDivider_append.json";
+                        string location = "result.rows";
                         string appendedJson = JsonParser.AppendJsonToSkinPackMenu(responseBody, localPath, location);
 
                         e.SetResponseBodyString(appendedJson);

@@ -1,5 +1,6 @@
 ﻿using BedrockCosmos.App;
 using System;
+using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -457,9 +458,36 @@ namespace BedrockCosmos
             Process.Start("https://bedrock-cosmos.app/changelogs/");
         }
 
-        private void UpdateButton_Click(object sender, EventArgs e)
+        private async void UpdateButton_Click(object sender, EventArgs e)
         {
+            string fileUrl = "https://raw.githubusercontent.com/Bedrock-Cosmos/Launcher/main/LauncherFiles/Updater.zip";
+            string downloadPath = AppDomain.CurrentDomain.BaseDirectory + @"Updater.zip";
+            string extractPath = AppDomain.CurrentDomain.BaseDirectory;
 
+            UpdateButton.Enabled = false;
+            CancelUpdateButton.Enabled = false;
+            CloseButton.Enabled = false;
+
+            try
+            {
+                await asyncDownload.DownloadFileAsync(fileUrl, downloadPath);
+                await asyncDownload.ExtractFileAsync(downloadPath, extractPath, true);
+
+                if (File.Exists(extractPath + "Updater.exe"))
+                    Process.Start(extractPath + "Updater.exe");
+
+                Close();
+            }
+            catch (Exception)
+            {
+                StatusLabel.Text = LanguageHandler.Home_StatusLabel_NoInternet;
+                TabControl.SelectedTab = HomePage;
+                
+                UpdateButton.Enabled = true;
+                CancelUpdateButton.Enabled = true;
+                CloseButton.Enabled = true;
+                SettingsManager.LauncherUpdatePrompted = false;
+            }
         }
 
         private void CancelUpdateButton_Click(object sender, EventArgs e)
