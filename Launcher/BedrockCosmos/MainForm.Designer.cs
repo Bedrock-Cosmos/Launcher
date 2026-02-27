@@ -646,6 +646,7 @@
             // 
             this.DevConsole.BackColor = System.Drawing.Color.Black;
             this.DevConsole.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.DevConsole.DetectUrls = false;
             this.DevConsole.ForeColor = System.Drawing.Color.White;
             this.DevConsole.Location = new System.Drawing.Point(290, 41);
             this.DevConsole.Name = "DevConsole";
