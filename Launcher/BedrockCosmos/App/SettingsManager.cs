@@ -12,6 +12,7 @@ namespace BedrockCosmos.App
         private static int _devMenuClicks = 0;
         private static bool _devMenuEnabled = false;
         private static bool _enableLogging = false;
+        private static bool _detailedLogging = false;
         private static bool _launcherUpdatePrompted = false;
 
         internal static bool ProxyStarted
@@ -48,6 +49,12 @@ namespace BedrockCosmos.App
         {
             get { return _enableLogging; }
             set { _enableLogging = value; SaveSettings(); }
+        }
+
+        internal static bool DetailedLogging
+        {
+            get { return _detailedLogging; }
+            set { _detailedLogging = value; SaveSettings(); }
         }
 
         internal static bool LauncherUpdatePrompted
@@ -90,7 +97,8 @@ namespace BedrockCosmos.App
                 BackgroundMode = _backgroundMode,
                 Language = _language,
                 DevMenuEnabled = _devMenuEnabled,
-                EnableLogging = _enableLogging
+                EnableLogging = _enableLogging,
+                DetailedLogging = _detailedLogging
             };
 
             string json = JsonConvert.SerializeObject(savedSettings, Formatting.Indented);
@@ -108,10 +116,18 @@ namespace BedrockCosmos.App
                 string json = File.ReadAllText(settingsFile);
                 var settings = JsonConvert.DeserializeObject<dynamic>(json);
 
-                _backgroundMode = settings.BackgroundMode;
-                _language = settings.Language;
-                _devMenuEnabled = settings.DevMenuEnabled;
-                _enableLogging = settings.EnableLogging;
+                try
+                {
+                    _backgroundMode = settings.BackgroundMode;
+                    _language = settings.Language;
+                    _devMenuEnabled = settings.DevMenuEnabled;
+                    _enableLogging = settings.EnableLogging;
+                    _detailedLogging = settings.DetailedLogging;
+                }
+                catch
+                {
+
+                }
 
                 CosmosConsole.WriteLine("Settings loaded from local file.");
             }

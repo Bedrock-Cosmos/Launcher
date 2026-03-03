@@ -1,4 +1,5 @@
 ﻿using BedrockCosmos.App;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.IO;
@@ -6,7 +7,6 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Titanium.Web.Proxy;
 using Titanium.Web.Proxy.EventArguments;
 using Titanium.Web.Proxy.Exceptions;
@@ -39,8 +39,11 @@ namespace BedrockCosmos.Proxy
 
             proxyServer.ExceptionFunc = async exception =>
             {
+                if (exception is ProxyHttpException)
+                    return; // Supresses "errors" for requests that would have originally 404'd before proxy
+
                 if (exception is ProxyHttpException phex)
-                    ProxyConsoleWriteLine(consoleSender, exception.Message + ": " + phex.InnerException?.Message);
+                    ProxyConsoleWriteLine(consoleSender, $"{exception.GetType().Name}: {exception.Message} - {phex.InnerException?.Message}");
                 else
                     ProxyConsoleWriteLine(consoleSender, exception.Message);
             };
@@ -100,8 +103,7 @@ namespace BedrockCosmos.Proxy
         private async Task OnBeforeTunnelConnectRequest(object sender, TunnelConnectSessionEventArgs e)
         {
             var hostname = e.HttpClient.Request.RequestUri.Host;
-            e.GetState().PipelineInfo.AppendLine(nameof(OnBeforeTunnelConnectRequest) + ":" + hostname);
-            ProxyConsoleWriteLine(consoleSender, "Tunnel to: " + hostname);
+            //e.GetState().PipelineInfo.AppendLine(nameof(OnBeforeTunnelConnectRequest) + ":" + hostname);
 
             var clientLocalIp = e.ClientLocalEndPoint.Address;
             if (!clientLocalIp.Equals(IPAddress.Loopback) && !clientLocalIp.Equals(IPAddress.IPv6Loopback))
@@ -109,7 +111,12 @@ namespace BedrockCosmos.Proxy
 
             bool existsInAllowedUrls = JsonData.AllowedUrls.Any(url => url == hostname);
             if (!existsInAllowedUrls)
+            {
+                if (SettingsManager.DetailedLogging)
+                    ProxyConsoleWriteLine(consoleSender, "Tunnel to: " + hostname);
+
                 e.DecryptSsl = false; // Exempts Non-Allowed Urls from proxy
+            }
         }
 
         private void WebSocket_DataSent(object sender, DataEventArgs e)
@@ -147,25 +154,43 @@ namespace BedrockCosmos.Proxy
 
         private Task OnBeforeTunnelConnectResponse(object sender, TunnelConnectSessionEventArgs e)
         {
-            e.GetState().PipelineInfo
-                .AppendLine(nameof(OnBeforeTunnelConnectResponse) + ":" + e.HttpClient.Request.RequestUri);
+            //e.GetState().PipelineInfo
+            //    .AppendLine(nameof(OnBeforeTunnelConnectResponse) + ":" + e.HttpClient.Request.RequestUri);
 
             return Task.CompletedTask;
         }
 
         private async Task OnRequest(object sender, SessionEventArgs e)
         {
-            e.GetState().PipelineInfo.AppendLine(nameof(OnRequest) + ":" + e.HttpClient.Request.RequestUri);
+            //e.GetState().PipelineInfo.AppendLine(nameof(OnRequest) + ":" + e.HttpClient.Request.RequestUri);
 
-            string body = await e.GetRequestBodyAsString();
-            e.UserData = body;
+            try
+            {
+                e.UserData = new CustomUserData
+                {
+                    RequestBodyString = await e.GetRequestBodyAsString(),
+                    RequestLogs = $"Processed Request: {e.HttpClient.Request.RequestUri.AbsoluteUri}\n" +
+                        $"└── Active Client Connections: {((ProxyServer)sender).ClientConnectionCount}\n" +
+                        $"└── On Request: Saved response body.\n"
+                };
+            }
+            catch (Exception)
+            {
+                e.UserData = new CustomUserData
+                {
+                    RequestBodyString = string.Empty,
+                    RequestLogs = $"Processed Request: {e.HttpClient.Request.RequestUri.AbsoluteUri}\n" +
+                        $"└── Active Client Connections: {((ProxyServer)sender).ClientConnectionCount}\n" +
+                        $"└── On Request: Response body was empty.\n"
+                };
+            }
 
-            ProxyConsoleWriteLine(consoleSender, "Active Client Connections:" + ((ProxyServer)sender).ClientConnectionCount);
+            //ProxyConsoleWriteLine(consoleSender, "Active Client Connections:" + ((ProxyServer)sender).ClientConnectionCount);
         }
 
         private async Task MultipartRequestPartSent(object sender, MultipartRequestPartSentEventArgs e)
         {
-            e.GetState().PipelineInfo.AppendLine(nameof(MultipartRequestPartSent));
+            //e.GetState().PipelineInfo.AppendLine(nameof(MultipartRequestPartSent));
 
             var session = (SessionEventArgs)sender;
             ProxyConsoleWriteLine(consoleSender, "Multipart form data headers:");
@@ -174,7 +199,7 @@ namespace BedrockCosmos.Proxy
 
         private async Task OnResponse(object sender, SessionEventArgs e)
         {
-            e.GetState().PipelineInfo.AppendLine(nameof(OnResponse));
+            //e.GetState().PipelineInfo.AppendLine(nameof(OnResponse));
 
             if (e.HttpClient.ConnectRequest?.TunnelType == TunnelType.Websocket)
             {
@@ -182,10 +207,11 @@ namespace BedrockCosmos.Proxy
                 e.DataReceived += WebSocket_DataReceived;
             }
 
-            ProxyConsoleWriteLine(consoleSender, "Active Server Connections:" + ((ProxyServer)sender).ServerConnectionCount);
+            //ProxyConsoleWriteLine(consoleSender, "Active Server Connections:" + ((ProxyServer)sender).ServerConnectionCount);
 
             Endpoint urlData = JsonData.MainPages.FirstOrDefault(o => o.url == e.HttpClient.Request.RequestUri.AbsoluteUri);
-            string requestBody = e.UserData as string;
+            var userData = e.UserData as CustomUserData;
+            string requestBody = userData.RequestBodyString;
             string currentUri = e.HttpClient.Request.RequestUri.AbsoluteUri;
 
             if (urlData != null)
@@ -237,14 +263,21 @@ namespace BedrockCosmos.Proxy
                 }
                 catch (Exception ex)
                 {
-                    ProxyConsoleWriteLine("Parser", $"Error replacing response: {ex.Message}");
+                    //ProxyConsoleWriteLine("Parser", $"Error replacing response: {ex.Message}");
+                    userData.RequestLogs = userData.RequestLogs + $"└── On Response: Error replacing response - {ex.Message}\n";
                 }
+            }
+            else
+            {
+                userData.RequestLogs = userData.RequestLogs + $"└── On Response: No corresponding Json file was found. Processed request normally.\n";
             }
         }
 
         private async Task OnAfterResponse(object sender, SessionEventArgs e)
         {
-            ProxyConsoleWriteLine(consoleSender, $"Pipelineinfo: {e.GetState().PipelineInfo}");
+            //ProxyConsoleWriteLine(consoleSender, $"Pipelineinfo: {e.GetState().PipelineInfo}");
+            var userData = e.UserData as CustomUserData;
+            ProxyConsoleWriteLine(consoleSender, userData.RequestLogs);
         }
 
         private void ProxyConsoleWriteLine(string sender, string message)
@@ -272,25 +305,41 @@ namespace BedrockCosmos.Proxy
         private async Task HandleGetPublishedItemRequest(string requestBody, SessionEventArgs e)
         {
             // Search for UUID if a PlayFab Get Item endpoint and use as response
+            var userData = e.UserData as CustomUserData;
+
             PlayfabGetPublishedItemBody getItemBody = JsonConvert.DeserializeObject<PlayfabGetPublishedItemBody>(requestBody);
             MarketItem mItem = JsonData.MarketItems.FirstOrDefault(o => o.uuid == getItemBody.itemid);
             if (mItem != null)
             {
+                userData.RequestLogs = userData.RequestLogs + $"└── Get Item: Found local Json for item {getItemBody.itemid}\n";
                 string localPath = currentPathForResponse + mItem.response;
                 SetResponseBodyFromFile(localPath, e);
+            }
+            else
+            {
+                userData.RequestLogs = userData.RequestLogs + $"└── On Response: No local Json file was found from Playfab Get Item " +
+                    $"search of item {getItemBody.itemid}. Processed request normally.\n";
             }
         }
 
         private async Task HandlePlayfabSearchRequest(string requestBody, SessionEventArgs e)
         {
             // Search for UUID if a PlayFab Search Item endpoint and use as response
+            var userData = e.UserData as CustomUserData;
+
             PlayfabGetSearchedItemBody getSearchBody = JsonConvert.DeserializeObject<PlayfabGetSearchedItemBody>(requestBody);
             string searchUuid = JsonParser.ExtractPlayfabSearchId(getSearchBody.filter);
             MarketItem mItem = JsonData.PackSearchIds.FirstOrDefault(o => o.uuid == searchUuid);
             if (mItem != null)
             {
+                userData.RequestLogs = userData.RequestLogs + $"└── Search: Found local Json for item {searchUuid}\n";
                 string localPath = currentPathForResponse + mItem.response;
                 SetResponseBodyFromFile(localPath, e);
+            }
+            else
+            {
+                userData.RequestLogs = userData.RequestLogs + $"└── On Response: No local Json file was found from Playfab Search " +
+                    $"of item {searchUuid}. Processed request normally.\n";
             }
         }
 
@@ -301,7 +350,10 @@ namespace BedrockCosmos.Proxy
             string location = "result.rows"; // Works the same as ["result"]["rows"]
             string appendedJson = JsonParser.AppendJsonToStart(responseBody, localPath, location);
             e.SetResponseBodyString(appendedJson);
-            CosmosConsole.WriteLine("Parser", $"Appended response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
+            //CosmosConsole.WriteLine("Parser", $"Appended response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
+
+            var userData = e.UserData as CustomUserData;
+            userData.RequestLogs = userData.RequestLogs + $"└── On Response: Appended original response using {Path.GetFileName(localPath)}\n";
         }
 
         private async Task HandleSessionStartRequest(string localPath, SessionEventArgs e)
@@ -322,7 +374,10 @@ namespace BedrockCosmos.Proxy
             string appendedJson = JsonParser.AppendJsonToStart(responseBody, newsTabDataPath, location);
 
             e.SetResponseBodyString(appendedJson);
-            CosmosConsole.WriteLine("Parser", $"Appended response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
+            //CosmosConsole.WriteLine("Parser", $"Appended response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
+
+            var userData = e.UserData as CustomUserData;
+            userData.RequestLogs = userData.RequestLogs + $"└── On Response: Appended original response using {Path.GetFileName(localPath)}\n";
         }
 
         private async Task HandlePersonaSkinSelectorRequest(string localPath, SessionEventArgs e)
@@ -332,7 +387,10 @@ namespace BedrockCosmos.Proxy
             string location = "result.rows";
             string appendedJson = JsonParser.AppendJsonToSkinPackMenu(responseBody, localPath, location);
             e.SetResponseBodyString(appendedJson);
-            CosmosConsole.WriteLine("Parser", $"Appended response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
+            //CosmosConsole.WriteLine("Parser", $"Appended response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
+
+            var userData = e.UserData as CustomUserData;
+            userData.RequestLogs = userData.RequestLogs + $"└── On Response: Appended original response using {Path.GetFileName(localPath)}\n";
         }
 
         private void HandleDefaultRequest(string localPath, SessionEventArgs e)
@@ -344,7 +402,16 @@ namespace BedrockCosmos.Proxy
         {
             string jsonContent = JsonParser.ReadJsonFileContent(localPath);
             e.SetResponseBodyString(jsonContent);
-            CosmosConsole.WriteLine("Parser", $"Replaced response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
+            //CosmosConsole.WriteLine("Parser", $"Replaced response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
+
+            var userData = e.UserData as CustomUserData;
+            userData.RequestLogs = userData.RequestLogs + $"└── On Response: Replaced original response using {Path.GetFileName(localPath)}\n";
+        }
+
+        public class CustomUserData
+        {
+            public string RequestBodyString { get; set; }
+            public string RequestLogs { get; set; }
         }
     }
 }

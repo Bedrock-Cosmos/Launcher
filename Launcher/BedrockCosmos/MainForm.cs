@@ -59,6 +59,9 @@ namespace BedrockCosmos
 
             // Logging
             EnableLoggingSwitch.Checked = SettingsManager.EnableLogging;
+
+            // Detailed Logs
+            DetailedLoggingSwitch.Checked = SettingsManager.DetailedLogging;
         }
 
         private void MinimizeButton_Click(object sender, EventArgs e)
@@ -406,6 +409,20 @@ namespace BedrockCosmos
             {
                 CosmosConsole.WriteLine("Logging disabled.");
                 SettingsManager.EnableLogging = false;
+            }
+        }
+
+        private void DetailedLoggingSwitch_CheckedChanged(object sender, EventArgs e)
+        {
+            if (DetailedLoggingSwitch.Checked)
+            {
+                SettingsManager.DetailedLogging = true;
+                CosmosConsole.WriteLine("Detailed logs enabled.");
+            }
+            else
+            {
+                SettingsManager.DetailedLogging = false;
+                CosmosConsole.WriteLine("Detailed logs disabled.");
             }
         }
 

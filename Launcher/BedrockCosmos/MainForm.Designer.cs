@@ -78,6 +78,8 @@
             this.CloseButton = new System.Windows.Forms.Button();
             this.TrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.BackgroundModeTimer = new System.Windows.Forms.Timer(this.components);
+            this.DetailedLoggingLabel = new System.Windows.Forms.Label();
+            this.DetailedLoggingSwitch = new BedrockCosmos.App.UI.Switch();
             this.TabControl.SuspendLayout();
             this.HomePage.SuspendLayout();
             this.AboutPage.SuspendLayout();
@@ -555,6 +557,8 @@
             // DevPage
             // 
             this.DevPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.DevPage.Controls.Add(this.DetailedLoggingLabel);
+            this.DevPage.Controls.Add(this.DetailedLoggingSwitch);
             this.DevPage.Controls.Add(this.FixProxyHangButton);
             this.DevPage.Controls.Add(this.ResetNewsButton);
             this.DevPage.Controls.Add(this.DevBackButton);
@@ -661,7 +665,7 @@
             this.EnableLoggingLabel.AutoSize = true;
             this.EnableLoggingLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.EnableLoggingLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.EnableLoggingLabel.Location = new System.Drawing.Point(641, 394);
+            this.EnableLoggingLabel.Location = new System.Drawing.Point(306, 394);
             this.EnableLoggingLabel.Name = "EnableLoggingLabel";
             this.EnableLoggingLabel.Size = new System.Drawing.Size(103, 19);
             this.EnableLoggingLabel.TabIndex = 11;
@@ -738,7 +742,7 @@
             this.EnableLoggingSwitch.BaseOffColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.EnableLoggingSwitch.BaseOnColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.EnableLoggingSwitch.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.EnableLoggingSwitch.Location = new System.Drawing.Point(749, 393);
+            this.EnableLoggingSwitch.Location = new System.Drawing.Point(414, 393);
             this.EnableLoggingSwitch.Name = "EnableLoggingSwitch";
             this.EnableLoggingSwitch.Size = new System.Drawing.Size(40, 20);
             this.EnableLoggingSwitch.TabIndex = 10;
@@ -885,6 +889,31 @@
             this.BackgroundModeTimer.Interval = 2500;
             this.BackgroundModeTimer.Tick += new System.EventHandler(this.BackgroundModeTimer_Tick);
             // 
+            // DetailedLoggingLabel
+            // 
+            this.DetailedLoggingLabel.AutoSize = true;
+            this.DetailedLoggingLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.DetailedLoggingLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.DetailedLoggingLabel.Location = new System.Drawing.Point(502, 394);
+            this.DetailedLoggingLabel.Name = "DetailedLoggingLabel";
+            this.DetailedLoggingLabel.Size = new System.Drawing.Size(221, 19);
+            this.DetailedLoggingLabel.TabIndex = 18;
+            this.DetailedLoggingLabel.Text = "Show Ignored (Tunneled) Requests";
+            // 
+            // DetailedLoggingSwitch
+            // 
+            this.DetailedLoggingSwitch.AutoSize = true;
+            this.DetailedLoggingSwitch.BaseColor = System.Drawing.Color.White;
+            this.DetailedLoggingSwitch.BaseOffColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.DetailedLoggingSwitch.BaseOnColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.DetailedLoggingSwitch.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.DetailedLoggingSwitch.Location = new System.Drawing.Point(729, 393);
+            this.DetailedLoggingSwitch.Name = "DetailedLoggingSwitch";
+            this.DetailedLoggingSwitch.Size = new System.Drawing.Size(40, 20);
+            this.DetailedLoggingSwitch.TabIndex = 17;
+            this.DetailedLoggingSwitch.UseVisualStyleBackColor = true;
+            this.DetailedLoggingSwitch.CheckedChanged += new System.EventHandler(this.DetailedLoggingSwitch_CheckedChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -966,6 +995,8 @@
         private System.Windows.Forms.LinkLabel WebsiteLabel;
         private System.Windows.Forms.PictureBox WebsiteIcon;
         private System.Windows.Forms.LinkLabel ChangelogLabel;
+        private System.Windows.Forms.Label DetailedLoggingLabel;
+        private App.UI.Switch DetailedLoggingSwitch;
     }
 }
 
