@@ -23,6 +23,8 @@ namespace BedrockCosmos
         {
             InitializeComponent();
             CosmosConsole.Initialize(DevConsole);
+            DiscordRichPresence.InitializeRpc();
+            DiscordRichPresence.UpdatePresence();
             launchManager = new LaunchManager();
             controller = new ProxyController();
             asyncDownload = new AsyncFileDownload();
@@ -30,11 +32,11 @@ namespace BedrockCosmos
 
             // Will also log messages to the main console if uncommented.
             //CosmosConsole.LogToMainConsole = true;
-
             launchManager.InitializeMgrAsyncFileDownload(asyncDownload);
             launchManager.InitializeMgrLaunchButton(LaunchButton);
             launchManager.InitializeMgrVersionLabel(VersionLabel);
             launchManager.SetCurrentVersions();
+            
 
             LanguageHandler.Load(AppDomain.CurrentDomain.BaseDirectory + @"Texts\" + SettingsManager.Language + ".lang");
             SettingsManager.LoadSettings();
