@@ -3,5 +3,7 @@ Bedrock Cosmos requiere que el certificado raíz de Titanium Proxy sea instalado
 
 Se RECOMIENDA AMPLIAMENTE que no instale certificados raíz de fuentes en las que no confíe, ya que pueden utilizarse para configurar ataques de phishing y robo de credenciales. Bedrock Cosmos siempre permanecerá de código abierto para que los usuarios puedan ver directamente cómo nuestro proxy procesa los datos en los sistemas de los usuarios.
 
+
+
 INFORMACIÓN ADICIONAL:
 Bedrock Cosmos siempre será gratuito y de código abierto. Si obtuvo este software desde un lugar distinto a nuestros sitios web (bedrock-cosmos.app, github.com/Bedrock-Cosmos), es posible que haya sido estafado. Si pagó alguna cantidad de dinero por este software, exija que le devuelvan su dinero.

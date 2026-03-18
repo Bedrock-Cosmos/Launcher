@@ -3,5 +3,7 @@ Bedrock Cosmos requires the Titanium Proxy root certificate to be installed upon
 
 It is HIGHLY RECOMMENDED that you do not install root certificates from sources that you do not trust, as they can be used to set up phishing and credential-stealing attacks. Bedrock Cosmos will always remain open source so that users can directly view how our proxy processes data on users' systems.
 
+
+
 ADDITIONAL INFORMATION:
 Bedrock Cosmos will always remain free and open-source to use. If obtained this software from a location other than our websites (bedrock-cosmos.app, github.com/Bedrock-Cosmos), you may have been scammed. If you paid any amount of money for this software, demand your money back.

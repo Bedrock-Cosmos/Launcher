@@ -3,5 +3,7 @@ Bedrock Cosmos mengharuskan sertifikat root Titanium Proxy untuk dipasang saat p
 
 SANGAT DISARANKAN agar Anda tidak memasang sertifikat root dari sumber yang tidak Anda percayai, karena sertifikat tersebut dapat digunakan untuk melancarkan serangan phishing dan pencurian kredensial. Bedrock Cosmos akan selalu tetap bersumber terbuka agar pengguna dapat melihat secara langsung bagaimana proxy kami memproses data pada sistem pengguna.
 
+
+
 INFORMASI TAMBAHAN:
 Bedrock Cosmos akan selalu tetap gratis dan bersumber terbuka untuk digunakan. Jika Anda memperoleh perangkat lunak ini dari lokasi selain situs web kami (bedrock-cosmos.app, github.com/Bedrock-Cosmos), Anda mungkin telah ditipu. Jika Anda membayar sejumlah uang untuk perangkat lunak ini, mintalah uang Anda kembali.
