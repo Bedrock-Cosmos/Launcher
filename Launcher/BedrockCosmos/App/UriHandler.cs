@@ -49,7 +49,7 @@ internal static class UriHandler
                     uuid = path.Substring("openStore/?showStoreOffer=".Length).Trim();
 
                 if (!string.IsNullOrEmpty(uuid))
-                    return $"showStoreOffer={uuid}"; // Removed openStore for now since it was causing some issues
+                    return $"?showStoreOffer={uuid}"; // Removed openStore for now since it was causing some issues
                 else
                     return "";
             }
