@@ -1,5 +1,5 @@
 # Launcher
-The Bedrock Cosmos Launcher acts as a local proxy on your Windows device to add custom capes and skin packs to Minecraft Bedrock Edition!
+The Bedrock Cosmos Launcher acts as a local proxy on your Windows device to add custom capes and skin packs to Minecraft Bedrock Edition! More documentation will be coming soon!
 
 # Dependencies
 Bedrock Cosmos is dependent on several packages for functionality.
