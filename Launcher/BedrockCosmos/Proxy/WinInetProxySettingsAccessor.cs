@@ -214,14 +214,15 @@ namespace BedrockCosmos.Proxy
                 Marshal.FreeHGlobal(pointer);
         }
 
-        [DllImport("wininet.dll", SetLastError = true)]
+        // Force the Unicode entry points because this accessor allocates and reads UTF-16 buffers explicitly.
+        [DllImport("wininet.dll", EntryPoint = "InternetQueryOptionW", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
         private static extern bool InternetQueryOption(
             IntPtr hInternet,
             int dwOption,
             IntPtr lpBuffer,
             ref int lpdwBufferLength);
 
-        [DllImport("wininet.dll", SetLastError = true)]
+        [DllImport("wininet.dll", EntryPoint = "InternetSetOptionW", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
         private static extern bool InternetSetOption(
             IntPtr hInternet,
             int dwOption,

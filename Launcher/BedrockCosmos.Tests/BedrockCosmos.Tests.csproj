@@ -21,5 +21,6 @@
     <Compile Include="..\BedrockCosmos\Proxy\ProxyLifecycleManager.cs" Link="Source\ProxyLifecycleManager.cs" />
     <Compile Include="..\BedrockCosmos\Proxy\ProxyOwnershipState.cs" Link="Source\ProxyOwnershipState.cs" />
     <Compile Include="..\BedrockCosmos\Proxy\ProxySettingsSnapshot.cs" Link="Source\ProxySettingsSnapshot.cs" />
+    <Compile Include="..\BedrockCosmos\Proxy\WinInetProxySettingsAccessor.cs" Link="Source\WinInetProxySettingsAccessor.cs" />
   </ItemGroup>
 </Project>
