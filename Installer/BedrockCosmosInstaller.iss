@@ -153,6 +153,11 @@ end;
 procedure LoadLocalizedWizardText(Viewer: TRichEditViewer; Kind: String);
 begin
   Viewer.Text := ReadLocalizedText(Kind);
+  Viewer.StyleElements := Viewer.StyleElements - [seFont];
+  if IsDarkInstallMode then
+    Viewer.Font.Color := StrToColor('#F5F5F5')
+  else
+    Viewer.Font.Color := StrToColor('#1F1F1F');
 end;
 
 procedure InitializeWizard();
