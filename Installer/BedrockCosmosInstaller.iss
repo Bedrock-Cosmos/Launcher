@@ -150,14 +150,72 @@ begin
   end;
 end;
 
+function EscapeRtfText(Value: String): String;
+var
+  Index: Integer;
+  CodePoint: Integer;
+  Character: String;
+begin
+  Result := '';
+  Index := 1;
+  while Index <= Length(Value) do
+  begin
+    Character := Copy(Value, Index, 1);
+    if Character = '\' then
+      Result := Result + '\\'
+    else if Character = '{' then
+      Result := Result + '\{'
+    else if Character = '}' then
+      Result := Result + '\}'
+    else if Character = #9 then
+      Result := Result + '\tab '
+    else if Character = #13 then
+    begin
+      if (Index < Length(Value)) and (Copy(Value, Index + 1, 1) = #10) then
+        Index := Index + 1;
+      Result := Result + '\par ' + #13#10;
+    end
+    else if Character = #10 then
+      Result := Result + '\par ' + #13#10
+    else
+    begin
+      CodePoint := Ord(Character[1]);
+      if (CodePoint >= 32) and (CodePoint <= 126) then
+        Result := Result + Character
+      else
+      begin
+        if CodePoint > 32767 then
+          CodePoint := CodePoint - 65536;
+        Result := Result + '\u' + IntToStr(CodePoint) + '?';
+      end;
+    end;
+
+    Index := Index + 1;
+  end;
+end;
+
+function BuildViewerRtf(Value: String): String;
+var
+  TextColor: String;
+begin
+  if IsDarkInstallMode then
+    TextColor := '\red245\green245\blue245;'
+  else
+    TextColor := '\red31\green31\blue31;';
+
+  Result :=
+    '{\rtf1\ansi\uc1\deff0' +
+    '{\fonttbl{\f0\fnil Segoe UI;}}' +
+    '{\colortbl ;' + TextColor + '}' +
+    '\viewkind4\pard\f0\fs22\cf1 ' +
+    EscapeRtfText(Value) +
+    '}';
+end;
+
 procedure LoadLocalizedWizardText(Viewer: TRichEditViewer; Kind: String);
 begin
-  Viewer.Text := ReadLocalizedText(Kind);
-  Viewer.StyleElements := Viewer.StyleElements - [seFont];
-  if IsDarkInstallMode then
-    Viewer.Font.Color := StrToColor('#F5F5F5')
-  else
-    Viewer.Font.Color := StrToColor('#1F1F1F');
+  Viewer.UseRichEdit := True;
+  Viewer.RTFText := BuildViewerRtf(ReadLocalizedText(Kind));
 end;
 
 procedure InitializeWizard();
