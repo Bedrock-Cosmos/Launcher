@@ -175,6 +175,7 @@
     <Compile Include="App\SettingsManager.cs" />
     <Compile Include="App\SingleInstanceHelper.cs" />
     <Compile Include="App\StructuredLogger.cs" />
+    <Compile Include="App\TextSanitizer.cs" />
     <Compile Include="App\UI\GradientComboBox.cs">
       <SubType>Component</SubType>
     </Compile>

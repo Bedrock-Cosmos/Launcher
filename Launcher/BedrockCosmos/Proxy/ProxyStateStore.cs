@@ -1,5 +1,7 @@
 using Newtonsoft.Json;
+using BedrockCosmos.App;
 using System.IO;
+using System.Text;
 
 namespace BedrockCosmos.Proxy
 {
@@ -27,8 +29,8 @@ namespace BedrockCosmos.Proxy
             if (!Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
 
-            string json = JsonConvert.SerializeObject(state, Formatting.Indented);
-            File.WriteAllText(stateFilePath, json);
+            string json = TextSanitizer.ReplaceInvalidUnicode(JsonConvert.SerializeObject(state, Formatting.Indented));
+            File.WriteAllText(stateFilePath, json, new UTF8Encoding(false, false));
         }
 
         public void Delete()

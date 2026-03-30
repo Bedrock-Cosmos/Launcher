@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.IO;
+using System.Text;
 
 namespace BedrockCosmos.App
 {
@@ -24,11 +25,11 @@ namespace BedrockCosmos.App
                 };
 
                 string path = Path.Combine(PathDefinitions.LogsDirectory, "proxy-lifecycle.jsonl");
-                string line = JsonConvert.SerializeObject(payload);
+                string line = TextSanitizer.ReplaceInvalidUnicode(JsonConvert.SerializeObject(payload));
 
                 lock (SyncRoot)
                 {
-                    File.AppendAllText(path, line + Environment.NewLine);
+                    File.AppendAllText(path, line + Environment.NewLine, new UTF8Encoding(false, false));
                 }
             }
             catch

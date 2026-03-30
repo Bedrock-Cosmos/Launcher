@@ -14,6 +14,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\BedrockCosmos\App\TextSanitizer.cs" Link="Source\TextSanitizer.cs" />
     <Compile Include="..\BedrockCosmos\Proxy\IInternetProxySettingsAccessor.cs" Link="Source\IInternetProxySettingsAccessor.cs" />
     <Compile Include="..\BedrockCosmos\Proxy\IProxyAvailabilityProbe.cs" Link="Source\IProxyAvailabilityProbe.cs" />
     <Compile Include="..\BedrockCosmos\Proxy\IProxyLifecycleLogger.cs" Link="Source\IProxyLifecycleLogger.cs" />

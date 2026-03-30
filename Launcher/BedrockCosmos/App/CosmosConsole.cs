@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Forms;
 
 // =============================================================================
@@ -70,7 +71,7 @@ namespace BedrockCosmos.App
         {
             if (SettingsManager.EnableLogging)
             {
-                string log = $"[{sender}] {message}";
+                string log = TextSanitizer.ReplaceInvalidUnicode($"[{sender}] {message}");
 
                 if (_console != null)
                 {
@@ -120,7 +121,7 @@ namespace BedrockCosmos.App
                 int fileCount = Directory.GetFiles(logsFolder).Length;
                 string logPath = logsFolder + @"\Log" + fileCount.ToString() + ".txt";
 
-                File.WriteAllText(logPath, _console.Text);
+                File.WriteAllText(logPath, TextSanitizer.ReplaceInvalidUnicode(_console.Text), new UTF8Encoding(false, false));
                 WriteLine("App", LanguageHandler.Format("Logs.ExportedLog", logPath));
             }
             catch (Exception)
