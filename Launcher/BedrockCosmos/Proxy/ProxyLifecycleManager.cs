@@ -15,6 +15,8 @@ namespace BedrockCosmos.Proxy
         private readonly IProxyAvailabilityProbe readinessProbe;
         private readonly IProxyLifecycleLogger logger;
         private readonly TimeSpan monitoringInterval;
+        private readonly TimeSpan startupReadinessTimeout;
+        private readonly TimeSpan startupReadinessPollInterval;
         private readonly object syncRoot = new object();
 
         private ProxyOwnershipState activeState;
@@ -28,13 +30,17 @@ namespace BedrockCosmos.Proxy
             IProxyStateStore stateStore,
             IProxyAvailabilityProbe readinessProbe,
             IProxyLifecycleLogger logger,
-            TimeSpan monitoringInterval)
+            TimeSpan monitoringInterval,
+            TimeSpan startupReadinessTimeout,
+            TimeSpan startupReadinessPollInterval)
         {
             this.settingsAccessor = settingsAccessor;
             this.stateStore = stateStore;
             this.readinessProbe = readinessProbe;
             this.logger = logger;
             this.monitoringInterval = monitoringInterval;
+            this.startupReadinessTimeout = startupReadinessTimeout;
+            this.startupReadinessPollInterval = startupReadinessPollInterval;
         }
 
         public async Task<ProxyStartupRecoveryResult> RecoverStaleProxySettingsAsync()
@@ -89,7 +95,7 @@ namespace BedrockCosmos.Proxy
             ProxySettingsSnapshot previousSettings = settingsAccessor.ReadCurrentSettings();
             logger.Log("previous_proxy_state_captured", previousSettings);
 
-            bool readinessPassed = await readinessProbe.IsListeningAsync(host, port).ConfigureAwait(false);
+            bool readinessPassed = await WaitForProxyReadinessAsync(host, port).ConfigureAwait(false);
             logger.Log(readinessPassed ? "proxy_readiness_passed" : "proxy_readiness_failed", new { host, port });
 
             if (!readinessPassed)
@@ -186,6 +192,31 @@ namespace BedrockCosmos.Proxy
                 handler(this, new ProxyHealthFailureEventArgs(state.ProxyHost, state.ProxyPort, restoreResult));
 
             return false;
+        }
+
+        private async Task<bool> WaitForProxyReadinessAsync(string host, int port)
+        {
+            if (startupReadinessTimeout <= TimeSpan.Zero)
+                return await readinessProbe.IsListeningAsync(host, port).ConfigureAwait(false);
+
+            DateTime deadlineUtc = DateTime.UtcNow + startupReadinessTimeout;
+
+            while (true)
+            {
+                bool listening = await readinessProbe.IsListeningAsync(host, port).ConfigureAwait(false);
+                if (listening)
+                    return true;
+
+                TimeSpan remaining = deadlineUtc - DateTime.UtcNow;
+                if (remaining <= TimeSpan.Zero)
+                    return false;
+
+                TimeSpan delay = startupReadinessPollInterval <= TimeSpan.Zero
+                    ? remaining
+                    : (remaining < startupReadinessPollInterval ? remaining : startupReadinessPollInterval);
+
+                await Task.Delay(delay).ConfigureAwait(false);
+            }
         }
 
         private void StartMonitoring()

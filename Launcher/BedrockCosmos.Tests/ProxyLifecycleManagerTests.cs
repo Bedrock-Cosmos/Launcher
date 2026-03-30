@@ -1,4 +1,6 @@
 using BedrockCosmos.Proxy;
+using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace BedrockCosmos.Tests
@@ -19,6 +21,26 @@ namespace BedrockCosmos.Tests
             Assert.Equal(0, accessor.ApplyCallCount);
             Assert.Null(store.State);
             Assert.Equal("pac-script", result.PreviousSettings.Classification);
+        }
+
+        [Fact]
+        public async Task ApplyProxyAsync_WaitsForProxyToBecomeReadyWithinStartupWindow()
+        {
+            var accessor = new FakeProxySettingsAccessor(CreatePacSettings());
+            var store = new FakeProxyStateStore();
+            var probe = new FakeProbe(false, false, true);
+            var manager = CreateManager(
+                accessor,
+                store,
+                probe,
+                TimeSpan.FromMilliseconds(25),
+                TimeSpan.FromMilliseconds(1));
+
+            ProxyApplyResult result = await manager.ApplyProxyAsync("127.0.0.1", 8000);
+
+            Assert.True(result.Applied);
+            Assert.Equal(1, accessor.ApplyCallCount);
+            Assert.NotNull(store.State);
         }
 
         [Fact]
@@ -133,14 +155,18 @@ namespace BedrockCosmos.Tests
         private static ProxyLifecycleManager CreateManager(
             FakeProxySettingsAccessor accessor,
             FakeProxyStateStore store,
-            FakeProbe probe)
+            FakeProbe probe,
+            TimeSpan? startupReadinessTimeout = null,
+            TimeSpan? startupReadinessPollInterval = null)
         {
             return new ProxyLifecycleManager(
                 accessor,
                 store,
                 probe,
                 new FakeLogger(),
-                TimeSpan.FromMinutes(5));
+                TimeSpan.FromMinutes(5),
+                startupReadinessTimeout ?? TimeSpan.FromMilliseconds(10),
+                startupReadinessPollInterval ?? TimeSpan.FromMilliseconds(1));
         }
 
         private static ProxySettingsSnapshot CreatePacSettings()
@@ -214,15 +240,31 @@ namespace BedrockCosmos.Tests
 
         private sealed class FakeProbe : IProxyAvailabilityProbe
         {
+            private readonly Queue<bool> responses;
+
             public FakeProbe(bool isListening)
             {
                 IsListening = isListening;
+                responses = new Queue<bool>();
+            }
+
+            public FakeProbe(params bool[] responses)
+            {
+                this.responses = new Queue<bool>(responses ?? Array.Empty<bool>());
+                IsListening = this.responses.Count > 0 ? this.responses.Peek() : false;
             }
 
             public bool IsListening { get; set; }
 
             public Task<bool> IsListeningAsync(string host, int port)
             {
+                if (responses.Count > 0)
+                {
+                    bool next = responses.Dequeue();
+                    IsListening = responses.Count > 0 ? responses.Peek() : next;
+                    return Task.FromResult(next);
+                }
+
                 return Task.FromResult(IsListening);
             }
         }

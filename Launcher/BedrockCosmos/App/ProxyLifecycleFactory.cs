@@ -12,7 +12,9 @@ namespace BedrockCosmos.App
                 new ProxyStateStore(PathDefinitions.ProxyStateFile),
                 new TcpProxyAvailabilityProbe(TimeSpan.FromMilliseconds(750)),
                 new StructuredProxyLifecycleLogger(),
-                TimeSpan.FromSeconds(2));
+                TimeSpan.FromSeconds(2),
+                TimeSpan.FromSeconds(4),
+                TimeSpan.FromMilliseconds(150));
         }
     }
 }

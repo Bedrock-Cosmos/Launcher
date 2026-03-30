@@ -31,7 +31,7 @@ namespace BedrockCosmos.Proxy
         public const string DefaultHost = "127.0.0.1";
         public const int DefaultPort = 8000;
 
-        private readonly ProxyServer proxyServer;
+        private ProxyServer proxyServer;
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         private readonly ConcurrentQueue<Tuple<string, string>> consoleMessageQueue
             = new ConcurrentQueue<Tuple<string, string>>();
@@ -44,28 +44,6 @@ namespace BedrockCosmos.Proxy
         public ProxyController()
         {
             Task.Run(() => ListenToConsole());
-
-            proxyServer = new ProxyServer();
-            proxyServer.CertificateManager.PfxFilePath = Path.Combine(PathDefinitions.CosmosAppData, @"CosmosRootCert.pfx");
-            proxyServer.CertificateManager.CertificateStorage = new CertificateStorage(PathDefinitions.CosmosAppData);
-
-            proxyServer.ExceptionFunc = async exception =>
-            {
-                if (exception is ProxyHttpException)
-                    return; // Supresses "errors" for requests that would have originally 404'd before proxy
-
-                if (exception is ProxyHttpException phex)
-                    ProxyConsoleWriteLine(consoleSender, LanguageHandler.Format("Logs.Proxy.ExceptionWithInner", exception.GetType().Name, exception.Message, phex.InnerException?.Message));
-                else
-                    ProxyConsoleWriteLine(consoleSender, LanguageHandler.Format("Logs.Proxy.Exception", exception.Message));
-            };
-
-            proxyServer.TcpTimeWaitSeconds = 10;
-            proxyServer.ConnectionTimeOutSeconds = 15;
-            proxyServer.ReuseSocket = false;
-            proxyServer.EnableConnectionPool = false;
-            proxyServer.ForwardToUpstreamGateway = true;
-            proxyServer.CertificateManager.SaveFakeCertificates = true;
         }
 
         private CancellationToken CancellationToken => cancellationTokenSource.Token;
@@ -81,8 +59,13 @@ namespace BedrockCosmos.Proxy
 
             }
 
+            if (proxyServer != null)
+            {
+                proxyServer.Dispose();
+                proxyServer = null;
+            }
+
             cancellationTokenSource.Dispose();
-            proxyServer.Dispose();
         }
 
         public void StartProxy()
@@ -90,7 +73,8 @@ namespace BedrockCosmos.Proxy
             if (IsRunning)
                 return;
 
-            AttachEvents();
+            proxyServer = CreateProxyServer();
+            AttachEvents(proxyServer);
 
             explicitEndPoint = new ExplicitProxyEndPoint(IPAddress.Loopback, DefaultPort);
 
@@ -98,7 +82,7 @@ namespace BedrockCosmos.Proxy
             explicitEndPoint.BeforeTunnelConnectResponse += OnBeforeTunnelConnectResponse;
 
             proxyServer.AddEndPoint(explicitEndPoint);
-            proxyServer.Start();
+            proxyServer.Start(false);
             IsRunning = true;
 
             foreach (var endPoint in proxyServer.ProxyEndPoints)
@@ -107,16 +91,27 @@ namespace BedrockCosmos.Proxy
 
         public void Stop()
         {
-            if (!IsRunning)
+            if (!IsRunning && proxyServer == null)
                 return;
 
-            explicitEndPoint.BeforeTunnelConnectRequest -= OnBeforeTunnelConnectRequest;
-            explicitEndPoint.BeforeTunnelConnectResponse -= OnBeforeTunnelConnectResponse;
+            if (explicitEndPoint != null)
+            {
+                explicitEndPoint.BeforeTunnelConnectRequest -= OnBeforeTunnelConnectRequest;
+                explicitEndPoint.BeforeTunnelConnectResponse -= OnBeforeTunnelConnectResponse;
+            }
 
-            DetachEvents();
+            if (proxyServer != null)
+                DetachEvents(proxyServer);
 
-            proxyServer.Stop();
-            proxyServer.RemoveEndPoint(explicitEndPoint);
+            if (proxyServer != null)
+            {
+                if (IsRunning)
+                    proxyServer.Stop();
+
+                proxyServer.Dispose();
+                proxyServer = null;
+            }
+
             explicitEndPoint = null;
             IsRunning = false;
 
@@ -124,25 +119,51 @@ namespace BedrockCosmos.Proxy
             //proxyServer.CertificateManager.RemoveTrustedRootCertificates();
         }
 
-        private void AttachEvents()
+        private ProxyServer CreateProxyServer()
         {
-            if (eventsAttached)
+            var server = new ProxyServer();
+            server.CertificateManager.PfxFilePath = Path.Combine(PathDefinitions.CosmosAppData, @"CosmosRootCert.pfx");
+            server.CertificateManager.CertificateStorage = new CertificateStorage(PathDefinitions.CosmosAppData);
+
+            server.ExceptionFunc = async exception =>
+            {
+                if (exception is ProxyHttpException)
+                    return; // Supresses "errors" for requests that would have originally 404'd before proxy
+
+                if (exception is ProxyHttpException phex)
+                    ProxyConsoleWriteLine(consoleSender, LanguageHandler.Format("Logs.Proxy.ExceptionWithInner", exception.GetType().Name, exception.Message, phex.InnerException?.Message));
+                else
+                    ProxyConsoleWriteLine(consoleSender, LanguageHandler.Format("Logs.Proxy.Exception", exception.Message));
+            };
+
+            server.TcpTimeWaitSeconds = 10;
+            server.ConnectionTimeOutSeconds = 15;
+            server.ReuseSocket = false;
+            server.EnableConnectionPool = false;
+            server.ForwardToUpstreamGateway = true;
+            server.CertificateManager.SaveFakeCertificates = true;
+            return server;
+        }
+
+        private void AttachEvents(ProxyServer server)
+        {
+            if (eventsAttached || server == null)
                 return;
 
-            proxyServer.BeforeRequest += OnRequest;
-            proxyServer.BeforeResponse += OnResponse;
-            proxyServer.AfterResponse += OnAfterResponse;
+            server.BeforeRequest += OnRequest;
+            server.BeforeResponse += OnResponse;
+            server.AfterResponse += OnAfterResponse;
             eventsAttached = true;
         }
 
-        private void DetachEvents()
+        private void DetachEvents(ProxyServer server)
         {
-            if (!eventsAttached)
+            if (!eventsAttached || server == null)
                 return;
 
-            proxyServer.BeforeRequest -= OnRequest;
-            proxyServer.BeforeResponse -= OnResponse;
-            proxyServer.AfterResponse -= OnAfterResponse;
+            server.BeforeRequest -= OnRequest;
+            server.BeforeResponse -= OnResponse;
+            server.AfterResponse -= OnAfterResponse;
             eventsAttached = false;
         }
 
