@@ -36,7 +36,7 @@ internal static class UriHandler
             if (path.StartsWith("/"))
                 path = path.Substring("/".Length);
 
-            CosmosConsole.WriteLine($"Opened URI path: {path}");
+            CosmosConsole.WriteLine(LanguageHandler.Format("Logs.OpenedUriPath", path));
 
             // openStore?showStoreOffer=UUID
             if (path.StartsWith("openStore", StringComparison.OrdinalIgnoreCase))
@@ -88,7 +88,7 @@ internal static class UriHandler
         }
         catch (Exception ex)
         {
-            CosmosConsole.WriteLine($"URI Handler error: {ex.Message}");
+            CosmosConsole.WriteLine(LanguageHandler.Format("Logs.UriHandlerError", ex.Message));
             return "";
         }
     }

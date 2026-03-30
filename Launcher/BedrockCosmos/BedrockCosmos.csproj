@@ -169,9 +169,13 @@
     <Compile Include="App\DiscordRichPresence.cs" />
     <Compile Include="App\LanguageHandler.cs" />
     <Compile Include="App\LaunchManager.cs" />
+    <Compile Include="App\LocalizedMessageBox.cs" />
     <Compile Include="App\PathDefinitions.cs" />
+    <Compile Include="App\ProxyLifecycleFactory.cs" />
     <Compile Include="App\SettingsManager.cs" />
     <Compile Include="App\SingleInstanceHelper.cs" />
+    <Compile Include="App\StructuredLogger.cs" />
+    <Compile Include="App\TextSanitizer.cs" />
     <Compile Include="App\UI\GradientComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -196,9 +200,20 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Proxy\CertificateStorage.cs" />
+    <Compile Include="Proxy\IInternetProxySettingsAccessor.cs" />
+    <Compile Include="Proxy\IProxyAvailabilityProbe.cs" />
+    <Compile Include="Proxy\IProxyLifecycleLogger.cs" />
+    <Compile Include="Proxy\IProxyStateStore.cs" />
+    <Compile Include="Proxy\ProxyLifecycleManager.cs" />
+    <Compile Include="Proxy\ProxyOwnershipState.cs" />
+    <Compile Include="Proxy\ProxySettingsSnapshot.cs" />
+    <Compile Include="Proxy\ProxyStateStore.cs" />
+    <Compile Include="Proxy\StructuredProxyLifecycleLogger.cs" />
+    <Compile Include="Proxy\TcpProxyAvailabilityProbe.cs" />
     <Compile Include="Proxy\ProxyUrlDefinitions.cs" />
     <Compile Include="Proxy\ProxyEventArgsBaseExtensions.cs" />
     <Compile Include="Proxy\ProxyController.cs" />
+    <Compile Include="Proxy\WinInetProxySettingsAccessor.cs" />
     <Compile Include="App\UI\RoundButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -227,6 +242,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <None Include="Texts\en_US.lang">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Texts\de_DE.lang">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Texts\es_ES.lang">

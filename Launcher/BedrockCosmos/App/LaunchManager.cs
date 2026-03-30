@@ -102,7 +102,7 @@ namespace BedrockCosmos.App
             }
             catch (Exception)
             {
-                CosmosConsole.WriteLine("Unable to download file. Download canceled.");
+                CosmosConsole.WriteLine(LanguageHandler.Get("Logs.DownloadCanceled"));
             }
         }
 
@@ -110,12 +110,12 @@ namespace BedrockCosmos.App
         {
             if (_latestLauncherVersion > _currentLauncherVersion)
             {
-                CosmosConsole.WriteLine($"Launcher update found (v{_latestLauncherVersion}).");
+                CosmosConsole.WriteLine(LanguageHandler.Format("Logs.LauncherUpdateFound", _latestLauncherVersion));
                 return true;
             } 
             else
             {
-                CosmosConsole.WriteLine($"Launcher is up to date.");
+                CosmosConsole.WriteLine(LanguageHandler.Get("Logs.LauncherUpToDate"));
                 return false;
             } 
         }
@@ -124,12 +124,12 @@ namespace BedrockCosmos.App
         {
             if (_latestResponsesVersion > _currentResponsesVersion)
             {
-                CosmosConsole.WriteLine($"Responses update found (v{_latestResponsesVersion}).");
+                CosmosConsole.WriteLine(LanguageHandler.Format("Logs.ResponsesUpdateFound", _latestResponsesVersion));
                 return true;
             }
             else
             {
-                CosmosConsole.WriteLine($"Responses are up to date.");
+                CosmosConsole.WriteLine(LanguageHandler.Get("Logs.ResponsesUpToDate"));
                 return false;
             }
         }
@@ -162,7 +162,7 @@ namespace BedrockCosmos.App
             }
             catch (Exception)
             {
-                CosmosConsole.WriteLine("Unable to download file. Download canceled.");
+                CosmosConsole.WriteLine(LanguageHandler.Get("Logs.DownloadCanceled"));
             }
         }
 
@@ -171,11 +171,11 @@ namespace BedrockCosmos.App
             try
             {
                 Process.Start("minecraft://");
-                CosmosConsole.WriteLine("Opened Minecraft.");
+                CosmosConsole.WriteLine(LanguageHandler.Get("Logs.OpenedMinecraft"));
             }
             catch (Exception)
             {
-                CosmosConsole.WriteLine("Unable to launch Minecraft (ensure that the game in installed).");
+                CosmosConsole.WriteLine(LanguageHandler.Get("Logs.OpenMinecraftFailed"));
             }
         }
 

@@ -20,32 +20,32 @@ namespace BedrockCosmos.App
         {
             client = new DiscordRpcClient("1477362317006999692");
             client.Initialize();
-            CosmosConsole.WriteLine("Started Discord rich presence.");
+            CosmosConsole.WriteLine(LanguageHandler.Get("Logs.DiscordPresenceStarted"));
         }
 
         internal static void DisposeRpc()
         {
             client.Dispose();
-            CosmosConsole.WriteLine("Stopped Discord rich presence.");
+            CosmosConsole.WriteLine(LanguageHandler.Get("Logs.DiscordPresenceStopped"));
         }
 
         internal static void UpdatePresence()
         {
             client.SetPresence(new RichPresence()
             {
-                Details = "Using Custom Capes & Skins",
-                State = "On Minecraft Bedrock Edition",
+                Details = LanguageHandler.Get("Discord.Details"),
+                State = LanguageHandler.Get("Discord.State"),
                 Buttons = new Button[]
                 {
-                    new Button() { Label = "Website", Url = "https://bedrock-cosmos.app/" },
-                    new Button() { Label = "Discord Server", Url = "https://discord.com/invite/DSbyeN5T" }
+                    new Button() { Label = LanguageHandler.Get("Discord.Button.Website"), Url = "https://bedrock-cosmos.app/" },
+                    new Button() { Label = LanguageHandler.Get("Discord.Button.Discord"), Url = "https://discord.com/invite/DSbyeN5T" }
                 },
                 Assets = new Assets()
                 {
                     LargeImageKey = "minecraft-bedrock",
-                    LargeImageText = "Minecraft Bedrock Edition",
+                    LargeImageText = LanguageHandler.Get("Discord.Assets.LargeText"),
                     SmallImageKey = "bedrock-cosmos",
-                    SmallImageText = "Bedrock Cosmos"
+                    SmallImageText = LanguageHandler.Get("Discord.Assets.SmallText")
                 }
             });
         }

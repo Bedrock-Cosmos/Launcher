@@ -101,7 +101,7 @@
             this.StatusLabel.Name = "StatusLabel";
             this.StatusLabel.Size = new System.Drawing.Size(340, 68);
             this.StatusLabel.TabIndex = 2;
-            this.StatusLabel.Text = "Waiting...";
+            this.StatusLabel.Text = "";
             this.StatusLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // TabControl
@@ -131,7 +131,7 @@
             this.HomePage.Padding = new System.Windows.Forms.Padding(3);
             this.HomePage.Size = new System.Drawing.Size(806, 440);
             this.HomePage.TabIndex = 0;
-            this.HomePage.Text = "Home";
+            this.HomePage.Text = "";
             // 
             // VersionLabel
             // 
@@ -141,7 +141,7 @@
             this.VersionLabel.Name = "VersionLabel";
             this.VersionLabel.Size = new System.Drawing.Size(64, 19);
             this.VersionLabel.TabIndex = 18;
-            this.VersionLabel.Text = "v?.?.?";
+            this.VersionLabel.Text = "";
             this.VersionLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // AboutButton
@@ -195,7 +195,7 @@
             this.AboutPage.Name = "AboutPage";
             this.AboutPage.Size = new System.Drawing.Size(806, 440);
             this.AboutPage.TabIndex = 3;
-            this.AboutPage.Text = "About";
+            this.AboutPage.Text = "";
             // 
             // WebsiteLabel
             // 
@@ -208,7 +208,7 @@
             this.WebsiteLabel.Size = new System.Drawing.Size(65, 21);
             this.WebsiteLabel.TabIndex = 14;
             this.WebsiteLabel.TabStop = true;
-            this.WebsiteLabel.Text = "Website";
+            this.WebsiteLabel.Text = "";
             this.WebsiteLabel.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.WebsiteLabel.Click += new System.EventHandler(this.OpenWebsiteLink);
             // 
@@ -235,7 +235,7 @@
             this.GitHubLabel.Size = new System.Drawing.Size(59, 21);
             this.GitHubLabel.TabIndex = 12;
             this.GitHubLabel.TabStop = true;
-            this.GitHubLabel.Text = "GitHub";
+            this.GitHubLabel.Text = "";
             this.GitHubLabel.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.GitHubLabel.Click += new System.EventHandler(this.OpenGitHubLink);
             // 
@@ -250,7 +250,7 @@
             this.DiscordLabel.Size = new System.Drawing.Size(63, 21);
             this.DiscordLabel.TabIndex = 11;
             this.DiscordLabel.TabStop = true;
-            this.DiscordLabel.Text = "Discord";
+            this.DiscordLabel.Text = "";
             this.DiscordLabel.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.DiscordLabel.Click += new System.EventHandler(this.OpenDiscordLink);
             // 
@@ -321,7 +321,7 @@
             this.SettingsPage.Padding = new System.Windows.Forms.Padding(3);
             this.SettingsPage.Size = new System.Drawing.Size(806, 440);
             this.SettingsPage.TabIndex = 1;
-            this.SettingsPage.Text = "Settings";
+            this.SettingsPage.Text = "";
             // 
             // LanguageDescriptionLabel
             // 
@@ -331,7 +331,7 @@
             this.LanguageDescriptionLabel.Name = "LanguageDescriptionLabel";
             this.LanguageDescriptionLabel.Size = new System.Drawing.Size(506, 23);
             this.LanguageDescriptionLabel.TabIndex = 18;
-            this.LanguageDescriptionLabel.Text = "Change the language used in the Bedrock Cosmos Launcher.";
+            this.LanguageDescriptionLabel.Text = "";
             this.LanguageDescriptionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // LanguageTitleLabel
@@ -342,7 +342,7 @@
             this.LanguageTitleLabel.Name = "LanguageTitleLabel";
             this.LanguageTitleLabel.Size = new System.Drawing.Size(107, 30);
             this.LanguageTitleLabel.TabIndex = 17;
-            this.LanguageTitleLabel.Text = "Language";
+            this.LanguageTitleLabel.Text = "";
             this.LanguageTitleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // SettingsBackButton
@@ -371,9 +371,7 @@
             this.BackgroundModeDescriptionLabel.Name = "BackgroundModeDescriptionLabel";
             this.BackgroundModeDescriptionLabel.Size = new System.Drawing.Size(506, 61);
             this.BackgroundModeDescriptionLabel.TabIndex = 14;
-            this.BackgroundModeDescriptionLabel.Text = "When enabled, Bedrock Cosmos will minimize to the system tray instead of the task" +
-    "bar. The proxy service will also automatically start/stop when Minecraft is open" +
-    "ed/closed, respectively.";
+            this.BackgroundModeDescriptionLabel.Text = "";
             this.BackgroundModeDescriptionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // BackgroundModeTitleLabel
@@ -384,7 +382,7 @@
             this.BackgroundModeTitleLabel.Name = "BackgroundModeTitleLabel";
             this.BackgroundModeTitleLabel.Size = new System.Drawing.Size(193, 61);
             this.BackgroundModeTitleLabel.TabIndex = 13;
-            this.BackgroundModeTitleLabel.Text = "Background Mode";
+            this.BackgroundModeTitleLabel.Text = "";
             this.BackgroundModeTitleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // UpdatePage
@@ -398,7 +396,7 @@
             this.UpdatePage.Name = "UpdatePage";
             this.UpdatePage.Size = new System.Drawing.Size(806, 440);
             this.UpdatePage.TabIndex = 4;
-            this.UpdatePage.Text = "Update";
+            this.UpdatePage.Text = "";
             // 
             // ChangelogLabel
             // 
@@ -410,7 +408,7 @@
             this.ChangelogLabel.Size = new System.Drawing.Size(133, 36);
             this.ChangelogLabel.TabIndex = 13;
             this.ChangelogLabel.TabStop = true;
-            this.ChangelogLabel.Text = "Changelog";
+            this.ChangelogLabel.Text = "";
             this.ChangelogLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.ChangelogLabel.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.ChangelogLabel.Click += new System.EventHandler(this.ChangelogLabel_Click);
@@ -423,8 +421,7 @@
             this.UpdateLabel.Name = "UpdateLabel";
             this.UpdateLabel.Size = new System.Drawing.Size(440, 93);
             this.UpdateLabel.TabIndex = 11;
-            this.UpdateLabel.Text = "A new update is available for the Bedrock Cosmos Launcher!\r\n\r\nSelect \"Update\" to " +
-    "begin the installation.\r\n\r\n\r\n\r\n";
+            this.UpdateLabel.Text = "";
             this.UpdateLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // DevPage
@@ -447,7 +444,7 @@
             this.DevPage.Name = "DevPage";
             this.DevPage.Size = new System.Drawing.Size(806, 440);
             this.DevPage.TabIndex = 2;
-            this.DevPage.Text = "Dev";
+            this.DevPage.Text = "";
             // 
             // DetailedLoggingLabel
             // 
@@ -458,7 +455,7 @@
             this.DetailedLoggingLabel.Name = "DetailedLoggingLabel";
             this.DetailedLoggingLabel.Size = new System.Drawing.Size(221, 19);
             this.DetailedLoggingLabel.TabIndex = 18;
-            this.DetailedLoggingLabel.Text = "Show Ignored (Tunneled) Requests";
+            this.DetailedLoggingLabel.Text = "";
             // 
             // DevBackButton
             // 
@@ -501,7 +498,7 @@
             this.EnableLoggingLabel.Name = "EnableLoggingLabel";
             this.EnableLoggingLabel.Size = new System.Drawing.Size(103, 19);
             this.EnableLoggingLabel.TabIndex = 11;
-            this.EnableLoggingLabel.Text = "Enable Logging";
+            this.EnableLoggingLabel.Text = "";
             // 
             // DownloadZipProgressLabel
             // 
@@ -511,7 +508,7 @@
             this.DownloadZipProgressLabel.Name = "DownloadZipProgressLabel";
             this.DownloadZipProgressLabel.Size = new System.Drawing.Size(121, 46);
             this.DownloadZipProgressLabel.TabIndex = 4;
-            this.DownloadZipProgressLabel.Text = "Downloading...";
+            this.DownloadZipProgressLabel.Text = "";
             this.DownloadZipProgressLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.DownloadZipProgressLabel.Visible = false;
             // 
@@ -553,7 +550,7 @@
             this.TopLabel.Name = "TopLabel";
             this.TopLabel.Size = new System.Drawing.Size(126, 21);
             this.TopLabel.TabIndex = 2;
-            this.TopLabel.Text = "Bedrock Cosmos";
+            this.TopLabel.Text = "";
             this.TopLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseDown);
             this.TopLabel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseMove);
             this.TopLabel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseUp);
@@ -595,7 +592,7 @@
             // TrayIcon
             // 
             this.TrayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("TrayIcon.Icon")));
-            this.TrayIcon.Text = "Bedrock Cosmos";
+            this.TrayIcon.Text = "";
             this.TrayIcon.Click += new System.EventHandler(this.TrayIcon_Click);
             // 
             // BackgroundModeTimer
@@ -627,7 +624,7 @@
             this.LaunchButton.Size = new System.Drawing.Size(340, 100);
             this.LaunchButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.LaunchButton.TabIndex = 6;
-            this.LaunchButton.Text = "LAUNCH";
+            this.LaunchButton.Text = "";
             this.LaunchButton.Click += new System.EventHandler(this.LaunchButton_Click);
             // 
             // LanguageComboBox
@@ -643,20 +640,15 @@
             this.LanguageComboBox.ColorH = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.LanguageComboBox.ColorI = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.LanguageComboBox.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.LanguageComboBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.LanguageComboBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.LanguageComboBox.DropDownHeight = 100;
             this.LanguageComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.LanguageComboBox.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.LanguageComboBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.LanguageComboBox.FormattingEnabled = true;
-            this.LanguageComboBox.HoverSelectionColor = System.Drawing.Color.Empty;
+            this.LanguageComboBox.HoverSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
             this.LanguageComboBox.IntegralHeight = false;
-            this.LanguageComboBox.ItemHeight = 20;
-            this.LanguageComboBox.Items.AddRange(new object[] {
-            "English",
-            "Español",
-            "Indonesia",
-            "日本語"});
+            this.LanguageComboBox.ItemHeight = 24;
             this.LanguageComboBox.Location = new System.Drawing.Point(19, 113);
             this.LanguageComboBox.Name = "LanguageComboBox";
             this.LanguageComboBox.Size = new System.Drawing.Size(132, 26);
@@ -701,7 +693,7 @@
             this.CancelUpdateButton.Size = new System.Drawing.Size(144, 57);
             this.CancelUpdateButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.CancelUpdateButton.TabIndex = 12;
-            this.CancelUpdateButton.Text = "Cancel";
+            this.CancelUpdateButton.Text = "";
             this.CancelUpdateButton.Click += new System.EventHandler(this.CancelUpdateButton_Click);
             // 
             // UpdateButton
@@ -727,7 +719,7 @@
             this.UpdateButton.Size = new System.Drawing.Size(144, 57);
             this.UpdateButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.UpdateButton.TabIndex = 10;
-            this.UpdateButton.Text = "Update";
+            this.UpdateButton.Text = "";
             this.UpdateButton.Click += new System.EventHandler(this.UpdateButton_Click);
             // 
             // DetailedLoggingSwitch
@@ -767,7 +759,7 @@
             this.FixProxyHangButton.Size = new System.Drawing.Size(144, 47);
             this.FixProxyHangButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.FixProxyHangButton.TabIndex = 16;
-            this.FixProxyHangButton.Text = "Fix Proxy Hang";
+            this.FixProxyHangButton.Text = "";
             this.FixProxyHangButton.Click += new System.EventHandler(this.FixProxyHangButton_Click);
             // 
             // ResetNewsButton
@@ -793,7 +785,7 @@
             this.ResetNewsButton.Size = new System.Drawing.Size(144, 47);
             this.ResetNewsButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.ResetNewsButton.TabIndex = 15;
-            this.ResetNewsButton.Text = "Reset News";
+            this.ResetNewsButton.Text = "";
             this.ResetNewsButton.Click += new System.EventHandler(this.ResetNewsButton_Click);
             // 
             // DisableDevMenuButton
@@ -819,7 +811,7 @@
             this.DisableDevMenuButton.Size = new System.Drawing.Size(144, 47);
             this.DisableDevMenuButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.DisableDevMenuButton.TabIndex = 14;
-            this.DisableDevMenuButton.Text = "Disable Dev Menu";
+            this.DisableDevMenuButton.Text = "";
             this.DisableDevMenuButton.Click += new System.EventHandler(this.DisableDevMenuButton_Click);
             // 
             // ClearLogsButton
@@ -845,7 +837,7 @@
             this.ClearLogsButton.Size = new System.Drawing.Size(144, 47);
             this.ClearLogsButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.ClearLogsButton.TabIndex = 12;
-            this.ClearLogsButton.Text = "Clear Logs";
+            this.ClearLogsButton.Text = "";
             this.ClearLogsButton.Click += new System.EventHandler(this.ClearLogsButton_Click);
             // 
             // EnableLoggingSwitch
@@ -885,7 +877,7 @@
             this.DownloadZipButton.Size = new System.Drawing.Size(144, 47);
             this.DownloadZipButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.DownloadZipButton.TabIndex = 9;
-            this.DownloadZipButton.Text = "Force Zip Download";
+            this.DownloadZipButton.Text = "";
             this.DownloadZipButton.Click += new System.EventHandler(this.DownloadZipButton_Click);
             // 
             // ExportLogsButton
@@ -911,12 +903,12 @@
             this.ExportLogsButton.Size = new System.Drawing.Size(144, 47);
             this.ExportLogsButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.ExportLogsButton.TabIndex = 8;
-            this.ExportLogsButton.Text = "Export Logs";
+            this.ExportLogsButton.Text = "";
             this.ExportLogsButton.Click += new System.EventHandler(this.ExportLogsButton_Click);
             // 
             // MainForm
             // 
-            this.AccessibleName = "Bedrock Cosmos";
+            this.AccessibleName = "";
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
@@ -926,7 +918,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
-            this.Text = "Bedrock Cosmos";
+            this.Text = "";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.TabControl.ResumeLayout(false);
             this.HomePage.ResumeLayout(false);

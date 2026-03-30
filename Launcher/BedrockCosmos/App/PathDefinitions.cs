@@ -19,7 +19,10 @@ namespace BedrockCosmos.App
         internal static string AppDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\";
         internal static string CosmosAppData = Path.Combine(AppDataDirectory, @"Bedrock Cosmos\");
         internal static string CustomJsonsDirectory = Path.Combine(CosmosAppData, @"CustomJsons\");
+        internal static string LogsDirectory = Path.Combine(CosmosAppData, @"Logs\");
         internal static string MiscDirectory = Path.Combine(CosmosAppData, @"Misc\");
+        internal static string ProxyStateDirectory = Path.Combine(MiscDirectory, @"Proxy\");
+        internal static string ProxyStateFile = Path.Combine(ProxyStateDirectory, @"ProxyOwnershipState.json");
         internal static string ResponsesDirectory = Path.Combine(CosmosAppData, @"Responses\");
     }
 }

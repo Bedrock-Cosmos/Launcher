@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Windows.Forms;
+using BedrockCosmos.App;
+using BedrockCosmos.Proxy;
+using System.IO;
 
 // =============================================================================
 // Bedrock Cosmos - Copyright (c) 2026
@@ -22,6 +25,8 @@ namespace BedrockCosmos
         [STAThread]
         static void Main(string[] args)
         {
+            BootstrapApplicationState();
+
             bool createdNew;
             mutex = new Mutex(true, AppName, out createdNew);
 
@@ -31,8 +36,8 @@ namespace BedrockCosmos
                     SingleInstanceHelper.SendArgsToRunningInstance(args);
                 else
                     MessageBox.Show(
-                        "Another instance of Bedrock Cosmos is already running. Please close it before opening a new one.",
-                        "Application Already Open",
+                        LanguageHandler.Get("Program.InstanceAlreadyOpen.Message"),
+                        LanguageHandler.Get("Program.InstanceAlreadyOpen.Title"),
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information);
                 return;
@@ -41,7 +46,16 @@ namespace BedrockCosmos
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            var mainForm = new MainForm();
+            ProxyStartupRecoveryResult startupRecoveryResult;
+            using (var proxyLifecycleManager = ProxyLifecycleFactory.CreateDefault())
+            {
+                startupRecoveryResult = proxyLifecycleManager
+                    .RecoverStaleProxySettingsAsync()
+                    .GetAwaiter()
+                    .GetResult();
+            }
+
+            var mainForm = new MainForm(startupRecoveryResult);
 
             // Listens for URI/file from future instances
             SingleInstanceHelper.StartListening(mainForm);
@@ -53,6 +67,16 @@ namespace BedrockCosmos
             Application.Run(mainForm);
 
             mutex.ReleaseMutex();
+        }
+
+        private static void BootstrapApplicationState()
+        {
+            if (!Directory.Exists(PathDefinitions.CosmosAppData))
+                Directory.CreateDirectory(PathDefinitions.CosmosAppData);
+
+            LanguageHandler.Load("en_US");
+            SettingsManager.LoadSettings();
+            LanguageHandler.Load(SettingsManager.Language);
         }
     }
 }

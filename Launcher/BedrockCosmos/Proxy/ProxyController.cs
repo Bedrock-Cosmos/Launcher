@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using Titanium.Web.Proxy;
 using Titanium.Web.Proxy.EventArguments;
 using Titanium.Web.Proxy.Exceptions;
-using Titanium.Web.Proxy.Helpers;
 using Titanium.Web.Proxy.Http;
 using Titanium.Web.Proxy.Models;
 using Titanium.Web.Proxy.StreamExtended.Network;
@@ -29,82 +28,143 @@ namespace BedrockCosmos.Proxy
 {
     public class ProxyController : IDisposable
     {
-        private readonly ProxyServer proxyServer;
+        public const string DefaultHost = "127.0.0.1";
+        public const int DefaultPort = 8000;
+
+        private ProxyServer proxyServer;
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         private readonly ConcurrentQueue<Tuple<string, string>> consoleMessageQueue
             = new ConcurrentQueue<Tuple<string, string>>();
         private ExplicitProxyEndPoint explicitEndPoint;
-        private string consoleSender = "Proxy";
+        private readonly string consoleSender = "Proxy";
+        private bool eventsAttached;
+
+        public bool IsRunning { get; private set; }
 
         public ProxyController()
         {
             Task.Run(() => ListenToConsole());
-
-            proxyServer = new ProxyServer();
-            proxyServer.CertificateManager.PfxFilePath = Path.Combine(PathDefinitions.CosmosAppData, @"CosmosRootCert.pfx");
-            proxyServer.CertificateManager.CertificateStorage = new CertificateStorage(PathDefinitions.CosmosAppData);
-
-            proxyServer.ExceptionFunc = async exception =>
-            {
-                if (exception is ProxyHttpException)
-                    return; // Supresses "errors" for requests that would have originally 404'd before proxy
-
-                if (exception is ProxyHttpException phex)
-                    ProxyConsoleWriteLine(consoleSender, $"{exception.GetType().Name}: {exception.Message} - {phex.InnerException?.Message}");
-                else
-                    ProxyConsoleWriteLine(consoleSender, exception.Message);
-            };
-
-            proxyServer.TcpTimeWaitSeconds = 10;
-            proxyServer.ConnectionTimeOutSeconds = 15;
-            proxyServer.ReuseSocket = false;
-            proxyServer.EnableConnectionPool = false;
-            proxyServer.ForwardToUpstreamGateway = true;
-            proxyServer.CertificateManager.SaveFakeCertificates = true;
         }
 
         private CancellationToken CancellationToken => cancellationTokenSource.Token;
 
         public void Dispose()
         {
+            try
+            {
+                Stop();
+            }
+            catch
+            {
+
+            }
+
+            if (proxyServer != null)
+            {
+                proxyServer.Dispose();
+                proxyServer = null;
+            }
+
             cancellationTokenSource.Dispose();
-            proxyServer.Dispose();
         }
 
         public void StartProxy()
         {
-            // Hooks for proxy events
-            proxyServer.BeforeRequest += OnRequest;
-            proxyServer.BeforeResponse += OnResponse;
-            proxyServer.AfterResponse += OnAfterResponse;
+            if (IsRunning)
+                return;
 
-            explicitEndPoint = new ExplicitProxyEndPoint(IPAddress.Any, 8000);
+            proxyServer = CreateProxyServer();
+            AttachEvents(proxyServer);
+
+            explicitEndPoint = new ExplicitProxyEndPoint(IPAddress.Loopback, DefaultPort);
 
             explicitEndPoint.BeforeTunnelConnectRequest += OnBeforeTunnelConnectRequest;
             explicitEndPoint.BeforeTunnelConnectResponse += OnBeforeTunnelConnectResponse;
 
             proxyServer.AddEndPoint(explicitEndPoint);
-            proxyServer.Start();
+            proxyServer.Start(false);
+            IsRunning = true;
 
             foreach (var endPoint in proxyServer.ProxyEndPoints)
-                ProxyConsoleWriteLine(consoleSender, $"Listening on '{endPoint.GetType().Name}' endpoint at Ip {endPoint.IpAddress}" +
-                    $" and port: {endPoint.Port}");
-
-            if (RunTime.IsWindows) proxyServer.SetAsSystemProxy(explicitEndPoint, ProxyProtocolType.AllHttp);
+                ProxyConsoleWriteLine(consoleSender, LanguageHandler.Format("Logs.Proxy.ListeningEndpoint", endPoint.GetType().Name, endPoint.IpAddress, endPoint.Port));
         }
 
         public void Stop()
         {
-            explicitEndPoint.BeforeTunnelConnectRequest -= OnBeforeTunnelConnectRequest;
-            explicitEndPoint.BeforeTunnelConnectResponse -= OnBeforeTunnelConnectResponse;
+            if (!IsRunning && proxyServer == null)
+                return;
 
-            proxyServer.BeforeRequest -= OnRequest;
-            proxyServer.BeforeResponse -= OnResponse;
+            if (explicitEndPoint != null)
+            {
+                explicitEndPoint.BeforeTunnelConnectRequest -= OnBeforeTunnelConnectRequest;
+                explicitEndPoint.BeforeTunnelConnectResponse -= OnBeforeTunnelConnectResponse;
+            }
 
-            proxyServer.Stop();
+            if (proxyServer != null)
+                DetachEvents(proxyServer);
+
+            if (proxyServer != null)
+            {
+                if (IsRunning)
+                    proxyServer.Stop();
+
+                proxyServer.Dispose();
+                proxyServer = null;
+            }
+
+            explicitEndPoint = null;
+            IsRunning = false;
 
             // Remove generated certificates
             //proxyServer.CertificateManager.RemoveTrustedRootCertificates();
+        }
+
+        private ProxyServer CreateProxyServer()
+        {
+            var server = new ProxyServer();
+            server.CertificateManager.PfxFilePath = Path.Combine(PathDefinitions.CosmosAppData, @"CosmosRootCert.pfx");
+            server.CertificateManager.CertificateStorage = new CertificateStorage(PathDefinitions.CosmosAppData);
+
+            server.ExceptionFunc = async exception =>
+            {
+                if (exception is ProxyHttpException)
+                    return; // Supresses "errors" for requests that would have originally 404'd before proxy
+
+                if (exception is ProxyHttpException phex)
+                    ProxyConsoleWriteLine(consoleSender, LanguageHandler.Format("Logs.Proxy.ExceptionWithInner", exception.GetType().Name, exception.Message, phex.InnerException?.Message));
+                else
+                    ProxyConsoleWriteLine(consoleSender, LanguageHandler.Format("Logs.Proxy.Exception", exception.Message));
+            };
+
+            server.TcpTimeWaitSeconds = 10;
+            server.ConnectionTimeOutSeconds = 15;
+            server.ReuseSocket = false;
+            server.EnableConnectionPool = false;
+            server.ForwardToUpstreamGateway = true;
+            server.CertificateManager.SaveFakeCertificates = true;
+            return server;
+        }
+
+        private void AttachEvents(ProxyServer server)
+        {
+            if (eventsAttached || server == null)
+                return;
+
+            server.BeforeRequest += OnRequest;
+            server.BeforeResponse += OnResponse;
+            server.AfterResponse += OnAfterResponse;
+            eventsAttached = true;
+        }
+
+        private void DetachEvents(ProxyServer server)
+        {
+            if (!eventsAttached || server == null)
+                return;
+
+            server.BeforeRequest -= OnRequest;
+            server.BeforeResponse -= OnResponse;
+            server.AfterResponse -= OnAfterResponse;
+            eventsAttached = false;
         }
 
         private async Task OnBeforeTunnelConnectRequest(object sender, TunnelConnectSessionEventArgs e)
@@ -120,7 +180,7 @@ namespace BedrockCosmos.Proxy
             if (!existsInAllowedUrls)
             {
                 if (SettingsManager.DetailedLogging)
-                    ProxyConsoleWriteLine(consoleSender, "Tunnel to: " + hostname);
+                    ProxyConsoleWriteLine(consoleSender, LanguageHandler.Format("Logs.Proxy.TunnelTo", hostname));
 
                 e.DecryptSsl = false; // Exempts Non-Allowed Urls from proxy
             }
@@ -176,9 +236,9 @@ namespace BedrockCosmos.Proxy
                 e.UserData = new CustomUserData
                 {
                     RequestBodyString = await e.GetRequestBodyAsString(),
-                    RequestLogs = $"Processed Request: {e.HttpClient.Request.RequestUri.AbsoluteUri}\n" +
-                        $"└── Active Client Connections: {((ProxyServer)sender).ClientConnectionCount}\n" +
-                        $"└── On Request: Saved response body.\n"
+                    RequestLogs = LanguageHandler.Format("Logs.Proxy.ProcessedRequest", e.HttpClient.Request.RequestUri.AbsoluteUri) + "\n" +
+                        LanguageHandler.Format("Logs.Proxy.ActiveClientConnections", ((ProxyServer)sender).ClientConnectionCount) + "\n" +
+                        LanguageHandler.Get("Logs.Proxy.RequestBodySaved") + "\n"
                 };
             }
             catch (Exception)
@@ -186,9 +246,9 @@ namespace BedrockCosmos.Proxy
                 e.UserData = new CustomUserData
                 {
                     RequestBodyString = string.Empty,
-                    RequestLogs = $"Processed Request: {e.HttpClient.Request.RequestUri.AbsoluteUri}\n" +
-                        $"└── Active Client Connections: {((ProxyServer)sender).ClientConnectionCount}\n" +
-                        $"└── On Request: Response body was empty.\n"
+                    RequestLogs = LanguageHandler.Format("Logs.Proxy.ProcessedRequest", e.HttpClient.Request.RequestUri.AbsoluteUri) + "\n" +
+                        LanguageHandler.Format("Logs.Proxy.ActiveClientConnections", ((ProxyServer)sender).ClientConnectionCount) + "\n" +
+                        LanguageHandler.Get("Logs.Proxy.RequestBodyEmpty") + "\n"
                 };
             }
 
@@ -200,7 +260,7 @@ namespace BedrockCosmos.Proxy
             //e.GetState().PipelineInfo.AppendLine(nameof(MultipartRequestPartSent));
 
             var session = (SessionEventArgs)sender;
-            ProxyConsoleWriteLine(consoleSender, "Multipart form data headers:");
+            ProxyConsoleWriteLine(consoleSender, LanguageHandler.Get("Logs.Proxy.MultipartHeaders"));
             foreach (var header in e.Headers) ProxyConsoleWriteLine(consoleSender, header.ToString());
         }
 
@@ -272,12 +332,12 @@ namespace BedrockCosmos.Proxy
                 catch (Exception ex)
                 {
                     //ProxyConsoleWriteLine("Parser", $"Error replacing response: {ex.Message}");
-                    userData.RequestLogs = userData.RequestLogs + $"└── On Response: Error replacing response - {ex.Message}\n";
+                    userData.RequestLogs = userData.RequestLogs + LanguageHandler.Format("Logs.Proxy.ResponseReplaceFailed", ex.Message) + "\n";
                 }
             }
             else
             {
-                userData.RequestLogs = userData.RequestLogs + $"└── On Response: No corresponding Json file was found. Processed request normally.\n";
+                userData.RequestLogs = userData.RequestLogs + LanguageHandler.Get("Logs.Proxy.NoMatchingJson") + "\n";
             }
         }
 
@@ -319,7 +379,7 @@ namespace BedrockCosmos.Proxy
             MarketItem mItem = JsonData.MarketItems.FirstOrDefault(o => o.uuid == getItemBody.itemid);
             if (mItem != null)
             {
-                userData.RequestLogs = userData.RequestLogs + $"└── Get Item: Found local Json for item {getItemBody.itemid}\n";
+                userData.RequestLogs = userData.RequestLogs + LanguageHandler.Format("Logs.Proxy.PlayfabGetFound", getItemBody.itemid) + "\n";
                 string localPath = Path.Combine(PathDefinitions.ResponsesDirectory + mItem.response);
                 localPath = Path.GetFullPath(localPath);
                 SetResponseBodyFromFile(localPath, e);
@@ -327,11 +387,9 @@ namespace BedrockCosmos.Proxy
             else
             {
                 if (getItemBody.itemid.Length < 1)
-                    userData.RequestLogs = userData.RequestLogs + $"└── On Response: No local Json file was found from Playfab Get Item " +
-                        $"search of item [NONE]. Processed request normally.\n";
+                    userData.RequestLogs = userData.RequestLogs + LanguageHandler.Get("Logs.Proxy.PlayfabGetNotFoundEmpty") + "\n";
                 else
-                    userData.RequestLogs = userData.RequestLogs + $"└── On Response: No local Json file was found from Playfab Get Item " +
-                        $"search of item {getItemBody.itemid}. Processed request normally.\n";
+                    userData.RequestLogs = userData.RequestLogs + LanguageHandler.Format("Logs.Proxy.PlayfabGetNotFound", getItemBody.itemid) + "\n";
             }
         }
 
@@ -345,7 +403,7 @@ namespace BedrockCosmos.Proxy
             MarketItem mItem = JsonData.PackSearchIds.FirstOrDefault(o => o.uuid == searchUuid);
             if (mItem != null)
             {
-                userData.RequestLogs = userData.RequestLogs + $"└── Search: Found local Json for item {searchUuid}\n";
+                userData.RequestLogs = userData.RequestLogs + LanguageHandler.Format("Logs.Proxy.PlayfabSearchFound", searchUuid) + "\n";
                 string localPath = Path.Combine(PathDefinitions.ResponsesDirectory + mItem.response);
                 localPath = Path.GetFullPath(localPath);
                 SetResponseBodyFromFile(localPath, e);
@@ -353,11 +411,9 @@ namespace BedrockCosmos.Proxy
             else
             {
                 if (searchUuid.Length < 1)
-                    userData.RequestLogs = userData.RequestLogs + $"└── On Response: No local Json file was found from Playfab Search " +
-                        $"of item [NONE]. Processed request normally.\n";
+                    userData.RequestLogs = userData.RequestLogs + LanguageHandler.Get("Logs.Proxy.PlayfabSearchNotFoundEmpty") + "\n";
                 else
-                    userData.RequestLogs = userData.RequestLogs + $"└── On Response: No local Json file was found from Playfab Search " +
-                        $"of item {searchUuid}. Processed request normally.\n";
+                    userData.RequestLogs = userData.RequestLogs + LanguageHandler.Format("Logs.Proxy.PlayfabSearchNotFound", searchUuid) + "\n";
             }
         }
 
@@ -371,7 +427,7 @@ namespace BedrockCosmos.Proxy
             //CosmosConsole.WriteLine("Parser", $"Appended response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
 
             var userData = e.UserData as CustomUserData;
-            userData.RequestLogs = userData.RequestLogs + $"└── On Response: Appended original response using {Path.GetFileName(localPath)}\n";
+            userData.RequestLogs = userData.RequestLogs + LanguageHandler.Format("Logs.Proxy.AppendedResponse", Path.GetFileName(localPath)) + "\n";
         }
 
         private async Task HandleSessionStartRequest(string localPath, SessionEventArgs e)
@@ -395,7 +451,7 @@ namespace BedrockCosmos.Proxy
             //CosmosConsole.WriteLine("Parser", $"Appended response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
 
             var userData = e.UserData as CustomUserData;
-            userData.RequestLogs = userData.RequestLogs + $"└── On Response: Appended original response using {Path.GetFileName(localPath)}\n";
+            userData.RequestLogs = userData.RequestLogs + LanguageHandler.Format("Logs.Proxy.AppendedResponse", Path.GetFileName(localPath)) + "\n";
         }
 
         private async Task HandlePersonaSkinSelectorRequest(string localPath, SessionEventArgs e)
@@ -407,7 +463,7 @@ namespace BedrockCosmos.Proxy
             //CosmosConsole.WriteLine("Parser", $"Appended response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
 
             var userData = e.UserData as CustomUserData;
-            userData.RequestLogs = userData.RequestLogs + $"└── On Response: Appended original response using {Path.GetFileName(localPath)}\n";
+            userData.RequestLogs = userData.RequestLogs + LanguageHandler.Format("Logs.Proxy.AppendedResponse", Path.GetFileName(localPath)) + "\n";
         }
 
         private void HandleDefaultRequest(string localPath, SessionEventArgs e)
@@ -422,7 +478,7 @@ namespace BedrockCosmos.Proxy
             //CosmosConsole.WriteLine("Parser", $"Replaced response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
 
             var userData = e.UserData as CustomUserData;
-            userData.RequestLogs = userData.RequestLogs + $"└── On Response: Replaced original response using {Path.GetFileName(localPath)}\n";
+            userData.RequestLogs = userData.RequestLogs + LanguageHandler.Format("Logs.Proxy.ReplacedResponse", Path.GetFileName(localPath)) + "\n";
         }
 
         public class CustomUserData

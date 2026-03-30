@@ -1,22 +1,152 @@
 App.TopLabel.Name=Bedrock Cosmos
+App.WindowTitle=Bedrock Cosmos
+App.AccessibleName=Bedrock Cosmos
+App.TrayIcon.Text=Bedrock Cosmos
+
+Common.Dialog.InfoTitle=Information
+Common.Dialog.WarningTitle=Warning
+Common.Dialog.ErrorTitle=Error
+
+Tabs.Home=Home
+Tabs.About=About
+Tabs.Settings=Settings
+Tabs.Update=Update
+Tabs.Dev=Dev
+
 Home.LaunchButton.Launch=LAUNCH
 Home.LaunchButton.Updating=Updating...
-Home.LaunchButton.Entering=Entering the Cosmos...
+Home.LaunchButton.Entering=Starting Proxy...
 Home.LaunchButton.Running=RUNNING
 Home.LaunchButton.Listening=LISTENING
+
 Home.StatusLabel.Waiting=Waiting...
 Home.StatusLabel.NoInternet=Error: Unable to connect to the Internet.\nBedrock Cosmos requires an active Internet connection to function.
-Home.StatusLabel.ProxyDisabled=Proxy is disabled.\nOpen Minecraft to start the service.
-Home.StatusLabel.ProxyEnabled=Proxy is enabled.\nClose Minecraft to stop the service.
-About.AboutLabel.Text=Bedrock Cosmos is a local Marketplace proxy for Minecraft Bedrock Edition that adds various free Capes and Skin Packs directly to the game!\n\nBedrock Cosmos will always remain free and open-source. Our Discord and GitHub information is below, where you can apply to become a creator, report bugs, or join our community!
+Home.StatusLabel.ProxyDisabled=Proxy inactive.\nOpen Minecraft to start the service.
+Home.StatusLabel.ProxyEnabled=Proxy active.\nClose Minecraft to stop the service.
+Home.StatusLabel.ProxyInactive=Proxy inactive.
+Home.StatusLabel.ProxyStarting=Proxy starting...
+Home.StatusLabel.ProxyActive=Proxy active.
+Home.StatusLabel.ProxyFailedRestored=Proxy failed. Internet settings were restored.
+
+About.AboutLabel.Text=Bedrock Cosmos is a local Marketplace proxy for Minecraft Bedrock Edition that adds free capes and skin packs directly to the game.\n\nBedrock Cosmos remains free and open source. Use our Discord and GitHub links below to report bugs, apply as a creator, or join the community.
 About.DiscordLabel.Text=Discord
 About.GitHubLabel.Text=GitHub
 About.WebsiteLabel.Text=Website
+
 Settings.BackgroundMode.Title=Background Mode
-Settings.BackgroundMode.Description=When enabled, Bedrock Cosmos will minimize to the system tray instead of the taskbar. The proxy service will also automatically start/stop when Minecraft is opened/closed, respectively.
+Settings.BackgroundMode.Description=When enabled, Bedrock Cosmos minimizes to the system tray instead of the taskbar. The proxy automatically starts and stops when Minecraft is opened and closed.
 Settings.Language.Title=Language
 Settings.Language.Description=Change the language used in the Bedrock Cosmos Launcher.
-Update.UpdateLabel.Text=A new update is available for the Bedrock Cosmos Launcher!\n\nSelect "Update" to begin the installation.
+Settings.ProxyManagement.Title=Internet Settings
+Settings.ProxyManagement.Description=Repair or remove only the internet settings that Bedrock Cosmos changed.
+Settings.ProxyManagement.RepairButton=Repair Internet Settings
+Settings.ProxyManagement.RemoveButton=Remove Proxy Settings
+
+Update.UpdateLabel.Text=A new update is available for the Bedrock Cosmos Launcher.\n\nSelect "Update" to begin the installation.
 Update.ChangelogLabel.Text=Changelog
 Update.UpdateButton.Text=Update
 Update.CancelUpdateButton.Text=Cancel
+
+Dev.DownloadZipButton=Force ZIP Download
+Dev.ExportLogsButton=Export Logs
+Dev.ClearLogsButton=Clear Logs
+Dev.FixProxyButton=Repair Proxy State
+Dev.ResetNewsButton=Reset News
+Dev.DisableDevMenuButton=Disable Dev Menu
+Dev.EnableLoggingLabel=Enable Logging
+Dev.DetailedLoggingLabel=Show Ignored (Tunneled) Requests
+Dev.DownloadIdle=Ready
+Dev.DownloadInProgress=Downloading...
+Dev.ExtractInProgress=Extracting...
+Dev.DownloadCompleted=Done
+Dev.DownloadFailed=Unable to download ZIP file.
+
+Files.BCPack.ComingSoon=Support for BCPack files is coming soon.
+Files.BCPersona.ComingSoon=Support for BCPersona files is coming soon.
+
+Program.InstanceAlreadyOpen.Title=Application Already Open
+Program.InstanceAlreadyOpen.Message=Another instance of Bedrock Cosmos is already running. Please close it before opening a new one.
+Program.CommunicationError.Message=Could not communicate with the running instance.\n\n{0}
+
+Proxy.Errors.NotReady.Message=The local Bedrock Cosmos proxy is not listening yet. Your internet settings were left unchanged.
+Proxy.Errors.StartFailed.Message=The proxy could not be started.\n\n{0}\n\nAny Bedrock Cosmos proxy settings were restored.
+Proxy.Errors.RuntimeStopped.Message=The local proxy stopped responding. Bedrock Cosmos restored your previous internet settings.
+
+Proxy.Recovery.StartupWarning=Bedrock Cosmos found stale proxy settings from a previous crash and restored your internet settings automatically.
+Proxy.Repair.Completed=Bedrock Cosmos repaired the internet settings it owned.
+Proxy.Repair.NothingToRepair=No Bedrock Cosmos proxy settings needed repair.
+Proxy.Remove.Completed=Bedrock Cosmos proxy settings were removed.
+
+Proxy.Log.Starting=Starting proxy...
+Proxy.Log.Started=Proxy started.
+Proxy.Log.Stopping=Stopping proxy...
+Proxy.Log.Stopped=Proxy stopped.
+Proxy.Log.StartFailed=Proxy startup failed: {0}
+Proxy.Log.ReadinessFailed=Proxy readiness check failed. Windows internet settings were not changed.
+Proxy.Log.RestoreFailed=Failed to restore internet settings: {0}
+Proxy.Log.StopFailed=Failed to stop proxy controller: {0}
+Proxy.Log.RuntimeFailureRestored=The local proxy stopped responding. Internet settings were restored.
+Proxy.Log.ManualRepairCompleted=Bedrock Cosmos repaired the internet settings it owned.
+Proxy.Log.ManualRepairNotNeeded=No Bedrock Cosmos proxy settings needed repair.
+
+Discord.Details=Using custom capes and skins
+Discord.State=On Minecraft Bedrock Edition
+Discord.Button.Website=Website
+Discord.Button.Discord=Discord Server
+Discord.Assets.LargeText=Minecraft Bedrock Edition
+Discord.Assets.SmallText=Bedrock Cosmos
+
+Localization.Log.LanguageSet=Language set to {0}.
+
+Logs.BackgroundModeEnabled=Background Mode enabled.
+Logs.BackgroundModeDisabled=Background Mode disabled.
+Logs.LoggingEnabled=Logging enabled.
+Logs.LoggingDisabled=Logging disabled.
+Logs.DetailedLoggingEnabled=Detailed logging enabled.
+Logs.DetailedLoggingDisabled=Detailed logging disabled.
+Logs.DevModeEnabled=Developer mode enabled.
+Logs.DevModeDisabled=Developer mode disabled.
+Logs.DiscordPresenceStarted=Started Discord rich presence.
+Logs.DiscordPresenceStopped=Stopped Discord rich presence.
+Logs.SettingsLoaded=Settings loaded from local file.
+Logs.DownloadCanceled=Unable to download file. Download canceled.
+Logs.DownloadingFile=Downloading file from {0}
+Logs.DownloadedFile=Successfully downloaded file to {0}
+Logs.ExtractingFile=Extracting {0}...
+Logs.RemovedFile=Removed file {0}.
+Logs.ExtractedFile=Successfully extracted {0} to {1}
+Logs.LauncherUpdateFound=Launcher update found ({0}).
+Logs.LauncherUpToDate=Launcher is up to date.
+Logs.ResponsesUpdateFound=Responses update found ({0}).
+Logs.ResponsesUpToDate=Responses are up to date.
+Logs.OpenedMinecraft=Opened Minecraft.
+Logs.OpenMinecraftFailed=Unable to launch Minecraft. Make sure the game is installed.
+Logs.ExportedLog=Exported log to {0}
+Logs.ExportLogFailed=Failed to create log export.
+Logs.PipeListenerError=Pipe listener error: {0}
+Logs.OpenedUriPath=Opened URI path: {0}
+Logs.UriHandlerError=URI handler error: {0}
+Logs.NewsUpdateQueued=Found a news update. Queued it for display.
+Logs.NoNewsUpdate=No updated news found.
+Logs.ParserFileNotFound=JSON file not found: {0}
+Logs.ParserArrayNotFound=Could not find the JSON array at path: {0}
+
+Logs.Proxy.Exception=Proxy exception: {0}
+Logs.Proxy.ExceptionWithInner=Proxy exception {0}: {1} - {2}
+Logs.Proxy.ListeningEndpoint=Listening on endpoint {0} at IP {1} and port {2}
+Logs.Proxy.TunnelTo=Tunnel to: {0}
+Logs.Proxy.ProcessedRequest=Processed request: {0}
+Logs.Proxy.ActiveClientConnections=└── Active client connections: {0}
+Logs.Proxy.RequestBodySaved=└── On request: saved response body.
+Logs.Proxy.RequestBodyEmpty=└── On request: response body was empty.
+Logs.Proxy.MultipartHeaders=Multipart form-data headers:
+Logs.Proxy.ResponseReplaceFailed=└── On response: failed to replace response - {0}
+Logs.Proxy.NoMatchingJson=└── On response: no matching JSON file was found. Request passed through unchanged.
+Logs.Proxy.PlayfabGetFound=└── Get item: found local JSON for item {0}
+Logs.Proxy.PlayfabGetNotFound=└── On response: no local JSON file was found for PlayFab Get Item search {0}. Request passed through unchanged.
+Logs.Proxy.PlayfabGetNotFoundEmpty=└── On response: no local JSON file was found for PlayFab Get Item search [NONE]. Request passed through unchanged.
+Logs.Proxy.PlayfabSearchFound=└── Search: found local JSON for item {0}
+Logs.Proxy.PlayfabSearchNotFound=└── On response: no local JSON file was found for PlayFab Search item {0}. Request passed through unchanged.
+Logs.Proxy.PlayfabSearchNotFoundEmpty=└── On response: no local JSON file was found for PlayFab Search item [NONE]. Request passed through unchanged.
+Logs.Proxy.AppendedResponse=└── On response: appended original response using {0}
+Logs.Proxy.ReplacedResponse=└── On response: replaced original response using {0}

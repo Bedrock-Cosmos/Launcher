@@ -179,19 +179,17 @@ ReadyMemoGroup=Map Menu Start:
 ReadyMemoTasks=Tugas Tambahan:
 
 ;Inno6
-DownloadingLabel=Mengunduh berkas tambahan...
+DownloadingLabel2=Mengunduh berkas...
 ButtonStopDownload=&Setop Unduhan
 StopDownload=Anda yakin ingin berhenti mengunduh?
 ErrorDownloadAborted=Unduhan dibatalkan
 ErrorDownloadFailed=Gagal mengunduh: %1 %2
 ErrorDownloadSizeFailed=Gagal mendapatkan ukuran: %1 %2
-ErrorFileHash1=Ceksum berkas gagal: %1
-ErrorFileHash2=Ceksum berkas tidak sah: seharusnya %1, yang kami dapatkan %2
 ErrorProgress=Langkah tidak sah: %1 dari %2
 ErrorFileSize=Ukuran berkas tidak sah: seharusnya %1, yang kami dapatkan %2
 
 ; *** TExtractionWizardPage wizard page and Extract7ZipArchive
-ExtractionLabel=Mengektrasi berkas tambahan...
+ExtractingLabel=Mengekstrak berkas...
 ButtonStopExtraction=&Hentikan ekstrasi
 StopExtraction=Anda yakin ingin menghentikan ekstrasi?
 ErrorExtractionAborted=Ekstrasi dibatalkan
@@ -242,6 +240,7 @@ AbortRetryIgnoreCancel=Batalkan pemasangan
 
 StatusClosingApplications=Menutup aplikasi...
 StatusCreateDirs=Membuat direktori...
+StatusDownloadFiles=Mengunduh berkas...
 StatusExtractFiles=Mengekstrak berkas...
 StatusCreateIcons=Membuat pintasan...
 StatusCreateIniEntries=Membuat catatan INI...
@@ -311,6 +310,8 @@ UninstallDisplayNameMarkCurrentUser=Pengguna saat ini
 
 ErrorOpeningReadme=Terjadi galat saat berusaha membuka berkas README.
 ErrorRestartingComputer=Kami gagal memulai ulang komputer. Silakan lakukan secara manual.
+ErrorDownloading=Terjadi galat saat mencoba mengunduh berkas:
+ErrorExtracting=Terjadi galat saat mencoba mengekstrak arsip:
 
 UninstallNotFound=Berkas "%1" tidak ada. Tidak bisa melepas
 UninstallOpenError=Berkas "%1" tidak dapat dibuka. Tidak bisa melepas
@@ -331,6 +332,21 @@ SharedFileNameLabel=Nama berkas:
 SharedFileLocationLabel=Lokasi:
 WizardUninstalling=Status Pelepasan
 StatusUninstalling=Melepas %1...
+
+ArchiveIncorrectPassword=Kata sandi salah
+ArchiveIsCorrupted=Arsip rusak
+ArchiveUnsupportedFormat=Format arsip tidak didukung
+RetryCancelSelectAction=Pilih tindakan
+RetryCancelRetry=&Coba lagi
+RetryCancelCancel=Batal
+SourceVerificationFailed=Verifikasi berkas sumber gagal: %1
+VerificationSignatureDoesntExist=Berkas tanda tangan "%1" tidak ada
+VerificationSignatureInvalid=Berkas tanda tangan "%1" tidak valid
+VerificationKeyNotFound=Berkas tanda tangan "%1" menggunakan kunci yang tidak dikenal
+VerificationFileNameIncorrect=Nama berkas tidak benar
+VerificationFileTagIncorrect=Tag berkas tidak benar
+VerificationFileSizeIncorrect=Ukuran berkas tidak benar
+VerificationFileHashIncorrect=Hash berkas tidak benar
 
 ShutdownBlockReasonInstallingApp=Memasang %1.
 ShutdownBlockReasonUninstallingApp=Melepas %1.

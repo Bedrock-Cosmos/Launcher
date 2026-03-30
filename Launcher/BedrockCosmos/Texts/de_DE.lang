@@ -1,0 +1,152 @@
+App.TopLabel.Name=Bedrock Cosmos
+App.WindowTitle=Bedrock Cosmos
+App.AccessibleName=Bedrock Cosmos
+App.TrayIcon.Text=Bedrock Cosmos
+
+Common.Dialog.InfoTitle=Information
+Common.Dialog.WarningTitle=Warnung
+Common.Dialog.ErrorTitle=Fehler
+
+Tabs.Home=Start
+Tabs.About=Info
+Tabs.Settings=Einstellungen
+Tabs.Update=Update
+Tabs.Dev=Entwicklung
+
+Home.LaunchButton.Launch=STARTEN
+Home.LaunchButton.Updating=Aktualisierung...
+Home.LaunchButton.Entering=Proxy wird gestartet...
+Home.LaunchButton.Running=AKTIV
+Home.LaunchButton.Listening=WARTET
+
+Home.StatusLabel.Waiting=Wird geladen...
+Home.StatusLabel.NoInternet=Fehler: Es konnte keine Verbindung mit dem Internet hergestellt werden.\nBedrock Cosmos benötigt eine aktive Internetverbindung.
+Home.StatusLabel.ProxyDisabled=Proxy inaktiv.\nÖffne Minecraft, um den Dienst zu starten.
+Home.StatusLabel.ProxyEnabled=Proxy aktiv.\nSchließe Minecraft, um den Dienst zu beenden.
+Home.StatusLabel.ProxyInactive=Proxy inaktiv.
+Home.StatusLabel.ProxyStarting=Proxy wird gestartet...
+Home.StatusLabel.ProxyActive=Proxy aktiv.
+Home.StatusLabel.ProxyFailedRestored=Proxy fehlgeschlagen. Die Interneteinstellungen wurden wiederhergestellt.
+
+About.AboutLabel.Text=Bedrock Cosmos ist ein lokaler Marketplace-Proxy für Minecraft Bedrock Edition und fügt dem Spiel kostenlose Umhänge und Skin-Pakete direkt hinzu.\n\nBedrock Cosmos bleibt kostenlos und quelloffen. Über Discord und GitHub kannst du Fehler melden, dich als Creator bewerben oder der Community beitreten.
+About.DiscordLabel.Text=Discord
+About.GitHubLabel.Text=GitHub
+About.WebsiteLabel.Text=Website
+
+Settings.BackgroundMode.Title=Hintergrundmodus
+Settings.BackgroundMode.Description=Wenn diese Option aktiviert ist, minimiert sich Bedrock Cosmos in den Infobereich statt in die Taskleiste. Der Proxy startet und stoppt automatisch, wenn Minecraft geöffnet oder geschlossen wird.
+Settings.Language.Title=Sprache
+Settings.Language.Description=Ändert die Sprache des Bedrock Cosmos Launchers.
+Settings.ProxyManagement.Title=Interneteinstellungen
+Settings.ProxyManagement.Description=Repariere oder entferne nur die Interneteinstellungen, die Bedrock Cosmos geändert hat.
+Settings.ProxyManagement.RepairButton=Interneteinstellungen reparieren
+Settings.ProxyManagement.RemoveButton=Proxy-Einstellungen entfernen
+
+Update.UpdateLabel.Text=Für den Bedrock Cosmos Launcher ist ein neues Update verfügbar.\n\nWähle „Update“, um die Installation zu starten.
+Update.ChangelogLabel.Text=Änderungen
+Update.UpdateButton.Text=Update
+Update.CancelUpdateButton.Text=Abbrechen
+
+Dev.DownloadZipButton=ZIP-Download erzwingen
+Dev.ExportLogsButton=Logs exportieren
+Dev.ClearLogsButton=Logs leeren
+Dev.FixProxyButton=Proxy-Status reparieren
+Dev.ResetNewsButton=Neuigkeiten zurücksetzen
+Dev.DisableDevMenuButton=Entwicklermenü deaktivieren
+Dev.EnableLoggingLabel=Protokollierung aktivieren
+Dev.DetailedLoggingLabel=Ignorierte (getunnelte) Anfragen anzeigen
+Dev.DownloadIdle=Bereit
+Dev.DownloadInProgress=Download läuft...
+Dev.ExtractInProgress=Wird entpackt...
+Dev.DownloadCompleted=Fertig
+Dev.DownloadFailed=Die ZIP-Datei konnte nicht heruntergeladen werden.
+
+Files.BCPack.ComingSoon=Die Unterstützung für BCPack-Dateien folgt in Kürze.
+Files.BCPersona.ComingSoon=Die Unterstützung für BCPersona-Dateien folgt in Kürze.
+
+Program.InstanceAlreadyOpen.Title=Anwendung bereits geöffnet
+Program.InstanceAlreadyOpen.Message=Eine andere Instanz von Bedrock Cosmos wird bereits ausgeführt. Schließe sie, bevor du eine neue öffnest.
+Program.CommunicationError.Message=Mit der laufenden Instanz konnte nicht kommuniziert werden.\n\n{0}
+
+Proxy.Errors.NotReady.Message=Der lokale Bedrock-Cosmos-Proxy ist noch nicht erreichbar. Deine Interneteinstellungen wurden nicht geändert.
+Proxy.Errors.StartFailed.Message=Der Proxy konnte nicht gestartet werden.\n\n{0}\n\nAlle von Bedrock Cosmos gesetzten Proxy-Einstellungen wurden wiederhergestellt.
+Proxy.Errors.RuntimeStopped.Message=Der lokale Proxy reagiert nicht mehr. Bedrock Cosmos hat deine vorherigen Interneteinstellungen wiederhergestellt.
+
+Proxy.Recovery.StartupWarning=Bedrock Cosmos hat veraltete Proxy-Einstellungen aus einem vorherigen Absturz erkannt und deine Interneteinstellungen automatisch repariert.
+Proxy.Repair.Completed=Bedrock Cosmos hat die übernommenen Interneteinstellungen repariert.
+Proxy.Repair.NothingToRepair=Es mussten keine Bedrock-Cosmos-Proxy-Einstellungen repariert werden.
+Proxy.Remove.Completed=Die Proxy-Einstellungen von Bedrock Cosmos wurden entfernt.
+
+Proxy.Log.Starting=Proxy wird gestartet...
+Proxy.Log.Started=Proxy wurde gestartet.
+Proxy.Log.Stopping=Proxy wird beendet...
+Proxy.Log.Stopped=Proxy wurde beendet.
+Proxy.Log.StartFailed=Proxy-Start fehlgeschlagen: {0}
+Proxy.Log.ReadinessFailed=Die Proxy-Bereitschaftsprüfung ist fehlgeschlagen. Die Windows-Interneteinstellungen wurden nicht geändert.
+Proxy.Log.RestoreFailed=Die Interneteinstellungen konnten nicht wiederhergestellt werden: {0}
+Proxy.Log.StopFailed=Der Proxy-Controller konnte nicht beendet werden: {0}
+Proxy.Log.RuntimeFailureRestored=Der lokale Proxy reagiert nicht mehr. Die Interneteinstellungen wurden wiederhergestellt.
+Proxy.Log.ManualRepairCompleted=Bedrock Cosmos hat die übernommenen Interneteinstellungen repariert.
+Proxy.Log.ManualRepairNotNeeded=Es mussten keine Bedrock-Cosmos-Proxy-Einstellungen repariert werden.
+
+Discord.Details=Verwendet benutzerdefinierte Umhänge und Skins
+Discord.State=In Minecraft Bedrock Edition
+Discord.Button.Website=Website
+Discord.Button.Discord=Discord-Server
+Discord.Assets.LargeText=Minecraft Bedrock Edition
+Discord.Assets.SmallText=Bedrock Cosmos
+
+Localization.Log.LanguageSet=Sprache auf {0} gesetzt.
+
+Logs.BackgroundModeEnabled=Hintergrundmodus aktiviert.
+Logs.BackgroundModeDisabled=Hintergrundmodus deaktiviert.
+Logs.LoggingEnabled=Protokollierung aktiviert.
+Logs.LoggingDisabled=Protokollierung deaktiviert.
+Logs.DetailedLoggingEnabled=Detailprotokollierung aktiviert.
+Logs.DetailedLoggingDisabled=Detailprotokollierung deaktiviert.
+Logs.DevModeEnabled=Entwicklermodus aktiviert.
+Logs.DevModeDisabled=Entwicklermodus deaktiviert.
+Logs.DiscordPresenceStarted=Discord Rich Presence wurde gestartet.
+Logs.DiscordPresenceStopped=Discord Rich Presence wurde beendet.
+Logs.SettingsLoaded=Einstellungen aus der lokalen Datei geladen.
+Logs.DownloadCanceled=Datei konnte nicht heruntergeladen werden. Download abgebrochen.
+Logs.DownloadingFile=Datei wird von {0} heruntergeladen
+Logs.DownloadedFile=Datei erfolgreich nach {0} heruntergeladen
+Logs.ExtractingFile={0} wird entpackt...
+Logs.RemovedFile=Datei {0} wurde entfernt.
+Logs.ExtractedFile={0} wurde erfolgreich nach {1} entpackt
+Logs.LauncherUpdateFound=Launcher-Update gefunden ({0}).
+Logs.LauncherUpToDate=Der Launcher ist aktuell.
+Logs.ResponsesUpdateFound=Responses-Update gefunden ({0}).
+Logs.ResponsesUpToDate=Die Responses sind aktuell.
+Logs.OpenedMinecraft=Minecraft wurde geöffnet.
+Logs.OpenMinecraftFailed=Minecraft konnte nicht gestartet werden. Stelle sicher, dass das Spiel installiert ist.
+Logs.ExportedLog=Log erfolgreich nach {0} exportiert
+Logs.ExportLogFailed=Der Log-Export konnte nicht erstellt werden.
+Logs.PipeListenerError=Fehler im Pipe-Listener: {0}
+Logs.OpenedUriPath=Geöffneter URI-Pfad: {0}
+Logs.UriHandlerError=Fehler im URI-Handler: {0}
+Logs.NewsUpdateQueued=Es wurde ein News-Update gefunden und zur Anzeige vorgemerkt.
+Logs.NoNewsUpdate=Keine neuen News gefunden.
+Logs.ParserFileNotFound=JSON-Datei nicht gefunden: {0}
+Logs.ParserArrayNotFound=JSON-Array unter folgendem Pfad wurde nicht gefunden: {0}
+
+Logs.Proxy.Exception=Proxy-Ausnahme: {0}
+Logs.Proxy.ExceptionWithInner=Proxy-Ausnahme {0}: {1} - {2}
+Logs.Proxy.ListeningEndpoint=Endpunkt {0} lauscht auf IP {1} und Port {2}
+Logs.Proxy.TunnelTo=Tunnel zu: {0}
+Logs.Proxy.ProcessedRequest=Verarbeitete Anfrage: {0}
+Logs.Proxy.ActiveClientConnections=└── Aktive Client-Verbindungen: {0}
+Logs.Proxy.RequestBodySaved=└── Bei der Anfrage: Antworttext wurde gespeichert.
+Logs.Proxy.RequestBodyEmpty=└── Bei der Anfrage: Der Antworttext war leer.
+Logs.Proxy.MultipartHeaders=Multipart-Formulardaten-Header:
+Logs.Proxy.ResponseReplaceFailed=└── Bei der Antwort: Antwort konnte nicht ersetzt werden - {0}
+Logs.Proxy.NoMatchingJson=└── Bei der Antwort: Keine passende JSON-Datei gefunden. Die Anfrage wurde unverändert durchgereicht.
+Logs.Proxy.PlayfabGetFound=└── Get Item: Lokale JSON-Datei für Element {0} gefunden
+Logs.Proxy.PlayfabGetNotFound=└── Bei der Antwort: Keine lokale JSON-Datei für die PlayFab-Get-Item-Suche nach {0} gefunden. Die Anfrage wurde unverändert durchgereicht.
+Logs.Proxy.PlayfabGetNotFoundEmpty=└── Bei der Antwort: Keine lokale JSON-Datei für die PlayFab-Get-Item-Suche nach [NONE] gefunden. Die Anfrage wurde unverändert durchgereicht.
+Logs.Proxy.PlayfabSearchFound=└── Suche: Lokale JSON-Datei für Element {0} gefunden
+Logs.Proxy.PlayfabSearchNotFound=└── Bei der Antwort: Keine lokale JSON-Datei für die PlayFab-Suche nach Element {0} gefunden. Die Anfrage wurde unverändert durchgereicht.
+Logs.Proxy.PlayfabSearchNotFoundEmpty=└── Bei der Antwort: Keine lokale JSON-Datei für die PlayFab-Suche nach Element [NONE] gefunden. Die Anfrage wurde unverändert durchgereicht.
+Logs.Proxy.AppendedResponse=└── Bei der Antwort: Ursprüngliche Antwort mit {0} ergänzt
+Logs.Proxy.ReplacedResponse=└── Bei der Antwort: Ursprüngliche Antwort mit {0} ersetzt

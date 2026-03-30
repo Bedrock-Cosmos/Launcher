@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\BedrockCosmos\App\TextSanitizer.cs" Link="Source\TextSanitizer.cs" />
+    <Compile Include="..\BedrockCosmos\Proxy\IInternetProxySettingsAccessor.cs" Link="Source\IInternetProxySettingsAccessor.cs" />
+    <Compile Include="..\BedrockCosmos\Proxy\IProxyAvailabilityProbe.cs" Link="Source\IProxyAvailabilityProbe.cs" />
+    <Compile Include="..\BedrockCosmos\Proxy\IProxyLifecycleLogger.cs" Link="Source\IProxyLifecycleLogger.cs" />
+    <Compile Include="..\BedrockCosmos\Proxy\IProxyStateStore.cs" Link="Source\IProxyStateStore.cs" />
+    <Compile Include="..\BedrockCosmos\Proxy\ProxyLifecycleManager.cs" Link="Source\ProxyLifecycleManager.cs" />
+    <Compile Include="..\BedrockCosmos\Proxy\ProxyOwnershipState.cs" Link="Source\ProxyOwnershipState.cs" />
+    <Compile Include="..\BedrockCosmos\Proxy\ProxySettingsSnapshot.cs" Link="Source\ProxySettingsSnapshot.cs" />
+    <Compile Include="..\BedrockCosmos\Proxy\WinInetProxySettingsAccessor.cs" Link="Source\WinInetProxySettingsAccessor.cs" />
+  </ItemGroup>
+</Project>
