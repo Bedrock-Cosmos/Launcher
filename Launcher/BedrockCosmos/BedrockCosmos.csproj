@@ -181,7 +181,7 @@
     <Compile Include="App\UI\Switch.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="App\AsyncFileDownload.cs" />
+    <Compile Include="App\AsyncFileOperations.cs" />
     <Compile Include="App\UriHandler.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -226,6 +226,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Texts\bn_BD.lang">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Texts\en_US.lang">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -236,6 +239,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Texts\ja_JP.lang">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Texts\vi_VN.lang">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

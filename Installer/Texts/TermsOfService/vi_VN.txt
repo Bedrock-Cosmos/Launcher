@@ -1,0 +1,170 @@
+ĐIỀU KHOẢN DỊCH VỤ:
+1. Chấp nhận Điều khoản
+Bằng việc tải xuống, cài đặt hoặc sử dụng Bedrock Cosmos, bạn đồng ý tuân thủ các Điều khoản Dịch vụ này. Nếu bạn không đồng ý, vui lòng không sử dụng launcher hoặc các dịch vụ của chúng tôi.
+
+2. Mô tả Dịch vụ
+Bedrock Cosmos là một Proxy tùy chỉnh dành cho Minecraft Bedrock Edition, hoạt động cục bộ trên thiết bị của bạn để cung cấp các tính năng sau:
+
+- Custom Capes: Thêm các Cape tùy chỉnh vào game và cho phép bạn tự upload/sử dụng các thiết kế Cape của riêng mình.
+- Nội Dung Marketplace Bị Ẩn: Hiển thị các nội dung trên Marketplace vốn bị ẩn hoặc không khả dụng tại một số khu vực/nền tảng nhất định.
+- Khôi Phục Chức Năng của Skin Pack: sửa lỗi và khôi phục tính năng cho các Skin Pack được chọn bằng cách thêm lại các mẫu Cape, Animation và các Skin đã bị xóa trước đó.
+- Custom Skin Packs: Thêm các Skin Pack tùy chỉnh độc quyền do đội ngũ Bedrock Cosmos thiết kế.
+
+Dịch vụ này hoàn toàn miễn phí, mã nguồn mở và hoạt động như một proxy cục bộ mà không thu thập dữ liệu người dùng.
+
+3. Trách nhiệm của Người dùng
+Bằng việc sử dụng Bedrock Cosmos, Bạn đồng ý:
+
+- Chỉ sử dụng Launcher với các bản Minecraft Bedrock Edition mua bản quyền hợp lệ.
+- Tuân thủ mọi luật pháp và quy định hiện hành.
+- Không dùng Launcher cho mục đích bất hợp pháp, lừa đảo hoặc gây hại cho người khác.
+- Không phân phối các phiên bản chỉnh sửa của Launcher mà không có nguồn gốc hay credit rõ ràng.
+
+4. Quy định về Tài khoản và Máy chủ
+Khi dùng Bedrock Cosmos trong môi trường nhiều người chơi, bạn thừa nhận rằng chủ Server có quy định riêng về nội dung tùy chỉnh. Chúng tôi không chịu trách nhiệm nếu bạn bị hạn chế hoặc bị ban bởi các server bên thứ ba.
+
+5. Bản quyền và phân phối
+Bedrock Cosmos là phần mềm mã nguồn mở được phát hành theo các điều khoản ghi trong GitHub repository của chúng tôi. Bạn có quyền xem và sửa đổi code theo các điều khoản nhưng phải ghi công đầy đủ khi chia sẻ.
+
+Các nội dung như Custom Cape do cộng đồng tạo ra thuộc quyền sở hữu của tác giả tạo ra chúng. Minecraft và các thương hiệu liên quan thuộc về Mojang Studios và Microsoft.
+
+6. Miễn trừ Bảo hành
+Phần mềm được cung cấp theo dạng "có sao dùng vậy". Chúng tôi không đảm bảo Launcher sẽ hoàn toàn không có lỗi hay luôn luôn an toàn 100% trước mọi lỗ hổng. Bạn tự chịu rủi ro khi sử dụng.
+
+7. Giới hạn Trách nhiệm
+Trong phạm vi tối đa mà pháp luật cho phép, đội ngũ phát triển Bedrock Cosmos sẽ không chịu trách nhiệm cho bất kỳ tổn thất nào phát sinh từ việc sử dụng phần mềm, bao gồm nhưng không giới hạn ở:
+
+- Mất mát dữ liệu, lợi nhuận hoặc uy tín cá nhân.
+- Các lỗi kỹ thuật hoặc lỗ hổng bảo mật phát sinh trong quá trình vận hành.
+- Đặc biệt: Mọi hành động kỷ luật (khóa tài khoản, hạn chế tính năng...) từ phía Mojang Studios, Microsoft hoặc quản trị viên Server do việc bạn sử dụng launcher này.
+
+Bạn tự nguyện sử dụng phần mềm và chấp nhận mọi rủi ro đi kèm.
+
+8. Dịch vụ của Bên thứ ba
+Chúng tôi không liên kết, không được tài trợ bởi Mojang Studios hay Microsoft. Mọi vấn đề về dịch vụ Minecraft gốc, bạn cần liên hệ các kênh hỗ trợ chính thức của họ.
+
+9. Thay đổi Dịch vụ
+Chúng tôi có quyền sửa đổi hoặc ngừng cung cấp Bedrock Cosmos bất cứ lúc nào. Việc tiếp tục sử dụng sau khi có thay đổi đồng nghĩa với việc bạn chấp nhận các điều khoản mới.
+
+10. Nội dung do Người dùng đóng góp (User-Generated Content)
+Khi bạn gửi thiết kế Custom Cape hoặc Skin Pack qua Discord để đưa vào Bedrock Cosmos, chúng tôi sẽ lưu trữ file cùng tên người dùng Discord của bạn để ghi công tác giả. Điều này giúp chúng tôi và những người dùng khác có thể xác định chính xác ai là người đã sáng tạo ra từng cosmetic trong ứng dụng.
+
+Bằng cách gửi các mẫu Custom Cape hoặc Skin pack, bạn cấp cho chúng tôi quyền sử dụng không độc quyền, trên toàn thế giới và miễn phí bản quyền để sử dụng, hiển thị và phân phối nội dung đó trong launcher cũng như cho những người dùng Bedrock Cosmos khác. Các vật phẩm bạn gửi có thể trở thành một phần của ứng dụng và sẽ được ghi công cho tên người dùng Discord của bạn.
+
+Bạn cam đoan rằng mình có quyền cấp quyền hạn này và các thiết kế Cape/Skin của bạn không vi phạm bất kỳ quyền lợi của bên thứ ba nào, bao gồm bản quyền, nhãn hiệu hoặc các quyền sở hữu trí tuệ khác.
+
+Bạn có quyền yêu cầu xóa các mẫu Cape/Skin đã gửi bất kỳ lúc nào bằng cách liên hệ với chúng tôi qua máy chủ Discord. Sau khi nhận được yêu cầu, chúng tôi sẽ gỡ bỏ (các) vật phẩm đó khỏi cơ sở dữ liệu và ứng dụng của mình.
+
+11. Các hành vi bị nghiêm cấm
+Bạn đồng ý không sử dụng Bedrock Cosmos để:
+
+- Vi phạm bất kỳ luật lệ địa phương, quốc gia hoặc quốc tế nào.
+- Xâm phạm hoặc vi phạm quyền sở hữu trí tuệ của chúng tôi hoặc của người khác.
+- Tải lên hoặc phát tán virus hay bất kỳ loại mã độc nào khác.
+- Cố gắng truy cập trái phép vào bất kỳ hệ thống hoặc mạng lưới nào.
+- Thực hiện bất kỳ hành vi nào làm hạn chế hoặc ngăn cản người khác sử dụng Launcher.
+- Mạo danh hoặc cố gắng mạo danh Bedrock Cosmos, đội ngũ phát triển hoặc bất kỳ người dùng nào khác.
+
+12. Hạn chế Độ tuổi
+Bedrock Cosmos dành cho người dùng đáp ứng độ tuổi tối thiểu để chơi Minecraft Bedrock Edition tại quốc gia của họ. Nếu bạn dưới 13 tuổi (hoặc độ tuổi quy định tại nơi bạn sống), bạn phải có sự đồng ý của cha mẹ để sử dụng dịch vụ của chúng tôi.
+
+13. Quyền riêng tư
+Việc bạn sử dụng Bedrock Cosmos cũng được điều chỉnh bởi Chính sách Quyền riêng tư của chúng tôi. Vui lòng xem lại Chính sách Quyền riêng tư để hiểu cách chúng tôi thu thập và sử dụng dữ liệu.
+
+14. Chấm dứt quyền sử dụng
+Chúng tôi có quyền chấm dứt hoặc tạm dừng quyền truy cập của bạn vào Bedrock Cosmos ngay lập tức, không cần thông báo trước hay chịu trách nhiệm pháp lý, vì bất kỳ lý do gì, bao gồm cả việc vi phạm các Điều khoản Dịch vụ này.
+
+15. Luật áp dụng
+Các Điều khoản Dịch vụ này sẽ được điều chỉnh và giải thích theo các luật pháp hiện hành, bất kể các quy định về xung đột pháp luật.
+
+16. Bồi thường
+Bằng cách sử dụng Bedrock Cosmos, bạn đồng ý bồi thường, bảo vệ và giữ cho các nhà phát triển, người đóng góp và nhà phân phối phần mềm không bị tổn hại trước bất kỳ khiếu nại, thiệt hại, tổn thất, trách nhiệm và chi phí nào (bao gồm cả phí pháp lý) phát sinh từ:
+
+- Việc bạn sử dụng hoặc lạm dụng phần mềm này.
+- Việc bạn vi phạm Điều khoản Dịch vụ của Minecraft.
+- Bất kỳ khiếu nại nào cho rằng việc bạn sử dụng phần mềm đã xâm phạm quyền của bên thứ ba.
+- Bất kỳ sửa đổi nào bạn thực hiện đối với phần mềm.
+
+17. Tuân thủ DMCA và Gỡ bỏ nội dung
+Nếu Mojang/Microsoft hoặc bất kỳ đại diện được ủy quyền nào tin rằng phần mềm này vi phạm quyền lợi của họ, vui lòng liên hệ với đội ngũ của chúng tôi qua email contact@bedrock-cosmos.app hoặc qua máy chủ Discord. Chúng tôi cam kết:
+
+- Phản hồi nhanh chóng các yêu cầu gỡ bỏ DMCA hợp lệ.
+- Gỡ bỏ nội dung vi phạm nếu luật pháp yêu cầu.
+- Hợp tác đầy đủ với những người nắm giữ bản quyền.
+
+18. Tính tách biệt của điều khoản
+Nếu bất kỳ điều khoản nào trong văn bản này bị coi là không thể thi hành hoặc vô hiệu, điều khoản đó sẽ bị giới hạn hoặc loại bỏ ở mức tối thiểu cần thiết để các điều khoản còn lại vẫn có đầy đủ hiệu lực.
+
+19. Liên hệ với chúng tôi
+Mọi câu hỏi về Điều khoản Dịch vụ, vui lòng liên hệ qua máy chủ Discord, email contact@bedrock-cosmos.app, hoặc qua GitHub repository của chúng tôi.
+
+20. Xác nhận
+Bằng việc sử dụng Bedrock Cosmos, bạn xác nhận rằng mình đã đọc, hiểu và đồng ý bị ràng buộc bởi các Điều khoản Dịch vụ này.
+
+
+
+CHÍNH SÁCH QUYỀN RIÊNG TƯ:
+1. Giới thiệu
+Chào mừng bạn đến với Bedrock Cosmos. Chúng tôi tôn trọng quyền riêng tư và cam kết bảo vệ thông tin cá nhân của bạn. Chính sách Quyền riêng tư này giải thích cách chúng tôi thu thập, sử dụng và bảo vệ thông tin của bạn khi bạn sử dụng Launcher và các dịch vụ của chúng tôi.
+
+2. Thông tin Chúng tôi Thu thập
+Bedrock Cosmos không thu thập, lưu trữ hoặc truyền tải bất kỳ thông tin cá nhân hay dữ liệu sử dụng nào từ người dùng. Launcher hoạt động hoàn toàn như một proxy phía máy khách (client-side) trên thiết bị cục bộ của bạn và không gửi bất kỳ thông tin nào về máy chủ của chúng tôi.
+
+Cụ thể, chúng tôi KHÔNG thu thập:
+
+- Thông tin cá nhân (tên, email, địa chỉ, v.v.).
+- Dữ liệu sử dụng hoặc phân tích.
+- Thông tin kỹ thuật về thiết bị của bạn.
+- Thông tin tài khoản Minecraft của bạn.
+- Bất kỳ dữ liệu gameplay hoặc tương tác nào.
+
+Gửi Nội dung tùy chỉnh: Nếu bạn tự nguyện chọn gửi các thiết kế Custom Cape hoặc Skin thông qua máy chủ Discord để đưa vào Bedrock Cosmos, chúng tôi sẽ thu thập và lưu trữ các tệp đó cùng với tên người dùng Discord của bạn để xác định bạn là người sáng tạo. Việc này là hoàn toàn tự nguyện và chỉ xảy ra khi bạn chủ động gửi nội dung. Những nội dung này có thể được cung cấp cho tất cả người dùng Bedrock Cosmos thông qua launcher.
+
+Nếu bạn tham gia máy chủ Discord của chúng tôi để được hỗ trợ hoặc tương tác cộng đồng, chính sách quyền riêng tư của Discord sẽ được áp dụng. Chúng tôi có thể thấy tên người dùng Discord và nội dung bạn chia sẻ, nhưng điều này hoàn toàn tách biệt với bản thân Launcher Bedrock Cosmos.
+
+3. Cách Chúng tôi Sử dụng Thông tin
+Vì Bedrock Cosmos không thu thập bất kỳ thông tin nào từ Launcher, nên không có dữ liệu cá nhân nào để chúng tôi xử lý hay chia sẻ. Launcher hoạt động trên thiết bị của bạn như một proxy để xử lý dữ liệu giữa ứng dụng Minecraft và máy chủ Minecraft.
+
+Mọi quá trình xử lý đều diễn ra cục bộ trên thiết bị của bạn, bao gồm:
+
+- Thêm Custom capes vào trải nghiệm game.
+- Hiển thị nội dung Marketplace bị ẩn theo khu vực.
+- Khôi phục các tính năng bị thiếu cho Skin Packs (áo choàng, hoạt ảnh, Skin).
+
+Gửi Nội dung tùy chỉnh: Nếu bạn gửi thiết kế qua Discord, chúng tôi sẽ dùng các tệp đó để cung cấp cho toàn bộ người dùng Bedrock Cosmos. Các thiết kế này sẽ trở thành một phần của bộ sưu tập cộng đồng nếu được chấp nhận.
+
+4. Lưu trữ và Bảo mật Dữ liệu
+Bedrock Cosmos không lưu trữ dữ liệu người dùng thông qua Launcher. Như đã nêu, phần mềm chỉ can thiệp vào lưu lượng mạng giữa máy khách Minecraft và máy chủ để cung cấp tính năng.
+
+Gửi Nội dung tùy chỉnh: Các thiết kế bạn tự nguyện gửi qua Discord được lưu trữ trong cơ sở dữ liệu của chúng tôi cùng với tên người dùng Discord để ghi công tác giả. Điều này cho phép chúng tôi và những người dùng khác xác định ai là người đã sáng tạo ra mỗi thiết kế (Cosmetic). Các tệp này không chứa thông tin cá nhân nào khác ngoài tên Discord của bạn.
+
+5. Dịch vụ của Bên thứ ba
+Bedrock Cosmos có thể tương tác với các dịch vụ bên thứ ba:
+
+- Discord: Để hỗ trợ cộng đồng và tương tác người dùng.
+- GitHub: Để lưu trữ mã nguồn và các bản phát hành của ứng dụng.
+- Dịch vụ Minecraft: Launcher đóng vai trò là proxy kết nối tới các máy chủ của Minecraft Bedrock.
+
+Các dịch vụ này có Chính sách Quyền riêng tư riêng. Chúng tôi khuyến khích bạn xem lại chính sách của họ vì chúng tôi không chịu trách nhiệm về phương thức bảo mật của họ.
+
+6. Cookie và Theo dõi
+Bedrock Cosmos không sử dụng cookie, công nghệ theo dõi hay các công cụ phân tích. Launcher không theo dõi hoạt động, không thu thập thống kê sử dụng hay giám sát hành vi của bạn.
+
+Website của chúng tôi (bedrock-cosmos.app) sử dụng chức năng tối giản và không dùng cookie theo dõi ngoài nhật ký máy chủ web tiêu chuẩn.
+
+7. Quyền riêng tư của Trẻ em
+Bedrock Cosmos không hướng đến trẻ em dưới 13 tuổi. Chúng tôi không cố ý thu thập thông tin cá nhân từ trẻ em dưới 13 tuổi. Nếu bạn là phụ huynh hoặc người giám hộ và tin rằng con mình đã cung cấp thông tin cho chúng tôi, vui lòng liên hệ với chúng tôi ngay.
+
+8. Quyền của Bạn
+Vì chúng tôi không thu thập dữ liệu cá nhân qua Launcher, nên không có dữ liệu nào để bạn truy cập hoặc chỉnh sửa. Mọi thứ diễn ra cục bộ trên máy của bạn.
+
+Đối với nội dung đóng góp: Nếu bạn đã gửi Custom Capes hoặc Skins, bạn có quyền yêu cầu xóa bất kỳ lúc nào. Chỉ cần liên hệ qua máy chủ Discord, chúng tôi sẽ gỡ bỏ nội dung của bạn khỏi cơ sở dữ liệu và ứng dụng.
+
+9. Thay đổi Chính sách Quyền riêng tư
+Chúng tôi có thể cập nhật chính sách này định kỳ. Chúng tôi sẽ thông báo bằng cách đăng bản mới tại đây và cập nhật ngày "Cập nhật lần cuối". Việc tiếp tục sử dụng đồng nghĩa với việc bạn chấp nhận các thay đổi đó.
+
+10. Minh bạch Mã nguồn mở
+Bedrock Cosmos hoàn toàn mở và có sẵn trên GitHub. Bạn có thể kiểm tra toàn bộ mã nguồn để xác thực cam kết không thu thập dữ liệu của chúng tôi. Sự minh bạch này giúp cộng đồng cùng giám sát và tạo dựng niềm tin.
+
+11. Liên hệ với Chúng tôi
+Mọi câu hỏi về Chính sách Quyền riêng tư, vui lòng liên hệ qua máy chủ Discord, email contact@bedrock-cosmos.app, hoặc qua GitHub repository của chúng tôi.

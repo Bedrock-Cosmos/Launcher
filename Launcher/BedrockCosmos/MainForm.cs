@@ -24,7 +24,7 @@ namespace BedrockCosmos
     {
         private LaunchManager launchManager;
         private static ProxyController controller;
-        private readonly AsyncFileDownload asyncDownload;
+        private readonly AsyncFileOperations asyncFileOps;
 
         // For window movement
         bool drag = false;
@@ -42,12 +42,12 @@ namespace BedrockCosmos
             DiscordRichPresence.UpdatePresence();
             launchManager = new LaunchManager();
             controller = new ProxyController();
-            asyncDownload = new AsyncFileDownload();
+            asyncFileOps = new AsyncFileOperations();
             StatusLabel.Text = "";
 
             // Will also log messages to the main console if uncommented.
             //CosmosConsole.LogToMainConsole = true;
-            launchManager.InitializeMgrAsyncFileDownload(asyncDownload);
+            launchManager.InitializeMgrAsyncFileOps(asyncFileOps);
             launchManager.InitializeMgrLaunchButton(LaunchButton);
             launchManager.InitializeMgrVersionLabel(VersionLabel);
             launchManager.SetCurrentVersions();
@@ -161,7 +161,7 @@ namespace BedrockCosmos
 
             try
             {
-                asyncDownload.Dispose();
+                asyncFileOps.Dispose();
             }
             catch
             {
@@ -287,7 +287,7 @@ namespace BedrockCosmos
 
         private void OpenDiscordLink(object sender, EventArgs e)
         {
-            Process.Start("https://www.discord.com/invite/hBujWqu");
+            Process.Start("https://discord.gg/HRG2NapegP");
         }
 
         private void OpenGitHubLink(object sender, EventArgs e)
@@ -448,10 +448,10 @@ namespace BedrockCosmos
             try
             {
                 DownloadZipProgressLabel.Text = "Downloading...";
-                await asyncDownload.DownloadFileAsync(fileUrl, downloadPath);
+                await asyncFileOps.DownloadFileAsync(fileUrl, downloadPath);
 
                 DownloadZipProgressLabel.Text = "Extracting...";
-                await asyncDownload.ExtractFileAsync(downloadPath, extractPath, true);
+                await asyncFileOps.ExtractFileAsync(downloadPath, extractPath, true);
 
                 if (Directory.Exists(PathDefinitions.ResponsesDirectory))
                 {
@@ -459,9 +459,13 @@ namespace BedrockCosmos
                     {
                         Directory.Delete(PathDefinitions.ResponsesDirectory, true);
                     });
-                } 
+                }
 
-                Directory.Move(PathDefinitions.CosmosAppData + "Responses-main", PathDefinitions.ResponsesDirectory);
+                if (!Directory.Exists(PathDefinitions.ResponsesDirectory))
+                    Directory.Move(PathDefinitions.CosmosAppData + "Responses-main", PathDefinitions.ResponsesDirectory);
+                else // Workaround if old directory was not deleted due to accessing elsewhere
+                    await asyncFileOps.MoveFolderContentsAsync(PathDefinitions.CosmosAppData + "Responses-main", PathDefinitions.ResponsesDirectory, true);
+
                 DownloadZipButton.Enabled = true;
                 DownloadZipProgressLabel.Text = "Done!";
             }

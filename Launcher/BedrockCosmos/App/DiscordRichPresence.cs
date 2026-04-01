@@ -38,7 +38,7 @@ namespace BedrockCosmos.App
                 Buttons = new Button[]
                 {
                     new Button() { Label = "Website", Url = "https://bedrock-cosmos.app/" },
-                    new Button() { Label = "Discord Server", Url = "https://discord.com/invite/DSbyeN5T" }
+                    new Button() { Label = "Discord Server", Url = "https://discord.gg/HRG2NapegP" }
                 },
                 Assets = new Assets()
                 {

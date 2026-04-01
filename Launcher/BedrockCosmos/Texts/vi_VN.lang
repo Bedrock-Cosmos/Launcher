@@ -1,0 +1,22 @@
+App.TopLabel.Name=Bedrock Cosmos
+Home.LaunchButton.Launch=KHỞI CHẠY
+Home.LaunchButton.Updating=Đang cập nhật...
+Home.LaunchButton.Entering=Đang tiến vào Cosmos...
+Home.LaunchButton.Running=ĐANG CHẠY
+Home.LaunchButton.Listening=ĐANG NGHE
+Home.StatusLabel.Waiting=Đang chờ...
+Home.StatusLabel.NoInternet=Error: Lỗi: Không thể kết nối Internet.\nBedrock Cosmos yêu cầu kết nối Internet để hoạt động.
+Home.StatusLabel.ProxyDisabled=Proxy đang tắt.\nHãy mở Minecraft để bắt đầu dịch vụ.
+Home.StatusLabel.ProxyEnabled=Proxy đang bật.\nHãy mở Minecraft để bắt đầu dịch vụ.
+About.AboutLabel.Text=Bedrock Cosmos là một proxy Marketplace cục bộ dành cho Minecraft Bedrock Edition, giúp thêm nhiều loại Capes và Skin Packs miễn phí trực tiếp vào trò chơi!\n\nBedrock Cosmos sẽ luôn luôn miễn phí và là mã nguồn mở. Thông tin Discord và GitHub của chúng tôi ở bên dưới, nơi bạn có thể đăng ký trở thành nhà sáng tạo, báo cáo lỗi hoặc tham gia cộng đồng của chúng tôi!
+About.DiscordLabel.Text=Discord
+About.GitHubLabel.Text=GitHub
+About.WebsiteLabel.Text=Website
+Settings.BackgroundMode.Title=Chế độ chạy nền
+Settings.BackgroundMode.Description=Khi được bật, Bedrock Cosmos sẽ thu nhỏ xuống khay hệ thống (system tray) thay vì thanh tác vụ (taskbar). Dịch vụ proxy cũng sẽ tự động Bật/Tắt tương ứng khi Minecraft được Mở/Đóng.
+Settings.Language.Title=Ngôn Ngữ
+Settings.Language.Description=Thay đổi ngôn ngữ sử dụng trong Bedrock Cosmos Launcher.
+Update.UpdateLabel.Đã có bản cập nhật mới cho Bedrock Cosmos Launcher!\n\nChọn "Cập nhật" để bắt đầu cài đặt.
+Update.ChangelogLabel.Text=Nhật ký thay đổi
+Update.UpdateButton.Text=Cập nhật
+Update.CancelUpdateButton.Text=Hủy

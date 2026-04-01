@@ -36,6 +36,7 @@
             this.VersionLabel = new System.Windows.Forms.Label();
             this.AboutButton = new System.Windows.Forms.Button();
             this.SettingsButton = new System.Windows.Forms.Button();
+            this.LaunchButton = new BedrockCosmos.App.UI.RoundGradientButton();
             this.AboutPage = new System.Windows.Forms.TabPage();
             this.WebsiteLabel = new System.Windows.Forms.LinkLabel();
             this.WebsiteIcon = new System.Windows.Forms.PictureBox();
@@ -48,30 +49,22 @@
             this.SettingsPage = new System.Windows.Forms.TabPage();
             this.LanguageDescriptionLabel = new System.Windows.Forms.Label();
             this.LanguageTitleLabel = new System.Windows.Forms.Label();
+            this.LanguageComboBox = new BedrockCosmos.App.UI.GradientComboBox();
             this.SettingsBackButton = new System.Windows.Forms.Button();
             this.BackgroundModeDescriptionLabel = new System.Windows.Forms.Label();
             this.BackgroundModeTitleLabel = new System.Windows.Forms.Label();
+            this.BackgroundModeSwitch = new BedrockCosmos.App.UI.Switch();
             this.UpdatePage = new System.Windows.Forms.TabPage();
             this.ChangelogLabel = new System.Windows.Forms.LinkLabel();
             this.UpdateLabel = new System.Windows.Forms.Label();
+            this.CancelUpdateButton = new BedrockCosmos.App.UI.RoundButton();
+            this.UpdateButton = new BedrockCosmos.App.UI.RoundButton();
             this.DevPage = new System.Windows.Forms.TabPage();
             this.DetailedLoggingLabel = new System.Windows.Forms.Label();
             this.DevBackButton = new System.Windows.Forms.Button();
             this.DevConsole = new System.Windows.Forms.RichTextBox();
             this.EnableLoggingLabel = new System.Windows.Forms.Label();
             this.DownloadZipProgressLabel = new System.Windows.Forms.Label();
-            this.TopPanel = new System.Windows.Forms.Panel();
-            this.AppIcon = new System.Windows.Forms.PictureBox();
-            this.TopLabel = new System.Windows.Forms.Label();
-            this.MinimizeButton = new System.Windows.Forms.Button();
-            this.CloseButton = new System.Windows.Forms.Button();
-            this.TrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
-            this.BackgroundModeTimer = new System.Windows.Forms.Timer(this.components);
-            this.LaunchButton = new BedrockCosmos.App.UI.RoundGradientButton();
-            this.LanguageComboBox = new BedrockCosmos.App.UI.GradientComboBox();
-            this.BackgroundModeSwitch = new BedrockCosmos.App.UI.Switch();
-            this.CancelUpdateButton = new BedrockCosmos.App.UI.RoundButton();
-            this.UpdateButton = new BedrockCosmos.App.UI.RoundButton();
             this.DetailedLoggingSwitch = new BedrockCosmos.App.UI.Switch();
             this.FixProxyHangButton = new BedrockCosmos.App.UI.RoundButton();
             this.ResetNewsButton = new BedrockCosmos.App.UI.RoundButton();
@@ -80,6 +73,13 @@
             this.EnableLoggingSwitch = new BedrockCosmos.App.UI.Switch();
             this.DownloadZipButton = new BedrockCosmos.App.UI.RoundButton();
             this.ExportLogsButton = new BedrockCosmos.App.UI.RoundButton();
+            this.TopPanel = new System.Windows.Forms.Panel();
+            this.AppIcon = new System.Windows.Forms.PictureBox();
+            this.TopLabel = new System.Windows.Forms.Label();
+            this.MinimizeButton = new System.Windows.Forms.Button();
+            this.CloseButton = new System.Windows.Forms.Button();
+            this.TrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.BackgroundModeTimer = new System.Windows.Forms.Timer(this.components);
             this.TabControl.SuspendLayout();
             this.HomePage.SuspendLayout();
             this.AboutPage.SuspendLayout();
@@ -137,9 +137,9 @@
             // 
             this.VersionLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.VersionLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.VersionLabel.Location = new System.Drawing.Point(368, 398);
+            this.VersionLabel.Location = new System.Drawing.Point(234, 398);
             this.VersionLabel.Name = "VersionLabel";
-            this.VersionLabel.Size = new System.Drawing.Size(64, 19);
+            this.VersionLabel.Size = new System.Drawing.Size(336, 19);
             this.VersionLabel.TabIndex = 18;
             this.VersionLabel.Text = "v?.?.?";
             this.VersionLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -179,6 +179,33 @@
             this.SettingsButton.TabIndex = 16;
             this.SettingsButton.UseVisualStyleBackColor = true;
             this.SettingsButton.Click += new System.EventHandler(this.SettingsButton_Click);
+            // 
+            // LaunchButton
+            // 
+            this.LaunchButton.BackColor = System.Drawing.Color.Transparent;
+            this.LaunchButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.LaunchButton.DialogResult = System.Windows.Forms.DialogResult.None;
+            this.LaunchButton.FilledBackColorBottom = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(114)))), ((int)(((byte)(47)))));
+            this.LaunchButton.FilledBackColorTop = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(188)))), ((int)(((byte)(71)))));
+            this.LaunchButton.Font = new System.Drawing.Font("Segoe UI", 20.25F, System.Drawing.FontStyle.Bold);
+            this.LaunchButton.ForeColor = System.Drawing.Color.White;
+            this.LaunchButton.HoverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(188)))), ((int)(((byte)(71)))));
+            this.LaunchButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(188)))), ((int)(((byte)(71)))));
+            this.LaunchButton.HoverForeColor = System.Drawing.Color.White;
+            this.LaunchButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            this.LaunchButton.Location = new System.Drawing.Point(230, 175);
+            this.LaunchButton.MinimumSize = new System.Drawing.Size(144, 47);
+            this.LaunchButton.Name = "LaunchButton";
+            this.LaunchButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(188)))), ((int)(((byte)(71)))));
+            this.LaunchButton.PixelOffsetType = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            this.LaunchButton.PressedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(188)))), ((int)(((byte)(71)))));
+            this.LaunchButton.PressedForeColor = System.Drawing.Color.White;
+            this.LaunchButton.Radius = 10;
+            this.LaunchButton.Size = new System.Drawing.Size(340, 100);
+            this.LaunchButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            this.LaunchButton.TabIndex = 6;
+            this.LaunchButton.Text = "LAUNCH";
+            this.LaunchButton.Click += new System.EventHandler(this.LaunchButton_Click);
             // 
             // AboutPage
             // 
@@ -345,6 +372,42 @@
             this.LanguageTitleLabel.Text = "Language";
             this.LanguageTitleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // LanguageComboBox
+            // 
+            this.LanguageComboBox.BackColor = System.Drawing.Color.White;
+            this.LanguageComboBox.ColorA = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.LanguageComboBox.ColorB = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.LanguageComboBox.ColorC = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.LanguageComboBox.ColorD = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.LanguageComboBox.ColorE = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.LanguageComboBox.ColorF = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.LanguageComboBox.ColorG = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.LanguageComboBox.ColorH = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.LanguageComboBox.ColorI = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.LanguageComboBox.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.LanguageComboBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.LanguageComboBox.DropDownHeight = 100;
+            this.LanguageComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.LanguageComboBox.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.LanguageComboBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.LanguageComboBox.FormattingEnabled = true;
+            this.LanguageComboBox.HoverSelectionColor = System.Drawing.Color.Empty;
+            this.LanguageComboBox.IntegralHeight = false;
+            this.LanguageComboBox.ItemHeight = 16;
+            this.LanguageComboBox.Items.AddRange(new object[] {
+            "English",
+            "বাংলা",
+            "Español",
+            "Indonesia",
+            "日本語",
+            "Tiếng Việt"});
+            this.LanguageComboBox.Location = new System.Drawing.Point(19, 114);
+            this.LanguageComboBox.Name = "LanguageComboBox";
+            this.LanguageComboBox.Size = new System.Drawing.Size(132, 22);
+            this.LanguageComboBox.StartIndex = 0;
+            this.LanguageComboBox.TabIndex = 16;
+            this.LanguageComboBox.SelectedIndexChanged += new System.EventHandler(this.LanguageComboBox_SelectedIndexChanged);
+            // 
             // SettingsBackButton
             // 
             this.SettingsBackButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -387,6 +450,20 @@
             this.BackgroundModeTitleLabel.Text = "Background Mode";
             this.BackgroundModeTitleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // BackgroundModeSwitch
+            // 
+            this.BackgroundModeSwitch.AutoSize = true;
+            this.BackgroundModeSwitch.BaseColor = System.Drawing.Color.White;
+            this.BackgroundModeSwitch.BaseOffColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.BackgroundModeSwitch.BaseOnColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.BackgroundModeSwitch.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.BackgroundModeSwitch.Location = new System.Drawing.Point(19, 61);
+            this.BackgroundModeSwitch.Name = "BackgroundModeSwitch";
+            this.BackgroundModeSwitch.Size = new System.Drawing.Size(40, 20);
+            this.BackgroundModeSwitch.TabIndex = 12;
+            this.BackgroundModeSwitch.UseVisualStyleBackColor = true;
+            this.BackgroundModeSwitch.CheckedChanged += new System.EventHandler(this.BackgroundModeToggle_CheckedChanged);
+            // 
             // UpdatePage
             // 
             this.UpdatePage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
@@ -426,6 +503,58 @@
             this.UpdateLabel.Text = "A new update is available for the Bedrock Cosmos Launcher!\r\n\r\nSelect \"Update\" to " +
     "begin the installation.\r\n\r\n\r\n\r\n";
             this.UpdateLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // CancelUpdateButton
+            // 
+            this.CancelUpdateButton.BackColor = System.Drawing.Color.Transparent;
+            this.CancelUpdateButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.CancelUpdateButton.DialogResult = System.Windows.Forms.DialogResult.None;
+            this.CancelUpdateButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.CancelUpdateButton.Font = new System.Drawing.Font("Segoe UI", 12F);
+            this.CancelUpdateButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.CancelUpdateButton.HoverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.CancelUpdateButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.CancelUpdateButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.CancelUpdateButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            this.CancelUpdateButton.Location = new System.Drawing.Point(412, 283);
+            this.CancelUpdateButton.MinimumSize = new System.Drawing.Size(144, 47);
+            this.CancelUpdateButton.Name = "CancelUpdateButton";
+            this.CancelUpdateButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.CancelUpdateButton.PixelOffsetType = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            this.CancelUpdateButton.PressedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.CancelUpdateButton.PressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.CancelUpdateButton.Radius = 5;
+            this.CancelUpdateButton.Size = new System.Drawing.Size(144, 57);
+            this.CancelUpdateButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            this.CancelUpdateButton.TabIndex = 12;
+            this.CancelUpdateButton.Text = "Cancel";
+            this.CancelUpdateButton.Click += new System.EventHandler(this.CancelUpdateButton_Click);
+            // 
+            // UpdateButton
+            // 
+            this.UpdateButton.BackColor = System.Drawing.Color.Transparent;
+            this.UpdateButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.UpdateButton.DialogResult = System.Windows.Forms.DialogResult.None;
+            this.UpdateButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.UpdateButton.Font = new System.Drawing.Font("Segoe UI", 12F);
+            this.UpdateButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.UpdateButton.HoverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.UpdateButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.UpdateButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.UpdateButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            this.UpdateButton.Location = new System.Drawing.Point(245, 283);
+            this.UpdateButton.MinimumSize = new System.Drawing.Size(144, 47);
+            this.UpdateButton.Name = "UpdateButton";
+            this.UpdateButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.UpdateButton.PixelOffsetType = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            this.UpdateButton.PressedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.UpdateButton.PressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.UpdateButton.Radius = 5;
+            this.UpdateButton.Size = new System.Drawing.Size(144, 57);
+            this.UpdateButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            this.UpdateButton.TabIndex = 10;
+            this.UpdateButton.Text = "Update";
+            this.UpdateButton.Click += new System.EventHandler(this.UpdateButton_Click);
             // 
             // DevPage
             // 
@@ -514,221 +643,6 @@
             this.DownloadZipProgressLabel.Text = "Downloading...";
             this.DownloadZipProgressLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.DownloadZipProgressLabel.Visible = false;
-            // 
-            // TopPanel
-            // 
-            this.TopPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
-            this.TopPanel.Controls.Add(this.AppIcon);
-            this.TopPanel.Controls.Add(this.TopLabel);
-            this.TopPanel.Controls.Add(this.MinimizeButton);
-            this.TopPanel.Controls.Add(this.CloseButton);
-            this.TopPanel.Location = new System.Drawing.Point(-1, 0);
-            this.TopPanel.Name = "TopPanel";
-            this.TopPanel.Size = new System.Drawing.Size(803, 46);
-            this.TopPanel.TabIndex = 6;
-            this.TopPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseDown);
-            this.TopPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseMove);
-            this.TopPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseUp);
-            // 
-            // AppIcon
-            // 
-            this.AppIcon.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("AppIcon.BackgroundImage")));
-            this.AppIcon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.AppIcon.Location = new System.Drawing.Point(8, 7);
-            this.AppIcon.Name = "AppIcon";
-            this.AppIcon.Size = new System.Drawing.Size(32, 32);
-            this.AppIcon.TabIndex = 3;
-            this.AppIcon.TabStop = false;
-            this.AppIcon.Click += new System.EventHandler(this.AppIcon_Click);
-            this.AppIcon.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseDown);
-            this.AppIcon.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseMove);
-            this.AppIcon.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseUp);
-            // 
-            // TopLabel
-            // 
-            this.TopLabel.AutoSize = true;
-            this.TopLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TopLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.TopLabel.Location = new System.Drawing.Point(46, 12);
-            this.TopLabel.Name = "TopLabel";
-            this.TopLabel.Size = new System.Drawing.Size(126, 21);
-            this.TopLabel.TabIndex = 2;
-            this.TopLabel.Text = "Bedrock Cosmos";
-            this.TopLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseDown);
-            this.TopLabel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseMove);
-            this.TopLabel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseUp);
-            // 
-            // MinimizeButton
-            // 
-            this.MinimizeButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.MinimizeButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("MinimizeButton.BackgroundImage")));
-            this.MinimizeButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.MinimizeButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
-            this.MinimizeButton.FlatAppearance.BorderSize = 0;
-            this.MinimizeButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
-            this.MinimizeButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
-            this.MinimizeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.MinimizeButton.Location = new System.Drawing.Point(732, 10);
-            this.MinimizeButton.Name = "MinimizeButton";
-            this.MinimizeButton.Size = new System.Drawing.Size(25, 25);
-            this.MinimizeButton.TabIndex = 1;
-            this.MinimizeButton.UseVisualStyleBackColor = true;
-            this.MinimizeButton.Click += new System.EventHandler(this.MinimizeButton_Click);
-            // 
-            // CloseButton
-            // 
-            this.CloseButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.CloseButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("CloseButton.BackgroundImage")));
-            this.CloseButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.CloseButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
-            this.CloseButton.FlatAppearance.BorderSize = 0;
-            this.CloseButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
-            this.CloseButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
-            this.CloseButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CloseButton.Location = new System.Drawing.Point(767, 10);
-            this.CloseButton.Name = "CloseButton";
-            this.CloseButton.Size = new System.Drawing.Size(25, 25);
-            this.CloseButton.TabIndex = 0;
-            this.CloseButton.UseVisualStyleBackColor = true;
-            this.CloseButton.Click += new System.EventHandler(this.CloseButton_Click);
-            // 
-            // TrayIcon
-            // 
-            this.TrayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("TrayIcon.Icon")));
-            this.TrayIcon.Text = "Bedrock Cosmos";
-            this.TrayIcon.Click += new System.EventHandler(this.TrayIcon_Click);
-            // 
-            // BackgroundModeTimer
-            // 
-            this.BackgroundModeTimer.Interval = 2500;
-            this.BackgroundModeTimer.Tick += new System.EventHandler(this.BackgroundModeTimer_Tick);
-            // 
-            // LaunchButton
-            // 
-            this.LaunchButton.BackColor = System.Drawing.Color.Transparent;
-            this.LaunchButton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.LaunchButton.DialogResult = System.Windows.Forms.DialogResult.None;
-            this.LaunchButton.FilledBackColorBottom = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(114)))), ((int)(((byte)(47)))));
-            this.LaunchButton.FilledBackColorTop = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(188)))), ((int)(((byte)(71)))));
-            this.LaunchButton.Font = new System.Drawing.Font("Segoe UI", 20.25F, System.Drawing.FontStyle.Bold);
-            this.LaunchButton.ForeColor = System.Drawing.Color.White;
-            this.LaunchButton.HoverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(188)))), ((int)(((byte)(71)))));
-            this.LaunchButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(188)))), ((int)(((byte)(71)))));
-            this.LaunchButton.HoverForeColor = System.Drawing.Color.White;
-            this.LaunchButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.LaunchButton.Location = new System.Drawing.Point(230, 175);
-            this.LaunchButton.MinimumSize = new System.Drawing.Size(144, 47);
-            this.LaunchButton.Name = "LaunchButton";
-            this.LaunchButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(188)))), ((int)(((byte)(71)))));
-            this.LaunchButton.PixelOffsetType = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-            this.LaunchButton.PressedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(188)))), ((int)(((byte)(71)))));
-            this.LaunchButton.PressedForeColor = System.Drawing.Color.White;
-            this.LaunchButton.Radius = 10;
-            this.LaunchButton.Size = new System.Drawing.Size(340, 100);
-            this.LaunchButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            this.LaunchButton.TabIndex = 6;
-            this.LaunchButton.Text = "LAUNCH";
-            this.LaunchButton.Click += new System.EventHandler(this.LaunchButton_Click);
-            // 
-            // LanguageComboBox
-            // 
-            this.LanguageComboBox.BackColor = System.Drawing.Color.White;
-            this.LanguageComboBox.ColorA = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.LanguageComboBox.ColorB = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.LanguageComboBox.ColorC = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.LanguageComboBox.ColorD = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.LanguageComboBox.ColorE = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.LanguageComboBox.ColorF = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.LanguageComboBox.ColorG = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.LanguageComboBox.ColorH = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.LanguageComboBox.ColorI = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.LanguageComboBox.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.LanguageComboBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
-            this.LanguageComboBox.DropDownHeight = 100;
-            this.LanguageComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.LanguageComboBox.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.LanguageComboBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.LanguageComboBox.FormattingEnabled = true;
-            this.LanguageComboBox.HoverSelectionColor = System.Drawing.Color.Empty;
-            this.LanguageComboBox.IntegralHeight = false;
-            this.LanguageComboBox.ItemHeight = 20;
-            this.LanguageComboBox.Items.AddRange(new object[] {
-            "English",
-            "Español",
-            "Indonesia",
-            "日本語"});
-            this.LanguageComboBox.Location = new System.Drawing.Point(19, 113);
-            this.LanguageComboBox.Name = "LanguageComboBox";
-            this.LanguageComboBox.Size = new System.Drawing.Size(132, 26);
-            this.LanguageComboBox.StartIndex = 0;
-            this.LanguageComboBox.TabIndex = 16;
-            this.LanguageComboBox.SelectedIndexChanged += new System.EventHandler(this.LanguageComboBox_SelectedIndexChanged);
-            // 
-            // BackgroundModeSwitch
-            // 
-            this.BackgroundModeSwitch.AutoSize = true;
-            this.BackgroundModeSwitch.BaseColor = System.Drawing.Color.White;
-            this.BackgroundModeSwitch.BaseOffColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
-            this.BackgroundModeSwitch.BaseOnColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.BackgroundModeSwitch.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.BackgroundModeSwitch.Location = new System.Drawing.Point(19, 61);
-            this.BackgroundModeSwitch.Name = "BackgroundModeSwitch";
-            this.BackgroundModeSwitch.Size = new System.Drawing.Size(40, 20);
-            this.BackgroundModeSwitch.TabIndex = 12;
-            this.BackgroundModeSwitch.UseVisualStyleBackColor = true;
-            this.BackgroundModeSwitch.CheckedChanged += new System.EventHandler(this.BackgroundModeToggle_CheckedChanged);
-            // 
-            // CancelUpdateButton
-            // 
-            this.CancelUpdateButton.BackColor = System.Drawing.Color.Transparent;
-            this.CancelUpdateButton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.CancelUpdateButton.DialogResult = System.Windows.Forms.DialogResult.None;
-            this.CancelUpdateButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.CancelUpdateButton.Font = new System.Drawing.Font("Segoe UI", 12F);
-            this.CancelUpdateButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.CancelUpdateButton.HoverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
-            this.CancelUpdateButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
-            this.CancelUpdateButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.CancelUpdateButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.CancelUpdateButton.Location = new System.Drawing.Point(412, 283);
-            this.CancelUpdateButton.MinimumSize = new System.Drawing.Size(144, 47);
-            this.CancelUpdateButton.Name = "CancelUpdateButton";
-            this.CancelUpdateButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
-            this.CancelUpdateButton.PixelOffsetType = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-            this.CancelUpdateButton.PressedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
-            this.CancelUpdateButton.PressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.CancelUpdateButton.Radius = 5;
-            this.CancelUpdateButton.Size = new System.Drawing.Size(144, 57);
-            this.CancelUpdateButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            this.CancelUpdateButton.TabIndex = 12;
-            this.CancelUpdateButton.Text = "Cancel";
-            this.CancelUpdateButton.Click += new System.EventHandler(this.CancelUpdateButton_Click);
-            // 
-            // UpdateButton
-            // 
-            this.UpdateButton.BackColor = System.Drawing.Color.Transparent;
-            this.UpdateButton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.UpdateButton.DialogResult = System.Windows.Forms.DialogResult.None;
-            this.UpdateButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.UpdateButton.Font = new System.Drawing.Font("Segoe UI", 12F);
-            this.UpdateButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.UpdateButton.HoverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
-            this.UpdateButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
-            this.UpdateButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.UpdateButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.UpdateButton.Location = new System.Drawing.Point(245, 283);
-            this.UpdateButton.MinimumSize = new System.Drawing.Size(144, 47);
-            this.UpdateButton.Name = "UpdateButton";
-            this.UpdateButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
-            this.UpdateButton.PixelOffsetType = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-            this.UpdateButton.PressedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
-            this.UpdateButton.PressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.UpdateButton.Radius = 5;
-            this.UpdateButton.Size = new System.Drawing.Size(144, 57);
-            this.UpdateButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            this.UpdateButton.TabIndex = 10;
-            this.UpdateButton.Text = "Update";
-            this.UpdateButton.Click += new System.EventHandler(this.UpdateButton_Click);
             // 
             // DetailedLoggingSwitch
             // 
@@ -913,6 +827,94 @@
             this.ExportLogsButton.TabIndex = 8;
             this.ExportLogsButton.Text = "Export Logs";
             this.ExportLogsButton.Click += new System.EventHandler(this.ExportLogsButton_Click);
+            // 
+            // TopPanel
+            // 
+            this.TopPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
+            this.TopPanel.Controls.Add(this.AppIcon);
+            this.TopPanel.Controls.Add(this.TopLabel);
+            this.TopPanel.Controls.Add(this.MinimizeButton);
+            this.TopPanel.Controls.Add(this.CloseButton);
+            this.TopPanel.Location = new System.Drawing.Point(-1, 0);
+            this.TopPanel.Name = "TopPanel";
+            this.TopPanel.Size = new System.Drawing.Size(803, 46);
+            this.TopPanel.TabIndex = 6;
+            this.TopPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseDown);
+            this.TopPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseMove);
+            this.TopPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseUp);
+            // 
+            // AppIcon
+            // 
+            this.AppIcon.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("AppIcon.BackgroundImage")));
+            this.AppIcon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.AppIcon.Location = new System.Drawing.Point(8, 7);
+            this.AppIcon.Name = "AppIcon";
+            this.AppIcon.Size = new System.Drawing.Size(32, 32);
+            this.AppIcon.TabIndex = 3;
+            this.AppIcon.TabStop = false;
+            this.AppIcon.Click += new System.EventHandler(this.AppIcon_Click);
+            this.AppIcon.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseDown);
+            this.AppIcon.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseMove);
+            this.AppIcon.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseUp);
+            // 
+            // TopLabel
+            // 
+            this.TopLabel.AutoSize = true;
+            this.TopLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TopLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.TopLabel.Location = new System.Drawing.Point(46, 12);
+            this.TopLabel.Name = "TopLabel";
+            this.TopLabel.Size = new System.Drawing.Size(126, 21);
+            this.TopLabel.TabIndex = 2;
+            this.TopLabel.Text = "Bedrock Cosmos";
+            this.TopLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseDown);
+            this.TopLabel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseMove);
+            this.TopLabel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseUp);
+            // 
+            // MinimizeButton
+            // 
+            this.MinimizeButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.MinimizeButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("MinimizeButton.BackgroundImage")));
+            this.MinimizeButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.MinimizeButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
+            this.MinimizeButton.FlatAppearance.BorderSize = 0;
+            this.MinimizeButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
+            this.MinimizeButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
+            this.MinimizeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.MinimizeButton.Location = new System.Drawing.Point(732, 10);
+            this.MinimizeButton.Name = "MinimizeButton";
+            this.MinimizeButton.Size = new System.Drawing.Size(25, 25);
+            this.MinimizeButton.TabIndex = 1;
+            this.MinimizeButton.UseVisualStyleBackColor = true;
+            this.MinimizeButton.Click += new System.EventHandler(this.MinimizeButton_Click);
+            // 
+            // CloseButton
+            // 
+            this.CloseButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.CloseButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("CloseButton.BackgroundImage")));
+            this.CloseButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.CloseButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
+            this.CloseButton.FlatAppearance.BorderSize = 0;
+            this.CloseButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
+            this.CloseButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
+            this.CloseButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CloseButton.Location = new System.Drawing.Point(767, 10);
+            this.CloseButton.Name = "CloseButton";
+            this.CloseButton.Size = new System.Drawing.Size(25, 25);
+            this.CloseButton.TabIndex = 0;
+            this.CloseButton.UseVisualStyleBackColor = true;
+            this.CloseButton.Click += new System.EventHandler(this.CloseButton_Click);
+            // 
+            // TrayIcon
+            // 
+            this.TrayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("TrayIcon.Icon")));
+            this.TrayIcon.Text = "Bedrock Cosmos";
+            this.TrayIcon.Click += new System.EventHandler(this.TrayIcon_Click);
+            // 
+            // BackgroundModeTimer
+            // 
+            this.BackgroundModeTimer.Interval = 2500;
+            this.BackgroundModeTimer.Tick += new System.EventHandler(this.BackgroundModeTimer_Tick);
             // 
             // MainForm
             // 

@@ -21,9 +21,11 @@ namespace BedrockCosmos.App
         private static readonly Dictionary<string, string> LanguageDict = new Dictionary<string, string>
         {
             { "English", "en_US" },
+            { "বাংলা", "bn_BD" },
             { "Español", "es_ES" },
             { "Indonesia", "id_ID" },
-            { "日本語", "ja_JP" }
+            { "日本語", "ja_JP" },
+            { "Tiếng Việt", "vi_VN" }
         };
 
         // App

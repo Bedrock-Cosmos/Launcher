@@ -24,7 +24,7 @@ namespace BedrockCosmos.App
         private Version _latestLauncherVersion = new Version("0.0.0.0");
         private int _currentResponsesVersion = 0;
         private int _latestResponsesVersion = 0;
-        private AsyncFileDownload _asyncDownload = null;
+        private AsyncFileOperations _asyncFileOps = null;
         private RoundGradientButton _launchButton = null;
         private System.Windows.Forms.Label _versionLabel = null;
 
@@ -52,9 +52,9 @@ namespace BedrockCosmos.App
             set { _latestResponsesVersion = value; }
         }
 
-        internal void InitializeMgrAsyncFileDownload(AsyncFileDownload async)
+        internal void InitializeMgrAsyncFileOps(AsyncFileOperations async)
         {
-            _asyncDownload = async;
+            _asyncFileOps = async;
         }
 
         internal void InitializeMgrLaunchButton(RoundGradientButton RGButton)
@@ -73,7 +73,7 @@ namespace BedrockCosmos.App
             _currentLauncherVersion = Assembly.GetExecutingAssembly().GetName().Version;
 
             if (_versionLabel != null)
-                _versionLabel.Text = $"v{_currentLauncherVersion.Major + "." + _currentLauncherVersion.Minor + "." + _currentLauncherVersion.Build}";
+                _versionLabel.Text = $"v{_currentLauncherVersion.Major + "." + _currentLauncherVersion.Minor + "." + _currentLauncherVersion.Build} - Minecraft v26.10+";
 
             // Responses
             string savedResponseVersionPath = PathDefinitions.MiscDirectory + @"ResponsesVersion.txt";
@@ -96,7 +96,7 @@ namespace BedrockCosmos.App
 
             try
             {
-                (version, responsesVersion) = await _asyncDownload.ReadVersionFileAsync();
+                (version, responsesVersion) = await _asyncFileOps.ReadVersionFileAsync();
                 _latestLauncherVersion = new Version(version);
                 _latestResponsesVersion = int.Parse(responsesVersion);
             }
@@ -146,8 +146,8 @@ namespace BedrockCosmos.App
 
             try
             {
-                await _asyncDownload.DownloadFileAsync(fileUrl, downloadPath);
-                await _asyncDownload.ExtractFileAsync(downloadPath, extractPath, true);
+                await _asyncFileOps.DownloadFileAsync(fileUrl, downloadPath);
+                await _asyncFileOps.ExtractFileAsync(downloadPath, extractPath, true);
                 if (Directory.Exists(PathDefinitions.ResponsesDirectory))
                 {
                     await Task.Run(() =>
@@ -156,7 +156,11 @@ namespace BedrockCosmos.App
                     });
                 }
 
-                Directory.Move(PathDefinitions.CosmosAppData + "Responses-" + latestResponsesVersionStr, PathDefinitions.ResponsesDirectory);
+                if (!Directory.Exists(PathDefinitions.ResponsesDirectory))
+                    Directory.Move(PathDefinitions.CosmosAppData + "Responses-main", PathDefinitions.ResponsesDirectory);
+                else // Workaround if old directory was not deleted due to accessing elsewhere
+                    await _asyncFileOps.MoveFolderContentsAsync(PathDefinitions.CosmosAppData + "Responses-main", PathDefinitions.ResponsesDirectory, true);
+
                 File.WriteAllText(PathDefinitions.MiscDirectory + @"ResponsesVersion.txt", latestResponsesVersionStr);
                 _currentResponsesVersion = _latestResponsesVersion;
             }

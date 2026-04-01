@@ -1,0 +1,10 @@
+THỎA THUẬN CHỨNG CHỈ:
+Bedrock Cosmos yêu cầu cài đặt chứng chỉ gốc (root certificate) của Titanium Proxy ngay trong lần đầu khởi chạy hệ thống proxy. Chứng chỉ của Titanium Proxy cho phép ứng dụng của chúng tôi đọc và chỉnh sửa các phản hồi API của Minecraft để hiển thị các menu tùy chỉnh ngay trong trò chơi.
+
+Chúng tôi KHUYẾN CÁO MẠNH MẼ rằng bạn không nên cài đặt các chứng chỉ gốc từ những nguồn mà bạn không tin tưởng, vì chúng có thể bị lợi dụng để thực hiện các cuộc tấn công lừa đảo (phishing) và đánh cắp thông tin đăng nhập. Bedrock Cosmos sẽ luôn duy trì mã nguồn mở để người dùng có thể trực tiếp kiểm tra cách thức proxy của chúng tôi xử lý dữ liệu trên hệ thống của họ.
+
+
+
+THÔNG TIN BỔ SUNG:
+
+Bedrock Cosmos sẽ luôn luôn miễn phí và là mã nguồn mở để mọi người sử dụng. Nếu bạn tải phần mềm này từ bất kỳ nguồn nào khác ngoài các trang web chính thức của chúng tôi (bedrock-cosmos.app, github.com/Bedrock-Cosmos), có thể bạn đã bị lừa đảo. Nếu bạn đã trả bất kỳ khoản tiền nào để có được phần mềm này, hãy yêu cầu hoàn lại tiền ngay lập tức.

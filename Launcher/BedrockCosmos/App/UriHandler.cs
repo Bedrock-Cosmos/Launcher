@@ -21,9 +21,9 @@ internal static class UriHandler
         try
         {
             // Expected formats:
-            // bedrockcosmos://openStore?showStoreOffer=UUID
-            // bedrockcosmos://showDressingRoomOffer?offerID=UUID
-            // bedrockcosmos://showDressingRoomOffer?offerID=UUID/?creator=CreatorName
+            // bedrockcosmos://openStore/?showStoreOffer=UUID
+            // bedrockcosmos://showDressingRoomOffer/?offerID=UUID
+            // bedrockcosmos://showDressingRoomOffer/?offerID=UUID/?creator=CreatorName
 
             if (uri.EndsWith("/"))
                 uri = uri.Remove(uri.Length - 1);
@@ -43,9 +43,7 @@ internal static class UriHandler
             {
                 string uuid = "";
 
-                if (path.StartsWith("openStore?showStoreOffer=", StringComparison.OrdinalIgnoreCase))
-                    uuid = path.Substring("openStore?showStoreOffer=".Length).Trim();
-                else if (path.StartsWith("openStore/?showStoreOffer=", StringComparison.OrdinalIgnoreCase))
+                if (path.StartsWith("openStore/?showStoreOffer=", StringComparison.OrdinalIgnoreCase))
                     uuid = path.Substring("openStore/?showStoreOffer=".Length).Trim();
 
                 if (!string.IsNullOrEmpty(uuid))
@@ -58,10 +56,8 @@ internal static class UriHandler
             if (path.StartsWith("showDressingRoomOffer", StringComparison.OrdinalIgnoreCase))
             {
                 string query = path.Substring("showDressingRoomOffer".Length);
-                if (query.StartsWith("?"))
-                    query = query.Substring(1);
+                query = query.TrimStart('/', '?');
 
-                // Split on '/?' to separate offerID segment from optional creator segment
                 string offerID = null;
                 string creatorName = null;
 
@@ -113,12 +109,13 @@ internal static class UriHandler
             );
         }
 
+        CosmosConsole.WriteLine (jsonPath);
         JObject foundItem = FindItemInJson(jsonPath, offerID);
 
         if (foundItem != null)
         {
             WritePersonaItemPreviewJson(foundItem, offerID);
-            return $"showDressingRoomOffer?offerID=fa359c7a-889b-4ce1-9d68-08691ca7303c";
+            return $"showDressingRoomOffer/?offerID=fa359c7a-889b-4ce1-9d68-08691ca7303c";
         }
         else
         {
@@ -144,7 +141,7 @@ internal static class UriHandler
         }
 
         // Check all GridLists in file
-        JArray rows = root["result"]?["rows"] as JArray;
+        JArray rows = root["result"]?["layout"]?[0]?["rows"] as JArray;
         if (rows == null)
             return null;
 
@@ -182,73 +179,82 @@ internal static class UriHandler
         JObject preview = JObject.Parse(@"
         {
           ""result"": {
-            ""rows"": [
+            ""layout"": [
               {
-                ""controlId"": ""Layout"",
-                ""components"": [
-                  { ""type"": ""personaOfferInteractionComp"", ""$type"": ""PersonaOfferInteractionComponent"" },
-                  { ""type"": ""appearanceInteractionComp"", ""$type"": ""AppearanceInteractionComponent"" },
-                  { ""type"": ""openColorPickerComp"", ""$type"": ""OpenColorPickerComponent"" },
-                  { ""type"": ""openExpandedAppearanceViewComp"", ""$type"": ""OpenExpandedAppearanceViewComponent"" },
-                  { ""type"": ""dispPreviewPieceComp"", ""$type"": ""DisplayPreviewedPieceOfferComponent"" },
-                  { ""type"": ""sideSelectionComp"", ""$type"": ""PersonaSideSelection"" },
+                ""sectionName"": ""rows"",
+                ""rows"": [
                   {
-                    ""linksToInfo"": {
-                      ""linksTo"": ""MultiItemPage_DressingRoomCoinScreen"",
-                      ""linkType"": ""pageId"",
-                      ""displayType"": ""store_layout.character_creator_screen"",
-                      ""screenTitle"": {
-                        ""value"": ""dr.header.minecoin.screen"",
-                        ""style"": {
-                          ""highlightColor"": [],
-                          ""alignment"": ""Left"",
-                          ""textColor"": [],
-                          ""font"": ""MinecraftTen"",
-                          ""showBackground"": false,
-                          ""showOutline"": false,
-                          ""indent"": 0.0,
-                          ""buttonWidth"": 0.0,
-                          ""color"": [],
-                          ""offerControlIdType"": ""None"",
-                          ""outlineColor"": []
+                    ""controlId"": ""Layout"",
+                    ""components"": [
+                      { ""type"": ""personaOfferInteractionComp"", ""$type"": ""PersonaOfferInteractionComponent"" },
+                      { ""type"": ""appearanceInteractionComp"", ""$type"": ""AppearanceInteractionComponent"" },
+                      { ""type"": ""openColorPickerComp"", ""$type"": ""OpenColorPickerComponent"" },
+                      { ""type"": ""openExpandedAppearanceViewComp"", ""$type"": ""OpenExpandedAppearanceViewComponent"" },
+                      { ""type"": ""dispPreviewPieceComp"", ""$type"": ""DisplayPreviewedPieceOfferComponent"" },
+                      { ""type"": ""sideSelectionComp"", ""$type"": ""PersonaSideSelection"" },
+                      {
+                        ""linksToInfo"": {
+                          ""linksTo"": ""MultiItemPage_DressingRoomCoinScreen"",
+                          ""linkType"": ""pageId"",
+                          ""displayType"": ""store_layout.character_creator_screen"",
+                          ""screenTitle"": {
+                            ""value"": ""dr.header.minecoin.screen"",
+                            ""style"": {
+                              ""highlightColor"": [],
+                              ""alignment"": ""Left"",
+                              ""textColor"": [],
+                              ""font"": ""MinecraftTen"",
+                              ""showBackground"": false,
+                              ""showOutline"": false,
+                              ""indent"": 0.0,
+                              ""buttonWidth"": 0.0,
+                              ""color"": [],
+                              ""offerControlIdType"": ""None"",
+                              ""outlineColor"": []
+                            },
+                            ""replacements"": []
+                          },
+                          ""navigateInPlace"": false
                         },
-                        ""replacements"": []
+                        ""isVisible"": true,
+                        ""type"": ""topBarMinecoinComp"",
+                        ""$type"": ""TopBarMinecoinComponent""
+                      }
+                    ]
+                  },
+                  {
+                    ""controlId"": ""GridList"",
+                    ""components"": [
+                      {
+                        ""items"": [],
+                        ""totalItems"": 1,
+                        ""type"": ""pagedItemListComp"",
+                        ""$type"": ""PagedItemListComponent""
                       },
-                      ""navigateInPlace"": false
-                    },
-                    ""isVisible"": true,
-                    ""type"": ""topBarMinecoinComp"",
-                    ""$type"": ""TopBarMinecoinComponent""
+                      {
+                        ""previewedId"": """",
+                        ""type"": ""dispPreviewPieceComp"",
+                        ""$type"": ""DisplayPreviewedPieceOfferComponent""
+                      }
+                    ]
                   }
                 ]
               },
-              {
-                ""controlId"": ""GridList"",
-                ""components"": [
-                  {
-                    ""items"": [],
-                    ""totalItems"": 1,
-                    ""type"": ""pagedItemListComp"",
-                    ""$type"": ""PagedItemListComponent""
-                  },
-                  {
-                    ""previewedId"": """",
-                    ""type"": ""dispPreviewPieceComp"",
-                    ""$type"": ""DisplayPreviewedPieceOfferComponent""
-                  }
-                ]
-              }
-            ],
-            ""sidebarLayoutType"": ""Persona""
+              { ""sectionName"": ""navigation"", ""rows"": [] }
+            ]
           }
         }");
 
+        // Navigate to layout[0].rows (sectionName: "rows") -> GridList row
+        JArray rows = preview["result"]["layout"][0]["rows"] as JArray;
+        JObject gridListRow = rows[1] as JObject; // controlId: "GridList"
+
         // Insert the found item into the GridList's items array
-        JArray gridListItems = preview["result"]["rows"][1]["components"][0]["items"] as JArray;
+        JArray gridListItems = gridListRow["components"][0]["items"] as JArray;
         gridListItems.Add(foundItem);
 
         // Set the previewedId
-        preview["result"]["rows"][1]["components"][1]["previewedId"] = offerID;
+        gridListRow["components"][1]["previewedId"] = offerID;
 
         // Write to disk
         string outputPath = Path.Combine(PathDefinitions.CustomJsonsDirectory, "PersonaItemPreview.json");
