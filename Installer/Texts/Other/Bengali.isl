@@ -10,7 +10,7 @@
 [LangOptions]
 ; নিচের তিনটি এন্ট্রি অত্যন্ত গুরুত্বপূর্ণ। অনুগ্রহ করে হেল্প ফাইলে
 ; '[LangOptions] section' বিষয়টি পড়ুন এবং বুঝুন।
-LanguageName=Bengali
+LanguageName=<09AC><09BE><0982><09B2><09BE>
 LanguageID=$0445
 ; LanguageCodePage সম্ভব হলে সবসময় সেট করা উচিত, এমনকি এই ফাইলটি Unicode হলেও
 LanguageCodePage=0
