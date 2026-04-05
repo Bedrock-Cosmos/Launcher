@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 // Built off of Dungeon Combo Box from ReaLTaiizor to work with .NET 4.7.2
@@ -10,6 +11,10 @@ namespace BedrockCosmos.App.UI
 {
     public class GradientComboBox : ComboBox
     {
+        private const int ComboBoxSetTopIndexMessage = 0x015C;
+        private const int DropDownPadding = 10;
+        private const int MaxVisibleDropDownItems = 8;
+
         private int _StartIndex = 0;
         private Color _HoverSelectionColor;
 
@@ -22,6 +27,9 @@ namespace BedrockCosmos.App.UI
         private Color _ColorG = Color.FromArgb(119, 119, 118);
         private Color _ColorH = Color.FromArgb(224, 222, 220);
         private Color _ColorI = Color.FromArgb(250, 249, 249);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 
         public int StartIndex
         {
@@ -104,39 +112,82 @@ namespace BedrockCosmos.App.UI
             set { _ColorI = value; }
         }
 
+        public GradientComboBox()
+        {
+            SetStyle((ControlStyles)139286, true);
+            SetStyle(ControlStyles.Selectable, true);
+
+            DrawMode = DrawMode.OwnerDrawFixed;
+            DropDownStyle = ComboBoxStyle.DropDownList;
+            IntegralHeight = false;
+
+            BackColor = Color.FromArgb(246, 246, 246);
+            ForeColor = Color.FromArgb(76, 76, 97);
+            Size = new Size(135, 26);
+            Font = new Font("Segoe UI", 10f, FontStyle.Regular);
+            ItemHeight = Math.Max(22, Font.Height + 8);
+            Cursor = Cursors.Hand;
+
+            RefreshDropDownMetrics();
+        }
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            RefreshDropDownMetrics();
+        }
+
+        protected override void OnFontChanged(EventArgs e)
+        {
+            base.OnFontChanged(e);
+            ItemHeight = Math.Max(22, Font.Height + 8);
+            RefreshDropDownMetrics();
+            Invalidate();
+        }
+
+        protected override void OnMeasureItem(MeasureItemEventArgs e)
+        {
+            base.OnMeasureItem(e);
+            e.ItemHeight = ItemHeight;
+        }
+
         protected override void OnDrawItem(DrawItemEventArgs e)
         {
-            base.OnDrawItem(e);
-
             if (e.Index < 0)
                 return;
 
-            LinearGradientBrush lgb =
-                new LinearGradientBrush(e.Bounds, _ColorA, _ColorB, 90f);
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
-            if ((e.State & DrawItemState.Selected) == DrawItemState.Selected)
-            {
-                e.Graphics.FillRectangle(lgb, e.Bounds);
-                e.Graphics.DrawString(
-                    GetItemText(Items[e.Index]),
-                    e.Font,
-                    Brushes.WhiteSmoke,
-                    e.Bounds);
-            }
-            else
-            {
-                e.Graphics.FillRectangle(
-                    new SolidBrush(_ColorC),
-                    e.Bounds);
+            Rectangle itemBounds = e.Bounds;
+            bool isSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
+            Color selectedBackColor = _HoverSelectionColor.IsEmpty
+                ? Color.FromArgb(70, 70, 70)
+                : _HoverSelectionColor;
+            Color itemBackColor = isSelected ? selectedBackColor : _ColorC;
+            Color itemTextColor = isSelected ? Color.WhiteSmoke : ForeColor;
 
-                e.Graphics.DrawString(
-                    GetItemText(Items[e.Index]),
-                    e.Font,
-                    Brushes.DimGray,
-                    e.Bounds);
+            using (SolidBrush backgroundBrush = new SolidBrush(itemBackColor))
+            using (SolidBrush accentBrush = new SolidBrush(Color.FromArgb(153, 153, 153)))
+            {
+                e.Graphics.FillRectangle(backgroundBrush, itemBounds);
+
+                if (isSelected)
+                    e.Graphics.FillRectangle(accentBrush, new Rectangle(itemBounds.X, itemBounds.Y, 3, itemBounds.Height));
             }
 
-            lgb.Dispose();
+            Rectangle textBounds = new Rectangle(
+                itemBounds.X + DropDownPadding,
+                itemBounds.Y,
+                Math.Max(0, itemBounds.Width - (DropDownPadding * 2)),
+                itemBounds.Height);
+
+            TextRenderer.DrawText(
+                e.Graphics,
+                GetItemText(Items[e.Index]),
+                e.Font,
+                textBounds,
+                itemTextColor,
+                TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPadding);
         }
 
         protected override void OnLostFocus(EventArgs e)
@@ -155,85 +206,77 @@ namespace BedrockCosmos.App.UI
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
+            RefreshDropDownMetrics();
+
             if (!Focused)
-            {
                 SelectionLength = 0;
-            }
         }
 
-        public GradientComboBox()
+        protected override void OnDropDown(EventArgs e)
         {
-            SetStyle((ControlStyles)139286, true);
-            SetStyle(ControlStyles.Selectable, false);
+            RefreshDropDownMetrics();
+            base.OnDropDown(e);
 
-            DrawMode = DrawMode.OwnerDrawFixed;
-            DropDownStyle = ComboBoxStyle.DropDownList;
+            if (IsHandleCreated)
+                SendMessage(Handle, ComboBoxSetTopIndexMessage, IntPtr.Zero, IntPtr.Zero);
+        }
 
-            BackColor = Color.FromArgb(246, 246, 246);
-            ForeColor = Color.FromArgb(76, 76, 97);
-            Size = new Size(135, 26);
-            ItemHeight = 20;
-            DropDownHeight = 100;
-            Font = new Font("Segoe UI", 10f, FontStyle.Regular);
-            Cursor = Cursors.Hand;
+        protected override void OnDropDownClosed(EventArgs e)
+        {
+            base.OnDropDownClosed(e);
+            Invalidate();
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
 
-            LinearGradientBrush lgb = null;
-            GraphicsPath gp = null;
+            Graphics graphics = e.Graphics;
+            graphics.Clear(Parent != null ? Parent.BackColor : BackColor);
+            graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
-            e.Graphics.Clear(Parent.BackColor);
-            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            using (GraphicsPath borderPath = RoundRectangle.RoundRect(0, 0, Width - 1, Height - 1, 5))
+            using (LinearGradientBrush backgroundBrush = new LinearGradientBrush(ClientRectangle, _ColorD, _ColorE, 90f))
+            using (Pen borderPen = new Pen(_ColorF))
+            using (Brush dividerBrush = new SolidBrush(_ColorH))
+            using (Brush dividerShadowBrush = new SolidBrush(_ColorI))
+            using (Brush arrowBrush = new SolidBrush(_ColorG))
+            using (Font arrowFont = new Font("Marlett", 13f, FontStyle.Regular))
+            {
+                graphics.SetClip(borderPath);
+                graphics.FillRectangle(backgroundBrush, ClientRectangle);
+                graphics.ResetClip();
+                graphics.DrawPath(borderPen, borderPath);
 
-            gp = RoundRectangle.RoundRect(0, 0, Width - 1, Height - 1, 5);
-            lgb = new LinearGradientBrush(ClientRectangle, _ColorD, _ColorE, 90f);
+                TextRenderer.DrawText(
+                    graphics,
+                    Text,
+                    Font,
+                    new Rectangle(12, 0, Width - 36, Height),
+                    ForeColor,
+                    TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPadding);
 
-            e.Graphics.SetClip(gp);
-            e.Graphics.FillRectangle(lgb, ClientRectangle);
-            e.Graphics.ResetClip();
+                graphics.DrawString(
+                    "6",
+                    arrowFont,
+                    arrowBrush,
+                    new Rectangle(3, 0, Width - 4, Height),
+                    new StringFormat
+                    {
+                        LineAlignment = StringAlignment.Center,
+                        Alignment = StringAlignment.Far
+                    });
 
-            e.Graphics.DrawPath(new Pen(_ColorF), gp);
+                graphics.FillRectangle(dividerBrush, new Rectangle(Width - 24, 4, 1, Height - 9));
+                graphics.FillRectangle(dividerShadowBrush, new Rectangle(Width - 25, 4, 1, Height - 9));
+            }
+        }
 
-            e.Graphics.DrawString(
-                Text,
-                Font,
-                new SolidBrush(ForeColor),
-                new Rectangle(3, 0, Width - 20, Height),
-                new StringFormat
-                {
-                    LineAlignment = StringAlignment.Center,
-                    Alignment = StringAlignment.Near
-                });
-
-            e.Graphics.DrawString(
-                "6",
-                new Font("Marlett", 13f, FontStyle.Regular),
-                new SolidBrush(_ColorG),
-                new Rectangle(3, 0, Width - 4, Height),
-                new StringFormat
-                {
-                    LineAlignment = StringAlignment.Center,
-                    Alignment = StringAlignment.Far
-                });
-
-            e.Graphics.DrawLine(
-                new Pen(_ColorH),
-                Width - 24, 4,
-                Width - 24, Height - 5);
-
-            e.Graphics.DrawLine(
-                new Pen(_ColorI),
-                Width - 25, 4,
-                Width - 25, Height - 5);
-
-            if (gp != null)
-                gp.Dispose();
-
-            if (lgb != null)
-                lgb.Dispose();
+        private void RefreshDropDownMetrics()
+        {
+            int visibleItems = Math.Max(1, Math.Min(Items.Count, MaxVisibleDropDownItems));
+            DropDownWidth = Math.Max(Width, DropDownWidth);
+            DropDownHeight = (visibleItems * ItemHeight) + 2;
         }
     }
 
@@ -340,37 +383,15 @@ namespace BedrockCosmos.App.UI
         {
             GraphicsPath gp = new GraphicsPath();
 
-            gp.AddLine(x + radius, y, x + width - (radius * 2), y);
-            gp.AddArc(x + width - (radius * 2), y, radius * 2, radius * 2, 270, 90);
-
+            gp.AddLine(x + radius, y, x + width, y);
             gp.AddLine(x + width, y, x + width, y + height);
-            gp.AddArc(x + width - (radius * 2), y + height - 1, radius * 2, 1, 0, 90);
-
-            gp.AddLine(x + width - (radius * 2), y + height, x + radius, y + height);
+            gp.AddLine(x + width, y + height, x + radius, y + height);
             gp.AddArc(x, y + height - (radius * 2), radius * 2, radius * 2, 90, 90);
-
             gp.AddLine(x, y + height - (radius * 2), x, y + radius);
             gp.AddArc(x, y, radius * 2, radius * 2, 180, 90);
 
             gp.CloseFigure();
             return gp;
         }
-
-        public static Color BlendColor(Color backgroundColor, Color frontColor)
-        {
-            double ratio = 0 / 255d;
-            double invRatio = 1d - ratio;
-
-            int r = (int)((backgroundColor.R * invRatio) + (frontColor.R * ratio));
-            int g = (int)((backgroundColor.G * invRatio) + (frontColor.G * ratio));
-            int b = (int)((backgroundColor.B * invRatio) + (frontColor.B * ratio));
-
-            return Color.FromArgb(r, g, b);
-        }
-
-        public static Color BackColor = ColorTranslator.FromHtml("#DADCDF");
-        public static Color DarkBackColor = ColorTranslator.FromHtml("#90949A");
-        public static Color LightBackColor = ColorTranslator.FromHtml("#F5F5F5");
     }
-
 }

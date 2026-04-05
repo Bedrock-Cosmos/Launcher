@@ -121,11 +121,11 @@ namespace BedrockCosmos.App
                 string logPath = logsFolder + @"\Log" + fileCount.ToString() + ".txt";
 
                 File.WriteAllText(logPath, _console.Text);
-                WriteLine("App", $"Exported log to {logPath}");
+                WriteLine("App", LanguageHandler.Format("Logs.ExportedLog", logPath));
             }
             catch (Exception)
             {
-                WriteLine("App", "Failed to create log.");
+                WriteLine("App", LanguageHandler.Get("Logs.ExportLogFailed"));
             }
         }
     }
