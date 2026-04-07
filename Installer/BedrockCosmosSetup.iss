@@ -55,6 +55,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Source: "BedrockCosmos\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\{#MyAppExeName}.config"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\AutoUpdater.NET.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "BedrockCosmos\Background.png"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\BCPackIcon.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\BouncyCastle.Crypto.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\BrotliSharpLib.dll"; DestDir: "{app}"; Flags: ignoreversion
