@@ -149,7 +149,7 @@ namespace BedrockCosmos.App.UI
 
         protected override void OnPaintBackground(PaintEventArgs e)
         {
-            base.OnPaintBackground(e);
+            // Empty to prevent default background rectangle from being drawn over parent's background.
         }
 
         protected override void OnResize(EventArgs e)
@@ -163,7 +163,12 @@ namespace BedrockCosmos.App.UI
 
         public GradientComboBox()
         {
-            SetStyle((ControlStyles)139286, true);
+            SetStyle(ControlStyles.UserPaint, true);
+            SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+            SetStyle(ControlStyles.DoubleBuffer, true);
+            SetStyle(ControlStyles.ResizeRedraw, true);
+            SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+            SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
             SetStyle(ControlStyles.Selectable, false);
 
             DrawMode = DrawMode.OwnerDrawFixed;
@@ -185,7 +190,25 @@ namespace BedrockCosmos.App.UI
             LinearGradientBrush lgb = null;
             GraphicsPath gp = null;
 
-            e.Graphics.Clear(Parent.BackColor);
+            if (BackColor == Color.Transparent)
+            {
+                if (Parent != null)
+                {
+                    e.Graphics.TranslateTransform(-Left, -Top);
+                    Rectangle parentClip = new Rectangle(Left, Top, Width, Height);
+                    using (PaintEventArgs parentArgs = new PaintEventArgs(e.Graphics, parentClip))
+                    {
+                        InvokePaintBackground(Parent, parentArgs);
+                        InvokePaint(Parent, parentArgs);
+                    }
+                    e.Graphics.TranslateTransform(Left, Top);
+                }
+            }
+            else
+            {
+                e.Graphics.Clear(BackColor);
+            }
+
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
             gp = RoundRectangle.RoundRect(0, 0, Width - 1, Height - 1, 5);
@@ -372,5 +395,4 @@ namespace BedrockCosmos.App.UI
         public static Color DarkBackColor = ColorTranslator.FromHtml("#90949A");
         public static Color LightBackColor = ColorTranslator.FromHtml("#F5F5F5");
     }
-
 }

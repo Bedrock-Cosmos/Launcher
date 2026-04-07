@@ -20,29 +20,38 @@ namespace BedrockCosmos.App.UI
         public Color BaseColor
         {
             get { return _BaseColor; }
-            set { _BaseColor = value; }
+            set { _BaseColor = value; Invalidate(); }
         }
 
         public Color BaseOnColor
         {
             get { return _BaseOnColor; }
-            set { _BaseOnColor = value; }
+            set { _BaseOnColor = value; Invalidate(); }
         }
 
         public Color BaseOffColor
         {
             get { return _BaseOffColor; }
-            set { _BaseOffColor = value; }
+            set { _BaseOffColor = value; Invalidate(); }
         }
 
         public Switch()
         {
             AnimationTimer = new Timer();
-            AnimationTimer.Interval = 1; // Set to a small interval for smooth animation
+            AnimationTimer.Interval = 1;
             AnimationTimer.Tick += new EventHandler(AnimationTick);
 
-            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer, true);
+            SetStyle(
+                ControlStyles.AllPaintingInWmPaint |
+                ControlStyles.UserPaint |
+                ControlStyles.ResizeRedraw |
+                ControlStyles.OptimizedDoubleBuffer |
+                ControlStyles.SupportsTransparentBackColor,
+                true
+            );
+
             DoubleBuffered = true;
+            BackColor = Color.Transparent; // Default to transparent
             Height = 20;
             Width = 42;
             Cursor = Cursors.Hand;
@@ -64,11 +73,6 @@ namespace BedrockCosmos.App.UI
             }
         }
 
-        protected override void OnHandleCreated(EventArgs e)
-        {
-            base.OnHandleCreated(e);
-        }
-
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
@@ -84,16 +88,43 @@ namespace BedrockCosmos.App.UI
             graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
             graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
             graphics.InterpolationMode = InterpolationMode.High;
-            graphics.Clear(Parent.BackColor);
 
-            // Create the graphics path manually
-            GraphicsPath backRect = new GraphicsPath();
-            backRect.AddArc(new RectangleF(0.5f, 0.5f, Height - 1, Height - 1), 90, 180);
-            backRect.AddArc(new RectangleF(Width - Height + 0.5f, 0.5f, Height - 1, Height - 1), 270, 180);
-            backRect.CloseAllFigures();
+            // Branch on whether the background is transparent or a solid color.
+            // Color.Transparent has an Alpha of 0; we treat any fully-transparent
+            // color the same way so callers can also pass Color.FromArgb(0, ...).
+            if (BackColor == Color.Transparent || BackColor.A == 0)
+            {
+                // Ask the parent to paint itself into our graphics context at the
+                // correct offset so gradients, images, and themed panels show through.
+                if (Parent != null)
+                {
+                    Rectangle rect = new Rectangle(Left, Top, Width, Height);
+                    graphics.TranslateTransform(-Left, -Top);
+                    InvokePaintBackground(Parent, new PaintEventArgs(graphics, rect));
+                    InvokePaint(Parent, new PaintEventArgs(graphics, rect));
+                    graphics.TranslateTransform(Left, Top);
+                }
+            }
+            else
+            {
+                // A real BackColor was set — just flood-fill with it.
+                graphics.Clear(BackColor);
+            }
 
-            graphics.FillPath(new SolidBrush(Checked ? _BaseOnColor : _BaseOffColor), backRect);
-            graphics.FillEllipse(new SolidBrush(_BaseColor), new RectangleF(PointAnimationNum, 2, 16, 16));
+            // Draw the pill-shaped track.
+            using (GraphicsPath backRect = new GraphicsPath())
+            {
+                backRect.AddArc(new RectangleF(0.5f, 0.5f, Height - 1, Height - 1), 90, 180);
+                backRect.AddArc(new RectangleF(Width - Height + 0.5f, 0.5f, Height - 1, Height - 1), 270, 180);
+                backRect.CloseAllFigures();
+
+                using (SolidBrush trackBrush = new SolidBrush(Checked ? _BaseOnColor : _BaseOffColor))
+                    graphics.FillPath(trackBrush, backRect);
+            }
+
+            // Draw the knob.
+            using (SolidBrush knobBrush = new SolidBrush(_BaseColor))
+                graphics.FillEllipse(knobBrush, new RectangleF(PointAnimationNum, 2, 16, 16));
         }
 
         private void AnimationTick(object sender, EventArgs e)

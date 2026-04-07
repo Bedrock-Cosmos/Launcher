@@ -95,6 +95,7 @@
             // 
             // StatusLabel
             // 
+            this.StatusLabel.BackColor = System.Drawing.Color.Transparent;
             this.StatusLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.StatusLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.StatusLabel.Location = new System.Drawing.Point(230, 278);
@@ -120,7 +121,7 @@
             // HomePage
             // 
             this.HomePage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.HomePage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.HomePage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.HomePage.Controls.Add(this.VersionLabel);
             this.HomePage.Controls.Add(this.AboutButton);
             this.HomePage.Controls.Add(this.SettingsButton);
@@ -135,6 +136,7 @@
             // 
             // VersionLabel
             // 
+            this.VersionLabel.BackColor = System.Drawing.Color.Transparent;
             this.VersionLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.VersionLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.VersionLabel.Location = new System.Drawing.Point(234, 398);
@@ -147,37 +149,39 @@
             // AboutButton
             // 
             this.AboutButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.AboutButton.BackColor = System.Drawing.Color.Transparent;
             this.AboutButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("AboutButton.BackgroundImage")));
             this.AboutButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.AboutButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.AboutButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.AboutButton.FlatAppearance.BorderSize = 0;
-            this.AboutButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.AboutButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.AboutButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.AboutButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.AboutButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.AboutButton.Location = new System.Drawing.Point(15, 391);
             this.AboutButton.Name = "AboutButton";
             this.AboutButton.Size = new System.Drawing.Size(25, 25);
             this.AboutButton.TabIndex = 17;
-            this.AboutButton.UseVisualStyleBackColor = true;
+            this.AboutButton.UseVisualStyleBackColor = false;
             this.AboutButton.Click += new System.EventHandler(this.AboutButton_Click);
             // 
             // SettingsButton
             // 
             this.SettingsButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.SettingsButton.BackColor = System.Drawing.Color.Transparent;
             this.SettingsButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("SettingsButton.BackgroundImage")));
             this.SettingsButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.SettingsButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.SettingsButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.SettingsButton.FlatAppearance.BorderSize = 0;
-            this.SettingsButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.SettingsButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.SettingsButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.SettingsButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.SettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SettingsButton.Location = new System.Drawing.Point(760, 391);
             this.SettingsButton.Name = "SettingsButton";
             this.SettingsButton.Size = new System.Drawing.Size(25, 25);
             this.SettingsButton.TabIndex = 16;
-            this.SettingsButton.UseVisualStyleBackColor = true;
+            this.SettingsButton.UseVisualStyleBackColor = false;
             this.SettingsButton.Click += new System.EventHandler(this.SettingsButton_Click);
             // 
             // LaunchButton
@@ -210,6 +214,7 @@
             // AboutPage
             // 
             this.AboutPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.AboutPage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.AboutPage.Controls.Add(this.WebsiteLabel);
             this.AboutPage.Controls.Add(this.WebsiteIcon);
             this.AboutPage.Controls.Add(this.GitHubLabel);
@@ -228,6 +233,7 @@
             // 
             this.WebsiteLabel.ActiveLinkColor = System.Drawing.Color.Cyan;
             this.WebsiteLabel.AutoSize = true;
+            this.WebsiteLabel.BackColor = System.Drawing.Color.Transparent;
             this.WebsiteLabel.Font = new System.Drawing.Font("Segoe UI", 12F);
             this.WebsiteLabel.LinkColor = System.Drawing.Color.LightSkyBlue;
             this.WebsiteLabel.Location = new System.Drawing.Point(540, 298);
@@ -241,6 +247,7 @@
             // 
             // WebsiteIcon
             // 
+            this.WebsiteIcon.BackColor = System.Drawing.Color.Transparent;
             this.WebsiteIcon.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("WebsiteIcon.BackgroundImage")));
             this.WebsiteIcon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.WebsiteIcon.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -255,6 +262,7 @@
             // 
             this.GitHubLabel.ActiveLinkColor = System.Drawing.Color.Cyan;
             this.GitHubLabel.AutoSize = true;
+            this.GitHubLabel.BackColor = System.Drawing.Color.Transparent;
             this.GitHubLabel.Font = new System.Drawing.Font("Segoe UI", 12F);
             this.GitHubLabel.LinkColor = System.Drawing.Color.LightSkyBlue;
             this.GitHubLabel.Location = new System.Drawing.Point(392, 298);
@@ -270,6 +278,7 @@
             // 
             this.DiscordLabel.ActiveLinkColor = System.Drawing.Color.Cyan;
             this.DiscordLabel.AutoSize = true;
+            this.DiscordLabel.BackColor = System.Drawing.Color.Transparent;
             this.DiscordLabel.Font = new System.Drawing.Font("Segoe UI", 12F);
             this.DiscordLabel.LinkColor = System.Drawing.Color.LightSkyBlue;
             this.DiscordLabel.Location = new System.Drawing.Point(235, 298);
@@ -283,6 +292,7 @@
             // 
             // DiscordIcon
             // 
+            this.DiscordIcon.BackColor = System.Drawing.Color.Transparent;
             this.DiscordIcon.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("DiscordIcon.BackgroundImage")));
             this.DiscordIcon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.DiscordIcon.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -295,6 +305,7 @@
             // 
             // GitHubIcon
             // 
+            this.GitHubIcon.BackColor = System.Drawing.Color.Transparent;
             this.GitHubIcon.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("GitHubIcon.BackgroundImage")));
             this.GitHubIcon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.GitHubIcon.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -306,6 +317,7 @@
             // 
             // AboutLabel
             // 
+            this.AboutLabel.BackColor = System.Drawing.Color.Transparent;
             this.AboutLabel.Font = new System.Drawing.Font("Segoe UI", 12F);
             this.AboutLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.AboutLabel.Location = new System.Drawing.Point(120, 86);
@@ -318,24 +330,26 @@
             // AboutBackButton
             // 
             this.AboutBackButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.AboutBackButton.BackColor = System.Drawing.Color.Transparent;
             this.AboutBackButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("AboutBackButton.BackgroundImage")));
             this.AboutBackButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.AboutBackButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.AboutBackButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.AboutBackButton.FlatAppearance.BorderSize = 0;
-            this.AboutBackButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.AboutBackButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.AboutBackButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.AboutBackButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.AboutBackButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.AboutBackButton.Location = new System.Drawing.Point(15, 391);
             this.AboutBackButton.Name = "AboutBackButton";
             this.AboutBackButton.Size = new System.Drawing.Size(25, 25);
             this.AboutBackButton.TabIndex = 5;
-            this.AboutBackButton.UseVisualStyleBackColor = true;
+            this.AboutBackButton.UseVisualStyleBackColor = false;
             this.AboutBackButton.Click += new System.EventHandler(this.ReturnToHomeScreen);
             // 
             // SettingsPage
             // 
             this.SettingsPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.SettingsPage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.SettingsPage.Controls.Add(this.LanguageDescriptionLabel);
             this.SettingsPage.Controls.Add(this.LanguageTitleLabel);
             this.SettingsPage.Controls.Add(this.LanguageComboBox);
@@ -352,6 +366,7 @@
             // 
             // LanguageDescriptionLabel
             // 
+            this.LanguageDescriptionLabel.BackColor = System.Drawing.Color.Transparent;
             this.LanguageDescriptionLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.LanguageDescriptionLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.LanguageDescriptionLabel.Location = new System.Drawing.Point(270, 115);
@@ -363,6 +378,7 @@
             // 
             // LanguageTitleLabel
             // 
+            this.LanguageTitleLabel.BackColor = System.Drawing.Color.Transparent;
             this.LanguageTitleLabel.Font = new System.Drawing.Font("Segoe UI", 16F);
             this.LanguageTitleLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.LanguageTitleLabel.Location = new System.Drawing.Point(160, 109);
@@ -374,7 +390,7 @@
             // 
             // LanguageComboBox
             // 
-            this.LanguageComboBox.BackColor = System.Drawing.Color.White;
+            this.LanguageComboBox.BackColor = System.Drawing.Color.Transparent;
             this.LanguageComboBox.ColorA = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.LanguageComboBox.ColorB = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.LanguageComboBox.ColorC = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
@@ -411,23 +427,25 @@
             // SettingsBackButton
             // 
             this.SettingsBackButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.SettingsBackButton.BackColor = System.Drawing.Color.Transparent;
             this.SettingsBackButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("SettingsBackButton.BackgroundImage")));
             this.SettingsBackButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.SettingsBackButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.SettingsBackButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.SettingsBackButton.FlatAppearance.BorderSize = 0;
-            this.SettingsBackButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.SettingsBackButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.SettingsBackButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.SettingsBackButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.SettingsBackButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SettingsBackButton.Location = new System.Drawing.Point(15, 391);
             this.SettingsBackButton.Name = "SettingsBackButton";
             this.SettingsBackButton.Size = new System.Drawing.Size(25, 25);
             this.SettingsBackButton.TabIndex = 15;
-            this.SettingsBackButton.UseVisualStyleBackColor = true;
+            this.SettingsBackButton.UseVisualStyleBackColor = false;
             this.SettingsBackButton.Click += new System.EventHandler(this.ReturnToHomeScreen);
             // 
             // BackgroundModeDescriptionLabel
             // 
+            this.BackgroundModeDescriptionLabel.BackColor = System.Drawing.Color.Transparent;
             this.BackgroundModeDescriptionLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.BackgroundModeDescriptionLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.BackgroundModeDescriptionLabel.Location = new System.Drawing.Point(270, 40);
@@ -441,6 +459,7 @@
             // 
             // BackgroundModeTitleLabel
             // 
+            this.BackgroundModeTitleLabel.BackColor = System.Drawing.Color.Transparent;
             this.BackgroundModeTitleLabel.Font = new System.Drawing.Font("Segoe UI", 16F);
             this.BackgroundModeTitleLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.BackgroundModeTitleLabel.Location = new System.Drawing.Point(74, 40);
@@ -453,6 +472,7 @@
             // BackgroundModeSwitch
             // 
             this.BackgroundModeSwitch.AutoSize = true;
+            this.BackgroundModeSwitch.BackColor = System.Drawing.Color.Transparent;
             this.BackgroundModeSwitch.BaseColor = System.Drawing.Color.White;
             this.BackgroundModeSwitch.BaseOffColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.BackgroundModeSwitch.BaseOnColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
@@ -461,12 +481,13 @@
             this.BackgroundModeSwitch.Name = "BackgroundModeSwitch";
             this.BackgroundModeSwitch.Size = new System.Drawing.Size(40, 20);
             this.BackgroundModeSwitch.TabIndex = 12;
-            this.BackgroundModeSwitch.UseVisualStyleBackColor = true;
+            this.BackgroundModeSwitch.UseVisualStyleBackColor = false;
             this.BackgroundModeSwitch.CheckedChanged += new System.EventHandler(this.BackgroundModeToggle_CheckedChanged);
             // 
             // UpdatePage
             // 
             this.UpdatePage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.UpdatePage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.UpdatePage.Controls.Add(this.ChangelogLabel);
             this.UpdatePage.Controls.Add(this.UpdateLabel);
             this.UpdatePage.Controls.Add(this.CancelUpdateButton);
@@ -480,6 +501,7 @@
             // ChangelogLabel
             // 
             this.ChangelogLabel.ActiveLinkColor = System.Drawing.Color.Cyan;
+            this.ChangelogLabel.BackColor = System.Drawing.Color.Transparent;
             this.ChangelogLabel.Font = new System.Drawing.Font("Segoe UI", 12F);
             this.ChangelogLabel.LinkColor = System.Drawing.Color.LightSkyBlue;
             this.ChangelogLabel.Location = new System.Drawing.Point(334, 220);
@@ -494,6 +516,7 @@
             // 
             // UpdateLabel
             // 
+            this.UpdateLabel.BackColor = System.Drawing.Color.Transparent;
             this.UpdateLabel.Font = new System.Drawing.Font("Segoe UI", 12F);
             this.UpdateLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.UpdateLabel.Location = new System.Drawing.Point(180, 124);
@@ -559,6 +582,7 @@
             // DevPage
             // 
             this.DevPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.DevPage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.DevPage.Controls.Add(this.DetailedLoggingLabel);
             this.DevPage.Controls.Add(this.DevBackButton);
             this.DevPage.Controls.Add(this.DevConsole);
@@ -581,6 +605,7 @@
             // DetailedLoggingLabel
             // 
             this.DetailedLoggingLabel.AutoSize = true;
+            this.DetailedLoggingLabel.BackColor = System.Drawing.Color.Transparent;
             this.DetailedLoggingLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.DetailedLoggingLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.DetailedLoggingLabel.Location = new System.Drawing.Point(502, 394);
@@ -592,19 +617,20 @@
             // DevBackButton
             // 
             this.DevBackButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.DevBackButton.BackColor = System.Drawing.Color.Transparent;
             this.DevBackButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("DevBackButton.BackgroundImage")));
             this.DevBackButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.DevBackButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.DevBackButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.DevBackButton.FlatAppearance.BorderSize = 0;
-            this.DevBackButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.DevBackButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.DevBackButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.DevBackButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.DevBackButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.DevBackButton.Location = new System.Drawing.Point(15, 391);
             this.DevBackButton.Name = "DevBackButton";
             this.DevBackButton.Size = new System.Drawing.Size(25, 25);
             this.DevBackButton.TabIndex = 4;
-            this.DevBackButton.UseVisualStyleBackColor = true;
+            this.DevBackButton.UseVisualStyleBackColor = false;
             this.DevBackButton.Click += new System.EventHandler(this.ReturnToHomeScreen);
             // 
             // DevConsole
@@ -624,6 +650,7 @@
             // EnableLoggingLabel
             // 
             this.EnableLoggingLabel.AutoSize = true;
+            this.EnableLoggingLabel.BackColor = System.Drawing.Color.Transparent;
             this.EnableLoggingLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.EnableLoggingLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.EnableLoggingLabel.Location = new System.Drawing.Point(306, 394);
@@ -634,6 +661,7 @@
             // 
             // DownloadZipProgressLabel
             // 
+            this.DownloadZipProgressLabel.BackColor = System.Drawing.Color.Transparent;
             this.DownloadZipProgressLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.DownloadZipProgressLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.DownloadZipProgressLabel.Location = new System.Drawing.Point(162, 41);
@@ -647,6 +675,7 @@
             // DetailedLoggingSwitch
             // 
             this.DetailedLoggingSwitch.AutoSize = true;
+            this.DetailedLoggingSwitch.BackColor = System.Drawing.Color.Transparent;
             this.DetailedLoggingSwitch.BaseColor = System.Drawing.Color.White;
             this.DetailedLoggingSwitch.BaseOffColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.DetailedLoggingSwitch.BaseOnColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
@@ -765,6 +794,7 @@
             // EnableLoggingSwitch
             // 
             this.EnableLoggingSwitch.AutoSize = true;
+            this.EnableLoggingSwitch.BackColor = System.Drawing.Color.Transparent;
             this.EnableLoggingSwitch.BaseColor = System.Drawing.Color.White;
             this.EnableLoggingSwitch.BaseOffColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.EnableLoggingSwitch.BaseOnColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
@@ -773,7 +803,7 @@
             this.EnableLoggingSwitch.Name = "EnableLoggingSwitch";
             this.EnableLoggingSwitch.Size = new System.Drawing.Size(40, 20);
             this.EnableLoggingSwitch.TabIndex = 10;
-            this.EnableLoggingSwitch.UseVisualStyleBackColor = true;
+            this.EnableLoggingSwitch.UseVisualStyleBackColor = false;
             this.EnableLoggingSwitch.CheckedChanged += new System.EventHandler(this.EnableLoggingSwitch_CheckedChanged);
             // 
             // DownloadZipButton

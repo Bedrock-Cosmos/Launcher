@@ -55,6 +55,19 @@ namespace BedrockCosmos
             LanguageHandler.Load(PathDefinitions.AppDirectory + @"Texts\" + SettingsManager.Language + ".lang");
             SettingsManager.LoadSettings();
             ApplySettings();
+
+            if (File.Exists(PathDefinitions.AppDirectory + @"Background.png"))
+                ApplyLauncherBackground(PathDefinitions.AppDirectory + @"Background.png");
+        }
+
+        private void ApplyLauncherBackground(string imagePath)
+        {
+            Image background = Image.FromFile(imagePath);
+            HomePage.BackgroundImage = background;
+            AboutPage.BackgroundImage = background;
+            SettingsPage.BackgroundImage = background;
+            UpdatePage.BackgroundImage = background;
+            DevPage.BackgroundImage = background;
         }
 
         public void HandleIncomingArgs(string[] args)
