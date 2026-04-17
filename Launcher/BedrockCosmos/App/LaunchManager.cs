@@ -102,7 +102,7 @@ namespace BedrockCosmos.App
             }
             catch (Exception)
             {
-                CosmosConsole.WriteLine(LanguageHandler.Get("Logs.DownloadCanceled"));
+                CosmosConsole.WriteLine("Unable to download file. Download canceled.");
             }
         }
 
@@ -110,12 +110,12 @@ namespace BedrockCosmos.App
         {
             if (_latestLauncherVersion > _currentLauncherVersion)
             {
-                CosmosConsole.WriteLine(LanguageHandler.Format("Logs.LauncherUpdateFound", _latestLauncherVersion));
+                CosmosConsole.WriteLine($"Launcher update found (v{_latestLauncherVersion}).");
                 return true;
             } 
             else
             {
-                CosmosConsole.WriteLine(LanguageHandler.Get("Logs.LauncherUpToDate"));
+                CosmosConsole.WriteLine("Launcher is up to date.");
                 return false;
             } 
         }
@@ -124,12 +124,12 @@ namespace BedrockCosmos.App
         {
             if (_latestResponsesVersion > _currentResponsesVersion)
             {
-                CosmosConsole.WriteLine(LanguageHandler.Format("Logs.ResponsesUpdateFound", _latestResponsesVersion));
+                CosmosConsole.WriteLine($"Launcher update found (v{_latestResponsesVersion}).");
                 return true;
             }
             else
             {
-                CosmosConsole.WriteLine(LanguageHandler.Get("Logs.ResponsesUpToDate"));
+                CosmosConsole.WriteLine("Responses are up to date.");
                 return false;
             }
         }
@@ -142,7 +142,7 @@ namespace BedrockCosmos.App
             string extractPath = PathDefinitions.CosmosAppData;
 
             if (_launchButton != null)
-                UpdateLaunchButtonText(LanguageHandler.Home_LaunchButton_Updating);
+                UpdateLaunchButtonText(LanguageHandler.Get("Home.LaunchButton.Updating"));
 
             try
             {
@@ -166,7 +166,7 @@ namespace BedrockCosmos.App
             }
             catch (Exception)
             {
-                CosmosConsole.WriteLine(LanguageHandler.Get("Logs.DownloadCanceled"));
+                CosmosConsole.WriteLine("Unable to download file. Download canceled.");
             }
         }
 
@@ -175,11 +175,11 @@ namespace BedrockCosmos.App
             try
             {
                 Process.Start("minecraft://");
-                CosmosConsole.WriteLine(LanguageHandler.Get("Logs.OpenedMinecraft"));
+                CosmosConsole.WriteLine("Opened Minecraft.");
             }
             catch (Exception)
             {
-                CosmosConsole.WriteLine(LanguageHandler.Get("Logs.OpenMinecraftFailed"));
+                CosmosConsole.WriteLine("Unable to launch Minecraft (ensure that the game is installed).");
             }
         }
 
@@ -220,7 +220,7 @@ namespace BedrockCosmos.App
 
             if (_launchButton != null)
             {
-                UpdateLaunchButtonText(LanguageHandler.Home_LaunchButton_Launch);
+                UpdateLaunchButtonText(LanguageHandler.Get("Home.LaunchButton.Launch"));
                 UpdateLaunchButtonColor("green");
                 _launchButton.Enabled = true;
             }

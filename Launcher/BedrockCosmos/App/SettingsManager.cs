@@ -17,6 +17,7 @@ namespace BedrockCosmos.App
     {
         private static bool _proxyStarted = false;
         private static bool _backgroundMode = false;
+        private static bool _discordRpc = true;
         private static string _language = "en_US";
         private static int _devMenuClicks = 0;
         private static bool _devMenuEnabled = false;
@@ -34,6 +35,12 @@ namespace BedrockCosmos.App
         {
             get { return _backgroundMode; }
             set { _backgroundMode = value; SaveSettings(); }
+        }
+
+        internal static bool DiscordRpc
+        {
+            get { return _discordRpc; }
+            set { _discordRpc = value; SaveSettings(); }
         }
 
         internal static string Language
@@ -82,7 +89,7 @@ namespace BedrockCosmos.App
             else
             {
                 if (!_devMenuEnabled)
-                    CosmosConsole.WriteLine(LanguageHandler.Get("Logs.DevModeEnabled"));
+                    CosmosConsole.WriteLine("Developer mode enabled.");
 
                 _devMenuEnabled = true;
                 SaveSettings();
@@ -95,7 +102,7 @@ namespace BedrockCosmos.App
             _devMenuClicks = 0;
             _devMenuEnabled = false;
             SaveSettings();
-            CosmosConsole.WriteLine(LanguageHandler.Get("Logs.DevModeDisabled"));
+            CosmosConsole.WriteLine("Developer mode disabled.");
         }
 
         internal static void SaveSettings()
@@ -104,6 +111,7 @@ namespace BedrockCosmos.App
             var savedSettings = new
             {
                 BackgroundMode = _backgroundMode,
+                DiscordRpc = _discordRpc,
                 Language = _language,
                 DevMenuEnabled = _devMenuEnabled,
                 EnableLogging = _enableLogging,
@@ -113,7 +121,7 @@ namespace BedrockCosmos.App
             string json = JsonConvert.SerializeObject(savedSettings, Formatting.Indented);
             File.WriteAllText(settingsFile, json);
 
-            //CosmosConsole.WriteLine(consoleSender, "Saved settings to local file.");
+            //CosmosConsole.WriteLine("Saved settings to local file.");
         }
 
         internal static void LoadSettings()
@@ -125,20 +133,14 @@ namespace BedrockCosmos.App
                 string json = File.ReadAllText(settingsFile);
                 var settings = JsonConvert.DeserializeObject<dynamic>(json);
 
-                try
-                {
-                    _backgroundMode = settings.BackgroundMode;
-                    _language = settings.Language;
-                    _devMenuEnabled = settings.DevMenuEnabled;
-                    _enableLogging = settings.EnableLogging;
-                    _detailedLogging = settings.DetailedLogging;
-                }
-                catch
-                {
+                try { _backgroundMode = settings.BackgroundMode; } catch { }
+                try { _discordRpc = settings.DiscordRpc; } catch { }
+                try { _language = settings.Language; } catch { }
+                try { _devMenuEnabled = settings.DevMenuEnabled; } catch { }
+                try { _enableLogging = settings.EnableLogging; } catch { }
+                try { _detailedLogging = settings.DetailedLogging; } catch { }
 
-                }
-
-                CosmosConsole.WriteLine(LanguageHandler.Get("Logs.SettingsLoaded"));
+                CosmosConsole.WriteLine("Settings loaded from local file.");
             }
         }
     }

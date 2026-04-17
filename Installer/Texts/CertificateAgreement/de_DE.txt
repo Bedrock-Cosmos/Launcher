@@ -1,0 +1,9 @@
+ZERTIFIKATSHINWEIS:
+Bedrock Cosmos erfordert beim ersten Start des lokalen Proxy-Systems die Installation des Titanium-Proxy-Stammzertifikats. Dieses Zertifikat ermöglicht es der Anwendung, ausgewählte API-Antworten von Minecraft lokal zu lesen und anzupassen, damit eigene Menüs und Inhalte im Spiel angezeigt werden können.
+
+Installiere niemals Stammzertifikate aus Quellen, denen du nicht vertraust. Solche Zertifikate können missbraucht werden, um Phishing-Angriffe einzurichten, Verbindungen umzuleiten oder vertrauliche Daten abzufangen. Bedrock Cosmos bleibt vollständig quelloffen, damit du jederzeit nachvollziehen kannst, wie der Proxy auf deinem System arbeitet.
+
+
+
+WEITERE INFORMATIONEN:
+Bedrock Cosmos bleibt kostenlos und quelloffen. Wenn du diese Software nicht über bedrock-cosmos.app oder github.com/Bedrock-Cosmos erhalten hast, stammt sie möglicherweise aus einer unsicheren Quelle. Wenn du für diese Software bezahlt hast, fordere dein Geld zurück.

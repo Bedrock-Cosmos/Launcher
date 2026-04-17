@@ -51,7 +51,7 @@ namespace BedrockCosmos.App.UI
             );
 
             DoubleBuffered = true;
-            BackColor = Color.Transparent; // Default to transparent
+            BackColor = Color.Transparent;
             Height = 20;
             Width = 42;
             Cursor = Cursors.Hand;
@@ -89,13 +89,8 @@ namespace BedrockCosmos.App.UI
             graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
             graphics.InterpolationMode = InterpolationMode.High;
 
-            // Branch on whether the background is transparent or a solid color.
-            // Color.Transparent has an Alpha of 0; we treat any fully-transparent
-            // color the same way so callers can also pass Color.FromArgb(0, ...).
             if (BackColor == Color.Transparent || BackColor.A == 0)
             {
-                // Ask the parent to paint itself into our graphics context at the
-                // correct offset so gradients, images, and themed panels show through.
                 if (Parent != null)
                 {
                     Rectangle rect = new Rectangle(Left, Top, Width, Height);
@@ -107,11 +102,9 @@ namespace BedrockCosmos.App.UI
             }
             else
             {
-                // A real BackColor was set — just flood-fill with it.
                 graphics.Clear(BackColor);
             }
 
-            // Draw the pill-shaped track.
             using (GraphicsPath backRect = new GraphicsPath())
             {
                 backRect.AddArc(new RectangleF(0.5f, 0.5f, Height - 1, Height - 1), 90, 180);
@@ -122,7 +115,6 @@ namespace BedrockCosmos.App.UI
                     graphics.FillPath(trackBrush, backRect);
             }
 
-            // Draw the knob.
             using (SolidBrush knobBrush = new SolidBrush(_BaseColor))
                 graphics.FillEllipse(knobBrush, new RectangleF(PointAnimationNum, 2, 16, 16));
         }

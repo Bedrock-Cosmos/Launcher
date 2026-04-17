@@ -118,14 +118,14 @@ namespace BedrockCosmos.App
                     Directory.CreateDirectory(logsFolder);
 
                 int fileCount = Directory.GetFiles(logsFolder).Length;
-                string logPath = logsFolder + @"\Log" + fileCount.ToString() + ".txt";
+                string logPath = logsFolder + @"Log" + fileCount.ToString() + ".txt";
 
                 File.WriteAllText(logPath, _console.Text);
-                WriteLine("App", LanguageHandler.Format("Logs.ExportedLog", logPath));
+                WriteLine($"Exported logs to {logPath}");
             }
             catch (Exception)
             {
-                WriteLine("App", LanguageHandler.Get("Logs.ExportLogFailed"));
+                WriteLine("Failed to export logs.");
             }
         }
     }

@@ -250,31 +250,28 @@ namespace BedrockCosmos.App.UI
 
         private void FillButton(Graphics g)
         {
-            Color fillColor;
-
-            // Choose fill color based on mouse state
-            switch (mouseState)
-            {
-                case 1: // Pressed
-                    fillColor = PressedBackColor;
-                    break;
-                case 3: // Hover
-                    fillColor = HoverBackColor;
-                    break;
-                default: // Normal
-                    fillColor = FilledBackColor;
-                    break;
-            }
-
-            // Fill the rounded rectangle with the chosen background color
-            using (SolidBrush backBrush = new SolidBrush(fillColor))
+            // Always fill with the base color first
+            using (SolidBrush backBrush = new SolidBrush(FilledBackColor))
             {
                 g.FillPath(backBrush, roundRectPath);
             }
 
-            using (SolidBrush animBrush = new SolidBrush(Color.FromArgb(buttonGlow, HoverFillColor)))
+            // For pressed state, immediately paint pressed color at full opacity
+            if (mouseState == 1)
             {
-                g.FillPath(animBrush, roundRectPath);
+                using (SolidBrush pressedBrush = new SolidBrush(PressedBackColor))
+                {
+                    g.FillPath(pressedBrush, roundRectPath);
+                }
+            }
+            else
+            {
+                // Animate HoverBackColor in/out using buttonGlow as the alpha driver
+                Color animatedHover = Color.FromArgb(buttonGlow, HoverBackColor);
+                using (SolidBrush animBrush = new SolidBrush(animatedHover))
+                {
+                    g.FillPath(animBrush, roundRectPath);
+                }
             }
         }
 

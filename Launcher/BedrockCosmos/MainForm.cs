@@ -1,12 +1,10 @@
 ﻿using AutoUpdaterDotNET;
 using BedrockCosmos.App;
-using BedrockCosmos.App.UI;
 using BedrockCosmos.Proxy;
 using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -40,8 +38,6 @@ namespace BedrockCosmos
                 Directory.CreateDirectory(PathDefinitions.CosmosAppData);
 
             CosmosConsole.Initialize(DevConsole);
-            DiscordRichPresence.InitializeRpc();
-            DiscordRichPresence.UpdatePresence();
             launchManager = new LaunchManager();
             controller = new ProxyController();
             asyncFileOps = new AsyncFileOperations();
@@ -54,7 +50,7 @@ namespace BedrockCosmos
             launchManager.InitializeMgrVersionLabel(VersionLabel);
             launchManager.SetCurrentVersions();
 
-            LanguageHandler.Load(PathDefinitions.AppDirectory + @"Texts\" + SettingsManager.Language + ".lang");
+            LanguageHandler.AddLangsToComboBox(LanguageComboBox);
             SettingsManager.LoadSettings();
             ApplySettings();
 
@@ -99,154 +95,48 @@ namespace BedrockCosmos
 
         private void HandleBcPackFile(string filePath)
         {
-            LocalizedMessageBox.ShowInfoWithTitle(
-                LanguageHandler.Get("Files.BCPack.ComingSoon"),
-                Path.GetFileName(filePath));
+            // For .bcpack files
+            MessageBox.Show(
+                "Support for BCPack files is coming soon!",
+                Path.GetFileName(filePath),
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
         }
 
         private void HandleBcPersonaFile(string filePath)
         {
-            LocalizedMessageBox.ShowInfoWithTitle(
-                LanguageHandler.Get("Files.BCPersona.ComingSoon"),
-                Path.GetFileName(filePath));
+            // For .bcpersona files
+            MessageBox.Show(
+                "Support for BCPersona files is coming soon!",
+                Path.GetFileName(filePath),
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
         }
 
         private void ApplySettings()
         {
-            suppressLanguageSelectionChanged = true;
-            LanguageComboBox.Items.Clear();
-            LanguageComboBox.Items.AddRange(LanguageHandler.GetAvailableLanguageNames().Cast<object>().ToArray());
+            // Language
             LanguageComboBox.SelectedItem = LanguageHandler.GetLanguageName(SettingsManager.Language);
-            suppressLanguageSelectionChanged = false;
 
+            // Background Mode
             BackgroundModeSwitch.Checked = SettingsManager.BackgroundMode;
 
+            // Discord RPC
+            DiscordRichPresenceSwitch.Checked = SettingsManager.DiscordRpc;
+
+            // Dev Menu
             if (SettingsManager.DevMenuEnabled)
             {
                 SettingsManager.DevMenuClicks = 7;
                 AppIcon.Cursor = Cursors.Hand;
-                CosmosConsole.WriteLine(LanguageHandler.Get("Logs.DevModeEnabled"));
+                CosmosConsole.WriteLine("Developer mode enabled.");
             }
 
+            // Logging
             EnableLoggingSwitch.Checked = SettingsManager.EnableLogging;
+
+            // Detailed Logs
             DetailedLoggingSwitch.Checked = SettingsManager.DetailedLogging;
-            ApplyProxyStateUi(null);
-        }
-
-        private void ApplyProxyStateUi(string explicitStatus)
-        {
-            if (SettingsManager.ProxyStarted)
-            {
-                launchManager.UpdateLaunchButtonColor("purple");
-                LaunchButton.Text = SettingsManager.BackgroundMode
-                    ? LanguageHandler.Home_LaunchButton_Listening
-                    : LanguageHandler.Home_LaunchButton_Running;
-                LaunchButton.Enabled = !SettingsManager.BackgroundMode;
-                StatusLabel.Text = explicitStatus ?? LanguageHandler.Get("Home.StatusLabel.ProxyActive");
-                return;
-            }
-
-            launchManager.UpdateLaunchButtonColor("green");
-            LaunchButton.Text = SettingsManager.BackgroundMode
-                ? LanguageHandler.Home_LaunchButton_Listening
-                : LanguageHandler.Home_LaunchButton_Launch;
-            LaunchButton.Enabled = !SettingsManager.BackgroundMode;
-            StatusLabel.Text = explicitStatus ?? LanguageHandler.Get("Home.StatusLabel.ProxyInactive");
-        }
-
-        private void ApplyProxyStartingUi()
-        {
-            launchManager.UpdateLaunchButtonColor("purple");
-            LaunchButton.Enabled = false;
-            LaunchButton.Text = LanguageHandler.Home_LaunchButton_Entering;
-            StatusLabel.Text = LanguageHandler.Get("Home.StatusLabel.ProxyStarting");
-        }
-
-        private async Task<bool> StartProxyFlowAsync(bool openMinecraft)
-        {
-            LaunchButton.Enabled = false;
-            ApplyProxyStartingUi();
-            CosmosConsole.WriteLine(LanguageHandler.Get("Proxy.Log.Starting"));
-            await launchManager.InternetCheck();
-
-            if (launchManager.LatestLauncherVersion <= new Version("0.0.0.0"))
-            {
-                launchManager.ResetLaunchStatus();
-                ApplyProxyStateUi(LanguageHandler.Home_StatusLabel_NoInternet);
-                return false;
-            }
-
-            bool updateLauncher = launchManager.CheckLauncherUpdate();
-            if (updateLauncher && !SettingsManager.LauncherUpdatePrompted)
-            {
-                SettingsManager.LauncherUpdatePrompted = true;
-                TabControl.SelectedTab = UpdatePage;
-                launchManager.ResetLaunchStatus();
-                ApplyProxyStateUi(LanguageHandler.Get("Home.StatusLabel.ProxyInactive"));
-                return false;
-            }
-
-            if ((launchManager.CheckResponsesUpdate() && !updateLauncher) ||
-                !Directory.Exists(PathDefinitions.ResponsesDirectory))
-            {
-                await launchManager.UpdateResponses();
-            }
-
-            JsonData.InitializeJsons();
-
-            try
-            {
-                await Task.Run(() => controller.StartProxy());
-                SettingsManager.ProxyStarted = true;
-                ApplyProxyStateUi(LanguageHandler.Get("Home.StatusLabel.ProxyActive"));
-                CosmosConsole.WriteLine(LanguageHandler.Get("Proxy.Log.Started"));
-
-                if (openMinecraft)
-                    launchManager.OpenMinecraft();
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                try
-                {
-                    controller.Stop();
-                }
-                catch
-                {
-
-                }
-
-                SettingsManager.ProxyStarted = false;
-                launchManager.ResetLaunchStatus();
-                ApplyProxyStateUi(LanguageHandler.Get("Home.StatusLabel.ProxyInactive"));
-                CosmosConsole.WriteLine(LanguageHandler.Format("Proxy.Log.StartFailed", ex.Message));
-                LocalizedMessageBox.ShowError(LanguageHandler.Format("Proxy.Errors.StartFailed.Message", ex.Message));
-                return false;
-            }
-            finally
-            {
-                if (!SettingsManager.BackgroundMode)
-                    LaunchButton.Enabled = true;
-            }
-        }
-
-        private void StopProxyFlow(string statusKey = null)
-        {
-            CosmosConsole.WriteLine(LanguageHandler.Get("Proxy.Log.Stopping"));
-
-            try
-            {
-                controller.Stop();
-            }
-            catch (Exception ex)
-            {
-                CosmosConsole.WriteLine(LanguageHandler.Format("Proxy.Log.StopFailed", ex.Message));
-            }
-
-            SettingsManager.ProxyStarted = false;
-            ApplyProxyStateUi(statusKey != null ? LanguageHandler.Get(statusKey) : LanguageHandler.Get("Home.StatusLabel.ProxyInactive"));
-            CosmosConsole.WriteLine(LanguageHandler.Get("Proxy.Log.Stopped"));
         }
 
         private void MinimizeButton_Click(object sender, EventArgs e)
@@ -270,34 +160,14 @@ namespace BedrockCosmos
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (SettingsManager.ProxyStarted)
-                StopProxyFlow();
-
-            try
             {
-                asyncFileOps.Dispose();
-            }
-            catch
-            {
-
+                try { controller.Stop(); } catch { }
+                try { controller.Dispose(); } catch { }
+                try { controller = null; } catch { }
             }
 
-            try
-            {
-                controller.Dispose();
-            }
-            catch
-            {
-
-            }
-
-            try
-            {
-                DiscordRichPresence.DisposeRpc();
-            }
-            catch
-            {
-
-            }
+            try { DiscordRichPresence.DisposeRpc(); } catch { }
+            try { asyncFileOps.Dispose(); } catch { }
         }
 
         private void TrayIcon_Click(object sender, EventArgs e)
@@ -331,11 +201,85 @@ namespace BedrockCosmos
         {
             if (!SettingsManager.ProxyStarted)
             {
-                await StartProxyFlowAsync(true);
+                LaunchButton.Enabled = false;
+                StatusLabel.Text = "";
+
+                CosmosConsole.WriteLine("Starting proxy...");
+                LaunchButton.Text = LanguageHandler.Get("Home.LaunchButton.Entering");
+                launchManager.UpdateLaunchButtonColor("purple");
+                StartLaunch();
+
+                LaunchButton.Enabled = true;
             }
             else
             {
-                StopProxyFlow();
+                CosmosConsole.WriteLine("Stopping proxy...");
+                SettingsManager.ProxyStarted = false;
+
+                launchManager.ResetLaunchStatus();
+                controller.Stop();
+
+                CosmosConsole.WriteLine("Proxy stopped!");
+            }
+        }
+
+        private async void StartLaunch(bool backgroundMode = false)
+        {
+            await launchManager.InternetCheck();
+
+            if (launchManager.LatestLauncherVersion > new Version("0.0.0.0"))
+            {
+                bool updateLauncher = launchManager.CheckLauncherUpdate();
+
+                if (updateLauncher && !SettingsManager.LauncherUpdatePrompted)
+                {
+                    SettingsManager.LauncherUpdatePrompted = true;
+                    TabControl.SelectedTab = UpdatePage;
+                    if (!backgroundMode)
+                    {
+                        launchManager.ResetLaunchStatus();
+                    }
+                    else
+                    {
+                        Show(); // Launcher pops back up if there is an update while in background mode.
+                        WindowState = FormWindowState.Normal;
+                        TrayIcon.Visible = false;
+                    }
+                }
+                else if (!backgroundMode || (backgroundMode && TabControl.SelectedTab != UpdatePage))
+                {
+                    if (launchManager.CheckResponsesUpdate() && !updateLauncher ||
+                        !Directory.Exists(PathDefinitions.ResponsesDirectory))
+                        await launchManager.UpdateResponses();
+
+                    JsonData.InitializeJsons();
+                    SettingsManager.ProxyStarted = true;
+
+                    await Task.Run(() =>
+                    {
+                        controller.StartProxy();
+                    });
+
+                    if (!backgroundMode) // Different button/label texts depending on current mode.
+                    {
+                        LaunchButton.Text = LanguageHandler.Get("Home.LaunchButton.Running");
+                        launchManager.OpenMinecraft();
+                    }
+                    else
+                    {
+                        launchManager.UpdateLaunchButtonColor("purple");
+                        LaunchButton.Text = LanguageHandler.Get("Home.LaunchButton.Listening");
+                        StatusLabel.Text = LanguageHandler.Get("Home.StatusLabel.ProxyEnabled");
+                    }
+                    CosmosConsole.WriteLine("Proxy started!");
+                }
+            }
+            else
+            {
+                if (!backgroundMode)
+                    launchManager.ResetLaunchStatus();
+
+                StatusLabel.Text = LanguageHandler.Get("Home.StatusLabel.NoInternet");
             }
         }
 
@@ -388,19 +332,51 @@ namespace BedrockCosmos
 
             if (SettingsManager.BackgroundMode)
             {
+                LaunchButton.Enabled = false;
+                LaunchButton.Text = LanguageHandler.Get("Home.LaunchButton.Listening");
+
+                if (SettingsManager.ProxyStarted)
+                    StatusLabel.Text = LanguageHandler.Get("Home.StatusLabel.ProxyEnabled");
+                else
+                    StatusLabel.Text = LanguageHandler.Get("Home.StatusLabel.ProxyDisabled");
+
                 BackgroundModeTimer.Start();
-                ApplyProxyStateUi(SettingsManager.ProxyStarted
-                    ? LanguageHandler.Get("Home.StatusLabel.ProxyActive")
-                    : LanguageHandler.Get("Home.StatusLabel.ProxyInactive"));
-                CosmosConsole.WriteLine(LanguageHandler.Get("Logs.BackgroundModeEnabled"));
+                CosmosConsole.WriteLine("Background Mode enabled.");
             }
             else
             {
+                LaunchButton.Enabled = true;
+
+                if (SettingsManager.ProxyStarted)
+                    LaunchButton.Text = LanguageHandler.Get("Home.LaunchButton.Running");
+                else
+                    LaunchButton.Text = LanguageHandler.Get("Home.LaunchButton.Launch");
+
+                StatusLabel.Text = "";
                 BackgroundModeTimer.Stop();
-                ApplyProxyStateUi(SettingsManager.ProxyStarted
-                    ? LanguageHandler.Get("Home.StatusLabel.ProxyActive")
-                    : LanguageHandler.Get("Home.StatusLabel.ProxyInactive"));
-                CosmosConsole.WriteLine(LanguageHandler.Get("Logs.BackgroundModeDisabled"));
+                CosmosConsole.WriteLine("Background Mode disabled.");
+            }
+        }
+
+        private void DiscordRichPresenceSwitch_CheckedChanged(object sender, EventArgs e)
+        {
+            SettingsManager.DiscordRpc = DiscordRichPresenceSwitch.Checked;
+
+            if (SettingsManager.DiscordRpc)
+            {
+                try
+                {
+                    DiscordRichPresence.InitializeRpc();
+                    DiscordRichPresence.UpdatePresence();
+                }
+                catch
+                {
+
+                }
+            }
+            else
+            {
+                try { DiscordRichPresence.DisposeRpc(); } catch { }
             }
         }
 
@@ -412,71 +388,69 @@ namespace BedrockCosmos
             {
                 if (!SettingsManager.ProxyStarted)
                 {
-                    bool started = await StartProxyFlowAsync(false);
-                    if (!started && TabControl.SelectedTab == UpdatePage)
-                    {
-                        Show();
-                        WindowState = FormWindowState.Normal;
-                        TrayIcon.Visible = false;
-                    }
+                    StartLaunch(true);
                 }
+                //CosmosConsole.WriteLine("Minecraft is open.");
             }
             else
             {
                 if (SettingsManager.ProxyStarted)
-                    StopProxyFlow();
+                {
+                    SettingsManager.ProxyStarted = false;
+                    launchManager.UpdateLaunchButtonColor("green");
+                    StatusLabel.Text = LanguageHandler.Get("Home.StatusLabel.ProxyDisabled");
+                    controller.Stop();
+                    CosmosConsole.WriteLine("Proxy stopped!");
+                }
+                //CosmosConsole.WriteLine("Minecraft is closed.");
             }
         }
 
         private void LanguageComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (suppressLanguageSelectionChanged || LanguageComboBox.SelectedItem == null)
-                return;
-
             string selectedLanguage = LanguageComboBox.SelectedItem.ToString();
             string langFile = LanguageHandler.GetLangFileName(selectedLanguage);
             SettingsManager.Language = langFile;
 
-            LanguageHandler.Load(langFile);
+            LanguageHandler.Load(PathDefinitions.AppDirectory + @"Texts\" + langFile + ".lang");
             UpdateLauncherLanguage();
-            DiscordRichPresence.UpdatePresence();
-            CosmosConsole.WriteLine(LanguageHandler.Format("Localization.Log.LanguageSet", selectedLanguage));
+            CosmosConsole.WriteLine($"Language set to {selectedLanguage}.");
         }
 
         private void UpdateLauncherLanguage()
         {
-            TopLabel.Text = LanguageHandler.App_TopLabel_Name;
-            Text = LanguageHandler.Get("App.WindowTitle");
-            AccessibleName = LanguageHandler.Get("App.AccessibleName");
-            TrayIcon.Text = LanguageHandler.Get("App.TrayIcon.Text");
-            HomePage.Text = LanguageHandler.Get("Tabs.Home");
-            AboutPage.Text = LanguageHandler.Get("Tabs.About");
-            SettingsPage.Text = LanguageHandler.Get("Tabs.Settings");
-            UpdatePage.Text = LanguageHandler.Get("Tabs.Update");
-            DevPage.Text = LanguageHandler.Get("Tabs.Dev");
-            AboutLabel.Text = LanguageHandler.About_AboutLabel_Text;
-            DiscordLabel.Text = LanguageHandler.About_DiscordLabel_Text;
-            GitHubLabel.Text = LanguageHandler.About_GitHubLabel_Text;
-            WebsiteLabel.Text = LanguageHandler.About_WebsiteLabel_Text;
-            BackgroundModeTitleLabel.Text = LanguageHandler.Settings_BackgroundMode_Title;
-            BackgroundModeDescriptionLabel.Text = LanguageHandler.Settings_BackgroundMode_Description;
-            LanguageTitleLabel.Text = LanguageHandler.Settings_Language_Title;
-            LanguageDescriptionLabel.Text = LanguageHandler.Settings_Language_Description;
-            UpdateLabel.Text = LanguageHandler.Update_UpdateLabel_Text;
-            ChangelogLabel.Text = LanguageHandler.Update_ChangelogLabel_Text;
-            UpdateButton.Text = LanguageHandler.Update_UpdateButton_Text;
-            CancelUpdateButton.Text = LanguageHandler.Update_CancelUpdateButton_Text;
-            DownloadZipButton.Text = LanguageHandler.Get("Dev.DownloadZipButton");
-            ExportLogsButton.Text = LanguageHandler.Get("Dev.ExportLogsButton");
-            ClearLogsButton.Text = LanguageHandler.Get("Dev.ClearLogsButton");
-            FixProxyHangButton.Text = LanguageHandler.Get("Dev.FixProxyButton");
-            ResetNewsButton.Text = LanguageHandler.Get("Dev.ResetNewsButton");
-            DisableDevMenuButton.Text = LanguageHandler.Get("Dev.DisableDevMenuButton");
-            EnableLoggingLabel.Text = LanguageHandler.Get("Dev.EnableLoggingLabel");
-            DetailedLoggingLabel.Text = LanguageHandler.Get("Dev.DetailedLoggingLabel");
-            DownloadZipProgressLabel.Text = LanguageHandler.Get("Dev.DownloadIdle");
-            LayoutSettingsPage();
-            ApplyProxyStateUi(null);
+            TopLabel.Text = LanguageHandler.Get("App.TopLabel.Name");
+            AboutLabel.Text = LanguageHandler.Get("About.AboutLabel.Text");
+            DiscordLabel.Text = LanguageHandler.Get("About.DiscordLabel.Text");
+            GitHubLabel.Text = LanguageHandler.Get("About.GitHubLabel.Text");
+            WebsiteLabel.Text = LanguageHandler.Get("About.WebsiteLabel.Text");
+            BackgroundModeTitleLabel.Text = LanguageHandler.Get("Settings.BackgroundMode.Title");
+            BackgroundModeDescriptionLabel.Text = LanguageHandler.Get("Settings.BackgroundMode.Description");
+            DiscordRichPresenceLabel.Text = LanguageHandler.Get("Settings.DiscordRichPresence.Title");
+            DiscordRichPresenceDescription.Text = LanguageHandler.Get("Settings.DiscordRichPresence.Description");
+            LanguageTitleLabel.Text = LanguageHandler.Get("Settings.Language.Title");
+            LanguageDescriptionLabel.Text = LanguageHandler.Get("Settings.Language.Description");
+            UpdateLabel.Text = LanguageHandler.Get("Update.UpdateLabel.Text");
+            ChangelogLabel.Text = LanguageHandler.Get("Update.ChangelogLabel.Text");
+            UpdateButton.Text = LanguageHandler.Get("Update.UpdateButton.Text");
+            CancelUpdateButton.Text = LanguageHandler.Get("Update.CancelUpdateButton.Text");
+
+            if (!SettingsManager.ProxyStarted && !SettingsManager.BackgroundMode)
+                LaunchButton.Text = LanguageHandler.Get("Home.LaunchButton.Launch");
+            else if (SettingsManager.ProxyStarted && !SettingsManager.BackgroundMode)
+                LaunchButton.Text = LanguageHandler.Get("Home.LaunchButton.Running");
+            else
+                LaunchButton.Text = LanguageHandler.Get("Home.LaunchButton.Listening");
+
+            if (!SettingsManager.ProxyStarted && SettingsManager.BackgroundMode)
+                StatusLabel.Text = LanguageHandler.Get("Home.StatusLabel.ProxyDisabled");
+            else if (SettingsManager.ProxyStarted && SettingsManager.BackgroundMode)
+                StatusLabel.Text = LanguageHandler.Get("Home.StatusLabel.ProxyEnabled");
+            else
+                StatusLabel.Text = "";
+
+            if (DiscordRichPresence.IsInitialized())
+                DiscordRichPresence.UpdatePresence();
         }
 
         private async void DownloadZipButton_Click(object sender, EventArgs e)
@@ -490,10 +464,10 @@ namespace BedrockCosmos
 
             try
             {
-                DownloadZipProgressLabel.Text = LanguageHandler.Get("Dev.DownloadInProgress");
+                DownloadZipProgressLabel.Text = "Downloading...";
                 await asyncFileOps.DownloadFileAsync(fileUrl, downloadPath);
 
-                DownloadZipProgressLabel.Text = LanguageHandler.Get("Dev.ExtractInProgress");
+                DownloadZipProgressLabel.Text = "Extracting...";
                 await asyncFileOps.ExtractFileAsync(downloadPath, extractPath, true);
 
                 if (Directory.Exists(PathDefinitions.ResponsesDirectory))
@@ -510,13 +484,13 @@ namespace BedrockCosmos
                     await asyncFileOps.MoveFolderContentsAsync(PathDefinitions.CosmosAppData + "Responses-main", PathDefinitions.ResponsesDirectory, true);
 
                 DownloadZipButton.Enabled = true;
-                DownloadZipProgressLabel.Text = LanguageHandler.Get("Dev.DownloadCompleted");
+                DownloadZipProgressLabel.Text = "Done!";
             }
             catch (Exception)
             {
                 DownloadZipButton.Enabled = true;
-                DownloadZipProgressLabel.Text = LanguageHandler.Get("Dev.DownloadFailed");
-                CosmosConsole.WriteLine(LanguageHandler.Get("Logs.DownloadCanceled"));
+                DownloadZipProgressLabel.Text = "Unable to download zip file.";
+                CosmosConsole.WriteLine("Unable to download file. Download canceled.");
             }
         }
 
@@ -525,11 +499,11 @@ namespace BedrockCosmos
             if (EnableLoggingSwitch.Checked)
             {
                 SettingsManager.EnableLogging = true;
-                CosmosConsole.WriteLine(LanguageHandler.Get("Logs.LoggingEnabled"));
+                CosmosConsole.WriteLine("Logging enabled.");
             }
             else
             {
-                CosmosConsole.WriteLine(LanguageHandler.Get("Logs.LoggingDisabled"));
+                CosmosConsole.WriteLine("Logging disabled.");
                 SettingsManager.EnableLogging = false;
             }
         }
@@ -539,12 +513,12 @@ namespace BedrockCosmos
             if (DetailedLoggingSwitch.Checked)
             {
                 SettingsManager.DetailedLogging = true;
-                CosmosConsole.WriteLine(LanguageHandler.Get("Logs.DetailedLoggingEnabled"));
+                CosmosConsole.WriteLine("Detailed logs enabled.");
             }
             else
             {
                 SettingsManager.DetailedLogging = false;
-                CosmosConsole.WriteLine(LanguageHandler.Get("Logs.DetailedLoggingDisabled"));
+                CosmosConsole.WriteLine("Detailed logs disabled.");
             }
         }
 
@@ -558,20 +532,17 @@ namespace BedrockCosmos
             DevConsole.Text = "";
         }
 
-        private void FixProxyHangButton_Click(object sender, EventArgs e)
+        private async void FixProxyHangButton_Click(object sender, EventArgs e)
         {
             if (!SettingsManager.ProxyStarted)
             {
-                try
+                await Task.Run(() =>
                 {
                     controller.StartProxy();
-                    controller.Stop();
-                    CosmosConsole.WriteLine(LanguageHandler.Get("Proxy.Log.Reset"));
-                }
-                catch (Exception ex)
-                {
-                    CosmosConsole.WriteLine(LanguageHandler.Format("Proxy.Log.StopFailed", ex.Message));
-                }
+                });
+
+                controller.Stop();
+                CosmosConsole.WriteLine("Reset proxy.");
             }
         }
 
@@ -609,7 +580,7 @@ namespace BedrockCosmos
             }
             catch (Exception)
             {
-                StatusLabel.Text = LanguageHandler.Home_StatusLabel_NoInternet;
+                StatusLabel.Text = LanguageHandler.Get("Home.StatusLabel.NoInternet");
                 TabControl.SelectedTab = HomePage;
 
                 SettingsManager.LauncherUpdatePrompted = false;

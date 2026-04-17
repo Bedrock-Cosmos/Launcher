@@ -1,0 +1,173 @@
+NUTZUNGSBEDINGUNGEN:
+1. Zustimmung zu den Bedingungen
+Mit dem Herunterladen, Installieren oder Verwenden von Bedrock Cosmos erklärst du dich mit diesen Nutzungsbedingungen einverstanden. Wenn du diesen Bedingungen nicht zustimmst, darfst du unseren Launcher oder unsere Dienste nicht verwenden.
+
+2. Beschreibung des Dienstes
+Bedrock Cosmos ist ein benutzerdefinierter Proxy für Minecraft Bedrock Edition, der lokal auf deinem Gerät ausgeführt wird und folgende Funktionen bereitstellt:
+
+- Benutzerdefinierte Umhänge: Fügt deinem Spiel benutzerdefinierte Umhänge hinzu und erlaubt dir, eigene Umhang-Designs hochzuladen und zu verwenden
+- Versteckte Marketplace-Inhalte: Macht Marketplace-Inhalte sichtbar, die auf bestimmten Plattformen oder in bestimmten Regionen verborgen oder nicht verfügbar sein können
+- Wiederhergestellte Skin-Pack-Funktionen: Repariert und stellt Funktionen ausgewählter Skin-Pakete wieder her, indem Umhänge, Animationen und zuvor entfernte Skins erneut hinzugefügt werden
+- Eigene Skin-Pakete: Fügt deinem Spiel mehrere benutzerdefinierte Skin-Pakete hinzu, die von Bedrock-Cosmos-Creatorn erstellt wurden
+
+Der Dienst wird kostenlos bereitgestellt, ist vollständig quelloffen und arbeitet ausschließlich als lokaler Proxy, ohne Nutzerdaten zu erfassen.
+
+3. Pflichten der Nutzer
+Mit der Nutzung von Bedrock Cosmos erklärst du dich damit einverstanden:
+
+- den Launcher nur mit rechtmäßig erworbenen Kopien von Minecraft Bedrock Edition zu verwenden
+- alle geltenden Gesetze und Vorschriften einzuhalten
+- den Launcher nicht für illegale oder nicht autorisierte Zwecke zu verwenden
+- den Launcher nicht zu verwenden, um andere zu täuschen, zu belästigen, zu missbrauchen oder zu schädigen
+- keine veränderten Versionen des Launchers ohne ordnungsgemäße Namensnennung zu verbreiten
+
+4. Konten und Servernutzung
+Wenn du Bedrock Cosmos in Mehrspieler-Umgebungen verwendest, erkennst du an, dass Serveradministratoren eigene Regeln für benutzerdefinierte Inhalte haben können. Wir sind nicht verantwortlich für Einschränkungen oder Sperren, die von Servern Dritter verhängt werden.
+
+5. Geistiges Eigentum
+Bedrock Cosmos ist quelloffene Software und unterliegt den Lizenzbedingungen unseres GitHub-Repositories. Du darfst den Code im Rahmen der Lizenz einsehen und verändern, musst bei einer Weitergabe oder Verbreitung der Software jedoch eine angemessene Namensnennung vornehmen.
+
+Benutzerdefinierte Umhänge und andere von der Community erstellte Inhalte bleiben Eigentum ihrer jeweiligen Urheber. Minecraft, Minecraft Bedrock Edition und zugehörige Marken sind Eigentum von Mojang Studios und Microsoft.
+
+6. Gewährleistungsausschluss
+Bedrock Cosmos wird ohne Gewähr jeglicher Art bereitgestellt, weder ausdrücklich noch stillschweigend. Wir garantieren nicht, dass der Launcher fehlerfrei arbeitet, durchgehend verfügbar ist oder nach dem Auffinden einer Sicherheitslücke sofort abgesichert werden kann. Die Nutzung des Launchers erfolgt auf eigenes Risiko.
+
+7. Haftungsbeschränkung
+Soweit gesetzlich zulässig, haften Bedrock Cosmos und seine Entwickler nicht für indirekte, zufällige, besondere, Folgeschäden oder Strafschadensersatz sowie nicht für entgangene Gewinne oder Umsätze, unabhängig davon, ob diese unmittelbar oder mittelbar entstehen, und auch nicht für Datenverlust, Nutzungsausfall, Goodwill-Verlust oder sonstige immaterielle Schäden, die entstehen durch:
+
+- deine Nutzung oder die Unmöglichkeit der Nutzung des Launchers
+- jeden unbefugten Zugriff auf oder jede unbefugte Nutzung unserer Dienste und/oder Server
+- Fehler oder Sicherheitslücken im Launcher
+- Fehler oder Auslassungen in der Funktionalität des Launchers
+- Maßnahmen von Mojang Studios, Microsoft oder Serveradministratoren als Reaktion auf deine Nutzung des Launchers
+
+8. Dienste und Inhalte Dritter
+Bedrock Cosmos interagiert mit Minecraft-Servern, die von Mojang Studios und Microsoft betrieben werden. Wir sind weder mit Mojang Studios oder Microsoft verbunden noch von ihnen unterstützt oder gesponsert. Probleme mit Minecraft-Diensten sollten an die offiziellen Support-Kanäle dieser Anbieter gerichtet werden.
+
+9. Änderungen am Dienst
+Wir behalten uns das Recht vor, Bedrock Cosmos jederzeit und ohne Vorankündigung zu ändern, auszusetzen oder einzustellen. Diese Nutzungsbedingungen können ebenfalls regelmäßig aktualisiert werden. Wenn du den Launcher nach solchen Änderungen weiter verwendest, gilt das als Zustimmung zu den geänderten Bedingungen.
+
+10. Von Nutzern erstellte Inhalte
+Wenn du benutzerdefinierte Umhang-Designs oder Skin-Pakete über unseren Discord-Server zur Aufnahme in Bedrock Cosmos einreichst, speichern wir deine Cape-Datei zusammen mit deinem Discord-Benutzernamen, damit die Urheberschaft im Launcher angezeigt werden kann. So können wir und andere Nutzer erkennen, von wem ein kosmetischer Inhalt stammt.
+
+Mit der Einreichung benutzerdefinierter Umhänge oder Skin-Pakete gewährst du uns eine nicht exklusive, weltweite und lizenzgebührenfreie Lizenz, diese Inhalte innerhalb des Launchers sowie gegenüber anderen Bedrock-Cosmos-Nutzern zu verwenden, anzuzeigen und zu verbreiten. Eingereichte kosmetische Inhalte können Teil der Anwendung werden und mit deinem Discord-Benutzernamen gekennzeichnet werden.
+
+Du versicherst, dass du berechtigt bist, diese Lizenz zu erteilen, und dass deine Umhang- oder Skin-Designs keine Rechte Dritter verletzen, insbesondere keine Urheber-, Marken- oder sonstigen Schutzrechte.
+
+Du kannst jederzeit die Löschung deiner eingereichten Umhänge oder Skins verlangen, indem du uns über unseren Discord-Server kontaktierst. Nach Eingang deiner Anfrage entfernen wir deine kosmetischen Inhalte aus unserer Datenbank und aus der Anwendung.
+
+11. Unzulässige Nutzungen
+Du erklärst dich damit einverstanden, Bedrock Cosmos nicht zu verwenden, um:
+
+- gegen lokale, regionale, nationale oder internationale Gesetze zu verstoßen
+- unsere geistigen Eigentumsrechte oder die Rechte Dritter zu verletzen
+- Viren oder sonstigen schädlichen Code hochzuladen oder zu übertragen
+- unbefugt Zugriff auf Systeme oder Netzwerke zu erlangen oder dies zu versuchen
+- das Nutzungsverhalten anderer einzuschränken oder zu behindern
+- Bedrock Cosmos, unsere Entwickler oder andere Nutzer zu imitieren oder dies zu versuchen
+
+12. Altersbeschränkungen
+Bedrock Cosmos ist für Nutzer bestimmt, die die in ihrem Zuständigkeitsbereich geltenden Mindestalteranforderungen für Minecraft Bedrock Edition erfüllen. Wenn du unter 13 Jahre alt bist oder in deinem Zuständigkeitsbereich ein höheres Mindestalter gilt, benötigst du die Zustimmung deiner Eltern oder Erziehungsberechtigten, um unsere Dienste zu nutzen.
+
+13. Datenschutz
+Deine Nutzung von Bedrock Cosmos unterliegt außerdem unserer Datenschutzerklärung. Bitte lies sie sorgfältig, um unsere Datenverarbeitungs- und Nutzungspraktiken zu verstehen.
+
+14. Kündigung
+Wir behalten uns das Recht vor, deinen Zugriff auf Bedrock Cosmos aus beliebigem Grund, einschließlich eines Verstoßes gegen diese Nutzungsbedingungen, mit sofortiger Wirkung und ohne vorherige Ankündigung oder Haftung zu beenden oder auszusetzen.
+
+15. Anwendbares Recht
+Diese Nutzungsbedingungen unterliegen dem jeweils anwendbaren Recht und sind nach diesem auszulegen, ohne Rücksicht auf kollisionsrechtliche Bestimmungen.
+
+16. Freistellung
+Mit der Nutzung von Bedrock Cosmos erklärst du dich damit einverstanden, die Entwickler, Mitwirkenden und Vertreiber der Software von allen Ansprüchen, Schäden, Verlusten, Verbindlichkeiten und Aufwendungen, einschließlich angemessener Rechtsanwaltskosten, freizustellen, die entstehen durch:
+
+- deine Nutzung oder missbräuchliche Nutzung dieser Software
+- deinen Verstoß gegen die Nutzungsbedingungen von Minecraft
+- jeden Anspruch, dass deine Nutzung Rechte Dritter verletzt
+- jede Änderung, die du an der Software vornimmst
+
+17. DMCA- und Takedown-Compliance
+Wenn Mojang/Microsoft oder eine autorisierte Vertretung der Ansicht ist, dass diese Software ihre Rechte verletzt, bitten wir um Kontaktaufnahme mit unserem Team per E-Mail an contact@bedrock-cosmos.app oder über unseren Discord-Server. Wir werden außerdem:
+
+- gültige DMCA-Takedown-Anfragen umgehend bearbeiten
+- rechtsverletzende Inhalte entfernen, sofern dies gesetzlich erforderlich ist
+- umfassend mit Rechteinhabern kooperieren
+
+18. Salvatorische Klausel
+Sollte eine Bestimmung dieser Nutzungsbedingungen unwirksam oder nicht durchsetzbar sein, wird sie nur in dem Umfang eingeschränkt oder entfernt, der erforderlich ist, damit die übrigen Bestimmungen weiterhin in vollem Umfang gültig und wirksam bleiben.
+
+19. Kontakt
+Wenn du Fragen zu diesen Nutzungsbedingungen hast, kontaktiere uns bitte über unseren Discord-Server, per E-Mail an contact@bedrock-cosmos.app oder über unser GitHub-Repository.
+
+20. Bestätigung
+Mit der Nutzung von Bedrock Cosmos bestätigst du, dass du diese Nutzungsbedingungen gelesen und verstanden hast und an sie gebunden sein möchtest.
+
+
+
+DATENSCHUTZERKLÄRUNG:
+1. Einleitung
+Willkommen bei Bedrock Cosmos. Wir respektieren deine Privatsphäre und verpflichten uns, deine persönlichen Informationen zu schützen. Diese Datenschutzerklärung erläutert, wie wir Informationen erfassen, verwenden und schützen, wenn du unseren Launcher und unsere Dienste nutzt.
+
+2. Welche Informationen wir erfassen
+Bedrock Cosmos erfasst, speichert oder überträgt keine persönlichen Informationen oder Nutzungsdaten der Nutzer aus dem Launcher heraus. Der Launcher arbeitet vollständig als clientseitiger Proxy auf deinem lokalen Gerät und sendet keine Informationen an unsere Server.
+
+Insbesondere erfassen wir NICHT:
+
+- persönliche Informationen wie Name, E-Mail-Adresse oder Anschrift
+- Nutzungsdaten oder Analysedaten
+- technische Informationen über dein Gerät
+- Informationen zu deinem Minecraft-Konto
+- Spiel- oder Interaktionsdaten
+
+Benutzerdefinierte kosmetische Einreichungen: Wenn du dich freiwillig entscheidest, benutzerdefinierte Umhang- oder Skin-Designs über unseren Discord-Server zur Aufnahme in Bedrock Cosmos einzureichen, erfassen und speichern wir diese Dateien zusammen mit deinem Discord-Benutzernamen, um dich als Urheber auszuweisen. Das geschieht ausschließlich freiwillig und nur dann, wenn du Inhalte aktiv in unserer Community einreichst. Diese Umhänge und Skins können anschließend allen Bedrock-Cosmos-Nutzern über den Launcher bereitgestellt werden.
+
+Wenn du unserem Discord-Server für Support oder Community-Austausch beitrittst, gilt für diese Interaktion die Datenschutzrichtlinie von Discord. Wir können deinen Discord-Benutzernamen und alle Inhalte sehen, die du freiwillig im Server teilst, doch das ist von der Bedrock-Cosmos-Anwendung selbst getrennt.
+
+3. Wie wir deine Informationen verwenden
+Da Bedrock Cosmos aus dem Launcher selbst keine Nutzerdaten erfasst, gibt es keine personenbezogenen Daten, die wir verwenden, teilen oder verarbeiten könnten. Der Launcher funktioniert vollständig auf deinem Gerät als Proxy, um Daten zwischen deinem Minecraft-Client und Minecraft-Servern zu verändern.
+
+Alle Verarbeitungen finden auf deinem Gerät statt, einschließlich:
+
+- Hinzufügen benutzerdefinierter Umhänge zu deinem Spielerlebnis
+- Sichtbarmachen versteckter Marketplace-Inhalte für deine Region
+- Wiederherstellen fehlender Funktionen in Skin-Paketen wie Umhänge, Animationen und Skins
+
+Benutzerdefinierte kosmetische Einreichungen: Wenn du benutzerdefinierte Umhänge oder Skin-Designs über unseren Discord-Server einreichst, können wir diese Dateien verwenden, um sie allen Bedrock-Cosmos-Nutzern über den Launcher bereitzustellen. Akzeptierte Einreichungen werden Teil der gemeinsamen Community-Sammlung.
+
+4. Datenspeicherung und Sicherheit
+Bedrock Cosmos erfasst oder speichert keine Nutzerdaten über den Launcher. Der Launcher arbeitet als lokaler Proxy auf deinem Gerät und liest oder verändert Netzwerkverkehr zwischen deinem Minecraft-Client und Minecraft-Servern, um benutzerdefinierte Umhänge und Skin-Pakete bereitzustellen, versteckte Marketplace-Inhalte sichtbar zu machen und Skin-Pack-Funktionen wiederherzustellen.
+
+Benutzerdefinierte kosmetische Einreichungen: Benutzerdefinierte Umhang- und Skin-Designs, die du freiwillig über unseren Discord-Server einreichst, werden in unserer Datenbank zusammen mit deinem Discord-Benutzernamen zur Urheberkennzeichnung gespeichert. Die eingereichten Dateien selbst enthalten darüber hinaus keine zusätzlichen personenbezogenen Daten.
+
+5. Dienste Dritter
+Bedrock Cosmos kann mit Diensten Dritter interagieren:
+
+- Discord: für Community-Support und Nutzerkommunikation
+- GitHub: für Hosting und Verteilung des Quellcodes sowie der Releases der Anwendung
+- Minecraft-Dienste: Der Launcher arbeitet als Proxy zu den Servern von Minecraft Bedrock
+
+Diese Drittanbieter haben eigene Datenschutzerklärungen. Wir empfehlen dir, diese zu lesen, da wir für deren Datenschutzpraktiken nicht verantwortlich sind.
+
+6. Cookies und Tracking
+Bedrock Cosmos verwendet keine Cookies, Tracking-Technologien oder Analysewerkzeuge. Der Launcher verfolgt deine Aktivität nicht, sammelt keine Nutzungsstatistiken und beobachtet dein Verhalten in keiner Weise.
+
+Unsere Website bedrock-cosmos.app verwendet nur minimale Funktionalität und setzt keine Tracking-Cookies oder Analysewerkzeuge ein, abgesehen von grundlegenden Webserver-Logs, die bei jeder Website üblich sind.
+
+7. Datenschutz von Kindern
+Bedrock Cosmos richtet sich nicht an Kinder unter 13 Jahren. Wir erfassen wissentlich keine personenbezogenen Daten von Kindern unter 13 Jahren. Wenn du als Elternteil oder Erziehungsberechtigter glaubst, dass uns dein Kind personenbezogene Daten zur Verfügung gestellt hat, kontaktiere uns bitte.
+
+8. Deine Rechte
+Da Bedrock Cosmos keine personenbezogenen Daten über den Launcher erfasst, gibt es keine Nutzerdaten, auf die du zugreifen oder die du ändern könntest. Der Launcher arbeitet vollständig lokal auf deinem Gerät.
+
+Benutzerdefinierte kosmetische Einreichungen: Wenn du benutzerdefinierte Umhänge oder Skins für Bedrock Cosmos eingereicht hast, kannst du jederzeit deren Löschung verlangen. Kontaktiere uns dafür einfach über unseren Discord-Server, und wir entfernen deine eingereichten kosmetischen Inhalte aus unserer Datenbank und aus der Anwendung.
+
+9. Änderungen an dieser Datenschutzerklärung
+Wir können diese Datenschutzerklärung von Zeit zu Zeit aktualisieren. Über wesentliche Änderungen informieren wir Nutzer, indem wir die neue Datenschutzerklärung veröffentlichen und das Datum der letzten Aktualisierung anpassen. Wenn du Bedrock Cosmos nach solchen Änderungen weiter verwendest, gilt das als Zustimmung zur aktualisierten Datenschutzerklärung.
+
+10. Transparenz durch Open Source
+Bedrock Cosmos ist vollständig quelloffen und auf GitHub verfügbar. Du kannst den gesamten Quellcode prüfen, um zu verifizieren, dass keine Datenerfassung stattfindet. Wir setzen auf vollständige Transparenz und empfehlen technisch versierten Nutzern ausdrücklich, den Code selbst zu prüfen, um unsere Datenschutzangaben nachzuvollziehen.
+
+Der quelloffene Charakter des Projekts stellt sicher, dass jede Datenerfassung für die Community unmittelbar sichtbar wäre, und schafft so eine zusätzliche Ebene von Verantwortlichkeit und Vertrauen.
+
+11. Kontakt
+Wenn du Fragen zu dieser Datenschutzerklärung hast, kontaktiere uns bitte über unseren Discord-Server, per E-Mail an contact@bedrock-cosmos.app oder über unser GitHub-Repository.

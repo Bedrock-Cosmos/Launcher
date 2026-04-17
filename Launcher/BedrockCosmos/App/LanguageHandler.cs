@@ -1,3 +1,4 @@
+﻿using BedrockCosmos.App.UI;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,8 +21,8 @@ namespace BedrockCosmos.App
         private static readonly KeyValuePair<string, string>[] Languages =
         {
             new KeyValuePair<string, string>("English", "en_US"),
-            new KeyValuePair<string, string>("Deutsch", "de_DE"),
             new KeyValuePair<string, string>("বাংলা", "bn_BD"),
+            new KeyValuePair<string, string>("Deutsch", "de_DE"),
             new KeyValuePair<string, string>("Español", "es_ES"),
             new KeyValuePair<string, string>("Indonesia", "id_ID"),
             new KeyValuePair<string, string>("日本語", "ja_JP"),
@@ -35,34 +36,6 @@ namespace BedrockCosmos.App
         private static readonly Dictionary<string, string> ActiveStrings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         public static string CurrentLanguage { get; private set; } = "en_US";
-
-        public static string App_TopLabel_Name { get { return Get("App.TopLabel.Name"); } }
-
-        public static string Home_LaunchButton_Launch { get { return Get("Home.LaunchButton.Launch"); } }
-        public static string Home_LaunchButton_Updating { get { return Get("Home.LaunchButton.Updating"); } }
-        public static string Home_LaunchButton_Entering { get { return Get("Home.LaunchButton.Entering"); } }
-        public static string Home_LaunchButton_Running { get { return Get("Home.LaunchButton.Running"); } }
-        public static string Home_LaunchButton_Listening { get { return Get("Home.LaunchButton.Listening"); } }
-
-        public static string Home_StatusLabel_Waiting { get { return Get("Home.StatusLabel.Waiting"); } }
-        public static string Home_StatusLabel_NoInternet { get { return Get("Home.StatusLabel.NoInternet"); } }
-        public static string Home_StatusLabel_ProxyDisabled { get { return Get("Home.StatusLabel.ProxyDisabled"); } }
-        public static string Home_StatusLabel_ProxyEnabled { get { return Get("Home.StatusLabel.ProxyEnabled"); } }
-
-        public static string About_AboutLabel_Text { get { return Get("About.AboutLabel.Text"); } }
-        public static string About_DiscordLabel_Text { get { return Get("About.DiscordLabel.Text"); } }
-        public static string About_GitHubLabel_Text { get { return Get("About.GitHubLabel.Text"); } }
-        public static string About_WebsiteLabel_Text { get { return Get("About.WebsiteLabel.Text"); } }
-
-        public static string Settings_BackgroundMode_Title { get { return Get("Settings.BackgroundMode.Title"); } }
-        public static string Settings_BackgroundMode_Description { get { return Get("Settings.BackgroundMode.Description"); } }
-        public static string Settings_Language_Title { get { return Get("Settings.Language.Title"); } }
-        public static string Settings_Language_Description { get { return Get("Settings.Language.Description"); } }
-
-        public static string Update_UpdateLabel_Text { get { return Get("Update.UpdateLabel.Text"); } }
-        public static string Update_ChangelogLabel_Text { get { return Get("Update.ChangelogLabel.Text"); } }
-        public static string Update_UpdateButton_Text { get { return Get("Update.UpdateButton.Text"); } }
-        public static string Update_CancelUpdateButton_Text { get { return Get("Update.CancelUpdateButton.Text"); } }
 
         public static void Load(string languageOrPath)
         {
@@ -78,25 +51,33 @@ namespace BedrockCosmos.App
             if (!string.Equals(languageCode, "en_US", StringComparison.OrdinalIgnoreCase))
                 LoadFileIntoDictionary(GetLanguageFilePath(languageCode), ActiveStrings);
 
-            WriteMissingTranslationReport(languageCode);
+            //WriteMissingTranslationReport(languageCode);
         }
 
-        public static string Get(string key)
+        // Retrieve string from language dictionary using code in lang file.
+        // Example: Home.LaunchButton.Launch
+        public static string Get(string key, bool debug)
         {
             string value;
             if (ActiveStrings.TryGetValue(key, out value))
                 return value;
 
-#if DEBUG
-            return "[[" + key + "]]";
-#else
+            if (debug)
+                return "[[" + key + "]]";
+
             if (DefaultStrings.TryGetValue(key, out value))
                 return value;
 
             return key;
-#endif
         }
 
+        public static string Get(string key)
+        {
+            return Get(key, false);
+        }
+
+        // Similar to Get(), but uses formatting like {0}.
+        // Example: Localization.Log.LanguageSet, lang
         public static string Format(string key, params object[] args)
         {
             return string.Format(Get(key), args);
@@ -129,6 +110,13 @@ namespace BedrockCosmos.App
         {
             string languageKey = Languages.FirstOrDefault(x => string.Equals(x.Value, selectedLang, StringComparison.OrdinalIgnoreCase)).Key;
             return string.IsNullOrEmpty(languageKey) ? "English" : languageKey;
+        }
+
+        public static void AddLangsToComboBox(GradientComboBox comboBox)
+        {
+            comboBox.Items.Clear();
+            foreach (var pair in Languages)
+                comboBox.Items.Add(pair.Key);
         }
 
         private static void CopyStrings(Dictionary<string, string> source, Dictionary<string, string> destination)

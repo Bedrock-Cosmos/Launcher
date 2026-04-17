@@ -14,6 +14,8 @@ About.GitHubLabel.Text=GitHub
 About.WebsiteLabel.Text=Website
 Settings.BackgroundMode.Title=Chế độ chạy nền
 Settings.BackgroundMode.Description=Khi được bật, Bedrock Cosmos sẽ thu nhỏ xuống khay hệ thống (system tray) thay vì thanh tác vụ (taskbar). Dịch vụ proxy cũng sẽ tự động Bật/Tắt tương ứng khi Minecraft được Mở/Đóng.
+Settings.DiscordRichPresence.Title=Tính năng hiển thị trạng thái trên Discord
+Settings.DiscordRichPresence.Description=Khi được bật, Bedrock Cosmos sẽ hiển thị dưới dạng hoạt động trên hồ sơ Discord của bạn khi trình khởi chạy đang mở.
 Settings.Language.Title=Ngôn Ngữ
 Settings.Language.Description=Thay đổi ngôn ngữ sử dụng trong Bedrock Cosmos Launcher.
 Update.UpdateLabel.Đã có bản cập nhật mới cho Bedrock Cosmos Launcher!\n\nChọn "Cập nhật" để bắt đầu cài đặt.

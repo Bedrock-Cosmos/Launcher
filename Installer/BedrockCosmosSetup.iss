@@ -37,12 +37,14 @@ InfoBeforeFile=BedrockCosmos\Launcher\Installer\Texts\CertificateAgreement\en_US
 OutputDir=C:\InnoSetup
 OutputBaseFilename=mysetup
 SetupIconFile=BedrockCosmos\BedrockCosmos\Icon.ico
+Compression=zip
 SolidCompression=yes
 WizardStyle=modern dynamic
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"; LicenseFile: "BedrockCosmos\Launcher\Installer\Texts\TermsOfService\en_US.txt"; InfoBeforeFile: "BedrockCosmos\Launcher\Installer\Texts\CertificateAgreement\en_US.txt"
 Name: "bengali"; MessagesFile: "BedrockCosmos\Launcher\Installer\Texts\Other\Bengali.isl"; LicenseFile: "BedrockCosmos\Launcher\Installer\Texts\TermsOfService\bn_BD.txt"; InfoBeforeFile: "BedrockCosmos\Launcher\Installer\Texts\CertificateAgreement\bn_BD.txt"
+Name: "german"; MessagesFile: "compiler:Languages\German.isl"; LicenseFile: "BedrockCosmos\Launcher\Installer\Texts\TermsOfService\de_DE.txt"; InfoBeforeFile: "BedrockCosmos\Launcher\Installer\Texts\CertificateAgreement\de_DE.txt"
 Name: "indonesian"; MessagesFile: "BedrockCosmos\Launcher\Installer\Texts\Other\Indonesian.isl"; LicenseFile: "BedrockCosmos\Launcher\Installer\Texts\TermsOfService\id_ID.txt"; InfoBeforeFile: "BedrockCosmos\Launcher\Installer\Texts\CertificateAgreement\id_ID.txt"
 Name: "japanese"; MessagesFile: "compiler:Languages\Japanese.isl";  LicenseFile: "BedrockCosmos\Launcher\Installer\Texts\TermsOfService\ja_JP.txt"; InfoBeforeFile: "BedrockCosmos\Launcher\Installer\Texts\CertificateAgreement\ja_JP.txt"
 Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"; LicenseFile: "BedrockCosmos\Launcher\Installer\Texts\TermsOfService\es_ES.txt"; InfoBeforeFile: "BedrockCosmos\Launcher\Installer\Texts\CertificateAgreement\es_ES.txt"

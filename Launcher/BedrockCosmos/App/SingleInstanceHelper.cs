@@ -56,7 +56,7 @@ namespace BedrockCosmos
                     catch (Exception ex)
                     {
                         // Pipe broke (app is shutting down), exits the loop
-                        CosmosConsole.WriteLine(LanguageHandler.Format("Logs.PipeListenerError", ex.Message));
+                        CosmosConsole.WriteLine("Pipe listener error: " + ex.Message);
                         break;
                     }
                 }
@@ -84,8 +84,9 @@ namespace BedrockCosmos
             }
             catch (Exception ex)
             {
-                LocalizedMessageBox.ShowError(
-                    LanguageHandler.Format("Program.CommunicationError.Message", ex.Message));
+                MessageBox.Show(
+                    "Could not communicate with the running instance.\n\n" + ex.Message,
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

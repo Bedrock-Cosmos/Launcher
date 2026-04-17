@@ -1,6 +1,4 @@
-using BedrockCosmos.App;
-using System;
-using System.IO;
+﻿using System;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -24,19 +22,19 @@ namespace BedrockCosmos
         [STAThread]
         static void Main(string[] args)
         {
-            BootstrapApplicationState();
-
             bool createdNew;
             mutex = new Mutex(true, AppName, out createdNew);
 
-            if (!createdNew)
+            if (!createdNew) // App is already running
             {
                 if (args.Length > 0)
                     SingleInstanceHelper.SendArgsToRunningInstance(args);
                 else
-                    LocalizedMessageBox.ShowInfo(
-                        LanguageHandler.Get("Program.InstanceAlreadyOpen.Message"),
-                        "Program.InstanceAlreadyOpen.Title");
+                    MessageBox.Show(
+                        "Another instance of Bedrock Cosmos is already running. Please close it before opening a new one.",
+                        "Application Already Open",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
                 return;
             }
 
@@ -45,24 +43,16 @@ namespace BedrockCosmos
 
             var mainForm = new MainForm();
 
+            // Listens for URI/file from future instances
             SingleInstanceHelper.StartListening(mainForm);
 
+            // Handles URI/file passed on this launch
             if (args.Length > 0)
                 mainForm.Load += (s, e) => mainForm.HandleIncomingArgs(args);
 
             Application.Run(mainForm);
 
             mutex.ReleaseMutex();
-        }
-
-        private static void BootstrapApplicationState()
-        {
-            if (!Directory.Exists(PathDefinitions.CosmosAppData))
-                Directory.CreateDirectory(PathDefinitions.CosmosAppData);
-
-            LanguageHandler.Load("en_US");
-            SettingsManager.LoadSettings();
-            LanguageHandler.Load(SettingsManager.Language);
         }
     }
 }

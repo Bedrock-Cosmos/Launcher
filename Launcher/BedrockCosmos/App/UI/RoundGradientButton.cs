@@ -257,42 +257,33 @@ namespace BedrockCosmos.App.UI
 
         private void FillButton(Graphics g)
         {
-            Color topColor;
-            Color bottomColor;
-
-            switch (mouseState)
-            {
-                case 1: // Pressed
-                    topColor = ControlPaint.Light(PressedBackColor);
-                    bottomColor = PressedBackColor;
-                    break;
-
-                case 3: // Hover
-                    topColor = ControlPaint.Light(HoverBackColor);
-                    bottomColor = HoverBackColor;
-                    break;
-
-                default: // Normal
-                    topColor = FilledBackColorTop;
-                    bottomColor = FilledBackColorBottom;
-                    break;
-            }
-
+            // Always paint the base gradient first
             using (LinearGradientBrush gradientBrush =
                    new LinearGradientBrush(
                        buttonRect,
-                       topColor,
-                       bottomColor,
+                       FilledBackColorTop,
+                       FilledBackColorBottom,
                        LinearGradientMode.Vertical))
             {
                 g.FillPath(gradientBrush, roundRectPath);
             }
 
-            // Existing glow animation stays the same
-            using (SolidBrush animBrush =
-                   new SolidBrush(Color.FromArgb(buttonGlow, HoverFillColor)))
+            // For pressed state, immediately paint pressed color at full opacity
+            if (mouseState == 1)
             {
-                g.FillPath(animBrush, roundRectPath);
+                using (SolidBrush pressedBrush = new SolidBrush(PressedBackColor))
+                {
+                    g.FillPath(pressedBrush, roundRectPath);
+                }
+            }
+            else
+            {
+                // Animate HoverBackColor in/out over the gradient using buttonGlow as alpha
+                using (SolidBrush animBrush =
+                       new SolidBrush(Color.FromArgb(buttonGlow, HoverBackColor)))
+                {
+                    g.FillPath(animBrush, roundRectPath);
+                }
             }
         }
 

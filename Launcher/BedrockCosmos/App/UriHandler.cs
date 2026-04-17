@@ -36,7 +36,7 @@ internal static class UriHandler
             if (path.StartsWith("/"))
                 path = path.Substring("/".Length);
 
-            CosmosConsole.WriteLine(LanguageHandler.Format("Logs.OpenedUriPath", path));
+            CosmosConsole.WriteLine($"Opened URI path: {path}");
 
             // openStore?showStoreOffer=UUID
             if (path.StartsWith("openStore", StringComparison.OrdinalIgnoreCase))
@@ -84,7 +84,7 @@ internal static class UriHandler
         }
         catch (Exception ex)
         {
-            CosmosConsole.WriteLine(LanguageHandler.Format("Logs.UriHandlerError", ex.Message));
+            CosmosConsole.WriteLine($"URI handler error: {ex.Message}");
             return "";
         }
     }
@@ -109,7 +109,6 @@ internal static class UriHandler
             );
         }
 
-        CosmosConsole.WriteLine (jsonPath);
         JObject foundItem = FindItemInJson(jsonPath, offerID);
 
         if (foundItem != null)

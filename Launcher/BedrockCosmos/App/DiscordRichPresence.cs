@@ -15,39 +15,53 @@ namespace BedrockCosmos.App
     internal class DiscordRichPresence
     {
         private static DiscordRpcClient client;
+        private static bool _isInitialized = false;
 
         internal static void InitializeRpc()
         {
-            client = new DiscordRpcClient("1477362317006999692");
-            client.Initialize();
-            CosmosConsole.WriteLine(LanguageHandler.Get("Logs.DiscordPresenceStarted"));
+            if (!_isInitialized)
+            {
+                client = new DiscordRpcClient("1477362317006999692");
+                client.Initialize();
+                CosmosConsole.WriteLine("Started Discord rich presence.");
+                _isInitialized = true;
+            }
         }
 
         internal static void DisposeRpc()
         {
-            client.Dispose();
-            CosmosConsole.WriteLine(LanguageHandler.Get("Logs.DiscordPresenceStopped"));
+            if (_isInitialized)
+            {
+                client.Dispose();
+                CosmosConsole.WriteLine("Stopped Discord rich presence.");
+                _isInitialized = false;
+            }
         }
 
         internal static void UpdatePresence()
         {
             client.SetPresence(new RichPresence()
             {
-                Details = LanguageHandler.Get("Discord.Details"),
-                State = LanguageHandler.Get("Discord.State"),
+                Details = LanguageHandler.Get("DiscordRpc.Details.Text"),
+                State = LanguageHandler.Get("DiscordRpc.State.Text"),
                 Buttons = new Button[]
                 {
-                    new Button() { Label = LanguageHandler.Get("Discord.Button.Website"), Url = "https://bedrock-cosmos.app/" },
-                    new Button() { Label = LanguageHandler.Get("Discord.Button.Discord"), Url = "https://discord.gg/HRG2NapegP" }
+                    new Button() { Label = LanguageHandler.Get("DiscordRpc.Button.Website"), Url = "https://bedrock-cosmos.app/" },
+                    new Button() { Label = LanguageHandler.Get("DiscordRpc.Button.Discord"), Url = "https://discord.gg/HRG2NapegP" }
                 },
                 Assets = new Assets()
                 {
                     LargeImageKey = "minecraft-bedrock",
-                    LargeImageText = LanguageHandler.Get("Discord.Assets.LargeText"),
+                    LargeImageText = LanguageHandler.Get("DiscordRpc.Assets.LargeImageText"),
                     SmallImageKey = "bedrock-cosmos",
-                    SmallImageText = LanguageHandler.Get("Discord.Assets.SmallText")
+                    SmallImageText = LanguageHandler.Get("DiscordRpc.Assets.SmallImageText")
                 }
             });
+        }
+
+        internal static bool IsInitialized()
+        {
+            return _isInitialized;
         }
     }
 }

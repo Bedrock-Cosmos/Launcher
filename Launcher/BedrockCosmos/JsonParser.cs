@@ -29,7 +29,7 @@ namespace BedrockCosmos
             }
             else
             {
-                CosmosConsole.WriteLine(consoleSender, LanguageHandler.Format("Logs.ParserFileNotFound", filePath));
+                CosmosConsole.WriteLine(consoleSender, $"File not found: {filePath}");
                 return string.Empty;
             }
         }
@@ -58,13 +58,13 @@ namespace BedrockCosmos
                 }
                 else
                 {
-                    CosmosConsole.WriteLine(consoleSender, LanguageHandler.Format("Logs.ParserArrayNotFound", appendLocation));
+                    CosmosConsole.WriteLine(consoleSender, $"Could not find array at path: {appendLocation} in {originalJsonContent}");
                     return string.Empty;
                 }
             }
             else
             {
-                CosmosConsole.WriteLine(consoleSender, LanguageHandler.Format("Logs.ParserFileNotFound", jsonToAppendPath));
+                CosmosConsole.WriteLine(consoleSender, $"File not found: {jsonToAppendPath}");
                 return string.Empty;
             }
         }
@@ -86,13 +86,13 @@ namespace BedrockCosmos
                 }
                 else
                 {
-                    CosmosConsole.WriteLine(consoleSender, LanguageHandler.Format("Logs.ParserArrayNotFound", appendLocation));
+                    CosmosConsole.WriteLine(consoleSender, $"Could not find array at path: {appendLocation} in {originalJsonContent}");
                     return string.Empty;
                 }
             }
             else
             {
-                CosmosConsole.WriteLine(consoleSender, LanguageHandler.Format("Logs.ParserFileNotFound", jsonToAppendPath));
+                CosmosConsole.WriteLine(consoleSender, $"File not found: {jsonToAppendPath}");
                 return string.Empty;
             }
         }
@@ -111,7 +111,7 @@ namespace BedrockCosmos
 
                 if (rowsArray == null)
                 {
-                    CosmosConsole.WriteLine(consoleSender, LanguageHandler.Format("Logs.ParserArrayNotFound", string.Format("result.layout[{0}].rows", position)));
+                    CosmosConsole.WriteLine(consoleSender, $"Could not find array at path: 'result.layout[{position}].rows' in in {originalJsonContent}");
                     return string.Empty;
                 }
 
@@ -120,7 +120,7 @@ namespace BedrockCosmos
             }
             else
             {
-                CosmosConsole.WriteLine(consoleSender, LanguageHandler.Format("Logs.ParserFileNotFound", jsonToAppendPath));
+                Console.WriteLine($"File not found: {jsonToAppendPath}");
                 return string.Empty;
             }
         }
@@ -147,13 +147,13 @@ namespace BedrockCosmos
                 }
                 else
                 {
-                    CosmosConsole.WriteLine(consoleSender, LanguageHandler.Format("Logs.ParserArrayNotFound", "result.layout[0].rows"));
+                    CosmosConsole.WriteLine(consoleSender, $"Could not find array at path: 'result.layout[0].rows' in {originalJsonContent}");
                     return string.Empty;
                 }
             }
             else
             {
-                CosmosConsole.WriteLine(consoleSender, LanguageHandler.Format("Logs.ParserFileNotFound", jsonToAppendPath));
+                CosmosConsole.WriteLine(consoleSender, $"File not found: {jsonToAppendPath}");
                 return string.Empty;
             }
         }
