@@ -124,11 +124,11 @@ namespace BedrockCosmos
                 // Move the line below to when request is ran
                 File.WriteAllText(_receivedNewsPath, updatedJson);
 
-                CosmosConsole.WriteLine("Found a news update. Queued for display.");
+                CosmosConsole.WriteLine(LanguageHandler.Get("Logs.NewsUpdateQueued"));
             }
             else
             {
-                CosmosConsole.WriteLine("No updated news found.");
+                CosmosConsole.WriteLine(LanguageHandler.Get("Logs.NoNewsUpdate"));
             }
         }
 

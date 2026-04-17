@@ -169,6 +169,7 @@
     <Compile Include="App\DiscordRichPresence.cs" />
     <Compile Include="App\LanguageHandler.cs" />
     <Compile Include="App\LaunchManager.cs" />
+    <Compile Include="App\LocalizedMessageBox.cs" />
     <Compile Include="App\PathDefinitions.cs" />
     <Compile Include="App\SettingsManager.cs" />
     <Compile Include="App\SingleInstanceHelper.cs" />
@@ -230,6 +231,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Texts\en_US.lang">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Texts\de_DE.lang">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Texts\es_ES.lang">

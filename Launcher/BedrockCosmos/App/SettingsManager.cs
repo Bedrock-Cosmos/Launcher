@@ -82,7 +82,7 @@ namespace BedrockCosmos.App
             else
             {
                 if (!_devMenuEnabled)
-                    CosmosConsole.WriteLine("Developer mode enabled.");
+                    CosmosConsole.WriteLine(LanguageHandler.Get("Logs.DevModeEnabled"));
 
                 _devMenuEnabled = true;
                 SaveSettings();
@@ -95,7 +95,7 @@ namespace BedrockCosmos.App
             _devMenuClicks = 0;
             _devMenuEnabled = false;
             SaveSettings();
-            CosmosConsole.WriteLine("Developer mode disabled.");
+            CosmosConsole.WriteLine(LanguageHandler.Get("Logs.DevModeDisabled"));
         }
 
         internal static void SaveSettings()
@@ -138,7 +138,7 @@ namespace BedrockCosmos.App
 
                 }
 
-                CosmosConsole.WriteLine("Settings loaded from local file.");
+                CosmosConsole.WriteLine(LanguageHandler.Get("Logs.SettingsLoaded"));
             }
         }
     }

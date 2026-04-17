@@ -27,7 +27,7 @@ namespace BedrockCosmos.App
 
         internal async Task DownloadFileAsync(string fileUrl, string downloadPath)
         {
-            CosmosConsole.WriteLine($"Downloading file at {fileUrl}");
+            CosmosConsole.WriteLine(LanguageHandler.Format("Logs.DownloadingFile", fileUrl));
 
             using (var response = await httpClient.GetAsync(fileUrl, HttpCompletionOption.ResponseHeadersRead))
             {
@@ -44,7 +44,7 @@ namespace BedrockCosmos.App
                 }
             }
 
-            CosmosConsole.WriteLine($"Successfully downloaded file to {downloadPath}");
+            CosmosConsole.WriteLine(LanguageHandler.Format("Logs.DownloadedFile", downloadPath));
         }
 
         internal async Task ExtractFileAsync(string zipFilePath, string extractPath, bool deleteAfterExtracting)
@@ -52,7 +52,7 @@ namespace BedrockCosmos.App
             if (!Directory.Exists(extractPath))
                 Directory.CreateDirectory(extractPath);
 
-            CosmosConsole.WriteLine($"Extracting {Path.GetFileName(zipFilePath)}...");
+            CosmosConsole.WriteLine(LanguageHandler.Format("Logs.ExtractingFile", Path.GetFileName(zipFilePath)));
 
             await Task.Run(() =>
             {
@@ -72,12 +72,11 @@ namespace BedrockCosmos.App
                 if (deleteAfterExtracting)
                 {
                     File.Delete(zipFilePath);
-                    CosmosConsole.WriteLine($"Removed {Path.GetFileName(zipFilePath)} file.");
+                    CosmosConsole.WriteLine(LanguageHandler.Format("Logs.RemovedFile", Path.GetFileName(zipFilePath)));
                 }
             });
 
-            CosmosConsole.WriteLine($"Successfully extracted {Path.GetFileName(zipFilePath)} to " +
-                $"{extractPath}");
+            CosmosConsole.WriteLine(LanguageHandler.Format("Logs.ExtractedFile", Path.GetFileName(zipFilePath), extractPath));
         }
 
         internal async Task<(string version, string responsesVersion)> ReadVersionFileAsync()
