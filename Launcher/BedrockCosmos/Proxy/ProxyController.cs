@@ -261,6 +261,10 @@ namespace BedrockCosmos.Proxy
                             await HandleSessionStartRequest(localPath, e);
                             break;
 
+                        case ProxyUrlDefinitions.MessagesEventUrl:
+                            await HandleMessagesEventRequest(localPath, e);
+                            break;
+
                         case ProxyUrlDefinitions.PersonaSkinSelectorUrl:
                             await HandlePersonaSkinSelectorRequest(localPath, e);
                             break;
@@ -378,25 +382,45 @@ namespace BedrockCosmos.Proxy
         private async Task HandleSessionStartRequest(string localPath, SessionEventArgs e)
         {
             string responseBody = await e.GetResponseBodyAsString();
-            // string location = "result.messages";
-            // string announcementPath = PathDefinitions.ResponsesDirectory + @"News\LoginAnnouncement_append.json";
-            // string newsPath = PathDefinitions.ResponsesDirectory + @"News\CurrentNews_append.json";
+            string announcementPath = PathDefinitions.ResponsesDirectory + @"News\LoginAnnouncement_append.json";
+            string newsPath = PathDefinitions.ResponsesDirectory + @"News\CurrentNews_append.json";
+            string bannerDataPath = PathDefinitions.CustomJsonsDirectory + @"CurrentLoginAnnouncement.json";
+            string newsTabDataPath = PathDefinitions.CustomJsonsDirectory + @"News.json";
+            string location = "result.messages";
+            string appendedJson = "";
 
             NewsManager.RetrieveNewsHistory();
-            string newsTabDataPath = PathDefinitions.CustomJsonsDirectory + @"News.json";
+            NewsManager.RetrieveCurrentNews();
+            NewsManager.QueueLoginAnnouncementIfNew();
+            if (NewsManager.IsCurrentNewsNew())
+            {
+                // Append front announcement
+                appendedJson = JsonParser.AppendJsonToEnd(responseBody, bannerDataPath, location);
+                NewsManager.AddNewsToHistory();
+                NewsManager.MarkCurrentNewsAsSeen();
 
-            // Append front announcement
-            //string appendedJson = JsonParser.AppendJsonToEnd(responseBody, announcementPath, location);
-
-            // Append news
-            string location = "result.inboxSummary.categories";
-            string appendedJson = JsonParser.AppendJsonToStart(responseBody, newsTabDataPath, location);
+                // Append news
+                location = "result.inboxSummary.categories";
+                appendedJson = JsonParser.AppendJsonToStart(appendedJson, newsTabDataPath, location);
+            }
+            else
+            {
+                // Only append news
+                location = "result.inboxSummary.categories";
+                appendedJson = JsonParser.AppendJsonToStart(responseBody, newsTabDataPath, location);
+            }
 
             e.SetResponseBodyString(appendedJson);
             //CosmosConsole.WriteLine("Parser", $"Appended response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
 
             var userData = e.UserData as CustomUserData;
             userData.RequestLogs = userData.RequestLogs + $"└── On Response: Appended original response using {Path.GetFileName(localPath)}\n";
+        }
+
+        private async Task HandleMessagesEventRequest(string localPath, SessionEventArgs e)
+        {
+            var userData = e.UserData as CustomUserData;
+            NewsManager.InterpretNewsEvent(userData.RequestBodyString);
         }
 
         private async Task HandlePersonaSkinSelectorRequest(string localPath, SessionEventArgs e)

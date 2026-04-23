@@ -22,3 +22,9 @@ Update.UpdateLabel.Đã có bản cập nhật mới cho Bedrock Cosmos Launcher
 Update.ChangelogLabel.Text=Nhật ký thay đổi
 Update.UpdateButton.Text=Cập nhật
 Update.CancelUpdateButton.Text=Hủy
+DiscordRpc.Details.Text=đang sử dụng cape và skin tùy
+DiscordRpc.State.Text=chỉnh trong Minecraft Bedrock Edition
+DiscordRpc.Button.Website=Trang web
+DiscordRpc.Button.Discord=Máy chủ Discord
+DiscordRpc.Assets.LargeImageText=Minecraft Bedrock Edition
+DiscordRpc.Assets.SmallImageText=Bedrock Cosmos

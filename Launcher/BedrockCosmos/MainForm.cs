@@ -197,7 +197,7 @@ namespace BedrockCosmos
             drag = false;
         }
 
-        private async void LaunchButton_Click(object sender, EventArgs e)
+        private void LaunchButton_Click(object sender, EventArgs e)
         {
             if (!SettingsManager.ProxyStarted)
             {
@@ -208,8 +208,6 @@ namespace BedrockCosmos
                 LaunchButton.Text = LanguageHandler.Get("Home.LaunchButton.Entering");
                 launchManager.UpdateLaunchButtonColor("purple");
                 StartLaunch();
-
-                LaunchButton.Enabled = true;
             }
             else
             {
@@ -260,8 +258,9 @@ namespace BedrockCosmos
                         controller.StartProxy();
                     });
 
-                    if (!backgroundMode) // Different button/label texts depending on current mode.
+                    if (!backgroundMode) // Different button/label behaviors depending on current mode.
                     {
+                        LaunchButton.Enabled = true;
                         LaunchButton.Text = LanguageHandler.Get("Home.LaunchButton.Running");
                         launchManager.OpenMinecraft();
                     }
@@ -380,7 +379,7 @@ namespace BedrockCosmos
             }
         }
 
-        private async void BackgroundModeTimer_Tick(object sender, EventArgs e)
+        private void BackgroundModeTimer_Tick(object sender, EventArgs e)
         {
             Process[] pname = Process.GetProcessesByName("Minecraft.Windows");
 
@@ -550,7 +549,14 @@ namespace BedrockCosmos
         {
             //NewsManager.RetrieveNewsHistory();
             //NewsManager.RetrieveCurrentNews();
-            //NewsManager.CheckForNews();
+            //NewsManager.QueueLoginAnnouncementIfNew();
+            if (File.Exists(PathDefinitions.MiscDirectory + @"NewsHistory.json"))
+                File.Delete(PathDefinitions.MiscDirectory + @"NewsHistory.json");
+            if (File.Exists(PathDefinitions.CustomJsonsDirectory + @"CurrentLoginAnnouncement.json"))
+                File.Delete(PathDefinitions.CustomJsonsDirectory + @"CurrentLoginAnnouncement.json");
+            if (File.Exists(PathDefinitions.CustomJsonsDirectory + @"News.json"))
+                File.Delete(PathDefinitions.CustomJsonsDirectory + @"News.json");
+            CosmosConsole.WriteLine("Reset news.");
         }
 
         private void DisableDevMenuButton_Click(object sender, EventArgs e)
