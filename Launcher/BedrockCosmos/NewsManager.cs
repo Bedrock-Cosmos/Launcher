@@ -51,7 +51,7 @@ namespace BedrockCosmos
      ""name"": ""Bedrock Cosmos News"",
      ""image"": {
         ""id"": ""8642b05e-b0e1-4057-94d8-98552e53a23a"",
-        ""url"": ""https://raw.githubusercontent.com/Bedrock-Cosmos/Backend/main/Main/Thumbnails/News/NewsIcon.png""
+        ""url"": ""https://bedrock-cosmos.app/icons/NewsIcon.png""
      },
      ""type"": ""BedrockCosmosNews""
   }
@@ -330,22 +330,235 @@ namespace BedrockCosmos
 
         private static void OnNewsImpression(string instanceId)
         {
-            CosmosConsole.WriteLine($"OnNewsImpression: Marked '{instanceId}' as impressed.");
+            if (!File.Exists(_newsHistoryPath))
+            {
+                CosmosConsole.WriteLine("OnNewsImpression: No news history file found. Nothing to update.");
+                return;
+            }
+
+            JObject history;
+            try
+            {
+                history = JObject.Parse(File.ReadAllText(_newsHistoryPath));
+            }
+            catch (JsonException ex)
+            {
+                CosmosConsole.WriteLine($"OnNewsImpression: Failed to parse news history. {ex.Message}");
+                return;
+            }
+
+            JArray messages = (JArray)(history["messages"] ?? new JArray());
+
+            if (messages.Count == 0)
+            {
+                CosmosConsole.WriteLine("OnNewsImpression: No messages found in history. Nothing to update.");
+                return;
+            }
+
+            JObject targetMessage = null;
+            foreach (JObject msg in messages)
+            {
+                if (string.Equals((string)msg["instanceId"], instanceId, StringComparison.OrdinalIgnoreCase))
+                {
+                    targetMessage = msg;
+                    break;
+                }
+            }
+
+            if (targetMessage == null)
+            {
+                CosmosConsole.WriteLine($"OnNewsImpression: No message found with instanceId '{instanceId}'. Nothing to update.");
+                return;
+            }
+
+            if (string.Equals((string)targetMessage["status"], "Read", StringComparison.OrdinalIgnoreCase))
+            {
+                CosmosConsole.WriteLine($"OnNewsImpression: Message '{instanceId}' is already marked as read. Skipping.");
+                return;
+            }
+
+            targetMessage["status"] = "Read";
+
+            int unreadCount = 0;
+            foreach (JObject msg in messages)
+            {
+                if (string.Equals((string)msg["status"], "Unread", StringComparison.OrdinalIgnoreCase))
+                    unreadCount++;
+            }
+
+            history["messages"] = messages;
+            history["totalNumberOfUnreadMessages"] = unreadCount;
+
+            _newsHistory = history.ToString(Formatting.Indented);
+            File.WriteAllText(_newsHistoryPath, _newsHistory);
+
+            CosmosConsole.WriteLine($"OnNewsImpression: Message '{instanceId}' marked as read. Unread remaining: {unreadCount}.");
         }
 
         private static void OnNewsDelete(string instanceId)
         {
-            CosmosConsole.WriteLine($"OnNewsDelete: Deleted message '{instanceId}'.");
+            if (!File.Exists(_newsHistoryPath))
+            {
+                CosmosConsole.WriteLine("OnNewsDelete: No news history file found. Nothing to update.");
+                return;
+            }
+
+            JObject history;
+            try
+            {
+                history = JObject.Parse(File.ReadAllText(_newsHistoryPath));
+            }
+            catch (JsonException ex)
+            {
+                CosmosConsole.WriteLine($"OnNewsDelete: Failed to parse news history. {ex.Message}");
+                return;
+            }
+
+            JArray messages = (JArray)(history["messages"] ?? new JArray());
+
+            if (messages.Count == 0)
+            {
+                CosmosConsole.WriteLine("OnNewsDelete: No messages found in history. Nothing to update.");
+                return;
+            }
+
+            JObject targetMessage = null;
+            foreach (JObject msg in messages)
+            {
+                if (string.Equals((string)msg["instanceId"], instanceId, StringComparison.OrdinalIgnoreCase))
+                {
+                    targetMessage = msg;
+                    break;
+                }
+            }
+
+            if (targetMessage == null)
+            {
+                CosmosConsole.WriteLine($"OnNewsDelete: No message found with instanceId '{instanceId}'. Nothing to update.");
+                return;
+            }
+
+            messages.Remove(targetMessage);
+
+            int unreadCount = 0;
+            foreach (JObject msg in messages)
+            {
+                if (string.Equals((string)msg["status"], "Unread", StringComparison.OrdinalIgnoreCase))
+                    unreadCount++;
+            }
+
+            history["messages"] = messages;
+            history["totalNumberOfMessages"] = messages.Count;
+            history["totalNumberOfUnreadMessages"] = unreadCount;
+
+            _newsHistory = history.ToString(Formatting.Indented);
+            File.WriteAllText(_newsHistoryPath, _newsHistory);
+
+            CosmosConsole.WriteLine($"OnNewsDelete: Message '{instanceId}' removed. " +
+                                    $"Remaining: {messages.Count}, Unread: {unreadCount}.");
         }
 
         private static void OnNewsReadAll()
         {
-            CosmosConsole.WriteLine("OnNewsReadAll: Marked all messages as read.");
+            if (!File.Exists(_newsHistoryPath))
+            {
+                CosmosConsole.WriteLine("OnNewsReadAll: No news history file found. Nothing to update.");
+                return;
+            }
+
+            JObject history;
+            try
+            {
+                history = JObject.Parse(File.ReadAllText(_newsHistoryPath));
+            }
+            catch (JsonException ex)
+            {
+                CosmosConsole.WriteLine($"OnNewsReadAll: Failed to parse news history. {ex.Message}");
+                return;
+            }
+
+            JArray messages = (JArray)(history["messages"] ?? new JArray());
+
+            if (messages.Count == 0)
+            {
+                CosmosConsole.WriteLine("OnNewsReadAll: No messages found in history. Nothing to update.");
+                return;
+            }
+
+            foreach (JObject msg in messages)
+            {
+                msg["status"] = "Read";
+            }
+
+            history["messages"] = messages;
+            history["totalNumberOfUnreadMessages"] = 0;
+
+            _newsHistory = history.ToString(Formatting.Indented);
+            File.WriteAllText(_newsHistoryPath, _newsHistory);
+
+            CosmosConsole.WriteLine($"OnNewsReadAll: Marked {messages.Count} message(s) as read and saved to history.");
         }
 
         private static void OnNewsDeleteAllRead()
         {
-            CosmosConsole.WriteLine("OnNewsDeleteAllRead: Deleted all read messages.");
+            if (!File.Exists(_newsHistoryPath))
+            {
+                CosmosConsole.WriteLine("OnNewsDeleteAllRead: No news history file found. Nothing to update.");
+                return;
+            }
+
+            JObject history;
+            try
+            {
+                history = JObject.Parse(File.ReadAllText(_newsHistoryPath));
+            }
+            catch (JsonException ex)
+            {
+                CosmosConsole.WriteLine($"OnNewsDeleteAllRead: Failed to parse news history. {ex.Message}");
+                return;
+            }
+
+            JArray messages = (JArray)(history["messages"] ?? new JArray());
+
+            if (messages.Count == 0)
+            {
+                CosmosConsole.WriteLine("OnNewsDeleteAllRead: No messages found in history. Nothing to update.");
+                return;
+            }
+
+            JArray remainingMessages = new JArray();
+            int deletedCount = 0;
+
+            foreach (JObject msg in messages)
+            {
+                if (string.Equals((string)msg["status"], "Read", StringComparison.OrdinalIgnoreCase))
+                    deletedCount++;
+                else
+                    remainingMessages.Add(msg);
+            }
+
+            if (deletedCount == 0)
+            {
+                CosmosConsole.WriteLine("OnNewsDeleteAllRead: No read messages found. Nothing to delete.");
+                return;
+            }
+
+            int unreadCount = 0;
+            foreach (JObject msg in remainingMessages)
+            {
+                if (string.Equals((string)msg["status"], "Unread", StringComparison.OrdinalIgnoreCase))
+                    unreadCount++;
+            }
+
+            history["messages"] = remainingMessages;
+            history["totalNumberOfMessages"] = remainingMessages.Count;
+            history["totalNumberOfUnreadMessages"] = unreadCount;
+
+            _newsHistory = history.ToString(Formatting.Indented);
+            File.WriteAllText(_newsHistoryPath, _newsHistory);
+
+            CosmosConsole.WriteLine($"OnNewsDeleteAllRead: Deleted {deletedCount} read message(s). " +
+                                    $"Remaining: {remainingMessages.Count}, Unread: {unreadCount}.");
         }
     }
 }
