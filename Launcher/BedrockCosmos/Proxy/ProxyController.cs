@@ -116,7 +116,7 @@ namespace BedrockCosmos.Proxy
             if (!clientLocalIp.Equals(IPAddress.Loopback) && !clientLocalIp.Equals(IPAddress.IPv6Loopback))
                 e.HttpClient.UpStreamEndPoint = new IPEndPoint(clientLocalIp, 0);
 
-            bool existsInAllowedUrls = JsonData.AllowedUrls.Any(url => url == hostname);
+            bool existsInAllowedUrls = IsUrlAllowed(hostname);
             if (!existsInAllowedUrls)
             {
                 if (SettingsManager.DetailedLogging)
@@ -124,6 +124,24 @@ namespace BedrockCosmos.Proxy
 
                 e.DecryptSsl = false; // Exempts Non-Allowed Urls from proxy
             }
+        }
+
+        private bool IsRequestHttp(SessionEventArgs e)
+        {
+            // Used for letting HTTP traffic also pass through if not in the AllowedUrls.json
+            if (e.HttpClient.Request.RequestUri.Scheme == "http")
+                return true;
+            else
+                return false;
+        }
+
+        private bool IsUrlAllowed(string hostname)
+        {
+            bool existsInAllowedUrls = JsonData.AllowedUrls.Any(url => url == hostname);
+            if (existsInAllowedUrls)
+                return true;
+            else
+                return false;
         }
 
         private void WebSocket_DataSent(object sender, DataEventArgs e)
@@ -171,6 +189,9 @@ namespace BedrockCosmos.Proxy
         {
             //e.GetState().PipelineInfo.AppendLine(nameof(OnRequest) + ":" + e.HttpClient.Request.RequestUri);
 
+            if (IsRequestHttp(e) && !IsUrlAllowed(e.HttpClient.Request.RequestUri.Host))
+                return;
+
             try
             {
                 e.UserData = new CustomUserData
@@ -207,6 +228,9 @@ namespace BedrockCosmos.Proxy
         private async Task OnResponse(object sender, SessionEventArgs e)
         {
             //e.GetState().PipelineInfo.AppendLine(nameof(OnResponse));
+
+            if (IsRequestHttp(e) && !IsUrlAllowed(e.HttpClient.Request.RequestUri.Host))
+                return;
 
             if (e.HttpClient.ConnectRequest?.TunnelType == TunnelType.Websocket)
             {
@@ -289,6 +313,14 @@ namespace BedrockCosmos.Proxy
         private async Task OnAfterResponse(object sender, SessionEventArgs e)
         {
             //ProxyConsoleWriteLine(consoleSender, $"Pipelineinfo: {e.GetState().PipelineInfo}");
+
+            if (IsRequestHttp(e) && !IsUrlAllowed(e.HttpClient.Request.RequestUri.Host))
+            {
+                if (SettingsManager.DetailedLogging)
+                    ProxyConsoleWriteLine(consoleSender, "Tunnel to: " + e.HttpClient.Request.RequestUri.Host);
+                return;
+            }
+
             var userData = e.UserData as CustomUserData;
             ProxyConsoleWriteLine(consoleSender, userData.RequestLogs);
         }
