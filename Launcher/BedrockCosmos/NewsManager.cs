@@ -19,45 +19,45 @@ namespace BedrockCosmos
 {
     internal class NewsManager
     {
-        private static string _newsHistory = "";
-        private static string _currentNews = "";
         private static string _currentNewsUuid = "00000000-0000-4000-0000-000000000000";
+
+        private static JObject _newsHistoryObj = null;
+        private static JObject _currentNewsObj = null;
+        private static List<string> _seenUuids = null;
 
         private static readonly string _newsHistoryPath = PathDefinitions.CustomJsonsDirectory + @"News.json";
         private static readonly string _newsHistoryUuidsPath = PathDefinitions.MiscDirectory + @"NewsHistory.json";
         private static readonly string _currentNewsPath = PathDefinitions.ResponsesDirectory + @"News\CurrentNews_append.json";
         private static readonly string _loginAnnouncementPath = PathDefinitions.ResponsesDirectory + @"News\LoginAnnouncement_append.json";
 
-        internal static string NewsHistory
-        {
-            get { return _newsHistory; }
-            set { _newsHistory = value; }
-        }
+        // String properties to serialize from  cached JObjects on demand
+        internal static string NewsHistory =>
+            _newsHistoryObj?.ToString(Formatting.Indented) ?? string.Empty;
 
-        internal static string CurrentNews
-        {
-            get { return _currentNews; }
-            set { _currentNews = value; }
-        }
+        internal static string CurrentNews =>
+            _currentNewsObj?.ToString(Formatting.Indented) ?? string.Empty;
 
         internal static void CreateNewsHistoryFile()
         {
-            string newHistoryFile = @"{
-  ""category"": ""BedrockCosmosNews"",
-  ""totalNumberOfUnreadMessages"": 0,
-  ""totalNumberOfMessages"": 0,
-  ""messages"": [],
-  ""categoryInfo"": {
-     ""name"": ""Bedrock Cosmos News"",
-     ""image"": {
-        ""id"": ""8642b05e-b0e1-4057-94d8-98552e53a23a"",
-        ""url"": ""https://bedrock-cosmos.app/icons/NewsIcon.png""
-     },
-     ""type"": ""BedrockCosmosNews""
-  }
-}";
+            _newsHistoryObj = new JObject
+            {
+                ["category"] = "BedrockCosmosNews",
+                ["totalNumberOfUnreadMessages"] = 0,
+                ["totalNumberOfMessages"] = 0,
+                ["messages"] = new JArray(),
+                ["categoryInfo"] = new JObject
+                {
+                    ["name"] = "Bedrock Cosmos News",
+                    ["image"] = new JObject
+                    {
+                        ["id"] = "8642b05e-b0e1-4057-94d8-98552e53a23a",
+                        ["url"] = "https://bedrock-cosmos.app/icons/NewsIcon.png"
+                    },
+                    ["type"] = "BedrockCosmosNews"
+                }
+            };
 
-            File.WriteAllText(_newsHistoryPath, newHistoryFile);
+            File.WriteAllText(_newsHistoryPath, _newsHistoryObj.ToString(Formatting.Indented));
         }
 
         internal static void RetrieveNewsHistory()
@@ -68,9 +68,7 @@ namespace BedrockCosmos
             if (!File.Exists(_newsHistoryPath))
                 CreateNewsHistoryFile();
 
-            _newsHistory = File.ReadAllText(_newsHistoryPath);
-
-            JObject newsHistoryObj = JObject.Parse(_newsHistory);
+            _newsHistoryObj = JObject.Parse(File.ReadAllText(_newsHistoryPath));
         }
 
         internal static void RetrieveCurrentNews()
@@ -81,11 +79,9 @@ namespace BedrockCosmos
                 return;
             }
 
-            _currentNews = File.ReadAllText(_currentNewsPath);
+            _currentNewsObj = JObject.Parse(File.ReadAllText(_currentNewsPath));
 
-            JObject newsObj = JObject.Parse(_currentNews);
-            string uuid = (string)newsObj["id"];
-
+            string uuid = (string)_currentNewsObj["id"];
             if (!string.IsNullOrWhiteSpace(uuid))
                 _currentNewsUuid = uuid;
 
@@ -94,39 +90,22 @@ namespace BedrockCosmos
 
         internal static bool IsCurrentNewsNew()
         {
-            EnsureNewsHistoryFileExists();
-
-            string json = File.ReadAllText(_newsHistoryUuidsPath);
-
-            List<string> seenUuids = string.IsNullOrWhiteSpace(json)
-                ? new List<string>()
-                : JsonConvert.DeserializeObject<List<string>>(json) ?? new List<string>();
-
-            return !seenUuids.Contains(_currentNewsUuid);
+            EnsureSeenUuidsLoaded();
+            return !_seenUuids.Contains(_currentNewsUuid);
         }
 
         internal static void MarkCurrentNewsAsSeen()
         {
-            EnsureNewsHistoryFileExists();
+            EnsureSeenUuidsLoaded();
 
-            string json = File.ReadAllText(_newsHistoryUuidsPath);
-
-            List<string> seenUuids = string.IsNullOrWhiteSpace(json)
-                ? new List<string>()
-                : JsonConvert.DeserializeObject<List<string>>(json) ?? new List<string>();
-
-            if (seenUuids.Contains(_currentNewsUuid))
+            if (_seenUuids.Contains(_currentNewsUuid))
             {
                 CosmosConsole.WriteLine("UUID already recorded in news history, skipping.");
                 return;
             }
 
-            seenUuids.Add(_currentNewsUuid);
-
-            File.WriteAllText(
-                _newsHistoryUuidsPath,
-                JsonConvert.SerializeObject(seenUuids, Formatting.Indented)
-            );
+            _seenUuids.Add(_currentNewsUuid);
+            SaveSeenUuids();
 
             CosmosConsole.WriteLine($"UUID {_currentNewsUuid} added to news history.");
         }
@@ -139,15 +118,14 @@ namespace BedrockCosmos
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(_currentNews))
+            if (_currentNewsObj == null)
             {
                 CosmosConsole.WriteLine("Current news data is empty; cannot queue announcement.");
                 return;
             }
 
-            JObject source = JObject.Parse(_currentNews);
+            JObject source = _currentNewsObj;
 
-            // Pull the fields needed from CurrentNews
             string id = (string)source["id"] ?? Guid.NewGuid().ToString();
             string header = (string)source["header"] ?? "";
             string body = (string)source["body"] ?? "";
@@ -157,44 +135,29 @@ namespace BedrockCosmos
             string msgHeader = (string)source["messageText"]?["header"] ?? header;
             string msgBody = (string)source["messageText"]?["body"] ?? body;
 
-            // Build the LoginAnnouncement object
-            JObject announcement = new JObject
+            if (!File.Exists(_loginAnnouncementPath))
             {
-                ["id"] = id,
-                ["instanceId"] = id,
-                ["surface"] = "LoginAnnouncement",
-                ["template"] = "HeroImageCTA",
-                ["header"] = header,
-                ["body"] = body,
-                ["images"] = new JObject
-                {
-                    ["Primary"] = new JObject
-                    {
-                        ["id"] = imageId,
-                        ["url"] = imageUrl
-                    }
-                },
-                ["buttons"] = new JObject(),
-                ["reportId"] = "Njk0NWIwMGM1Y2MzOTUwMDY1NTViNTRjXyRfY2M9NzJhMTJlYzgtMzU5Mi00ZmU0LTRhOWItMDNiYThiNjk2ZWNiJm12PTY5NDViMDBjNWNjMzk1MDA2NTU1YjU0NiZwaT1jbXA=",
-                ["isControl"] = false,
-                ["sender"] = "Bedrock Cosmos",
-                ["status"] = "Unread",
-                ["persistToInboxOnImpression"] = true,
-                ["inboxCategory"] = "BedrockCosmosNews",
-                ["dateReceived"] = dateReceived,
-                ["itemList"] = new JArray(),
-                ["style"] = "Default",
-                ["associatedProducts"] = new JArray(),
-                ["messageItemList"] = new JArray(),
-                ["messageText"] = new JObject
-                {
-                    ["header"] = msgHeader,
-                    ["body"] = msgBody
-                },
-                ["versionConstraint"] = "≥ 1.21.100",
-                ["colors"] = new JObject(),
-                ["isSentimentSubmitButtonVisible"] = false
-            };
+                CosmosConsole.WriteLine($"Login announcement template not found at: {_loginAnnouncementPath}");
+                return;
+            }
+
+            JObject announcement = JObject.Parse(File.ReadAllText(_loginAnnouncementPath));
+
+            announcement["id"] = id;
+            announcement["instanceId"] = id;
+            announcement["header"] = header;
+            announcement["body"] = body;
+            announcement["dateReceived"] = dateReceived;
+            JObject images = (JObject)announcement["images"] ?? new JObject();
+            JObject primary = (JObject)images["Primary"] ?? new JObject();
+            primary["id"] = imageId;
+            primary["url"] = imageUrl;
+            images["Primary"] = primary;
+            announcement["images"] = images;
+            JObject messageText = (JObject)announcement["messageText"] ?? new JObject();
+            messageText["header"] = msgHeader;
+            messageText["body"] = msgBody;
+            announcement["messageText"] = messageText;
 
             File.WriteAllText(
                 PathDefinitions.CustomJsonsDirectory + "CurrentLoginAnnouncement.json",
@@ -204,32 +167,19 @@ namespace BedrockCosmos
             CosmosConsole.WriteLine($"LoginAnnouncement queued for ID: {id}");
         }
 
-        private static void EnsureNewsHistoryFileExists()
-        {
-            string dir = Path.GetDirectoryName(_newsHistoryUuidsPath);
-            if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
-                Directory.CreateDirectory(dir);
-
-            if (!File.Exists(_newsHistoryUuidsPath))
-                File.WriteAllText(_newsHistoryUuidsPath, "[]");
-        }
-
         internal static void AddNewsToHistory()
         {
-            if (string.IsNullOrWhiteSpace(_currentNews))
+            if (_currentNewsObj == null)
             {
                 CosmosConsole.WriteLine("No news data loaded. Call RetrieveCurrentNews() first.");
                 return;
             }
 
-            if (!File.Exists(_newsHistoryPath))
+            if (_newsHistoryObj == null)
                 CreateNewsHistoryFile();
 
-            JObject history = JObject.Parse(File.ReadAllText(_newsHistoryPath));
-            JArray messages = (JArray)(history["messages"] ?? new JArray());
-            JObject incomingNews = JObject.Parse(_currentNews);
+            JArray messages = (JArray)(_newsHistoryObj["messages"] ?? new JArray());
 
-            // Prevent duplicate entries if the UUID is already in the message list.
             foreach (JObject existing in messages)
             {
                 if ((string)existing["id"] == _currentNewsUuid)
@@ -239,21 +189,19 @@ namespace BedrockCosmos
                 }
             }
 
-            messages.Insert(0, incomingNews);
-            history["messages"] = messages;
-            history["totalNumberOfMessages"] = messages.Count;
+            messages.Insert(0, _currentNewsObj.DeepClone());
+            _newsHistoryObj["messages"] = messages;
+            _newsHistoryObj["totalNumberOfMessages"] = messages.Count;
 
-            // Count unread by checking the status field on each message.
             int unreadCount = 0;
             foreach (JObject msg in messages)
             {
                 if (string.Equals((string)msg["status"], "Unread", StringComparison.OrdinalIgnoreCase))
                     unreadCount++;
             }
-            history["totalNumberOfUnreadMessages"] = unreadCount;
+            _newsHistoryObj["totalNumberOfUnreadMessages"] = unreadCount;
 
-            _newsHistory = history.ToString(Formatting.Indented);
-            File.WriteAllText(_newsHistoryPath, _newsHistory);
+            File.WriteAllText(_newsHistoryPath, _newsHistoryObj.ToString(Formatting.Indented));
 
             CosmosConsole.WriteLine($"News item {_currentNewsUuid} added to history. " +
                                     $"Total: {messages.Count}, Unread: {unreadCount}");
@@ -286,7 +234,7 @@ namespace BedrockCosmos
                 return;
             }
 
-            foreach (JObject ev in events) // Can process multiple events at once, though this shouldn't really happen naturally.
+            foreach (JObject ev in events)
             {
                 string eventType = (string)ev["eventType"] ?? string.Empty;
                 string instanceId = (string)ev["instanceId"] ?? string.Empty;
@@ -330,41 +278,10 @@ namespace BedrockCosmos
 
         private static void OnNewsImpression(string instanceId)
         {
-            if (!File.Exists(_newsHistoryPath))
-            {
-                CosmosConsole.WriteLine("OnNewsImpression: No news history file found. Nothing to update.");
-                return;
-            }
+            JArray messages = GetMessagesOrWarn("OnNewsImpression");
+            if (messages == null) return;
 
-            JObject history;
-            try
-            {
-                history = JObject.Parse(File.ReadAllText(_newsHistoryPath));
-            }
-            catch (JsonException ex)
-            {
-                CosmosConsole.WriteLine($"OnNewsImpression: Failed to parse news history. {ex.Message}");
-                return;
-            }
-
-            JArray messages = (JArray)(history["messages"] ?? new JArray());
-
-            if (messages.Count == 0)
-            {
-                CosmosConsole.WriteLine("OnNewsImpression: No messages found in history. Nothing to update.");
-                return;
-            }
-
-            JObject targetMessage = null;
-            foreach (JObject msg in messages)
-            {
-                if (string.Equals((string)msg["instanceId"], instanceId, StringComparison.OrdinalIgnoreCase))
-                {
-                    targetMessage = msg;
-                    break;
-                }
-            }
-
+            JObject targetMessage = FindByInstanceId(messages, instanceId);
             if (targetMessage == null)
             {
                 CosmosConsole.WriteLine($"OnNewsImpression: No message found with instanceId '{instanceId}'. Nothing to update.");
@@ -378,60 +295,18 @@ namespace BedrockCosmos
             }
 
             targetMessage["status"] = "Read";
+            UpdateAndSaveUnreadCount(messages);
 
-            int unreadCount = 0;
-            foreach (JObject msg in messages)
-            {
-                if (string.Equals((string)msg["status"], "Unread", StringComparison.OrdinalIgnoreCase))
-                    unreadCount++;
-            }
-
-            history["messages"] = messages;
-            history["totalNumberOfUnreadMessages"] = unreadCount;
-
-            _newsHistory = history.ToString(Formatting.Indented);
-            File.WriteAllText(_newsHistoryPath, _newsHistory);
-
+            int unreadCount = (int)_newsHistoryObj["totalNumberOfUnreadMessages"];
             CosmosConsole.WriteLine($"OnNewsImpression: Message '{instanceId}' marked as read. Unread remaining: {unreadCount}.");
         }
 
         private static void OnNewsDelete(string instanceId)
         {
-            if (!File.Exists(_newsHistoryPath))
-            {
-                CosmosConsole.WriteLine("OnNewsDelete: No news history file found. Nothing to update.");
-                return;
-            }
+            JArray messages = GetMessagesOrWarn("OnNewsDelete");
+            if (messages == null) return;
 
-            JObject history;
-            try
-            {
-                history = JObject.Parse(File.ReadAllText(_newsHistoryPath));
-            }
-            catch (JsonException ex)
-            {
-                CosmosConsole.WriteLine($"OnNewsDelete: Failed to parse news history. {ex.Message}");
-                return;
-            }
-
-            JArray messages = (JArray)(history["messages"] ?? new JArray());
-
-            if (messages.Count == 0)
-            {
-                CosmosConsole.WriteLine("OnNewsDelete: No messages found in history. Nothing to update.");
-                return;
-            }
-
-            JObject targetMessage = null;
-            foreach (JObject msg in messages)
-            {
-                if (string.Equals((string)msg["instanceId"], instanceId, StringComparison.OrdinalIgnoreCase))
-                {
-                    targetMessage = msg;
-                    break;
-                }
-            }
-
+            JObject targetMessage = FindByInstanceId(messages, instanceId);
             if (targetMessage == null)
             {
                 CosmosConsole.WriteLine($"OnNewsDelete: No message found with instanceId '{instanceId}'. Nothing to update.");
@@ -439,94 +314,35 @@ namespace BedrockCosmos
             }
 
             messages.Remove(targetMessage);
+            _newsHistoryObj["totalNumberOfMessages"] = messages.Count;
+            UpdateAndSaveUnreadCount(messages);
 
-            int unreadCount = 0;
-            foreach (JObject msg in messages)
-            {
-                if (string.Equals((string)msg["status"], "Unread", StringComparison.OrdinalIgnoreCase))
-                    unreadCount++;
-            }
-
-            history["messages"] = messages;
-            history["totalNumberOfMessages"] = messages.Count;
-            history["totalNumberOfUnreadMessages"] = unreadCount;
-
-            _newsHistory = history.ToString(Formatting.Indented);
-            File.WriteAllText(_newsHistoryPath, _newsHistory);
-
+            int unreadCount = (int)_newsHistoryObj["totalNumberOfUnreadMessages"];
             CosmosConsole.WriteLine($"OnNewsDelete: Message '{instanceId}' removed. " +
                                     $"Remaining: {messages.Count}, Unread: {unreadCount}.");
         }
 
         private static void OnNewsReadAll()
         {
-            if (!File.Exists(_newsHistoryPath))
-            {
-                CosmosConsole.WriteLine("OnNewsReadAll: No news history file found. Nothing to update.");
-                return;
-            }
-
-            JObject history;
-            try
-            {
-                history = JObject.Parse(File.ReadAllText(_newsHistoryPath));
-            }
-            catch (JsonException ex)
-            {
-                CosmosConsole.WriteLine($"OnNewsReadAll: Failed to parse news history. {ex.Message}");
-                return;
-            }
-
-            JArray messages = (JArray)(history["messages"] ?? new JArray());
-
-            if (messages.Count == 0)
-            {
-                CosmosConsole.WriteLine("OnNewsReadAll: No messages found in history. Nothing to update.");
-                return;
-            }
+            JArray messages = GetMessagesOrWarn("OnNewsReadAll");
+            if (messages == null) return;
 
             foreach (JObject msg in messages)
-            {
                 msg["status"] = "Read";
-            }
 
-            history["messages"] = messages;
-            history["totalNumberOfUnreadMessages"] = 0;
+            _newsHistoryObj["totalNumberOfUnreadMessages"] = 0;
 
-            _newsHistory = history.ToString(Formatting.Indented);
-            File.WriteAllText(_newsHistoryPath, _newsHistory);
+            File.WriteAllText(_newsHistoryPath, _newsHistoryObj.ToString(Formatting.Indented));
 
             CosmosConsole.WriteLine($"OnNewsReadAll: Marked {messages.Count} message(s) as read and saved to history.");
         }
 
         private static void OnNewsDeleteAllRead()
         {
-            if (!File.Exists(_newsHistoryPath))
-            {
-                CosmosConsole.WriteLine("OnNewsDeleteAllRead: No news history file found. Nothing to update.");
-                return;
-            }
+            JArray messages = GetMessagesOrWarn("OnNewsDeleteAllRead");
+            if (messages == null) return;
 
-            JObject history;
-            try
-            {
-                history = JObject.Parse(File.ReadAllText(_newsHistoryPath));
-            }
-            catch (JsonException ex)
-            {
-                CosmosConsole.WriteLine($"OnNewsDeleteAllRead: Failed to parse news history. {ex.Message}");
-                return;
-            }
-
-            JArray messages = (JArray)(history["messages"] ?? new JArray());
-
-            if (messages.Count == 0)
-            {
-                CosmosConsole.WriteLine("OnNewsDeleteAllRead: No messages found in history. Nothing to update.");
-                return;
-            }
-
-            JArray remainingMessages = new JArray();
+            JArray remaining = new JArray();
             int deletedCount = 0;
 
             foreach (JObject msg in messages)
@@ -534,7 +350,7 @@ namespace BedrockCosmos
                 if (string.Equals((string)msg["status"], "Read", StringComparison.OrdinalIgnoreCase))
                     deletedCount++;
                 else
-                    remainingMessages.Add(msg);
+                    remaining.Add(msg);
             }
 
             if (deletedCount == 0)
@@ -543,22 +359,88 @@ namespace BedrockCosmos
                 return;
             }
 
+            _newsHistoryObj["messages"] = remaining;
+            _newsHistoryObj["totalNumberOfMessages"] = remaining.Count;
+            UpdateAndSaveUnreadCount(remaining);
+
+            int unreadCount = (int)_newsHistoryObj["totalNumberOfUnreadMessages"];
+            CosmosConsole.WriteLine($"OnNewsDeleteAllRead: Deleted {deletedCount} read message(s). " +
+                                    $"Remaining: {remaining.Count}, Unread: {unreadCount}.");
+        }
+
+        // Helpers
+        private static JArray GetMessagesOrWarn(string callerName)
+        {
+            if (_newsHistoryObj == null)
+            {
+                CosmosConsole.WriteLine($"{callerName}: News history not loaded. Nothing to update.");
+                return null;
+            }
+
+            JArray messages = (JArray)(_newsHistoryObj["messages"] ?? new JArray());
+
+            if (messages.Count == 0)
+            {
+                CosmosConsole.WriteLine($"{callerName}: No messages found in history. Nothing to update.");
+                return null;
+            }
+
+            return messages;
+        }
+
+        private static JObject FindByInstanceId(JArray messages, string instanceId)
+        {
+            foreach (JObject msg in messages)
+            {
+                if (string.Equals((string)msg["instanceId"], instanceId, StringComparison.OrdinalIgnoreCase))
+                    return msg;
+            }
+            return null;
+        }
+
+        private static void UpdateAndSaveUnreadCount(JArray messages)
+        {
             int unreadCount = 0;
-            foreach (JObject msg in remainingMessages)
+            foreach (JObject msg in messages)
             {
                 if (string.Equals((string)msg["status"], "Unread", StringComparison.OrdinalIgnoreCase))
                     unreadCount++;
             }
 
-            history["messages"] = remainingMessages;
-            history["totalNumberOfMessages"] = remainingMessages.Count;
-            history["totalNumberOfUnreadMessages"] = unreadCount;
+            _newsHistoryObj["totalNumberOfUnreadMessages"] = unreadCount;
+            File.WriteAllText(_newsHistoryPath, _newsHistoryObj.ToString(Formatting.Indented));
+        }
 
-            _newsHistory = history.ToString(Formatting.Indented);
-            File.WriteAllText(_newsHistoryPath, _newsHistory);
+        /// <summary>
+        /// Loads the seen UUIDs list from disk into _seenUuids if not already loaded.
+        /// </summary>
+        private static void EnsureSeenUuidsLoaded()
+        {
+            if (_seenUuids != null) return;
 
-            CosmosConsole.WriteLine($"OnNewsDeleteAllRead: Deleted {deletedCount} read message(s). " +
-                                    $"Remaining: {remainingMessages.Count}, Unread: {unreadCount}.");
+            string dir = Path.GetDirectoryName(_newsHistoryUuidsPath);
+            if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+
+            if (!File.Exists(_newsHistoryUuidsPath))
+            {
+                File.WriteAllText(_newsHistoryUuidsPath, "[]");
+                _seenUuids = new List<string>();
+                return;
+            }
+
+            string json = File.ReadAllText(_newsHistoryUuidsPath);
+            _seenUuids = string.IsNullOrWhiteSpace(json)
+                ? new List<string>()
+                : JsonConvert.DeserializeObject<List<string>>(json) ?? new List<string>();
+        }
+
+        private static void SaveSeenUuids()
+        {
+            File.WriteAllText(
+                _newsHistoryUuidsPath,
+                JsonConvert.SerializeObject(_seenUuids, Formatting.Indented)
+            );
         }
     }
 }

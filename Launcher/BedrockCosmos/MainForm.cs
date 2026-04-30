@@ -202,6 +202,7 @@ namespace BedrockCosmos
             if (!SettingsManager.ProxyStarted)
             {
                 LaunchButton.Enabled = false;
+                BackgroundModeSwitch.Enabled = false;
                 StatusLabel.Text = "";
 
                 CosmosConsole.WriteLine("Starting proxy...");
@@ -261,6 +262,7 @@ namespace BedrockCosmos
                     if (!backgroundMode) // Different button/label behaviors depending on current mode.
                     {
                         LaunchButton.Enabled = true;
+                        BackgroundModeSwitch.Enabled = true;
                         LaunchButton.Text = LanguageHandler.Get("Home.LaunchButton.Running");
                         launchManager.OpenMinecraft();
                     }
