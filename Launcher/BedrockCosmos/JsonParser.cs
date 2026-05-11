@@ -1,4 +1,5 @@
 ﻿using BedrockCosmos.App;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
@@ -44,15 +45,35 @@ namespace BedrockCosmos
 
         internal static string AppendNewsHistoryToInboxSummary(string originalJsonContent)
         {
+            if (string.IsNullOrWhiteSpace(originalJsonContent))
+            {
+                CosmosConsole.WriteLine(consoleSender, "Skipping session-start news append because the upstream response body was empty.");
+                return originalJsonContent;
+            }
+
+            if (!LooksLikeJson(originalJsonContent))
+            {
+                CosmosConsole.WriteLine(consoleSender, $"Skipping session-start news append because the upstream response did not look like JSON. Response starts with: {GetContentSnippet(originalJsonContent)}");
+                return originalJsonContent;
+            }
+
             NewsManager.RetrieveNewsHistory();
 
-            string appendedJson = AppendJsonToStart(
-                originalJsonContent,
-                NewsManager.NewsHistoryPath,
-                NewsInboxCategoriesLocation);
+            try
+            {
+                string appendedJson = AppendJsonToStart(
+                    originalJsonContent,
+                    NewsManager.NewsHistoryPath,
+                    NewsInboxCategoriesLocation);
 
-            // Keep the upstream payload intact if the local news history cannot be appended.
-            return string.IsNullOrWhiteSpace(appendedJson) ? originalJsonContent : appendedJson;
+                // Keep the upstream payload intact if the local news history cannot be appended.
+                return string.IsNullOrWhiteSpace(appendedJson) ? originalJsonContent : appendedJson;
+            }
+            catch (JsonReaderException ex)
+            {
+                CosmosConsole.WriteLine(consoleSender, $"Skipping session-start news append because the upstream response could not be parsed as JSON. Response starts with: {GetContentSnippet(originalJsonContent)} Error: {ex.Message}");
+                return originalJsonContent;
+            }
         }
 
         internal static string AppendJsonToEnd(string originalJsonContent, string jsonToAppendPath, string appendLocation)
@@ -239,6 +260,21 @@ namespace BedrockCosmos
                 return match.Value;
             else
                 return string.Empty;
+        }
+
+        private static bool LooksLikeJson(string content)
+        {
+            string trimmedContent = content.TrimStart();
+            return trimmedContent.StartsWith("{") || trimmedContent.StartsWith("[");
+        }
+
+        private static string GetContentSnippet(string content)
+        {
+            if (string.IsNullOrWhiteSpace(content))
+                return "[EMPTY]";
+
+            string singleLine = content.TrimStart().Replace("\r", " ").Replace("\n", " ");
+            return singleLine.Length <= 80 ? singleLine : singleLine.Substring(0, 80) + "...";
         }
     }
 }
