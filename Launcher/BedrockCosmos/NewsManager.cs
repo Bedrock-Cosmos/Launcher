@@ -27,9 +27,9 @@ namespace BedrockCosmos
         private static JObject _currentNewsObj = null;
         private static List<string> _seenUuids = null;
 
-        private static readonly string _newsHistoryPath = PathDefinitions.CustomJsonsDirectory + @"News.json";
-        private static readonly string _newsHistoryUuidsPath = PathDefinitions.MiscDirectory + @"NewsHistory.json";
-        private static readonly string _currentNewsPath = PathDefinitions.ResponsesDirectory + @"MainPages\CurrentNews_append.json";
+        private static readonly string _newsHistoryPath = Path.Combine(PathDefinitions.CustomJsonsDirectory, "News.json");
+        private static readonly string _newsHistoryUuidsPath = Path.Combine(PathDefinitions.MiscDirectory, "NewsHistory.json");
+        private static readonly string _currentNewsPath = Path.Combine(PathDefinitions.ResponsesDirectory, @"MainPages\CurrentNews_append.json");
 
         internal static bool SendToNewsInbox
         {
@@ -39,6 +39,11 @@ namespace BedrockCosmos
         internal static bool SendToNewsAnnouncement
         {
             get { return _sendNewsToAnnouncement; }
+        }
+
+        internal static string NewsHistoryPath
+        {
+            get { return _newsHistoryPath; }
         }
 
         // String properties to serialize from  cached JObjects on demand

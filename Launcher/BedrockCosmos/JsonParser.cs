@@ -20,6 +20,7 @@ namespace BedrockCosmos
     internal class JsonParser
     {
         private static string consoleSender = "Parser";
+        private const string NewsInboxCategoriesLocation = "result.inboxSummary.categories";
 
         internal static string ReadJsonFileContent(string filePath)
         {
@@ -39,6 +40,19 @@ namespace BedrockCosmos
             // Appends to position 0, the start of the json
             string appendedJson = AppendJsonToSpecificLocation(originalJsonContent, jsonToAppendPath, appendLocation, 0);
             return appendedJson;
+        }
+
+        internal static string AppendNewsHistoryToInboxSummary(string originalJsonContent)
+        {
+            NewsManager.RetrieveNewsHistory();
+
+            string appendedJson = AppendJsonToStart(
+                originalJsonContent,
+                NewsManager.NewsHistoryPath,
+                NewsInboxCategoriesLocation);
+
+            // Keep the upstream payload intact if the local news history cannot be appended.
+            return string.IsNullOrWhiteSpace(appendedJson) ? originalJsonContent : appendedJson;
         }
 
         internal static string AppendJsonToEnd(string originalJsonContent, string jsonToAppendPath, string appendLocation)

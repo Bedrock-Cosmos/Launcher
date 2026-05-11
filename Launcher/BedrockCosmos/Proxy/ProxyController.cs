@@ -414,13 +414,10 @@ namespace BedrockCosmos.Proxy
         private async Task HandleSessionStartRequest(string localPath, SessionEventArgs e)
         {
             string responseBody = await e.GetResponseBodyAsString();
-            string newsPath = PathDefinitions.ResponsesDirectory + @"News\CurrentNews_append.json";
             string bannerDataPath = PathDefinitions.CustomJsonsDirectory + @"CurrentLoginAnnouncement.json";
-            string newsTabDataPath = PathDefinitions.CustomJsonsDirectory + @"News.json";
             string location = "result.messages";
-            string appendedJson = "";
+            string appendedJson = responseBody;
 
-            NewsManager.RetrieveNewsHistory();
             NewsManager.RetrieveCurrentNews();
             NewsManager.QueueLoginAnnouncementIfNew();
             if (NewsManager.IsCurrentNewsNew())
@@ -428,24 +425,14 @@ namespace BedrockCosmos.Proxy
                 // Append front announcement
                 if (NewsManager.SendToNewsAnnouncement)
                     appendedJson = JsonParser.AppendJsonToEnd(responseBody, bannerDataPath, location);
-                else
-                    appendedJson = responseBody;
 
                 if (NewsManager.SendToNewsInbox)
                     NewsManager.AddNewsToHistory();
 
                 NewsManager.MarkCurrentNewsAsSeen();
+            }
 
-                // Append saved news
-                location = "result.inboxSummary.categories";
-                appendedJson = JsonParser.AppendJsonToStart(appendedJson, newsTabDataPath, location);
-            }
-            else
-            {
-                // Only append saved news
-                location = "result.inboxSummary.categories";
-                appendedJson = JsonParser.AppendJsonToStart(responseBody, newsTabDataPath, location);
-            }
+            appendedJson = JsonParser.AppendNewsHistoryToInboxSummary(appendedJson);
 
             e.SetResponseBodyString(appendedJson);
             //CosmosConsole.WriteLine("Parser", $"Appended response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
