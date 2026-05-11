@@ -20,6 +20,8 @@ namespace BedrockCosmos
     internal class NewsManager
     {
         private static string _currentNewsUuid = "00000000-0000-4000-0000-000000000000";
+        private static bool _sendNewsToInbox = true;
+        private static bool _sendNewsToAnnouncement = true;
 
         private static JObject _newsHistoryObj = null;
         private static JObject _currentNewsObj = null;
@@ -27,8 +29,17 @@ namespace BedrockCosmos
 
         private static readonly string _newsHistoryPath = PathDefinitions.CustomJsonsDirectory + @"News.json";
         private static readonly string _newsHistoryUuidsPath = PathDefinitions.MiscDirectory + @"NewsHistory.json";
-        private static readonly string _currentNewsPath = PathDefinitions.ResponsesDirectory + @"News\CurrentNews_append.json";
-        private static readonly string _loginAnnouncementPath = PathDefinitions.ResponsesDirectory + @"News\LoginAnnouncement_append.json";
+        private static readonly string _currentNewsPath = PathDefinitions.ResponsesDirectory + @"MainPages\CurrentNews_append.json";
+
+        internal static bool SendToNewsInbox
+        {
+            get { return _sendNewsToInbox; }
+        }
+
+        internal static bool SendToNewsAnnouncement
+        {
+            get { return _sendNewsToAnnouncement; }
+        }
 
         // String properties to serialize from  cached JObjects on demand
         internal static string NewsHistory =>
@@ -73,6 +84,10 @@ namespace BedrockCosmos
 
         internal static void RetrieveCurrentNews()
         {
+            // Reset defaults
+            _sendNewsToInbox = true;
+            _sendNewsToAnnouncement = true;
+
             if (!File.Exists(_currentNewsPath))
             {
                 CosmosConsole.WriteLine("No current news file found.");
@@ -81,9 +96,24 @@ namespace BedrockCosmos
 
             _currentNewsObj = JObject.Parse(File.ReadAllText(_currentNewsPath));
 
+            // Optional booleans only used in Bedrock Cosmos news system
+            // "cosmosSendToInbox": true/false
+            JToken sendToInbox = _currentNewsObj["cosmosSendToInbox"];
+            if (sendToInbox != null)
+                _sendNewsToInbox = (bool)sendToInbox;
+
+            // "cosmosSendToAnnouncement": true/false
+            JToken sendToAnnouncement = _currentNewsObj["cosmosSendToAnnouncement"];
+            if (sendToAnnouncement != null)
+                _sendNewsToAnnouncement = (bool)sendToAnnouncement;
+
+            // Extracts current news UUID for logging
             string uuid = (string)_currentNewsObj["id"];
             if (!string.IsNullOrWhiteSpace(uuid))
                 _currentNewsUuid = uuid;
+
+            // Update dateReceived in the first message to current UTC time
+            _currentNewsObj["dateReceived"] = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffffffZ");
 
             CosmosConsole.WriteLine($"Current news retrieved. ID: {_currentNewsUuid}");
         }
@@ -124,47 +154,19 @@ namespace BedrockCosmos
                 return;
             }
 
-            JObject source = _currentNewsObj;
+            JObject announcement = (JObject)_currentNewsObj.DeepClone();
+            announcement["surface"] = "LoginAnnouncement";
 
-            string id = (string)source["id"] ?? Guid.NewGuid().ToString();
-            string header = (string)source["header"] ?? "";
-            string body = (string)source["body"] ?? "";
-            string imageId = (string)source["images"]?["Primary"]?["id"] ?? Guid.NewGuid().ToString();
-            string imageUrl = (string)source["images"]?["Primary"]?["url"] ?? "";
-            string dateReceived = (string)source["dateReceived"] ?? DateTime.UtcNow.ToString("YYYY-MM-DDT12:00:00.0000000Z");
-            string msgHeader = (string)source["messageText"]?["header"] ?? header;
-            string msgBody = (string)source["messageText"]?["body"] ?? body;
-
-            if (!File.Exists(_loginAnnouncementPath))
-            {
-                CosmosConsole.WriteLine($"Login announcement template not found at: {_loginAnnouncementPath}");
-                return;
-            }
-
-            JObject announcement = JObject.Parse(File.ReadAllText(_loginAnnouncementPath));
-
-            announcement["id"] = id;
-            announcement["instanceId"] = id;
-            announcement["header"] = header;
-            announcement["body"] = body;
-            announcement["dateReceived"] = dateReceived;
-            JObject images = (JObject)announcement["images"] ?? new JObject();
-            JObject primary = (JObject)images["Primary"] ?? new JObject();
-            primary["id"] = imageId;
-            primary["url"] = imageUrl;
-            images["Primary"] = primary;
-            announcement["images"] = images;
-            JObject messageText = (JObject)announcement["messageText"] ?? new JObject();
-            messageText["header"] = msgHeader;
-            messageText["body"] = msgBody;
-            announcement["messageText"] = messageText;
+            // Handles inboxed persona item lists
+            if ((string)announcement["template"] == "ContentListNoCTA")
+                announcement["template"] = "HeroImageCTA";
 
             File.WriteAllText(
                 PathDefinitions.CustomJsonsDirectory + "CurrentLoginAnnouncement.json",
                 announcement.ToString(Formatting.Indented)
             );
 
-            CosmosConsole.WriteLine($"LoginAnnouncement queued for ID: {id}");
+            CosmosConsole.WriteLine($"LoginAnnouncement queued for ID: {announcement["id"]}");
         }
 
         internal static void AddNewsToHistory()
@@ -274,6 +276,16 @@ namespace BedrockCosmos
                         break;
                 }
             }
+        }
+
+        internal static void ResetNewsVariables()
+        {
+            _currentNewsUuid = "00000000-0000-4000-0000-000000000000";
+            _sendNewsToInbox = true;
+            _sendNewsToAnnouncement = true;
+            _newsHistoryObj = null;
+            _currentNewsObj = null;
+            _seenUuids = null;
         }
 
         private static void OnNewsImpression(string instanceId)
@@ -411,9 +423,6 @@ namespace BedrockCosmos
             File.WriteAllText(_newsHistoryPath, _newsHistoryObj.ToString(Formatting.Indented));
         }
 
-        /// <summary>
-        /// Loads the seen UUIDs list from disk into _seenUuids if not already loaded.
-        /// </summary>
         private static void EnsureSeenUuidsLoaded()
         {
             if (_seenUuids != null) return;

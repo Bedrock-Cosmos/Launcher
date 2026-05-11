@@ -317,7 +317,7 @@ namespace BedrockCosmos.Proxy
             if (IsRequestHttp(e) && !IsUrlAllowed(e.HttpClient.Request.RequestUri.Host))
             {
                 if (SettingsManager.DetailedLogging)
-                    ProxyConsoleWriteLine(consoleSender, "Tunnel to: " + e.HttpClient.Request.RequestUri.Host);
+                    ProxyConsoleWriteLine(consoleSender, "Pass through: " + e.HttpClient.Request.RequestUri.Host);
                 return;
             }
 
@@ -414,7 +414,6 @@ namespace BedrockCosmos.Proxy
         private async Task HandleSessionStartRequest(string localPath, SessionEventArgs e)
         {
             string responseBody = await e.GetResponseBodyAsString();
-            string announcementPath = PathDefinitions.ResponsesDirectory + @"News\LoginAnnouncement_append.json";
             string newsPath = PathDefinitions.ResponsesDirectory + @"News\CurrentNews_append.json";
             string bannerDataPath = PathDefinitions.CustomJsonsDirectory + @"CurrentLoginAnnouncement.json";
             string newsTabDataPath = PathDefinitions.CustomJsonsDirectory + @"News.json";
@@ -427,17 +426,23 @@ namespace BedrockCosmos.Proxy
             if (NewsManager.IsCurrentNewsNew())
             {
                 // Append front announcement
-                appendedJson = JsonParser.AppendJsonToEnd(responseBody, bannerDataPath, location);
-                NewsManager.AddNewsToHistory();
+                if (NewsManager.SendToNewsAnnouncement)
+                    appendedJson = JsonParser.AppendJsonToEnd(responseBody, bannerDataPath, location);
+                else
+                    appendedJson = responseBody;
+
+                if (NewsManager.SendToNewsInbox)
+                    NewsManager.AddNewsToHistory();
+
                 NewsManager.MarkCurrentNewsAsSeen();
 
-                // Append news
+                // Append saved news
                 location = "result.inboxSummary.categories";
                 appendedJson = JsonParser.AppendJsonToStart(appendedJson, newsTabDataPath, location);
             }
             else
             {
-                // Only append news
+                // Only append saved news
                 location = "result.inboxSummary.categories";
                 appendedJson = JsonParser.AppendJsonToStart(responseBody, newsTabDataPath, location);
             }

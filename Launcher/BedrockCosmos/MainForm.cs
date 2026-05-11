@@ -549,15 +549,14 @@ namespace BedrockCosmos
 
         private void ResetNewsButton_Click(object sender, EventArgs e)
         {
-            //NewsManager.RetrieveNewsHistory();
-            //NewsManager.RetrieveCurrentNews();
-            //NewsManager.QueueLoginAnnouncementIfNew();
             if (File.Exists(PathDefinitions.MiscDirectory + @"NewsHistory.json"))
                 File.Delete(PathDefinitions.MiscDirectory + @"NewsHistory.json");
             if (File.Exists(PathDefinitions.CustomJsonsDirectory + @"CurrentLoginAnnouncement.json"))
                 File.Delete(PathDefinitions.CustomJsonsDirectory + @"CurrentLoginAnnouncement.json");
             if (File.Exists(PathDefinitions.CustomJsonsDirectory + @"News.json"))
                 File.Delete(PathDefinitions.CustomJsonsDirectory + @"News.json");
+
+            NewsManager.ResetNewsVariables();
             CosmosConsole.WriteLine("Reset news.");
         }
 
