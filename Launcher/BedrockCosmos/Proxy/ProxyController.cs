@@ -414,26 +414,16 @@ namespace BedrockCosmos.Proxy
         private async Task HandleSessionStartRequest(string localPath, SessionEventArgs e)
         {
             string responseBody = await e.GetResponseBodyAsString();
-            string bannerDataPath = PathDefinitions.CustomJsonsDirectory + @"CurrentLoginAnnouncement.json";
-            string location = "result.messages";
-            string appendedJson = responseBody;
 
-            NewsManager.RetrieveCurrentNews();
-            NewsManager.QueueLoginAnnouncementIfNew();
-            if (NewsManager.IsCurrentNewsNew())
+            await Task.Run(() =>
             {
-                // Append front announcement
+                NewsManager.RetrieveNewsHistory();
+                NewsManager.RetrieveCurrentNews();
                 if (NewsManager.SendToNewsAnnouncement)
-                    appendedJson = JsonParser.AppendJsonToEnd(responseBody, bannerDataPath, location);
-
-                if (NewsManager.SendToNewsInbox)
-                    NewsManager.AddNewsToHistory();
-
-                NewsManager.MarkCurrentNewsAsSeen();
-            }
-
-            appendedJson = JsonParser.AppendNewsHistoryToInboxSummary(appendedJson);
-
+                    NewsManager.QueueLoginAnnouncementIfNew();
+            });
+            
+            string appendedJson = JsonParser.AppendNews(responseBody);
             e.SetResponseBodyString(appendedJson);
             //CosmosConsole.WriteLine("Parser", $"Appended response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
 

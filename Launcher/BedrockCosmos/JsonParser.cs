@@ -21,7 +21,6 @@ namespace BedrockCosmos
     internal class JsonParser
     {
         private static string consoleSender = "Parser";
-        private const string NewsInboxCategoriesLocation = "result.inboxSummary.categories";
 
         internal static string ReadJsonFileContent(string filePath)
         {
@@ -41,39 +40,6 @@ namespace BedrockCosmos
             // Appends to position 0, the start of the json
             string appendedJson = AppendJsonToSpecificLocation(originalJsonContent, jsonToAppendPath, appendLocation, 0);
             return appendedJson;
-        }
-
-        internal static string AppendNewsHistoryToInboxSummary(string originalJsonContent)
-        {
-            if (string.IsNullOrWhiteSpace(originalJsonContent))
-            {
-                CosmosConsole.WriteLine(consoleSender, "Skipping session-start news append because the upstream response body was empty.");
-                return originalJsonContent;
-            }
-
-            if (!LooksLikeJson(originalJsonContent))
-            {
-                CosmosConsole.WriteLine(consoleSender, $"Skipping session-start news append because the upstream response did not look like JSON. Response starts with: {GetContentSnippet(originalJsonContent)}");
-                return originalJsonContent;
-            }
-
-            NewsManager.RetrieveNewsHistory();
-
-            try
-            {
-                string appendedJson = AppendJsonToStart(
-                    originalJsonContent,
-                    NewsManager.NewsHistoryPath,
-                    NewsInboxCategoriesLocation);
-
-                // Keep the upstream payload intact if the local news history cannot be appended.
-                return string.IsNullOrWhiteSpace(appendedJson) ? originalJsonContent : appendedJson;
-            }
-            catch (JsonReaderException ex)
-            {
-                CosmosConsole.WriteLine(consoleSender, $"Skipping session-start news append because the upstream response could not be parsed as JSON. Response starts with: {GetContentSnippet(originalJsonContent)} Error: {ex.Message}");
-                return originalJsonContent;
-            }
         }
 
         internal static string AppendJsonToEnd(string originalJsonContent, string jsonToAppendPath, string appendLocation)
@@ -157,6 +123,67 @@ namespace BedrockCosmos
             {
                 Console.WriteLine($"File not found: {jsonToAppendPath}");
                 return string.Empty;
+            }
+        }
+
+        internal static string AppendNews(string originalJsonContent)
+        {
+            string bannerDataPath = PathDefinitions.CustomJsonsDirectory + @"CurrentLoginAnnouncement.json";
+            
+            // Extra handling to ensure default news still displays
+            if (string.IsNullOrWhiteSpace(originalJsonContent))
+            {
+                CosmosConsole.WriteLine(consoleSender, "Skipping session-start news append because the upstream response body was empty.");
+                return originalJsonContent;
+            }
+
+            if (!LooksLikeJson(originalJsonContent))
+            {
+                CosmosConsole.WriteLine(consoleSender, $"Skipping session-start news append because the upstream response did not look like JSON. Response starts with: {GetContentSnippet(originalJsonContent)}");
+                return originalJsonContent;
+            }
+
+            JObject originalJson = JObject.Parse(originalJsonContent);
+            JArray announcementTargetArray = originalJson["result"]?["messages"] as JArray;
+            JArray inboxTargetArray = originalJson["result"]?["inboxSummary"]?["categories"] as JArray;
+
+            try
+            {
+                // Should ignore saving news if an official Minecraft announcement is present
+                // May need more testing
+                bool loginAnnouncementExists = announcementTargetArray?
+                    .OfType<JObject>()
+                    .Any(msg => msg["surface"]?.ToString() == "LoginAnnouncement") ?? false;
+
+                if (!loginAnnouncementExists && NewsManager.IsCurrentNewsNew())
+                {
+                    // Append front announcement
+                    if (NewsManager.SendToNewsAnnouncement)
+                    {
+                        JObject bannerJson = JObject.Parse(File.ReadAllText(bannerDataPath));
+                        announcementTargetArray?.Add(bannerJson);
+                    }
+
+                    if (NewsManager.SendToNewsInbox)
+                        NewsManager.AddNewsToHistory();
+
+                    NewsManager.MarkCurrentNewsAsSeen();
+                }
+                else if (loginAnnouncementExists)
+                {
+                    CosmosConsole.WriteLine(consoleSender, "Skipped appending and saving news data since an official Minecraft announcement is present.");
+                }
+
+                // Append Cosmos inbox
+                JObject inboxJson = JObject.Parse(File.ReadAllText(NewsManager.NewsHistoryPath));
+                inboxTargetArray?.Insert(0, inboxJson);
+                string updatedJson = originalJson.ToString();
+                return string.IsNullOrWhiteSpace(updatedJson) ? originalJsonContent : updatedJson;
+            }
+            catch (JsonReaderException ex)
+            {
+                CosmosConsole.WriteLine(consoleSender, $"Skipping session-start news append because the upstream response could not be parsed as JSON. Response starts with: {GetContentSnippet(originalJsonContent)} Error: {ex.Message}");
+                return originalJsonContent;
             }
         }
 

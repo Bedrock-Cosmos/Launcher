@@ -46,6 +46,16 @@ namespace BedrockCosmos
             get { return _newsHistoryPath; }
         }
 
+        internal static string NewsUuidsPath
+        {
+            get { return _newsHistoryUuidsPath; }
+        }
+
+        internal static string CurrentNewsPath
+        {
+            get { return _currentNewsPath; }
+        }
+
         // String properties to serialize from  cached JObjects on demand
         internal static string NewsHistory =>
             _newsHistoryObj?.ToString(Formatting.Indented) ?? string.Empty;
