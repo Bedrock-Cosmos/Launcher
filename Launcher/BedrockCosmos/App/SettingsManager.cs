@@ -19,6 +19,7 @@ namespace BedrockCosmos.App
         private static bool _backgroundMode = false;
         private static bool _discordRpc = true;
         private static string _language = "en_US";
+        private static bool _news = true;
         private static int _devMenuClicks = 0;
         private static bool _devMenuEnabled = false;
         private static bool _enableLogging = false;
@@ -47,6 +48,12 @@ namespace BedrockCosmos.App
         {
             get { return _language; }
             set { _language = value; SaveSettings(); }
+        }
+
+        internal static bool News
+        {
+            get { return _news; }
+            set { _news = value; SaveSettings(); }
         }
 
         internal static int DevMenuClicks
@@ -113,6 +120,7 @@ namespace BedrockCosmos.App
                 BackgroundMode = _backgroundMode,
                 DiscordRpc = _discordRpc,
                 Language = _language,
+                News = _news,
                 DevMenuEnabled = _devMenuEnabled,
                 EnableLogging = _enableLogging,
                 DetailedLogging = _detailedLogging
@@ -136,6 +144,7 @@ namespace BedrockCosmos.App
                 try { _backgroundMode = settings.BackgroundMode; } catch { }
                 try { _discordRpc = settings.DiscordRpc; } catch { }
                 try { _language = settings.Language; } catch { }
+                try { _news = settings.News; } catch { }
                 try { _devMenuEnabled = settings.DevMenuEnabled; } catch { }
                 try { _enableLogging = settings.EnableLogging; } catch { }
                 try { _detailedLogging = settings.DetailedLogging; } catch { }

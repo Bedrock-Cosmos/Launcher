@@ -413,6 +413,14 @@ namespace BedrockCosmos.Proxy
 
         private async Task HandleSessionStartRequest(string localPath, SessionEventArgs e)
         {
+            var userData = e.UserData as CustomUserData;
+
+            if (!SettingsManager.News)
+            {
+                userData.RequestLogs = userData.RequestLogs + $"└── On Response: News setting is disabled. Performed no actions.\n";
+                return;
+            }
+
             string responseBody = await e.GetResponseBodyAsString();
 
             await Task.Run(() =>
@@ -427,14 +435,21 @@ namespace BedrockCosmos.Proxy
             e.SetResponseBodyString(appendedJson);
             //CosmosConsole.WriteLine("Parser", $"Appended response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
 
-            var userData = e.UserData as CustomUserData;
             userData.RequestLogs = userData.RequestLogs + $"└── On Response: Appended original response using {Path.GetFileName(localPath)}\n";
         }
 
         private async Task HandleMessagesEventRequest(string localPath, SessionEventArgs e)
         {
             var userData = e.UserData as CustomUserData;
+
+            if (!SettingsManager.News)
+            {
+                userData.RequestLogs = userData.RequestLogs + $"└── On Response: News setting is disabled. Performed no actions.\n";
+                return;
+            }
+
             NewsManager.InterpretNewsEvent(userData.RequestBodyString);
+            userData.RequestLogs = userData.RequestLogs + $"└── On Response: Handled news action in launcher.\n";
         }
 
         private async Task HandlePersonaSkinSelectorRequest(string localPath, SessionEventArgs e)

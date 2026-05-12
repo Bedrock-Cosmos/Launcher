@@ -132,6 +132,9 @@ namespace BedrockCosmos
                 CosmosConsole.WriteLine("Developer mode enabled.");
             }
 
+            // News
+            NewsSwitch.Checked = SettingsManager.News;
+
             // Logging
             EnableLoggingSwitch.Checked = SettingsManager.EnableLogging;
 
@@ -419,6 +422,11 @@ namespace BedrockCosmos
             CosmosConsole.WriteLine($"Language set to {selectedLanguage}.");
         }
 
+        private void NewsSwitch_CheckedChanged(object sender, EventArgs e)
+        {
+            SettingsManager.News = NewsSwitch.Checked;
+        }
+
         private void UpdateLauncherLanguage()
         {
             TopLabel.Text = LanguageHandler.Get("App.TopLabel.Name");
@@ -432,6 +440,8 @@ namespace BedrockCosmos
             DiscordRichPresenceDescription.Text = LanguageHandler.Get("Settings.DiscordRichPresence.Description");
             LanguageTitleLabel.Text = LanguageHandler.Get("Settings.Language.Title");
             LanguageDescriptionLabel.Text = LanguageHandler.Get("Settings.Language.Description");
+            NewsTitleLabel.Text = LanguageHandler.Get("Settings.News.Title");
+            NewsDescriptionLabel.Text = LanguageHandler.Get("Settings.News.Description");
             UpdateLabel.Text = LanguageHandler.Get("Update.UpdateLabel.Text");
             ChangelogLabel.Text = LanguageHandler.Get("Update.ChangelogLabel.Text");
             UpdateButton.Text = LanguageHandler.Get("Update.UpdateButton.Text");

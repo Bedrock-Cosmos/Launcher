@@ -26,6 +26,7 @@ namespace BedrockCosmos.App
             new KeyValuePair<string, string>("Español", "es_ES"),
             new KeyValuePair<string, string>("Indonesia", "id_ID"),
             new KeyValuePair<string, string>("日本語", "ja_JP"),
+            new KeyValuePair<string, string>("українська", "uk_UA"),
             new KeyValuePair<string, string>("Tiếng Việt", "vi_VN")
         };
 
