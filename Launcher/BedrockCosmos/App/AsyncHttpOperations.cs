@@ -16,11 +16,11 @@ using System.Xml.Linq;
 
 namespace BedrockCosmos.App
 {
-    internal class AsyncFileOperations
+    internal class AsyncHttpOperations
     {
         private readonly HttpClient httpClient;
 
-        internal AsyncFileOperations()
+        internal AsyncHttpOperations()
         {
             httpClient = new HttpClient();
         }
@@ -108,6 +108,18 @@ namespace BedrockCosmos.App
 
                 if (deleteSourceDir)
                     Directory.Delete(sourcePath);
+            }
+        }
+
+        internal async Task TrackSessionStartAsync()
+        {
+            try
+            {
+                HttpResponseMessage response = await httpClient.GetAsync("https://bedrockcosmos.app/api/v1.0/session/start");
+            }
+            catch
+            {
+
             }
         }
 
