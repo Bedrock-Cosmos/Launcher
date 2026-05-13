@@ -293,6 +293,10 @@ namespace BedrockCosmos.Proxy
                             await HandlePersonaSkinSelectorRequest(localPath, e);
                             break;
 
+                        case ProxyUrlDefinitions.PersonaCharacterCreatorUrl:
+                            await HandlePersonaCharacterCreatorRequest(localPath, e);
+                            break;
+
                         default:
                             HandleDefaultRequest(localPath, e);
                             break;
@@ -321,8 +325,15 @@ namespace BedrockCosmos.Proxy
                 return;
             }
 
-            var userData = e.UserData as CustomUserData;
-            ProxyConsoleWriteLine(consoleSender, userData.RequestLogs);
+            try
+            {
+                var userData = e.UserData as CustomUserData;
+                ProxyConsoleWriteLine(consoleSender, userData.RequestLogs);
+            }
+            catch
+            {
+                ProxyConsoleWriteLine(consoleSender, "Unable to log request. userData was null.");
+            }
         }
 
         private void ProxyConsoleWriteLine(string sender, string message)
@@ -450,6 +461,18 @@ namespace BedrockCosmos.Proxy
 
             NewsManager.InterpretNewsEvent(userData.RequestBodyString);
             userData.RequestLogs = userData.RequestLogs + $"└── On Response: Handled news action in launcher.\n";
+        }
+
+        private async Task HandlePersonaCharacterCreatorRequest(string localPath, SessionEventArgs e)
+        {
+            // Append custom dropdown to persona menu
+            string responseBody = await e.GetResponseBodyAsString();
+            string appendedJson = JsonParser.AppendJsonToPersonaMenu(responseBody, localPath);
+            e.SetResponseBodyString(appendedJson);
+            //CosmosConsole.WriteLine("Parser", $"Appended response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
+
+            var userData = e.UserData as CustomUserData;
+            userData.RequestLogs = userData.RequestLogs + $"└── On Response: Appended original response using {Path.GetFileName(localPath)}\n";
         }
 
         private async Task HandlePersonaSkinSelectorRequest(string localPath, SessionEventArgs e)

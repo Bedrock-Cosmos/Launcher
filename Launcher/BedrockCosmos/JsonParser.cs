@@ -187,6 +187,71 @@ namespace BedrockCosmos
             }
         }
 
+        internal static string AppendJsonToPersonaMenu(string originalJsonContent, string jsonToAppendPath)
+        {
+            string featuredItemsPath = PathDefinitions.ResponsesDirectory + @"MainPages\PersonaCategories\FeaturedPersonaItems_append.json";
+
+            if (File.Exists(jsonToAppendPath))
+            {
+                string featuredItemsToAppendContent = File.ReadAllText(featuredItemsPath);
+                string jsonToAppendContent = File.ReadAllText(jsonToAppendPath);
+                JObject originalJson = JObject.Parse(originalJsonContent);
+                JObject featuredItemsToAppend  = JObject.Parse(featuredItemsToAppendContent);
+                JObject jsonToAppend = JObject.Parse(jsonToAppendContent);
+                JArray targetArray = originalJson["result"]?["layout"]?[0]?["rows"] as JArray;
+                JArray featuredItemsArray = featuredItemsToAppend["rows"] as JArray;
+                JArray appendArray = jsonToAppend["rows"] as JArray;
+
+                if (targetArray != null)
+                {
+                    foreach (JToken row in featuredItemsArray)
+                    {
+                        // Needs to be placed after dropdownId -1 for some reason or else skins break
+                        targetArray.Insert(1, row);
+                    }
+
+                    int insertIndex = -1;
+                    for (int i = 0; i < targetArray.Count; i++)
+                    {
+                        if ((string)targetArray[i]["controlId"] == "LightDropdown")
+                        {
+                            insertIndex = i;
+                            break;
+                        }
+                    }
+
+                    if (insertIndex != -1)
+                    {
+                        foreach (JToken row in appendArray)
+                        {
+                            targetArray.Insert(insertIndex, row); // Insert new content in order at found index
+                            insertIndex++;
+                        }  
+                    }
+                    else
+                    {
+                        foreach (JToken row in appendArray)
+                        {
+                            targetArray.Add(row); // Add to end if no original dropdowns are found
+                        }
+                    }
+
+                    string updatedJson = originalJson.ToString();
+                    return updatedJson;
+                }
+                else
+                {
+                    CosmosConsole.WriteLine(consoleSender, $"Could not find array at path: 'result.layout[0].rows' in {originalJsonContent}");
+                    return string.Empty;
+                }
+            }
+            else
+            {
+                CosmosConsole.WriteLine(consoleSender, $"File not found: {jsonToAppendPath}");
+                return string.Empty;
+            }
+        }
+
         internal static string AppendJsonToSkinPackMenu(string originalJsonContent, string jsonToAppendPath)
         {
             string dividerPath = PathDefinitions.ResponsesDirectory + @"MainPages\VerticalLineDivider_append.json";
