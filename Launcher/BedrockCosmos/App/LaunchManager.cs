@@ -24,7 +24,6 @@ namespace BedrockCosmos.App
         private Version _latestLauncherVersion = new Version("0.0.0.0");
         private int _currentResponsesVersion = 0;
         private int _latestResponsesVersion = 0;
-        private AsyncHttpOperations _asyncHttpOps = null;
         private RoundGradientButton _launchButton = null;
         private System.Windows.Forms.Label _versionLabel = null;
 
@@ -50,11 +49,6 @@ namespace BedrockCosmos.App
         {
             get { return _latestResponsesVersion; }
             set { _latestResponsesVersion = value; }
-        }
-
-        internal void InitializeMgrAsyncHttpOps(AsyncHttpOperations async)
-        {
-            _asyncHttpOps = async;
         }
 
         internal void InitializeMgrLaunchButton(RoundGradientButton RGButton)
@@ -96,7 +90,7 @@ namespace BedrockCosmos.App
 
             try
             {
-                (version, responsesVersion) = await _asyncHttpOps.ReadVersionFileAsync();
+                (version, responsesVersion) = await AsyncHttpOperations.ReadVersionFileAsync();
                 _latestLauncherVersion = new Version(version);
                 _latestResponsesVersion = int.Parse(responsesVersion);
             }
@@ -146,8 +140,8 @@ namespace BedrockCosmos.App
 
             try
             {
-                await _asyncHttpOps.DownloadFileAsync(fileUrl, downloadPath);
-                await _asyncHttpOps.ExtractFileAsync(downloadPath, extractPath, true);
+                await AsyncHttpOperations.DownloadFileAsync(fileUrl, downloadPath);
+                await AsyncHttpOperations.ExtractFileAsync(downloadPath, extractPath, true);
                 if (Directory.Exists(PathDefinitions.ResponsesDirectory))
                 {
                     await Task.Run(() =>
@@ -159,7 +153,7 @@ namespace BedrockCosmos.App
                 if (!Directory.Exists(PathDefinitions.ResponsesDirectory))
                     Directory.Move(PathDefinitions.CosmosAppData + "Responses-" + latestResponsesVersionStr, PathDefinitions.ResponsesDirectory);
                 else // Workaround if old directory was not deleted due to accessing elsewhere
-                    await _asyncHttpOps.MoveFolderContentsAsync(PathDefinitions.CosmosAppData + "Responses-" + latestResponsesVersionStr, PathDefinitions.ResponsesDirectory, true);
+                    await AsyncHttpOperations.MoveFolderContentsAsync(PathDefinitions.CosmosAppData + "Responses-" + latestResponsesVersionStr, PathDefinitions.ResponsesDirectory, true);
 
                 File.WriteAllText(PathDefinitions.MiscDirectory + @"ResponsesVersion.txt", latestResponsesVersionStr);
                 _currentResponsesVersion = _latestResponsesVersion;

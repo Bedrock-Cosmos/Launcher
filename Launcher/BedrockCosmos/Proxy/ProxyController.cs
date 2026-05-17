@@ -281,6 +281,10 @@ namespace BedrockCosmos.Proxy
                             await HandleAppendStoreButtonRequest(localPath, e);
                             break;
 
+                        case ProxyUrlDefinitions.EntitlementsUrl:
+                            await HandleEntitlementsRequest(localPath, e);
+                            break;
+
                         case ProxyUrlDefinitions.SessionStartUrl:
                             await HandleSessionStartRequest(localPath, e);
                             break;
@@ -325,15 +329,14 @@ namespace BedrockCosmos.Proxy
                 return;
             }
 
-            try
-            {
-                var userData = e.UserData as CustomUserData;
-                ProxyConsoleWriteLine(consoleSender, userData.RequestLogs);
-            }
-            catch
+            if (e == null)
             {
                 ProxyConsoleWriteLine(consoleSender, "Unable to log request. userData was null.");
+                return;
             }
+
+            var userData = e.UserData as CustomUserData;
+            ProxyConsoleWriteLine(consoleSender, userData.RequestLogs);
         }
 
         private void ProxyConsoleWriteLine(string sender, string message)
@@ -420,6 +423,18 @@ namespace BedrockCosmos.Proxy
 
             var userData = e.UserData as CustomUserData;
             userData.RequestLogs = userData.RequestLogs + $"└── On Response: Appended original response using {Path.GetFileName(localPath)}\n";
+        }
+
+        private async Task HandleEntitlementsRequest(string localPath, SessionEventArgs e)
+        {
+            // Append Bedrock Cosmos entitlements (for custom texture packs and worlds)
+            string responseBody = await e.GetResponseBodyAsString();
+            string cosmosEnts = await AsyncHttpOperations.GetCosmosEntitlementsAsync(responseBody);
+            e.SetResponseBodyString(cosmosEnts);
+            CosmosConsole.WriteLine("Parser", $"Appended response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
+
+            var userData = e.UserData as CustomUserData;
+            userData.RequestLogs = userData.RequestLogs + $"└── On Response: Retrieved Bedrock Cosmos entitlements from API.\n";
         }
 
         private async Task HandleSessionStartRequest(string localPath, SessionEventArgs e)

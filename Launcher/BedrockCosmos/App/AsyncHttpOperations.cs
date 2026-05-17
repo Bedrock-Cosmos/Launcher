@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
@@ -16,16 +17,11 @@ using System.Xml.Linq;
 
 namespace BedrockCosmos.App
 {
-    internal class AsyncHttpOperations
+    internal static class AsyncHttpOperations
     {
-        private readonly HttpClient httpClient;
+        private static readonly HttpClient httpClient = new HttpClient();
 
-        internal AsyncHttpOperations()
-        {
-            httpClient = new HttpClient();
-        }
-
-        internal async Task DownloadFileAsync(string fileUrl, string downloadPath)
+        internal static async Task DownloadFileAsync(string fileUrl, string downloadPath)
         {
             CosmosConsole.WriteLine($"Downloading file from {fileUrl}");
 
@@ -47,7 +43,7 @@ namespace BedrockCosmos.App
             CosmosConsole.WriteLine($"Successfully downloaded file to {downloadPath}");
         }
 
-        internal async Task ExtractFileAsync(string zipFilePath, string extractPath, bool deleteAfterExtracting)
+        internal static async Task ExtractFileAsync(string zipFilePath, string extractPath, bool deleteAfterExtracting)
         {
             if (!Directory.Exists(extractPath))
                 Directory.CreateDirectory(extractPath);
@@ -79,7 +75,7 @@ namespace BedrockCosmos.App
             CosmosConsole.WriteLine($"Successfully extracted {Path.GetFileName(zipFilePath)} to {extractPath}");
         }
 
-        internal async Task MoveFolderContentsAsync(string sourcePath, string destinationPath, bool deleteSourceDir)
+        internal static async Task MoveFolderContentsAsync(string sourcePath, string destinationPath, bool deleteSourceDir)
         {
             if (Directory.Exists(sourcePath))
             {
@@ -111,7 +107,7 @@ namespace BedrockCosmos.App
             }
         }
 
-        internal async Task TrackSessionStartAsync()
+        internal static async Task TrackSessionStartAsync()
         {
             try
             {
@@ -123,7 +119,7 @@ namespace BedrockCosmos.App
             }
         }
 
-        internal async Task<(string version, string responsesVersion)> ReadVersionFileAsync()
+        internal static async Task<(string version, string responsesVersion)> ReadVersionFileAsync()
         {
             string xml = await httpClient.GetStringAsync("https://raw.githubusercontent.com/Bedrock-Cosmos/Website/refs/heads/main/CurrentVersion.xml");
 
@@ -134,7 +130,19 @@ namespace BedrockCosmos.App
             return (version, responsesVersion);
         }
 
-        internal void Dispose()
+        internal static async Task<string> GetCosmosEntitlementsAsync(string requestBody)
+        {
+            var url = "https://bedrock-cosmos.app/api/v1.0/player/inventory?includeReceipt=true";
+            var content = new StringContent(requestBody, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await httpClient.PostAsync(url, content);
+            response.EnsureSuccessStatusCode();
+
+            string responseBody = await response.Content.ReadAsStringAsync();
+            return responseBody;
+        }
+
+        internal static void Dispose()
         {
             httpClient?.Dispose();
         }
