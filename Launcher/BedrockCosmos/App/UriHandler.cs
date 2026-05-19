@@ -1,8 +1,8 @@
 ﻿using BedrockCosmos.App;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 // =============================================================================
 // Bedrock Cosmos - Copyright (c) 2026
@@ -16,6 +16,8 @@ using System.IO;
 
 internal static class UriHandler
 {
+    private static readonly JsonSerializerOptions _jsonWriteIndented = new JsonSerializerOptions { WriteIndented = true };
+
     internal static string Handle(string uri)
     {
         try
@@ -109,7 +111,7 @@ internal static class UriHandler
             );
         }
 
-        JObject foundItem = FindItemInJson(jsonPath, offerID);
+        JsonObject foundItem = FindItemInJson(jsonPath, offerID);
 
         if (foundItem != null)
         {
@@ -123,47 +125,60 @@ internal static class UriHandler
     }
 
     // Searches in capes file for the ID that matches the URI's UUID.
-    private static JObject FindItemInJson(string jsonPath, string offerID)
+    private static JsonObject FindItemInJson(string jsonPath, string offerID)
     {
         if (!File.Exists(jsonPath))
             return null;
 
-        JObject root;
+        JsonObject root;
         try
         {
             string raw = File.ReadAllText(jsonPath);
-            root = JObject.Parse(raw);
+            root = JsonNode.Parse(raw)?.AsObject();
         }
         catch
         {
             return null;
         }
 
+        if (root == null)
+            return null;
+
         // Check all GridLists in file
-        JArray rows = root["result"]?["layout"]?[0]?["rows"] as JArray;
+        JsonArray rows = root["result"]?["layout"]?[0]?["rows"]?.AsArray();
         if (rows == null)
             return null;
 
-        foreach (JToken row in rows)
+        foreach (JsonNode row in rows)
         {
-            if (!string.Equals(row["controlId"]?.ToString(), "GridList", StringComparison.OrdinalIgnoreCase))
+            if (row == null)
                 continue;
 
-            JArray components = row["components"] as JArray;
+            string controlId = row["controlId"]?.GetValue<string>();
+            if (!string.Equals(controlId, "GridList", StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            JsonArray components = row["components"]?.AsArray();
             if (components == null)
                 continue;
 
-            foreach (JToken component in components)
+            foreach (JsonNode component in components)
             {
-                JArray items = component["items"] as JArray;
+                if (component == null)
+                    continue;
+
+                JsonArray items = component["items"]?.AsArray();
                 if (items == null)
                     continue;
 
-                foreach (JToken item in items)
+                foreach (JsonNode item in items)
                 {
-                    string id = item["id"]?.ToString();
+                    if (item == null)
+                        continue;
+
+                    string id = item["id"]?.GetValue<string>();
                     if (string.Equals(id, offerID, StringComparison.OrdinalIgnoreCase))
-                        return (JObject)item;
+                        return item.AsObject();
                 }
             }
         }
@@ -172,10 +187,10 @@ internal static class UriHandler
     }
 
     // Creates PersonaItemPreview.json to use when loading the persona item.
-    private static void WritePersonaItemPreviewJson(JObject foundItem, string offerID)
+    private static void WritePersonaItemPreviewJson(JsonObject foundItem, string offerID)
     {
         // Build the preview JSON structure
-        JObject preview = JObject.Parse(@"
+        JsonNode preview = JsonNode.Parse(@"
         {
           ""result"": {
             ""layout"": [
@@ -245,15 +260,19 @@ internal static class UriHandler
         }");
 
         // Navigate to layout[0].rows (sectionName: "rows") -> GridList row
-        JArray rows = preview["result"]["layout"][0]["rows"] as JArray;
-        JObject gridListRow = rows[1] as JObject; // controlId: "GridList"
+        JsonArray rows = preview["result"]?["layout"]?[0]?["rows"]?.AsArray();
+        JsonObject gridListRow = rows?[1]?.AsObject(); // controlId: "GridList"
 
         // Insert the found item into the GridList's items array
-        JArray gridListItems = gridListRow["components"][0]["items"] as JArray;
-        gridListItems.Add(foundItem);
+        // Deep clone required — a JsonNode can only belong to one parent at a time
+        JsonArray gridListItems = gridListRow?["components"]?[0]?["items"]?.AsArray();
+        if (gridListItems != null)
+            gridListItems.Add(JsonNode.Parse(foundItem.ToJsonString()));
 
-        // Set the previewedId
-        gridListRow["components"][1]["previewedId"] = offerID;
+        // Set the previewedId (C# 7.0: no null-conditional on left side of assignment)
+        JsonObject previewPieceComp = gridListRow?["components"]?[1]?.AsObject();
+        if (previewPieceComp != null)
+            previewPieceComp["previewedId"] = offerID;
 
         // Write to disk
         string outputPath = Path.Combine(PathDefinitions.CustomJsonsDirectory, "PersonaItemPreview.json");
@@ -261,6 +280,6 @@ internal static class UriHandler
         if (!Directory.Exists(outputDir))
             Directory.CreateDirectory(outputDir);
 
-        File.WriteAllText(outputPath, preview.ToString(Formatting.Indented));
+        File.WriteAllText(outputPath, preview.ToJsonString(_jsonWriteIndented));
     }
 }

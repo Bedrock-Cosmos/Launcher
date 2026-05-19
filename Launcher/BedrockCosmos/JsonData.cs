@@ -1,6 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Collections.Generic;
+using System.Text.Json;
 using BedrockCosmos.App;
 
 // =============================================================================
@@ -22,24 +22,29 @@ namespace BedrockCosmos
         public static List<MarketItem> MarketItems = null;
         public static List<MarketItem> PackSearchIds = null;
         private static string jsonPath = PathDefinitions.ResponsesDirectory + @"LauncherJsons\";
+        private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
+        {
+            ReadCommentHandling = JsonCommentHandling.Skip,
+            PropertyNameCaseInsensitive = true
+        };
 
         public static void InitializeJsons()
         {
             AllowedUrls =
-            JsonConvert.DeserializeObject<List<string>>
-            (File.ReadAllText(jsonPath + @"AllowedUrls.json"));
+                JsonSerializer.Deserialize<List<string>>
+                (File.ReadAllText(jsonPath + @"AllowedUrls.json"), _jsonOptions);
 
             MainPages =
-            JsonConvert.DeserializeObject<List<Endpoint>>
-            (File.ReadAllText(jsonPath + @"MainResponses.json"));
+                JsonSerializer.Deserialize<List<Endpoint>>
+                (File.ReadAllText(jsonPath + @"MainResponses.json"), _jsonOptions);
 
             MarketItems =
-            JsonConvert.DeserializeObject<List<MarketItem>>
-            (File.ReadAllText(jsonPath + @"PlayfabGetPublishItemResponses.json"));
+                JsonSerializer.Deserialize<List<MarketItem>>
+                (File.ReadAllText(jsonPath + @"PlayfabGetPublishItemResponses.json"), _jsonOptions);
 
             PackSearchIds =
-            JsonConvert.DeserializeObject<List<MarketItem>>
-            (File.ReadAllText(jsonPath + @"PlayfabSearchResponses.json"));
+                JsonSerializer.Deserialize<List<MarketItem>>
+                (File.ReadAllText(jsonPath + @"PlayfabSearchResponses.json"), _jsonOptions);
         }
     }
 }

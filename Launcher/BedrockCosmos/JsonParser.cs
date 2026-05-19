@@ -1,9 +1,8 @@
 ﻿using BedrockCosmos.App;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
-using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 
 // =============================================================================
@@ -47,15 +46,14 @@ namespace BedrockCosmos
             if (File.Exists(jsonToAppendPath))
             {
                 string jsonToAppendContent = File.ReadAllText(jsonToAppendPath);
-                JObject originalJson = JObject.Parse(originalJsonContent);
-                JObject jsonToAppend = JObject.Parse(jsonToAppendContent);
-                JArray targetArray = (JArray)originalJson.SelectToken(appendLocation);
+                JsonObject originalJson = JsonNode.Parse(originalJsonContent)?.AsObject();
+                JsonObject jsonToAppend = JsonNode.Parse(jsonToAppendContent)?.AsObject();
+                JsonArray targetArray = SelectTokenAsArray(originalJson, appendLocation);
 
                 if (targetArray != null)
                 {
-                    targetArray.Add(jsonToAppend); // Insert new content at the end
-                    string updatedJson = originalJson.ToString();
-                    return updatedJson;
+                    targetArray.Add(JsonNode.Parse(jsonToAppend.ToJsonString())); // Deep clone before inserting
+                    return originalJson.ToJsonString();
                 }
                 else
                 {
@@ -75,15 +73,14 @@ namespace BedrockCosmos
             if (File.Exists(jsonToAppendPath))
             {
                 string jsonToAppendContent = File.ReadAllText(jsonToAppendPath);
-                JObject originalJson = JObject.Parse(originalJsonContent);
-                JObject jsonToAppend = JObject.Parse(jsonToAppendContent);
-                JArray targetArray = (JArray)originalJson.SelectToken(appendLocation);
+                JsonObject originalJson = JsonNode.Parse(originalJsonContent)?.AsObject();
+                JsonObject jsonToAppend = JsonNode.Parse(jsonToAppendContent)?.AsObject();
+                JsonArray targetArray = SelectTokenAsArray(originalJson, appendLocation);
 
                 if (targetArray != null)
                 {
-                    targetArray.Insert(position, jsonToAppend);  // Insert new content at position
-                    string updatedJson = originalJson.ToString();
-                    return updatedJson;
+                    targetArray.Insert(position, JsonNode.Parse(jsonToAppend.ToJsonString())); // Deep clone before inserting
+                    return originalJson.ToJsonString();
                 }
                 else
                 {
@@ -98,26 +95,26 @@ namespace BedrockCosmos
             }
         }
 
-        internal static string AppendJsonToSpecificRows(string originalJsonContent, string jsonToAppendPath, string appendLocation, int position)
+        internal static string AppendJsonToSpecificRows(string originalJsonContent, string jsonToAppendPath, int position)
         {
             if (File.Exists(jsonToAppendPath))
             {
                 string jsonToAppendContent = File.ReadAllText(jsonToAppendPath);
 
-                JObject originalJson = JObject.Parse(originalJsonContent);
-                JObject jsonToAppend = JObject.Parse(jsonToAppendContent);
+                JsonObject originalJson = JsonNode.Parse(originalJsonContent)?.AsObject();
+                JsonObject jsonToAppend = JsonNode.Parse(jsonToAppendContent)?.AsObject();
 
                 // Navigate to ["result"]["layout"][position]["rows"]
-                JArray rowsArray = originalJson["result"]?["layout"]?[position]?["rows"] as JArray;
+                JsonArray rowsArray = originalJson?["result"]?["layout"]?[position]?["rows"]?.AsArray();
 
                 if (rowsArray == null)
                 {
-                    CosmosConsole.WriteLine(consoleSender, $"Could not find array at path: 'result.layout[{position}].rows' in in {originalJsonContent}");
+                    CosmosConsole.WriteLine(consoleSender, $"Could not find array at path: 'result.layout[{position}].rows' in {originalJsonContent}");
                     return string.Empty;
                 }
 
-                rowsArray.Insert(position, jsonToAppend);
-                return originalJson.ToString();
+                rowsArray.Insert(position, JsonNode.Parse(jsonToAppend.ToJsonString())); // Deep clone before inserting
+                return originalJson.ToJsonString();
             }
             else
             {
@@ -129,7 +126,7 @@ namespace BedrockCosmos
         internal static string AppendNews(string originalJsonContent)
         {
             string bannerDataPath = PathDefinitions.CustomJsonsDirectory + @"CurrentLoginAnnouncement.json";
-            
+
             // Extra handling to ensure default news still displays
             if (string.IsNullOrWhiteSpace(originalJsonContent))
             {
@@ -143,25 +140,35 @@ namespace BedrockCosmos
                 return originalJsonContent;
             }
 
-            JObject originalJson = JObject.Parse(originalJsonContent);
-            JArray announcementTargetArray = originalJson["result"]?["messages"] as JArray;
-            JArray inboxTargetArray = originalJson["result"]?["inboxSummary"]?["categories"] as JArray;
+            JsonObject originalJson = JsonNode.Parse(originalJsonContent)?.AsObject();
+            JsonArray announcementTargetArray = originalJson?["result"]?["messages"]?.AsArray();
+            JsonArray inboxTargetArray = originalJson?["result"]?["inboxSummary"]?["categories"]?.AsArray();
 
             try
             {
                 // Should ignore saving news if an official Minecraft announcement is present
                 // May need more testing
-                bool loginAnnouncementExists = announcementTargetArray?
-                    .OfType<JObject>()
-                    .Any(msg => msg["surface"]?.ToString() == "LoginAnnouncement") ?? false;
+                bool loginAnnouncementExists = false;
+                if (announcementTargetArray != null)
+                {
+                    foreach (JsonNode node in announcementTargetArray)
+                    {
+                        JsonObject msg = node?.AsObject();
+                        if (msg != null && msg["surface"]?.GetValue<string>() == "LoginAnnouncement")
+                        {
+                            loginAnnouncementExists = true;
+                            break;
+                        }
+                    }
+                }
 
                 if (!loginAnnouncementExists && NewsManager.IsCurrentNewsNew())
                 {
                     // Append front announcement
                     if (NewsManager.SendToNewsAnnouncement)
                     {
-                        JObject bannerJson = JObject.Parse(File.ReadAllText(bannerDataPath));
-                        announcementTargetArray?.Add(bannerJson);
+                        JsonObject bannerJson = JsonNode.Parse(File.ReadAllText(bannerDataPath))?.AsObject();
+                        announcementTargetArray?.Add(JsonNode.Parse(bannerJson.ToJsonString())); // Deep clone before inserting
                     }
 
                     if (NewsManager.SendToNewsInbox)
@@ -175,12 +182,12 @@ namespace BedrockCosmos
                 }
 
                 // Append Cosmos inbox
-                JObject inboxJson = JObject.Parse(File.ReadAllText(NewsManager.NewsHistoryPath));
-                inboxTargetArray?.Insert(0, inboxJson);
-                string updatedJson = originalJson.ToString();
+                JsonObject inboxJson = JsonNode.Parse(File.ReadAllText(NewsManager.NewsHistoryPath))?.AsObject();
+                inboxTargetArray?.Insert(0, JsonNode.Parse(inboxJson.ToJsonString())); // Deep clone before inserting
+                string updatedJson = originalJson?.ToJsonString();
                 return string.IsNullOrWhiteSpace(updatedJson) ? originalJsonContent : updatedJson;
             }
-            catch (JsonReaderException ex)
+            catch (JsonException ex)
             {
                 CosmosConsole.WriteLine(consoleSender, $"Skipping session-start news append because the upstream response could not be parsed as JSON. Response starts with: {GetContentSnippet(originalJsonContent)} Error: {ex.Message}");
                 return originalJsonContent;
@@ -195,25 +202,27 @@ namespace BedrockCosmos
             {
                 string featuredItemsToAppendContent = File.ReadAllText(featuredItemsPath);
                 string jsonToAppendContent = File.ReadAllText(jsonToAppendPath);
-                JObject originalJson = JObject.Parse(originalJsonContent);
-                JObject featuredItemsToAppend  = JObject.Parse(featuredItemsToAppendContent);
-                JObject jsonToAppend = JObject.Parse(jsonToAppendContent);
-                JArray targetArray = originalJson["result"]?["layout"]?[0]?["rows"] as JArray;
-                JArray featuredItemsArray = featuredItemsToAppend["rows"] as JArray;
-                JArray appendArray = jsonToAppend["rows"] as JArray;
+                JsonObject originalJson = JsonNode.Parse(originalJsonContent)?.AsObject();
+                JsonObject featuredItemsToAppend = JsonNode.Parse(featuredItemsToAppendContent)?.AsObject();
+                JsonObject jsonToAppend = JsonNode.Parse(jsonToAppendContent)?.AsObject();
+                JsonArray targetArray = originalJson?["result"]?["layout"]?[0]?["rows"]?.AsArray();
+                JsonArray featuredItemsArray = featuredItemsToAppend?["rows"]?.AsArray();
+                JsonArray appendArray = jsonToAppend?["rows"]?.AsArray();
 
                 if (targetArray != null)
                 {
-                    foreach (JToken row in featuredItemsArray)
+                    foreach (JsonNode row in featuredItemsArray)
                     {
                         // Needs to be placed after dropdownId -1 for some reason or else skins break
-                        targetArray.Insert(1, row);
+                        // Deep clone required — a JsonNode can only belong to one parent at a time
+                        targetArray.Insert(1, JsonNode.Parse(row.ToJsonString()));
                     }
 
                     int insertIndex = -1;
                     for (int i = 0; i < targetArray.Count; i++)
                     {
-                        if ((string)targetArray[i]["controlId"] == "LightDropdown")
+                        JsonObject rowObj = targetArray[i]?.AsObject();
+                        if (rowObj != null && rowObj["controlId"]?.GetValue<string>() == "LightDropdown")
                         {
                             insertIndex = i;
                             break;
@@ -222,22 +231,21 @@ namespace BedrockCosmos
 
                     if (insertIndex != -1)
                     {
-                        foreach (JToken row in appendArray)
+                        foreach (JsonNode row in appendArray)
                         {
-                            targetArray.Insert(insertIndex, row); // Insert new content in order at found index
+                            targetArray.Insert(insertIndex, JsonNode.Parse(row.ToJsonString())); // Deep clone before inserting
                             insertIndex++;
-                        }  
+                        }
                     }
                     else
                     {
-                        foreach (JToken row in appendArray)
+                        foreach (JsonNode row in appendArray)
                         {
-                            targetArray.Add(row); // Add to end if no original dropdowns are found
+                            targetArray.Add(JsonNode.Parse(row.ToJsonString())); // Deep clone before inserting
                         }
                     }
 
-                    string updatedJson = originalJson.ToString();
-                    return updatedJson;
+                    return originalJson.ToJsonString();
                 }
                 else
                 {
@@ -260,17 +268,16 @@ namespace BedrockCosmos
             {
                 string dividerToAppendContent = File.ReadAllText(dividerPath); // Method includes divider for skins menu
                 string jsonToAppendContent = File.ReadAllText(jsonToAppendPath);
-                JObject originalJson = JObject.Parse(originalJsonContent);
-                JObject dividerToAppend = JObject.Parse(dividerToAppendContent);
-                JObject jsonToAppend = JObject.Parse(jsonToAppendContent);
-                JArray targetArray = originalJson["result"]?["layout"]?[0]?["rows"] as JArray;
+                JsonObject originalJson = JsonNode.Parse(originalJsonContent)?.AsObject();
+                JsonObject dividerToAppend = JsonNode.Parse(dividerToAppendContent)?.AsObject();
+                JsonObject jsonToAppend = JsonNode.Parse(jsonToAppendContent)?.AsObject();
+                JsonArray targetArray = originalJson?["result"]?["layout"]?[0]?["rows"]?.AsArray();
 
                 if (targetArray != null)
                 {
-                    targetArray.Insert(3, dividerToAppend);  // Insert divider at position
-                    targetArray.Insert(4, jsonToAppend);  // Insert new content at position
-                    string updatedJson = originalJson.ToString();
-                    return updatedJson;
+                    targetArray.Insert(3, JsonNode.Parse(dividerToAppend.ToJsonString())); // Deep clone before inserting
+                    targetArray.Insert(4, JsonNode.Parse(jsonToAppend.ToJsonString()));    // Deep clone before inserting
+                    return originalJson.ToJsonString();
                 }
                 else
                 {
@@ -292,29 +299,46 @@ namespace BedrockCosmos
             {
                 string jsonToAppendContent = File.ReadAllText(jsonToAppendPath);
 
-                JObject originalJson = JObject.Parse(originalJsonContent);
-                JObject jsonToAppend = JObject.Parse(jsonToAppendContent);
-                JArray rowsArray = (JArray)originalJson.SelectToken("result.rows");
+                JsonObject originalJson = JsonNode.Parse(originalJsonContent)?.AsObject();
+                JsonObject jsonToAppend = JsonNode.Parse(jsonToAppendContent)?.AsObject();
+                JsonArray rowsArray = originalJson?["result"]?["rows"]?.AsArray();
 
                 if (rowsArray != null)
                 {
-                    // Find the SkinPackList inside the rows array (search by controlId)
-                    JObject storeRow = rowsArray
-                        .FirstOrDefault(row => row["controlId"]?.ToString() == "StoreRow") as JObject;
+                    // Find the StoreRow inside the rows array (search by controlId)
+                    JsonObject storeRow = null;
+                    foreach (JsonNode node in rowsArray)
+                    {
+                        JsonObject row = node?.AsObject();
+                        if (row != null && row["controlId"]?.GetValue<string>() == "StoreRow")
+                        {
+                            storeRow = row;
+                            break;
+                        }
+                    }
 
                     if (storeRow != null)
                     {
-                        // Find the 'items' array inside the SkinPackList
-                        JArray itemsArray = (JArray)storeRow.SelectToken("components[?(@.type == 'itemListComp')].items");
+                        // Find the 'items' array inside the component with type == 'itemListComp'
+                        JsonArray components = storeRow["components"]?.AsArray();
+                        JsonArray itemsArray = null;
+                        if (components != null)
+                        {
+                            foreach (JsonNode node in components)
+                            {
+                                JsonObject comp = node?.AsObject();
+                                if (comp != null && comp["type"]?.GetValue<string>() == "itemListComp")
+                                {
+                                    itemsArray = comp["items"]?.AsArray();
+                                    break;
+                                }
+                            }
+                        }
 
                         if (itemsArray != null)
                         {
-                            // Append the new content to the 'items' array
-                            itemsArray.Insert(0, jsonToAppend); // Append content
-
-                            // Convert the modified JSON back to string
-                            string updatedJson = originalJson.ToString();
-                            return updatedJson;
+                            itemsArray.Insert(0, JsonNode.Parse(jsonToAppend.ToJsonString()));
+                            return originalJson.ToJsonString();
                         }
                         else
                         {
@@ -352,6 +376,35 @@ namespace BedrockCosmos
                 return match.Value;
             else
                 return string.Empty;
+        }
+
+        // Replaces Newtonsoft's SelectToken() for simple dot-notation paths on a JsonObject.
+        // Supports dot-separated keys and integer array indices, e.g. "result.layout.0.rows".
+        // Does not support JSONPath wildcards or filter expressions.
+        private static JsonArray SelectTokenAsArray(JsonObject root, string path)
+        {
+            if (root == null || string.IsNullOrWhiteSpace(path))
+                return null;
+
+            // Normalise: "result.layout[0].rows" -> "result.layout.0.rows"
+            path = Regex.Replace(path, @"\[(\d+)\]", ".$1").TrimStart('.');
+
+            string[] segments = path.Split('.');
+            JsonNode current = root;
+
+            foreach (string segment in segments)
+            {
+                if (current == null)
+                    return null;
+
+                int index;
+                if (int.TryParse(segment, out index))
+                    current = current.AsArray()?[index];
+                else
+                    current = current.AsObject()?[segment];
+            }
+
+            return current?.AsArray();
         }
 
         private static bool LooksLikeJson(string content)

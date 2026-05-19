@@ -1,10 +1,10 @@
 ﻿using BedrockCosmos.App;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Titanium.Web.Proxy;
@@ -35,6 +35,11 @@ namespace BedrockCosmos.Proxy
             = new ConcurrentQueue<Tuple<string, string>>();
         private ExplicitProxyEndPoint explicitEndPoint;
         private string consoleSender = "Proxy";
+
+        private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
 
         public ProxyController()
         {
@@ -366,7 +371,7 @@ namespace BedrockCosmos.Proxy
             // Search for UUID if a PlayFab Get Item endpoint and use as response
             var userData = e.UserData as CustomUserData;
 
-            PlayfabGetPublishedItemBody getItemBody = JsonConvert.DeserializeObject<PlayfabGetPublishedItemBody>(requestBody);
+            PlayfabGetPublishedItemBody getItemBody = JsonSerializer.Deserialize<PlayfabGetPublishedItemBody>(requestBody, _jsonOptions);
             MarketItem mItem = JsonData.MarketItems.FirstOrDefault(o => o.uuid == getItemBody.itemid);
             if (mItem != null)
             {
@@ -391,7 +396,7 @@ namespace BedrockCosmos.Proxy
             // Search for UUID if a PlayFab Search Item endpoint and use as response
             var userData = e.UserData as CustomUserData;
 
-            PlayfabGetSearchedItemBody getSearchBody = JsonConvert.DeserializeObject<PlayfabGetSearchedItemBody>(requestBody);
+            PlayfabGetSearchedItemBody getSearchBody = JsonSerializer.Deserialize<PlayfabGetSearchedItemBody>(requestBody, _jsonOptions);
             string searchUuid = JsonParser.ExtractPlayfabSearchId(getSearchBody.filter);
             MarketItem mItem = JsonData.PackSearchIds.FirstOrDefault(o => o.uuid == searchUuid);
             if (mItem != null)
@@ -416,8 +421,7 @@ namespace BedrockCosmos.Proxy
         {
             // Append custom marketplace button to response if accessing a specified marketplace page
             string responseBody = await e.GetResponseBodyAsString();
-            string location = "result.layout"; // Works the same as ["result"]["layout"]
-            string appendedJson = JsonParser.AppendJsonToSpecificRows(responseBody, localPath, location, 0);
+            string appendedJson = JsonParser.AppendJsonToSpecificRows(responseBody, localPath, 0);
             e.SetResponseBodyString(appendedJson);
             //CosmosConsole.WriteLine("Parser", $"Appended response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
 
@@ -456,7 +460,7 @@ namespace BedrockCosmos.Proxy
                 if (NewsManager.SendToNewsAnnouncement)
                     NewsManager.QueueLoginAnnouncementIfNew();
             });
-            
+
             string appendedJson = JsonParser.AppendNews(responseBody);
             e.SetResponseBodyString(appendedJson);
             //CosmosConsole.WriteLine("Parser", $"Appended response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");

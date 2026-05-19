@@ -73,6 +73,7 @@ Source: "BedrockCosmos\System.Numerics.Vectors.dll"; DestDir: "{app}"; Flags: ig
 Source: "BedrockCosmos\System.Runtime.CompilerServices.Unsafe.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\System.Security.AccessControl.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\System.Security.Principal.Windows.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "BedrockCosmos\System.Text.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\System.Threading.Tasks.Extensions.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\Titanium.Web.Proxy.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\Texts\*"; DestDir: "{app}\Texts\"; Flags: ignoreversion recursesubdirs createallsubdirs

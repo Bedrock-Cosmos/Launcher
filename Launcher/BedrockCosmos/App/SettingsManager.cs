@@ -1,5 +1,6 @@
-﻿using Newtonsoft.Json;
-using System.IO;
+﻿using System.IO;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 // =============================================================================
 // Bedrock Cosmos - Copyright (c) 2026
@@ -25,6 +26,8 @@ namespace BedrockCosmos.App
         private static bool _enableLogging = false;
         private static bool _detailedLogging = false;
         private static bool _launcherUpdatePrompted = false;
+
+        private static readonly JsonSerializerOptions _jsonWriteIndented = new JsonSerializerOptions { WriteIndented = true };
 
         internal static bool ProxyStarted
         {
@@ -89,7 +92,7 @@ namespace BedrockCosmos.App
         internal static bool DevMenuCheck()
         {
             if (_devMenuClicks < 7)
-            { 
+            {
                 _devMenuClicks++;
                 return false;
             }
@@ -126,7 +129,7 @@ namespace BedrockCosmos.App
                 DetailedLogging = _detailedLogging
             };
 
-            string json = JsonConvert.SerializeObject(savedSettings, Formatting.Indented);
+            string json = JsonSerializer.Serialize(savedSettings, _jsonWriteIndented);
             File.WriteAllText(settingsFile, json);
 
             //CosmosConsole.WriteLine("Saved settings to local file.");
@@ -139,15 +142,18 @@ namespace BedrockCosmos.App
             if (File.Exists(settingsFile))
             {
                 string json = File.ReadAllText(settingsFile);
-                var settings = JsonConvert.DeserializeObject<dynamic>(json);
+                JsonObject settings = JsonNode.Parse(json)?.AsObject();
 
-                try { _backgroundMode = settings.BackgroundMode; } catch { }
-                try { _discordRpc = settings.DiscordRpc; } catch { }
-                try { _language = settings.Language; } catch { }
-                try { _news = settings.News; } catch { }
-                try { _devMenuEnabled = settings.DevMenuEnabled; } catch { }
-                try { _enableLogging = settings.EnableLogging; } catch { }
-                try { _detailedLogging = settings.DetailedLogging; } catch { }
+                if (settings != null)
+                {
+                    try { _backgroundMode = settings["BackgroundMode"]?.GetValue<bool>() ?? _backgroundMode; } catch { }
+                    try { _discordRpc = settings["DiscordRpc"]?.GetValue<bool>() ?? _discordRpc; } catch { }
+                    try { _language = settings["Language"]?.GetValue<string>() ?? _language; } catch { }
+                    try { _news = settings["News"]?.GetValue<bool>() ?? _news; } catch { }
+                    try { _devMenuEnabled = settings["DevMenuEnabled"]?.GetValue<bool>() ?? _devMenuEnabled; } catch { }
+                    try { _enableLogging = settings["EnableLogging"]?.GetValue<bool>() ?? _enableLogging; } catch { }
+                    try { _detailedLogging = settings["DetailedLogging"]?.GetValue<bool>() ?? _detailedLogging; } catch { }
+                }
 
                 CosmosConsole.WriteLine("Settings loaded from local file.");
             }
