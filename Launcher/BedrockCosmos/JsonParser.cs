@@ -21,6 +21,11 @@ namespace BedrockCosmos
     {
         private static string consoleSender = "Parser";
 
+        private static readonly JsonDocumentOptions _parseOptions = new JsonDocumentOptions
+        {
+            CommentHandling = JsonCommentHandling.Skip
+        };
+
         internal static string ReadJsonFileContent(string filePath)
         {
             if (File.Exists(filePath))
@@ -46,13 +51,13 @@ namespace BedrockCosmos
             if (File.Exists(jsonToAppendPath))
             {
                 string jsonToAppendContent = File.ReadAllText(jsonToAppendPath);
-                JsonObject originalJson = JsonNode.Parse(originalJsonContent)?.AsObject();
-                JsonObject jsonToAppend = JsonNode.Parse(jsonToAppendContent)?.AsObject();
+                JsonObject originalJson = JsonNode.Parse(originalJsonContent, null, _parseOptions)?.AsObject();
+                JsonObject jsonToAppend = JsonNode.Parse(jsonToAppendContent, null, _parseOptions)?.AsObject();
                 JsonArray targetArray = SelectTokenAsArray(originalJson, appendLocation);
 
                 if (targetArray != null)
                 {
-                    targetArray.Add(JsonNode.Parse(jsonToAppend.ToJsonString())); // Deep clone before inserting
+                    targetArray.Add(JsonNode.Parse(jsonToAppend.ToJsonString(), null, _parseOptions)); // Deep clone before inserting
                     return originalJson.ToJsonString();
                 }
                 else
@@ -73,13 +78,13 @@ namespace BedrockCosmos
             if (File.Exists(jsonToAppendPath))
             {
                 string jsonToAppendContent = File.ReadAllText(jsonToAppendPath);
-                JsonObject originalJson = JsonNode.Parse(originalJsonContent)?.AsObject();
-                JsonObject jsonToAppend = JsonNode.Parse(jsonToAppendContent)?.AsObject();
+                JsonObject originalJson = JsonNode.Parse(originalJsonContent, null, _parseOptions)?.AsObject();
+                JsonObject jsonToAppend = JsonNode.Parse(jsonToAppendContent, null, _parseOptions)?.AsObject();
                 JsonArray targetArray = SelectTokenAsArray(originalJson, appendLocation);
 
                 if (targetArray != null)
                 {
-                    targetArray.Insert(position, JsonNode.Parse(jsonToAppend.ToJsonString())); // Deep clone before inserting
+                    targetArray.Insert(position, JsonNode.Parse(jsonToAppend.ToJsonString(), null, _parseOptions)); // Deep clone before inserting
                     return originalJson.ToJsonString();
                 }
                 else
@@ -101,8 +106,8 @@ namespace BedrockCosmos
             {
                 string jsonToAppendContent = File.ReadAllText(jsonToAppendPath);
 
-                JsonObject originalJson = JsonNode.Parse(originalJsonContent)?.AsObject();
-                JsonObject jsonToAppend = JsonNode.Parse(jsonToAppendContent)?.AsObject();
+                JsonObject originalJson = JsonNode.Parse(originalJsonContent, null, _parseOptions)?.AsObject();
+                JsonObject jsonToAppend = JsonNode.Parse(jsonToAppendContent, null, _parseOptions)?.AsObject();
 
                 // Navigate to ["result"]["layout"][position]["rows"]
                 JsonArray rowsArray = originalJson?["result"]?["layout"]?[position]?["rows"]?.AsArray();
@@ -113,7 +118,7 @@ namespace BedrockCosmos
                     return string.Empty;
                 }
 
-                rowsArray.Insert(position, JsonNode.Parse(jsonToAppend.ToJsonString())); // Deep clone before inserting
+                rowsArray.Insert(position, JsonNode.Parse(jsonToAppend.ToJsonString(), null, _parseOptions)); // Deep clone before inserting
                 return originalJson.ToJsonString();
             }
             else
@@ -140,7 +145,7 @@ namespace BedrockCosmos
                 return originalJsonContent;
             }
 
-            JsonObject originalJson = JsonNode.Parse(originalJsonContent)?.AsObject();
+            JsonObject originalJson = JsonNode.Parse(originalJsonContent, null, _parseOptions)?.AsObject();
             JsonArray announcementTargetArray = originalJson?["result"]?["messages"]?.AsArray();
             JsonArray inboxTargetArray = originalJson?["result"]?["inboxSummary"]?["categories"]?.AsArray();
 
@@ -167,8 +172,8 @@ namespace BedrockCosmos
                     // Append front announcement
                     if (NewsManager.SendToNewsAnnouncement)
                     {
-                        JsonObject bannerJson = JsonNode.Parse(File.ReadAllText(bannerDataPath))?.AsObject();
-                        announcementTargetArray?.Add(JsonNode.Parse(bannerJson.ToJsonString())); // Deep clone before inserting
+                        JsonObject bannerJson = JsonNode.Parse(File.ReadAllText(bannerDataPath), null, _parseOptions)?.AsObject();
+                        announcementTargetArray?.Add(JsonNode.Parse(bannerJson.ToJsonString(), null, _parseOptions)); // Deep clone before inserting
                     }
 
                     if (NewsManager.SendToNewsInbox)
@@ -182,8 +187,8 @@ namespace BedrockCosmos
                 }
 
                 // Append Cosmos inbox
-                JsonObject inboxJson = JsonNode.Parse(File.ReadAllText(NewsManager.NewsHistoryPath))?.AsObject();
-                inboxTargetArray?.Insert(0, JsonNode.Parse(inboxJson.ToJsonString())); // Deep clone before inserting
+                JsonObject inboxJson = JsonNode.Parse(File.ReadAllText(NewsManager.NewsHistoryPath), null, _parseOptions)?.AsObject();
+                inboxTargetArray?.Insert(0, JsonNode.Parse(inboxJson.ToJsonString(), null, _parseOptions)); // Deep clone before inserting
                 string updatedJson = originalJson?.ToJsonString();
                 return string.IsNullOrWhiteSpace(updatedJson) ? originalJsonContent : updatedJson;
             }
@@ -202,9 +207,9 @@ namespace BedrockCosmos
             {
                 string featuredItemsToAppendContent = File.ReadAllText(featuredItemsPath);
                 string jsonToAppendContent = File.ReadAllText(jsonToAppendPath);
-                JsonObject originalJson = JsonNode.Parse(originalJsonContent)?.AsObject();
-                JsonObject featuredItemsToAppend = JsonNode.Parse(featuredItemsToAppendContent)?.AsObject();
-                JsonObject jsonToAppend = JsonNode.Parse(jsonToAppendContent)?.AsObject();
+                JsonObject originalJson = JsonNode.Parse(originalJsonContent, null, _parseOptions)?.AsObject();
+                JsonObject featuredItemsToAppend = JsonNode.Parse(featuredItemsToAppendContent, null, _parseOptions)?.AsObject();
+                JsonObject jsonToAppend = JsonNode.Parse(jsonToAppendContent, null, _parseOptions)?.AsObject();
                 JsonArray targetArray = originalJson?["result"]?["layout"]?[0]?["rows"]?.AsArray();
                 JsonArray featuredItemsArray = featuredItemsToAppend?["rows"]?.AsArray();
                 JsonArray appendArray = jsonToAppend?["rows"]?.AsArray();
@@ -215,7 +220,7 @@ namespace BedrockCosmos
                     {
                         // Needs to be placed after dropdownId -1 for some reason or else skins break
                         // Deep clone required — a JsonNode can only belong to one parent at a time
-                        targetArray.Insert(1, JsonNode.Parse(row.ToJsonString()));
+                        targetArray.Insert(1, JsonNode.Parse(row.ToJsonString(), null, _parseOptions));
                     }
 
                     int insertIndex = -1;
@@ -233,7 +238,7 @@ namespace BedrockCosmos
                     {
                         foreach (JsonNode row in appendArray)
                         {
-                            targetArray.Insert(insertIndex, JsonNode.Parse(row.ToJsonString())); // Deep clone before inserting
+                            targetArray.Insert(insertIndex, JsonNode.Parse(row.ToJsonString(), null, _parseOptions)); // Deep clone before inserting
                             insertIndex++;
                         }
                     }
@@ -241,7 +246,7 @@ namespace BedrockCosmos
                     {
                         foreach (JsonNode row in appendArray)
                         {
-                            targetArray.Add(JsonNode.Parse(row.ToJsonString())); // Deep clone before inserting
+                            targetArray.Add(JsonNode.Parse(row.ToJsonString(), null, _parseOptions)); // Deep clone before inserting
                         }
                     }
 
@@ -268,15 +273,15 @@ namespace BedrockCosmos
             {
                 string dividerToAppendContent = File.ReadAllText(dividerPath); // Method includes divider for skins menu
                 string jsonToAppendContent = File.ReadAllText(jsonToAppendPath);
-                JsonObject originalJson = JsonNode.Parse(originalJsonContent)?.AsObject();
-                JsonObject dividerToAppend = JsonNode.Parse(dividerToAppendContent)?.AsObject();
-                JsonObject jsonToAppend = JsonNode.Parse(jsonToAppendContent)?.AsObject();
+                JsonObject originalJson = JsonNode.Parse(originalJsonContent, null, _parseOptions)?.AsObject();
+                JsonObject dividerToAppend = JsonNode.Parse(dividerToAppendContent, null, _parseOptions)?.AsObject();
+                JsonObject jsonToAppend = JsonNode.Parse(jsonToAppendContent, null, _parseOptions)?.AsObject();
                 JsonArray targetArray = originalJson?["result"]?["layout"]?[0]?["rows"]?.AsArray();
 
                 if (targetArray != null)
                 {
-                    targetArray.Insert(3, JsonNode.Parse(dividerToAppend.ToJsonString())); // Deep clone before inserting
-                    targetArray.Insert(4, JsonNode.Parse(jsonToAppend.ToJsonString()));    // Deep clone before inserting
+                    targetArray.Insert(3, JsonNode.Parse(dividerToAppend.ToJsonString(), null, _parseOptions)); // Deep clone before inserting
+                    targetArray.Insert(4, JsonNode.Parse(jsonToAppend.ToJsonString(), null, _parseOptions));    // Deep clone before inserting
                     return originalJson.ToJsonString();
                 }
                 else
@@ -299,8 +304,8 @@ namespace BedrockCosmos
             {
                 string jsonToAppendContent = File.ReadAllText(jsonToAppendPath);
 
-                JsonObject originalJson = JsonNode.Parse(originalJsonContent)?.AsObject();
-                JsonObject jsonToAppend = JsonNode.Parse(jsonToAppendContent)?.AsObject();
+                JsonObject originalJson = JsonNode.Parse(originalJsonContent, null, _parseOptions)?.AsObject();
+                JsonObject jsonToAppend = JsonNode.Parse(jsonToAppendContent, null, _parseOptions)?.AsObject();
                 JsonArray rowsArray = originalJson?["result"]?["rows"]?.AsArray();
 
                 if (rowsArray != null)
@@ -337,7 +342,7 @@ namespace BedrockCosmos
 
                         if (itemsArray != null)
                         {
-                            itemsArray.Insert(0, JsonNode.Parse(jsonToAppend.ToJsonString()));
+                            itemsArray.Insert(0, JsonNode.Parse(jsonToAppend.ToJsonString(), null, _parseOptions));
                             return originalJson.ToJsonString();
                         }
                         else
