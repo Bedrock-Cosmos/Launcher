@@ -34,6 +34,7 @@ namespace BedrockCosmos.Proxy
         internal const string EntitlementsUrl = "https://entitlements.mktpl.minecraft-services.net/api/v1.0/player/inventory?includeReceipt=true";
         internal const string SessionStartUrl = "https://messaging.mktpl.minecraft-services.net/api/v1.0/session/start";
         internal const string MessagesEventUrl = "https://messaging.mktpl.minecraft-services.net/api/v1.0/messages/event";
+        internal const string DressingRoomPersonaProfileUrl = "https://store.mktpl.minecraft-services.net/api/v2.0/layout/pages/DressingRoom_PersonaProfile";
         internal const string PersonaCharacterCreatorUrl = "https://store.mktpl.minecraft-services.net/api/v2.0/layout/pages/MultiItemPage_PersonaCharacterCreator";
         internal const string PersonaSkinSelectorUrl = "https://store.mktpl.minecraft-services.net/api/v2.0/layout/pages/MultiItemPage_PersonaSkinSelector";
     }

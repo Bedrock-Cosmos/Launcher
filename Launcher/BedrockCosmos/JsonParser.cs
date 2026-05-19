@@ -173,7 +173,7 @@ namespace BedrockCosmos
                     if (NewsManager.SendToNewsAnnouncement)
                     {
                         JsonObject bannerJson = JsonNode.Parse(File.ReadAllText(bannerDataPath), null, _parseOptions)?.AsObject();
-                        announcementTargetArray?.Add(JsonNode.Parse(bannerJson.ToJsonString(), null, _parseOptions)); // Deep clone before inserting
+                        announcementTargetArray?.Add(JsonNode.Parse(bannerJson.ToJsonString(), null, _parseOptions));
                     }
 
                     if (NewsManager.SendToNewsInbox)
@@ -188,7 +188,7 @@ namespace BedrockCosmos
 
                 // Append Cosmos inbox
                 JsonObject inboxJson = JsonNode.Parse(File.ReadAllText(NewsManager.NewsHistoryPath), null, _parseOptions)?.AsObject();
-                inboxTargetArray?.Insert(0, JsonNode.Parse(inboxJson.ToJsonString(), null, _parseOptions)); // Deep clone before inserting
+                inboxTargetArray?.Insert(0, JsonNode.Parse(inboxJson.ToJsonString(), null, _parseOptions));
                 string updatedJson = originalJson?.ToJsonString();
                 return string.IsNullOrWhiteSpace(updatedJson) ? originalJsonContent : updatedJson;
             }
@@ -197,6 +197,118 @@ namespace BedrockCosmos
                 CosmosConsole.WriteLine(consoleSender, $"Skipping session-start news append because the upstream response could not be parsed as JSON. Response starts with: {GetContentSnippet(originalJsonContent)} Error: {ex.Message}");
                 return originalJsonContent;
             }
+        }
+
+        internal static string AppendPersonaProfile(string originalJsonContent)
+        {
+            string personaRow = PathDefinitions.ResponsesDirectory + @"MainPages\DressingRoom_PersonaProfile_Persona_append.json";
+            string skinsRow = PathDefinitions.ResponsesDirectory + @"MainPages\DressingRoom_PersonaProfile_Skins_append.json";
+
+            if (!File.Exists(personaRow) || !File.Exists(skinsRow))
+            {
+                CosmosConsole.WriteLine(consoleSender, $"Persona or skin row file for PersonaProfile was not found.");
+                return originalJsonContent;
+            }
+
+            string personaToAppendContent = File.ReadAllText(personaRow);
+            string skinsToAppendContent = File.ReadAllText(skinsRow);
+
+            JsonObject originalJson = JsonNode.Parse(originalJsonContent, null, _parseOptions)?.AsObject();
+            JsonObject personaToAppend = JsonNode.Parse(personaToAppendContent, null, _parseOptions)?.AsObject();
+            JsonObject skinsToAppend = JsonNode.Parse(skinsToAppendContent, null, _parseOptions)?.AsObject();
+
+            if (originalJson == null || personaToAppend == null || skinsToAppend == null)
+            {
+                CosmosConsole.WriteLine(consoleSender, "Failed to parse one or more JSON files.");
+                return originalJsonContent;
+            }
+
+            JsonArray personaItemsToAdd = personaToAppend["items"]?.AsArray();
+            JsonArray skinsItemsToAdd = skinsToAppend["items"]?.AsArray();
+
+            if (personaItemsToAdd == null || skinsItemsToAdd == null)
+            {
+                CosmosConsole.WriteLine(consoleSender, "Could not find 'items' array in append files.");
+                return originalJsonContent;
+            }
+
+            JsonArray rows = originalJson["result"]?["layout"]?[0]?["rows"]?.AsArray();
+
+            if (rows == null)
+            {
+                CosmosConsole.WriteLine(consoleSender, $"Could not find array at path: 'result.layout[0].rows'");
+                return originalJsonContent;
+            }
+
+            foreach (JsonNode rowNode in rows)
+            {
+                JsonObject rowObj = rowNode?.AsObject();
+                if (rowObj == null || rowObj["controlId"]?.GetValue<string>() != "StoreRow")
+                    continue;
+
+                JsonArray components = rowObj["components"]?.AsArray();
+                if (components == null)
+                    continue;
+
+                // Find which StoreRow this is by looking for a dropdownOptionComp
+                // and checking its dropdownId
+                int dropdownId = -1;
+                JsonObject itemListComp = null;
+
+                foreach (JsonNode compNode in components)
+                {
+                    JsonObject comp = compNode?.AsObject();
+                    if (comp == null) continue;
+
+                    string type = comp["type"]?.GetValue<string>();
+
+                    if (type == "dropdownOptionComp")
+                    {
+                        // This will be -1 if the node doesn't exist (e.g. the first StoreRow
+                        // has no dropdownOptionComp), defaults to -1 safely
+                        dropdownId = comp["dropdownId"]?.GetValue<int>() ?? -1;
+                    }
+                    else if (type == "itemListComp")
+                    {
+                        itemListComp = comp;
+                    }
+                }
+
+                if (itemListComp == null)
+                    continue;
+
+                JsonArray existingItems = itemListComp["items"]?.AsArray();
+                if (existingItems == null)
+                    continue;
+
+                JsonArray itemsToAdd = null;
+                if (dropdownId == 0)
+                    itemsToAdd = personaItemsToAdd;
+                else if (dropdownId == 1)
+                    itemsToAdd = skinsItemsToAdd;
+                else
+                    continue;
+
+                // Append each item, re-parsing so each JsonNode has no parent
+                int insertIndex = 0;
+                foreach (JsonNode item in itemsToAdd)
+                {
+                    existingItems.Insert(insertIndex, JsonNode.Parse(item.ToJsonString(), null, _parseOptions));
+                    insertIndex++;
+                }
+
+                int newTotal = existingItems.Count;
+
+                // Updates totals so all items are still shown in game
+                itemListComp["totalItems"] = newTotal;
+                JsonObject config = itemListComp["customStoreRowConfiguration"]?.AsObject();
+                if (config != null)
+                {
+                    config["maxOffers"] = newTotal;
+                }
+            }
+
+            return originalJson.ToJsonString();
         }
 
         internal static string AppendJsonToPersonaMenu(string originalJsonContent, string jsonToAppendPath)
@@ -218,8 +330,7 @@ namespace BedrockCosmos
                 {
                     foreach (JsonNode row in featuredItemsArray)
                     {
-                        // Needs to be placed after dropdownId -1 for some reason or else skins break
-                        // Deep clone required — a JsonNode can only belong to one parent at a time
+                        // Needs to be placed after dropdownId -1 for some reason or else skin display breaks
                         targetArray.Insert(1, JsonNode.Parse(row.ToJsonString(), null, _parseOptions));
                     }
 
@@ -238,7 +349,7 @@ namespace BedrockCosmos
                     {
                         foreach (JsonNode row in appendArray)
                         {
-                            targetArray.Insert(insertIndex, JsonNode.Parse(row.ToJsonString(), null, _parseOptions)); // Deep clone before inserting
+                            targetArray.Insert(insertIndex, JsonNode.Parse(row.ToJsonString(), null, _parseOptions));
                             insertIndex++;
                         }
                     }
@@ -246,7 +357,7 @@ namespace BedrockCosmos
                     {
                         foreach (JsonNode row in appendArray)
                         {
-                            targetArray.Add(JsonNode.Parse(row.ToJsonString(), null, _parseOptions)); // Deep clone before inserting
+                            targetArray.Add(JsonNode.Parse(row.ToJsonString(), null, _parseOptions));
                         }
                     }
 
@@ -255,13 +366,13 @@ namespace BedrockCosmos
                 else
                 {
                     CosmosConsole.WriteLine(consoleSender, $"Could not find array at path: 'result.layout[0].rows' in {originalJsonContent}");
-                    return string.Empty;
+                    return originalJsonContent;
                 }
             }
             else
             {
                 CosmosConsole.WriteLine(consoleSender, $"File not found: {jsonToAppendPath}");
-                return string.Empty;
+                return originalJsonContent;
             }
         }
 
@@ -280,95 +391,22 @@ namespace BedrockCosmos
 
                 if (targetArray != null)
                 {
-                    targetArray.Insert(3, JsonNode.Parse(dividerToAppend.ToJsonString(), null, _parseOptions)); // Deep clone before inserting
-                    targetArray.Insert(4, JsonNode.Parse(jsonToAppend.ToJsonString(), null, _parseOptions));    // Deep clone before inserting
+                    targetArray.Insert(3, JsonNode.Parse(dividerToAppend.ToJsonString(), null, _parseOptions));
+                    targetArray.Insert(4, JsonNode.Parse(jsonToAppend.ToJsonString(), null, _parseOptions));
                     return originalJson.ToJsonString();
                 }
                 else
                 {
                     CosmosConsole.WriteLine(consoleSender, $"Could not find array at path: 'result.layout[0].rows' in {originalJsonContent}");
-                    return string.Empty;
+                    return originalJsonContent;
                 }
             }
             else
             {
                 CosmosConsole.WriteLine(consoleSender, $"File not found: {jsonToAppendPath}");
-                return string.Empty;
+                return originalJsonContent;
             }
         }
-
-        // Not used right now, may be in the future
-        /*internal static string AppendJsonToPersonaProfile(string originalJsonContent, string jsonToAppendPath)
-        {
-            if (File.Exists(jsonToAppendPath))
-            {
-                string jsonToAppendContent = File.ReadAllText(jsonToAppendPath);
-
-                JsonObject originalJson = JsonNode.Parse(originalJsonContent, null, _parseOptions)?.AsObject();
-                JsonObject jsonToAppend = JsonNode.Parse(jsonToAppendContent, null, _parseOptions)?.AsObject();
-                JsonArray rowsArray = originalJson?["result"]?["rows"]?.AsArray();
-
-                if (rowsArray != null)
-                {
-                    // Find the StoreRow inside the rows array (search by controlId)
-                    JsonObject storeRow = null;
-                    foreach (JsonNode node in rowsArray)
-                    {
-                        JsonObject row = node?.AsObject();
-                        if (row != null && row["controlId"]?.GetValue<string>() == "StoreRow")
-                        {
-                            storeRow = row;
-                            break;
-                        }
-                    }
-
-                    if (storeRow != null)
-                    {
-                        // Find the 'items' array inside the component with type == 'itemListComp'
-                        JsonArray components = storeRow["components"]?.AsArray();
-                        JsonArray itemsArray = null;
-                        if (components != null)
-                        {
-                            foreach (JsonNode node in components)
-                            {
-                                JsonObject comp = node?.AsObject();
-                                if (comp != null && comp["type"]?.GetValue<string>() == "itemListComp")
-                                {
-                                    itemsArray = comp["items"]?.AsArray();
-                                    break;
-                                }
-                            }
-                        }
-
-                        if (itemsArray != null)
-                        {
-                            itemsArray.Insert(0, JsonNode.Parse(jsonToAppend.ToJsonString(), null, _parseOptions));
-                            return originalJson.ToJsonString();
-                        }
-                        else
-                        {
-                            Console.WriteLine("Could not find 'items' array in 'StoreRow'.");
-                            return string.Empty;
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Could not find 'StoreRow' in 'result.rows'.");
-                        return string.Empty;
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Could not find 'result.rows' in the JSON.");
-                    return string.Empty;
-                }
-            }
-            else
-            {
-                Console.WriteLine($"File not found: {jsonToAppendPath}");
-                return string.Empty;
-            }
-        }*/
 
         internal static string ExtractPlayfabSearchId(string originalPlayfabData)
         {

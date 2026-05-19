@@ -298,13 +298,18 @@ namespace BedrockCosmos.Proxy
                             await HandleMessagesEventRequest(localPath, e);
                             break;
 
-                        case ProxyUrlDefinitions.PersonaSkinSelectorUrl:
-                            await HandlePersonaSkinSelectorRequest(localPath, e);
+                        case ProxyUrlDefinitions.DressingRoomPersonaProfileUrl:
+                            await HandleDressingRoomPersonaProfileRequest(localPath, e);
                             break;
 
                         case ProxyUrlDefinitions.PersonaCharacterCreatorUrl:
                             await HandlePersonaCharacterCreatorRequest(localPath, e);
                             break;
+
+                        case ProxyUrlDefinitions.PersonaSkinSelectorUrl:
+                            await HandlePersonaSkinSelectorRequest(localPath, e);
+                            break;
+
 
                         default:
                             HandleDefaultRequest(localPath, e);
@@ -480,6 +485,18 @@ namespace BedrockCosmos.Proxy
 
             NewsManager.InterpretNewsEvent(userData.RequestBodyString);
             userData.RequestLogs = userData.RequestLogs + $"└── On Response: Handled news action in launcher.\n";
+        }
+
+        private async Task HandleDressingRoomPersonaProfileRequest(string localPath, SessionEventArgs e)
+        {
+            // Append Bedrock Cosmos items to main Dressing Room screen
+            string responseBody = await e.GetResponseBodyAsString();
+            string appendedJson = JsonParser.AppendPersonaProfile(responseBody);
+            e.SetResponseBodyString(appendedJson);
+            //CosmosConsole.WriteLine("Parser", $"Appended response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
+
+            var userData = e.UserData as CustomUserData;
+            userData.RequestLogs = userData.RequestLogs + $"└── On Response: Appended original response using DressingRoom_PersonaProfile Jsons.\n";
         }
 
         private async Task HandlePersonaCharacterCreatorRequest(string localPath, SessionEventArgs e)
