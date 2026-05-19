@@ -18,6 +18,8 @@ Settings.DiscordRichPresence.Title=Tính năng hiển thị trạng thái trên 
 Settings.DiscordRichPresence.Description=Khi được bật, Bedrock Cosmos sẽ hiển thị dưới dạng hoạt động trên hồ sơ Discord của bạn khi trình khởi chạy đang mở.
 Settings.Language.Title=Ngôn Ngữ
 Settings.Language.Description=Thay đổi ngôn ngữ sử dụng trong Bedrock Cosmos Launcher.
+Settings.News.Title=Tin tức
+Settings.News.Description=Khi tính năng này được bật, các thông báo về Bedrock Cosmos sẽ được hiển thị trong trò chơi. Một phần hộp thư đến riêng biệt cũng sẽ xuất hiện để bạn có thể xem lại các thông báo đã nhận trước đó.
 Update.UpdateLabel.Đã có bản cập nhật mới cho Bedrock Cosmos Launcher!\n\nChọn "Cập nhật" để bắt đầu cài đặt.
 Update.ChangelogLabel.Text=Nhật ký thay đổi
 Update.UpdateButton.Text=Cập nhật
