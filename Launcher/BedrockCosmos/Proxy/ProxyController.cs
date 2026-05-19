@@ -440,7 +440,6 @@ namespace BedrockCosmos.Proxy
             string responseBody = await e.GetResponseBodyAsString();
             string cosmosEnts = await AsyncHttpOperations.GetCosmosEntitlementsAsync(responseBody);
             e.SetResponseBodyString(cosmosEnts);
-            CosmosConsole.WriteLine("Parser", $"Appended response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
 
             var userData = e.UserData as CustomUserData;
             userData.RequestLogs = userData.RequestLogs + $"└── On Response: Retrieved Bedrock Cosmos entitlements from API.\n";
