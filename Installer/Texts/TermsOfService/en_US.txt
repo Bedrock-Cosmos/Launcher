@@ -158,7 +158,7 @@ Bedrock Cosmos may interact with third-party services:
 These third-party services have their own Privacy Policies. We encourage you to review their policies, as we are not responsible for their privacy practices.
 
 6. Cookies and Tracking
-The Bedrock Cosmos launcher does not use cookies or browser-based tracking technologies. The launcher does collect IP addresses via our API for daily usage metrics as described in Section 2; this data is aggregate in nature and is purged daily.
+The Bedrock Cosmos launcher does not use cookies or browser-based tracking technologies. The launcher does collect IP addresses via our API for daily usage metrics as described in Section 2, though this data is aggregate in nature and is purged daily.
 
 Our website (bedrock-cosmos.app) uses minimal functionality and does not employ tracking cookies or analytics beyond basic web server logs that are standard for any website.
 
