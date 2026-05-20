@@ -109,33 +109,42 @@ PRIVACY POLICY:
 Welcome to Bedrock Cosmos. We respect your privacy and are committed to protecting your personal information. This Privacy Policy explains how we collect, use, and safeguard your information when you use our launcher and services.
 
 2. Information We Collect
-Bedrock Cosmos does not collect, store, or transmit any personal information or usage data from users. The launcher operates entirely as a client-side proxy on your local device and does not send any information to our servers.
+Bedrock Cosmos collects minimal usage data that is temporarily logged on our servers. The launcher itself operates entirely as a client-side proxy, with all in-game responses being hosted on your local device.
 
-Specifically, we do NOT collect:
+Usage Metrics: When you use the Bedrock Cosmos launcher, our API logs your IP address for daily usage tracking. These records are retained only until midnight (Eastern US Time) each day, at which point they are automatically deleted. IP addresses are collected solely to measure aggregate usage and are not linked to your identity or account.
 
-- Personal information (name, email, address, etc.)
-- Usage data or analytics
-- Technical information about your device
-- Your Minecraft account information
-- Any gameplay or interaction data
+Content Processing: The launcher communicates with our hosted API to append Bedrock Cosmos's resource pack and world item data to your current DLC data. This enables you to access resource packs and worlds using the launcher. This API call transmits your existing DLC data to our server for processing; we do not persistently store your DLC data beyond the completion of this API request.
 
 Custom Cosmetic Submissions: If you voluntarily choose to submit custom cape or skin designs through our Discord server for inclusion in Bedrock Cosmos, we will collect and store those cape files along with your Discord username to identify you as the creator. This is entirely optional and only occurs when you actively submit content within our community. These submitted capes and skins may be made available to all Bedrock Cosmos users through the launcher.
 
-If you join our Discord server for support or community interaction, Discord's own privacy policy applies to that interaction. We may see your Discord username and any content you voluntarily share in the server, but this is separate from the Bedrock Cosmos launcher itself.
+Discord: If you join our Discord server for support or community interaction, Discord's own privacy policy applies to that interaction. We may see your Discord username and any content you voluntarily share in the server, but this is separate from the Bedrock Cosmos launcher itself.
+
+We do NOT collect:
+
+- Personal information (name, email, address, etc.)
+- Technical information about your device's hardware
+- Your Minecraft account credentials
+- Any gameplay or interaction data
 
 3. How We Use Your Information
-Since Bedrock Cosmos does not collect any user information from the launcher itself, there is no personal data for us to use, share, or process. The launcher fully functions on your device as a proxy to modify data between your Minecraft client and Minecraft servers.
+We use the limited data described above for the following purposes:
 
-All processing occurs on your device, including:
+Usage Metrics: IP addresses are counted to understand daily active usage of the launcher on an aggregate basis. They are not used to identify individual users, track behavior, or share with third parties.
 
-- Adding custom capes to your game experience
-- Revealing hidden marketplace content for your region
-- Restoring missing features to skin packs (capes, animations, skins)
+Content Processing: Your DLC data is processed through our API solely to append additional resource pack and world items, enabling launcher functionality. It is not stored, analyzed, or used for any other purpose.
 
 Custom Cosmetic Submissions: If you submit custom cape or skin designs through our Discord server, we may use those files to make them available to all Bedrock Cosmos users through the launcher. Your submitted cosmetics become part of the shared community collection if accepted.
 
+The following processing occurs locally on your device, including:
+
+- Adding custom capes to your game experience
+- Revealing hidden marketplace content
+- Restoring missing features to skin packs (capes, animations, skins)
+
 4. Data Storage and Security
-Bedrock Cosmos does not collect or store any user data through the launcher. The launcher operates as a local proxy on your device, intercepting and modifying network traffic between your Minecraft client and Minecraft servers to provide custom capes and skin packs, reveal hidden marketplace content, and restore skin pack functionality.
+IP addresses collected for usage metrics are stored on our servers for a maximum of 24 hours and are permanently deleted each day at midnight (Eastern US Time). We do not associate IP addresses with individual user accounts or retain them beyond this window.
+
+Content Processing: DLC data transmitted to our API is processed transiently to add Bedrock Cosmos's additional content and is not retained on our servers after the request is fulfilled.
 
 Custom Cosmetic Submissions: Custom cape and skin designs that you voluntarily submit through our Discord server are stored in our database along with your Discord username for creator attribution. This allows us and other users to identify who created each design. The submitted files themselves do not contain any additional personal information beyond your Discord username.
 
@@ -149,7 +158,7 @@ Bedrock Cosmos may interact with third-party services:
 These third-party services have their own Privacy Policies. We encourage you to review their policies, as we are not responsible for their privacy practices.
 
 6. Cookies and Tracking
-Bedrock Cosmos does not use cookies, tracking technologies, or analytics tools. The launcher does not track your activity, collect usage statistics, or monitor your behavior in any way.
+The Bedrock Cosmos launcher does not use cookies or browser-based tracking technologies. The launcher does collect IP addresses via our API for daily usage metrics as described in Section 2; this data is aggregate in nature and is purged daily.
 
 Our website (bedrock-cosmos.app) uses minimal functionality and does not employ tracking cookies or analytics beyond basic web server logs that are standard for any website.
 
