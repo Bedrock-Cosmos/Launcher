@@ -142,7 +142,7 @@ The following processing occurs locally on your device, including:
 - Restoring missing features to skin packs (capes, animations, skins)
 
 4. Data Storage and Security
-IP addresses collected for usage metrics are stored on our servers for a maximum of 24 hours and are permanently deleted each day at midnight (Eastern US Time). We do not associate IP addresses with individual user accounts or retain them beyond this window.
+Usage Metrics: IP addresses collected for usage metrics are stored on our servers for a maximum of 24 hours and are permanently deleted each day at midnight (Eastern US Time). We do not associate IP addresses with individual user accounts or retain them beyond this window.
 
 Content Processing: DLC data transmitted to our API is processed transiently to add Bedrock Cosmos's additional content and is not retained on our servers after the request is fulfilled.
 
