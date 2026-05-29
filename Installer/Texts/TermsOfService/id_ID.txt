@@ -109,35 +109,44 @@ KEBIJAKAN PRIVASI:
 Selamat datang di Bedrock Cosmos. Kami menghormati privasi Anda dan berkomitmen untuk melindungi informasi pribadi Anda. Kebijakan Privasi ini menjelaskan bagaimana kami mengumpulkan, menggunakan, dan menjaga informasi Anda saat Anda menggunakan peluncur dan layanan kami.
 
 2. Informasi yang Kami Kumpulkan
-Bedrock Cosmos tidak mengumpulkan, menyimpan, atau mengirimkan informasi pribadi atau data penggunaan apa pun dari pengguna. Peluncur beroperasi sepenuhnya sebagai proksi sisi klien di perangkat lokal Anda dan tidak mengirimkan informasi apa pun ke server kami.
+Bedrock Cosmos mengumpulkan data penggunaan minimal yang dicatat sementara di server kami. Launcher itu sendiri beroperasi sepenuhnya sebagai proksi sisi klien, dengan semua respons dalam game yang dihosting di perangkat lokal Anda.
 
-Secara khusus, kami TIDAK mengumpulkan:
+Metrik Penggunaan: Saat Anda menggunakan launcher Bedrock Cosmos, API kami mencatat alamat IP Anda untuk pelacakan penggunaan harian. Catatan ini hanya disimpan hingga tengah malam (Waktu AS Timur) setiap hari, setelah itu secara otomatis dihapus. Alamat IP dikumpulkan semata-mata untuk mengukur penggunaan secara agregat dan tidak dikaitkan dengan identitas atau akun Anda.
+
+Pemrosesan Konten: Launcher berkomunikasi dengan API kami yang dihosting untuk menambahkan paket sumber daya dan data item dunia Bedrock Cosmos ke data DLC Anda saat ini. Ini memungkinkan Anda mengakses paket sumber daya dan dunia menggunakan launcher. Panggilan API ini mengirimkan data DLC Anda yang sudah ada ke server kami untuk diproses; kami tidak menyimpan data DLC Anda secara permanen setelah permintaan API ini selesai.
+
+Pengiriman Kosmetik Kustom: Jika Anda secara sukarela memilih untuk mengirimkan desain cape atau skin kustom melalui server Discord kami untuk dimasukkan ke dalam Bedrock Cosmos, kami akan mengumpulkan dan menyimpan file cape tersebut beserta nama pengguna Discord Anda untuk mengidentifikasi Anda sebagai pembuatnya. Ini sepenuhnya opsional dan hanya terjadi saat Anda secara aktif mengirimkan konten dalam komunitas kami. Cape dan skin yang dikirimkan ini mungkin akan tersedia untuk semua pengguna Bedrock Cosmos melalui launcher.
+
+Discord: Jika Anda bergabung dengan server Discord kami untuk dukungan atau interaksi komunitas, kebijakan privasi Discord sendiri berlaku untuk interaksi tersebut. Kami mungkin melihat nama pengguna Discord Anda dan konten apa pun yang Anda bagikan secara sukarela di server, tetapi ini terpisah dari launcher Bedrock Cosmos itu sendiri.
+
+Kami TIDAK mengumpulkan:
 
 - Informasi pribadi (nama, email, alamat, dll.)
-- Data penggunaan atau analitik
-- Informasi teknis tentang perangkat Anda
-- Informasi akun Minecraft Anda
+- Informasi teknis tentang perangkat keras perangkat Anda
+- Kredensial akun Minecraft Anda
 - Data gameplay atau interaksi apa pun
 
-Pengiriman Kosmetik Kustom: Jika Anda secara sukarela memilih untuk mengirimkan desain jubah atau skin kustom melalui server Discord kami untuk dimasukkan ke dalam Bedrock Cosmos, kami akan mengumpulkan dan menyimpan file jubah tersebut beserta nama pengguna Discord Anda untuk mengidentifikasi Anda sebagai pembuatnya. Ini sepenuhnya opsional dan hanya terjadi ketika Anda secara aktif mengirimkan konten dalam komunitas kami. Jubah dan skin yang dikirimkan dapat tersedia untuk semua pengguna Bedrock Cosmos melalui peluncur.
-
-Jika Anda bergabung dengan server Discord kami untuk dukungan atau interaksi komunitas, kebijakan privasi Discord sendiri berlaku untuk interaksi tersebut. Kami mungkin melihat nama pengguna Discord Anda dan konten apa pun yang Anda bagikan secara sukarela di server, tetapi ini terpisah dari peluncur Bedrock Cosmos itu sendiri.
-
 3. Cara Kami Menggunakan Informasi Anda
-Karena Bedrock Cosmos tidak mengumpulkan informasi pengguna apa pun dari peluncur itu sendiri, tidak ada data pribadi yang perlu kami gunakan, bagikan, atau proses. Peluncur berfungsi sepenuhnya di perangkat Anda sebagai proksi untuk memodifikasi data antara klien Minecraft Anda dan server Minecraft.
+Kami menggunakan data terbatas yang dijelaskan di atas untuk tujuan berikut:
 
-Semua pemrosesan terjadi di perangkat Anda, termasuk:
+Metrik Penggunaan: Alamat IP dihitung untuk memahami penggunaan aktif harian launcher secara agregat. Alamat IP tidak digunakan untuk mengidentifikasi pengguna individu, melacak perilaku, atau dibagikan kepada pihak ketiga.
 
-- Menambahkan jubah kustom ke pengalaman game Anda
-- Mengungkapkan konten marketplace tersembunyi untuk wilayah Anda
-- Memulihkan fitur yang hilang pada paket skin (jubah, animasi, skin)
+Pemrosesan Konten: Data DLC Anda diproses melalui API kami semata-mata untuk menambahkan paket sumber daya dan item dunia tambahan, sehingga memungkinkan fungsi launcher. Data tersebut tidak disimpan, dianalisis, atau digunakan untuk tujuan lain apa pun.
 
-Pengiriman Kosmetik Kustom: Jika Anda mengirimkan desain jubah atau skin kustom melalui server Discord kami, kami dapat menggunakan file tersebut untuk membuatnya tersedia bagi semua pengguna Bedrock Cosmos melalui peluncur. Kosmetik yang Anda kirimkan menjadi bagian dari koleksi komunitas bersama jika diterima.
+Pengiriman Kosmetik Kustom: Jika Anda mengirimkan desain cape atau skin kustom melalui server Discord kami, kami dapat menggunakan file tersebut untuk membuatnya tersedia bagi semua pengguna Bedrock Cosmos melalui launcher. Kosmetik yang Anda kirimkan menjadi bagian dari koleksi komunitas bersama jika diterima.
+
+Pemrosesan berikut dilakukan secara lokal di perangkat Anda, termasuk:
+
+- Menambahkan cape kustom ke pengalaman game Anda
+- Mengungkap konten marketplace tersembunyi
+- Memulihkan fitur yang hilang ke paket skin (cape, animasi, skin)
 
 4. Penyimpanan dan Keamanan Data
-Bedrock Cosmos tidak mengumpulkan atau menyimpan data pengguna apa pun melalui peluncur. Peluncur beroperasi sebagai proksi lokal di perangkat Anda, mencegat dan memodifikasi lalu lintas jaringan antara klien Minecraft Anda dan server Minecraft untuk menyediakan jubah dan paket skin kustom, mengungkapkan konten marketplace tersembunyi, dan memulihkan fungsionalitas paket skin.
+Metrik Penggunaan: Alamat IP yang dikumpulkan untuk metrik penggunaan disimpan di server kami maksimal 24 jam dan dihapus secara permanen setiap hari pada tengah malam (Waktu AS Timur). Kami tidak mengaitkan alamat IP dengan akun pengguna individual atau menyimpannya di luar jangka waktu ini.
 
-Pengiriman Kosmetik Kustom: Desain jubah dan skin kustom yang Anda kirimkan secara sukarela melalui server Discord kami disimpan dalam database kami beserta nama pengguna Discord Anda untuk atribusi pembuat. Hal ini memungkinkan kami dan pengguna lain untuk mengidentifikasi siapa yang membuat setiap desain. File yang dikirimkan sendiri tidak mengandung informasi pribadi tambahan selain nama pengguna Discord Anda.
+Pemrosesan Konten: Data DLC yang dikirimkan ke API kami diproses secara sementara untuk menambahkan konten tambahan Bedrock Cosmos dan tidak disimpan di server kami setelah permintaan terpenuhi.
+
+Pengiriman Kosmetik Kustom: Desain cape dan skin kustom yang Anda kirimkan secara sukarela melalui server Discord kami disimpan dalam database kami beserta nama pengguna Discord Anda untuk atribusi pembuat. Hal ini memungkinkan kami dan pengguna lain untuk mengidentifikasi siapa yang membuat setiap desain. File yang dikirimkan itu sendiri tidak mengandung informasi pribadi tambahan apa pun selain nama pengguna Discord Anda.
 
 5. Layanan Pihak Ketiga
 Bedrock Cosmos dapat berinteraksi dengan layanan pihak ketiga:
@@ -149,9 +158,9 @@ Bedrock Cosmos dapat berinteraksi dengan layanan pihak ketiga:
 Layanan pihak ketiga ini memiliki Kebijakan Privasi mereka sendiri. Kami mendorong Anda untuk meninjau kebijakan mereka, karena kami tidak bertanggung jawab atas praktik privasi mereka.
 
 6. Cookie dan Pelacakan
-Bedrock Cosmos tidak menggunakan cookie, teknologi pelacakan, atau alat analitik. Peluncur tidak melacak aktivitas Anda, mengumpulkan statistik penggunaan, atau memantau perilaku Anda dengan cara apa pun.
+Launcher Bedrock Cosmos tidak menggunakan cookie atau teknologi pelacakan berbasis browser. Launcher ini mengumpulkan alamat IP melalui API kami untuk metrik penggunaan harian sebagaimana dijelaskan dalam Bagian 2, meskipun data ini bersifat agregat dan dihapus setiap hari.
 
-Situs web kami (bedrock-cosmos.app) menggunakan fungsionalitas minimal dan tidak menggunakan cookie pelacakan atau analitik selain log server web dasar yang standar untuk setiap situs web.
+Situs web kami (bedrock-cosmos.app) menggunakan fungsionalitas minimal dan tidak menggunakan cookie pelacakan atau analitik selain log server web dasar yang merupakan standar untuk setiap situs web.
 
 7. Privasi Anak-Anak
 Bedrock Cosmos tidak ditujukan untuk anak-anak di bawah usia 13 tahun. Kami tidak secara sengaja mengumpulkan informasi pribadi dari anak-anak di bawah 13 tahun. Jika Anda adalah orang tua atau wali dan percaya bahwa anak Anda telah memberikan informasi pribadi kepada kami, silakan hubungi kami.

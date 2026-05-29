@@ -469,7 +469,7 @@ namespace BedrockCosmos.Proxy
             e.SetResponseBodyString(appendedJson);
             //CosmosConsole.WriteLine("Parser", $"Appended response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
 
-            userData.RequestLogs = userData.RequestLogs + $"└── On Response: Appended original response using {Path.GetFileName(localPath)}\n";
+            userData.RequestLogs = userData.RequestLogs + $"└── On Response: Appended inbox data.\n";
         }
 
         private async Task HandleMessagesEventRequest(string localPath, SessionEventArgs e)

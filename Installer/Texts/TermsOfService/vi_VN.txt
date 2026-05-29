@@ -108,35 +108,45 @@ CHÍNH SÁCH QUYỀN RIÊNG TƯ:
 Chào mừng bạn đến với Bedrock Cosmos. Chúng tôi tôn trọng quyền riêng tư và cam kết bảo vệ thông tin cá nhân của bạn. Chính sách Quyền riêng tư này giải thích cách chúng tôi thu thập, sử dụng và bảo vệ thông tin của bạn khi bạn sử dụng Launcher và các dịch vụ của chúng tôi.
 
 2. Thông tin Chúng tôi Thu thập
-Bedrock Cosmos không thu thập, lưu trữ hoặc truyền tải bất kỳ thông tin cá nhân hay dữ liệu sử dụng nào từ người dùng. Launcher hoạt động hoàn toàn như một proxy phía máy khách (client-side) trên thiết bị cục bộ của bạn và không gửi bất kỳ thông tin nào về máy chủ của chúng tôi.
+Bedrock Cosmos thu thập một lượng tối thiểu dữ liệu sử dụng và lưu trữ tạm thời trên máy chủ của chúng tôi. Launcher hoạt động hoàn toàn như một proxy phía máy khách (client-side proxy), với tất cả các phản hồi trong trò chơi đều được xử lý trên thiết bị cục bộ của bạn.
 
-Cụ thể, chúng tôi KHÔNG thu thập:
+Chỉ số sử dụng: Khi bạn sử dụng Launcher Bedrock Cosmos, API của chúng tôi sẽ ghi lại địa chỉ IP của bạn để theo dõi mức độ sử dụng hàng ngày. Các bản ghi này chỉ được lưu giữ đến nửa đêm (giờ miền Đông Hoa Kỳ - EST) mỗi ngày, sau đó sẽ tự động bị xóa. Địa chỉ IP được thu thập duy nhất để đo lường mức độ sử dụng tổng thể và không được liên kết với danh tính hoặc tài khoản của bạn.
 
-- Thông tin cá nhân (tên, email, địa chỉ, v.v.).
-- Dữ liệu sử dụng hoặc phân tích.
-- Thông tin kỹ thuật về thiết bị của bạn.
-- Thông tin tài khoản Minecraft của bạn.
-- Bất kỳ dữ liệu gameplay hoặc tương tác nào.
+Xử lý nội dung: Launcher giao tiếp với API do chúng tôi lưu trữ để bổ sung Resource Pack (gói tài nguyên) và dữ liệu vật phẩm thế giới của Bedrock Cosmos vào dữ liệu DLC hiện tại của bạn. Điều này cho phép bạn truy cập các Resource Pack và thế giới thông qua Launcher. Lệnh gọi API này truyền dữ liệu DLC hiện có của bạn đến máy chủ của chúng tôi để xử lý; chúng tôi không lưu trữ dữ liệu DLC của bạn một cách lâu dài sau khi hoàn tất yêu cầu API này.
 
-Gửi Nội dung tùy chỉnh: Nếu bạn tự nguyện chọn gửi các thiết kế Custom Cape hoặc Skin thông qua máy chủ Discord để đưa vào Bedrock Cosmos, chúng tôi sẽ thu thập và lưu trữ các tệp đó cùng với tên người dùng Discord của bạn để xác định bạn là người sáng tạo. Việc này là hoàn toàn tự nguyện và chỉ xảy ra khi bạn chủ động gửi nội dung. Những nội dung này có thể được cung cấp cho tất cả người dùng Bedrock Cosmos thông qua launcher.
+Gửi Custom Cosmetics (Vật phẩm trang trí tùy chỉnh): Nếu bạn tự nguyện chọn gửi các thiết kế Cape (áo choàng) hoặc Skin tùy chỉnh qua máy chủ Discord của chúng tôi để đưa vào Bedrock Cosmos, chúng tôi sẽ thu thập và lưu trữ các tệp Cape đó cùng với tên người dùng Discord của bạn để xác định bạn là tác giả. Điều này hoàn toàn tùy chọn và chỉ xảy ra khi bạn chủ động gửi nội dung trong cộng đồng của chúng tôi. Các Cape và Skin được gửi này có thể được cung cấp cho tất cả người dùng Bedrock Cosmos thông qua Launcher.
 
-Nếu bạn tham gia máy chủ Discord của chúng tôi để được hỗ trợ hoặc tương tác cộng đồng, chính sách quyền riêng tư của Discord sẽ được áp dụng. Chúng tôi có thể thấy tên người dùng Discord và nội dung bạn chia sẻ, nhưng điều này hoàn toàn tách biệt với bản thân Launcher Bedrock Cosmos.
+Discord: Nếu bạn tham gia máy chủ Discord của chúng tôi để hỗ trợ hoặc tương tác cộng đồng, chính sách bảo mật riêng của Discord sẽ áp dụng cho tương tác đó. Chúng tôi có thể xem tên người dùng Discord của bạn và bất kỳ nội dung nào bạn tự nguyện chia sẻ trong máy chủ, nhưng điều 
+này tách biệt hoàn toàn với Launcher Bedrock Cosmos.
+
+Chúng tôi KHÔNG thu thập:
+
+- Thông tin cá nhân (tên, email, địa chỉ, v.v.)
+- Thông tin kỹ thuật về phần cứng thiết bị của bạn
+- Thông tin đăng nhập tài khoản Minecraft của bạn
+- Bất kỳ dữ liệu gameplay hoặc tương tác nào
 
 3. Cách Chúng tôi Sử dụng Thông tin
-Vì Bedrock Cosmos không thu thập bất kỳ thông tin nào từ Launcher, nên không có dữ liệu cá nhân nào để chúng tôi xử lý hay chia sẻ. Launcher hoạt động trên thiết bị của bạn như một proxy để xử lý dữ liệu giữa ứng dụng Minecraft và máy chủ Minecraft.
+Chúng tôi sử dụng dữ liệu hạn chế được mô tả ở trên cho các mục đích sau:
 
-Mọi quá trình xử lý đều diễn ra cục bộ trên thiết bị của bạn, bao gồm:
+Thống kê sử dụng: Địa chỉ IP được thống kê để hiểu mức độ sử dụng hàng ngày của Launcher trên cơ sở tổng hợp. Chúng không được sử dụng để xác định người dùng cá nhân, theo dõi hành vi hoặc chia sẻ với bên thứ ba.
 
-- Thêm Custom capes vào trải nghiệm game.
-- Hiển thị nội dung Marketplace bị ẩn theo khu vực.
-- Khôi phục các tính năng bị thiếu cho Skin Packs (áo choàng, hoạt ảnh, Skin).
+Xử lý nội dung: Dữ liệu DLC của bạn được xử lý qua API của chúng tôi chỉ để bổ sung các Resource Pack và vật phẩm thế giới, giúp kích hoạt chức năng của Launcher. Dữ liệu này không được lưu trữ, phân tích hoặc sử dụng cho bất kỳ mục đích nào khác.
 
-Gửi Nội dung tùy chỉnh: Nếu bạn gửi thiết kế qua Discord, chúng tôi sẽ dùng các tệp đó để cung cấp cho toàn bộ người dùng Bedrock Cosmos. Các thiết kế này sẽ trở thành một phần của bộ sưu tập cộng đồng nếu được chấp nhận.
+Đóng góp Custom Cosmetics: Nếu bạn gửi thiết kế Cape hoặc Skin tùy chỉnh qua máy chủ Discord của chúng tôi, chúng tôi có thể sử dụng các tệp đó để cung cấp cho tất cả người dùng Bedrock Cosmos thông qua Launcher. Các vật phẩm trang trí bạn gửi sẽ trở thành một phần của bộ sưu tập cộng đồng chung nếu được chấp nhận.
+
+Các hoạt động xử lý sau đây diễn ra trực tiếp trên thiết bị của bạn, bao gồm:
+
+- Thêm Cape tùy chỉnh vào trải nghiệm chơi game của bạn
+- Hiển thị nội dung ẩn trên Marketplace
+- Khôi phục các tính năng bị thiếu trong các Skin Pack (Cape, hiệu ứng động, Skin)
 
 4. Lưu trữ và Bảo mật Dữ liệu
-Bedrock Cosmos không lưu trữ dữ liệu người dùng thông qua Launcher. Như đã nêu, phần mềm chỉ can thiệp vào lưu lượng mạng giữa máy khách Minecraft và máy chủ để cung cấp tính năng.
+Thống kê sử dụng: Địa chỉ IP được thu thập cho mục đích thống kê sử dụng sẽ được lưu trữ trên máy chủ của chúng tôi tối đa 24 giờ và sẽ bị xóa vĩnh viễn vào lúc nửa đêm mỗi ngày (giờ miền Đông Hoa Kỳ - EST). Chúng tôi không liên kết địa chỉ IP với tài khoản người dùng cá nhân hoặc lưu giữ chúng sau khoảng thời gian này.
 
-Gửi Nội dung tùy chỉnh: Các thiết kế bạn tự nguyện gửi qua Discord được lưu trữ trong cơ sở dữ liệu của chúng tôi cùng với tên người dùng Discord để ghi công tác giả. Điều này cho phép chúng tôi và những người dùng khác xác định ai là người đã sáng tạo ra mỗi thiết kế (Cosmetic). Các tệp này không chứa thông tin cá nhân nào khác ngoài tên Discord của bạn.
+Xử lý nội dung: Dữ liệu DLC được truyền đến API của chúng tôi được xử lý tạm thời để thêm nội dung bổ sung của Bedrock Cosmos và không được lưu giữ trên máy chủ của chúng tôi sau khi yêu cầu được thực hiện.
+
+Gửi Custom Cosmetics: Các thiết kế Cape và Skin tùy chỉnh mà bạn tự nguyện gửi qua máy chủ Discord của chúng tôi được lưu trữ trong cơ sở dữ liệu cùng với tên người dùng Discord của bạn để ghi nhận tác giả. Điều này cho phép chúng tôi và các người dùng khác xác định ai là tác giả của từng thiết kế. Các tệp được gửi không chứa bất kỳ thông tin cá nhân nào khác ngoài tên người dùng Discord của bạn.
 
 5. Dịch vụ của Bên thứ ba
 Bedrock Cosmos có thể tương tác với các dịch vụ bên thứ ba:
@@ -148,9 +158,9 @@ Bedrock Cosmos có thể tương tác với các dịch vụ bên thứ ba:
 Các dịch vụ này có Chính sách Quyền riêng tư riêng. Chúng tôi khuyến khích bạn xem lại chính sách của họ vì chúng tôi không chịu trách nhiệm về phương thức bảo mật của họ.
 
 6. Cookie và Theo dõi
-Bedrock Cosmos không sử dụng cookie, công nghệ theo dõi hay các công cụ phân tích. Launcher không theo dõi hoạt động, không thu thập thống kê sử dụng hay giám sát hành vi của bạn.
+Launcher Bedrock Cosmos không sử dụng cookie hoặc công nghệ theo dõi dựa trên trình duyệt. Launcher có thu thập địa chỉ IP thông qua API của chúng tôi để thống kê sử dụng hàng ngày như mô tả trong Mục 2, tuy nhiên dữ liệu này mang tính tổng hợp và được xóa hàng ngày.
 
-Website của chúng tôi (bedrock-cosmos.app) sử dụng chức năng tối giản và không dùng cookie theo dõi ngoài nhật ký máy chủ web tiêu chuẩn.
+Trang web của chúng tôi (bedrock-cosmos.app) sử dụng chức năng tối thiểu và không sử dụng cookie theo dõi hoặc phân tích ngoài nhật ký máy chủ web cơ bản (server logs), vốn là tiêu chuẩn chung cho bất kỳ trang web nào.
 
 7. Quyền riêng tư của Trẻ em
 Bedrock Cosmos không hướng đến trẻ em dưới 13 tuổi. Chúng tôi không cố ý thu thập thông tin cá nhân từ trẻ em dưới 13 tuổi. Nếu bạn là phụ huynh hoặc người giám hộ và tin rằng con mình đã cung cấp thông tin cho chúng tôi, vui lòng liên hệ với chúng tôi ngay.

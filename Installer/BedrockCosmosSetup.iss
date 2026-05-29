@@ -3,7 +3,7 @@
 ; Non-commercial use only
 
 #define MyAppName "Bedrock Cosmos"
-#define MyAppVersion "1.0.3"
+#define MyAppVersion "1.1.0"
 #define MyAppPublisher "Bedrock Cosmos"
 #define MyAppURL "https://bedrock-cosmos.app/"
 #define MyAppExeName "BedrockCosmos.exe"
@@ -48,6 +48,7 @@ Name: "german"; MessagesFile: "compiler:Languages\German.isl"; LicenseFile: "Bed
 Name: "indonesian"; MessagesFile: "BedrockCosmos\Launcher\Installer\Texts\Other\Indonesian.isl"; LicenseFile: "BedrockCosmos\Launcher\Installer\Texts\TermsOfService\id_ID.txt"; InfoBeforeFile: "BedrockCosmos\Launcher\Installer\Texts\CertificateAgreement\id_ID.txt"
 Name: "japanese"; MessagesFile: "compiler:Languages\Japanese.isl";  LicenseFile: "BedrockCosmos\Launcher\Installer\Texts\TermsOfService\ja_JP.txt"; InfoBeforeFile: "BedrockCosmos\Launcher\Installer\Texts\CertificateAgreement\ja_JP.txt"
 Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"; LicenseFile: "BedrockCosmos\Launcher\Installer\Texts\TermsOfService\es_ES.txt"; InfoBeforeFile: "BedrockCosmos\Launcher\Installer\Texts\CertificateAgreement\es_ES.txt"
+Name: "ukranian"; MessagesFile: "compiler:Languages\Ukrainian.isl"; LicenseFile: "BedrockCosmos\Launcher\Installer\Texts\TermsOfService\uk_UA.txt"; InfoBeforeFile: "BedrockCosmos\Launcher\Installer\Texts\CertificateAgreement\uk_UA.txt"
 Name: "vietnamese"; MessagesFile: "BedrockCosmos\Launcher\Installer\Texts\Other\Vietnamese.isl"; LicenseFile: "BedrockCosmos\Launcher\Installer\Texts\TermsOfService\vi_VN.txt"; InfoBeforeFile: "BedrockCosmos\Launcher\Installer\Texts\CertificateAgreement\vi_VN.txt"
 
 [Tasks]
@@ -62,17 +63,20 @@ Source: "BedrockCosmos\BCPackIcon.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\BouncyCastle.Crypto.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\BrotliSharpLib.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\DiscordRPC.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "BedrockCosmos\Microsoft.Bcl.AsyncInterfaces.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\Microsoft.Web.WebView2.Core.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\Microsoft.Web.WebView2.WinForms.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\Microsoft.Web.WebView2.Wpf.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\Microsoft.Win32.Registry.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\System.Buffers.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "BedrockCosmos\System.IO.Pipelines.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\System.Memory.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\System.Numerics.Vectors.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\System.Runtime.CompilerServices.Unsafe.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\System.Security.AccessControl.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\System.Security.Principal.Windows.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "BedrockCosmos\System.Text.Encodings.Web.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\System.Text.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\System.Threading.Tasks.Extensions.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\Titanium.Web.Proxy.dll"; DestDir: "{app}"; Flags: ignoreversion

@@ -109,35 +109,44 @@ POLÍTICA DE PRIVACIDAD:
 Bienvenido a Bedrock Cosmos. Respetamos su privacidad y nos comprometemos a proteger su información personal. Esta Política de Privacidad explica cómo recopilamos, usamos y protegemos su información cuando utiliza nuestro lanzador y servicios.
 
 2. Información que Recopilamos
-Bedrock Cosmos no recopila, almacena ni transmite ninguna información personal ni datos de uso de los usuarios. El lanzador opera completamente como un proxy del lado del cliente en su dispositivo local y no envía ninguna información a nuestros servidores.
+Bedrock Cosmos recopila una cantidad mínima de datos de uso que se registran temporalmente en nuestros servidores. El launcher funciona completamente como un proxy del lado del cliente, y todas las respuestas dentro del juego se alojan en tu propio dispositivo.
 
-Específicamente, NO recopilamos:
+Métricas de uso: Cuando utilizas el launcher de Bedrock Cosmos, nuestra API registra tu dirección IP para realizar un seguimiento diario del uso. Estos registros se conservan únicamente hasta la medianoche (hora del este de EE. UU.), momento en el que se eliminan automáticamente. Las direcciones IP se recopilan únicamente para medir el uso agregado y no se vinculan a tu identidad ni a tu cuenta.
+
+Procesamiento de contenido: El launcher se comunica con nuestra API alojada para añadir los paquetes de recursos y los elementos de mundos de Bedrock Cosmos a tus datos DLC actuales. Esto te permite acceder a paquetes de recursos y mundos utilizando el launcher. Esta llamada a la API transmite tus datos DLC existentes a nuestro servidor para su procesamiento; no almacenamos tus datos DLC de forma permanente más allá de la finalización de esta solicitud.
+
+Envío de cosméticos personalizados: Si decides voluntariamente enviar diseños personalizados de capas o skins a través de nuestro servidor de Discord para su inclusión en Bedrock Cosmos, recopilaremos y almacenaremos esos archivos de capas junto con tu nombre de usuario de Discord para identificarte como el creador. Esto es totalmente opcional y solo ocurre cuando envías contenido activamente dentro de nuestra comunidad. Estas capas y skins enviadas podrán ponerse a disposición de todos los usuarios de Bedrock Cosmos a través del launcher.
+
+Discord: Si te unes a nuestro servidor de Discord para recibir soporte o interactuar con la comunidad, la propia política de privacidad de Discord se aplicará a esa interacción. Podemos ver tu nombre de usuario de Discord y cualquier contenido que compartas voluntariamente en el servidor, pero esto es independiente del launcher de Bedrock Cosmos.
+
+NO recopilamos:
 
 - Información personal (nombre, correo electrónico, dirección, etc.)
-- Datos de uso o análisis
-- Información técnica sobre su dispositivo
-- Información de su cuenta de Minecraft
-- Ningún dato de juego o interacción
-
-Envíos de Cosméticos Personalizados: Si voluntariamente elige enviar diseños personalizados de capas o skins a través de nuestro servidor de Discord para su inclusión en Bedrock Cosmos, recopilaremos y almacenaremos esos archivos de capas junto con su nombre de usuario de Discord para identificarle como el creador. Esto es completamente opcional y solo ocurre cuando usted envía contenido activamente dentro de nuestra comunidad. Las capas y skins enviadas pueden estar disponibles para todos los usuarios de Bedrock Cosmos a través del lanzador.
-
-Si se une a nuestro servidor de Discord para soporte o interacción comunitaria, la política de privacidad propia de Discord se aplica a esa interacción. Es posible que veamos su nombre de usuario de Discord y cualquier contenido que comparta voluntariamente en el servidor, pero esto es independiente del lanzador de Bedrock Cosmos en sí.
+- Información técnica sobre el hardware de tu dispositivo
+- Las credenciales de tu cuenta de Minecraft
+- Datos de juego o de interacción
 
 3. Cómo Usamos su Información
-Dado que Bedrock Cosmos no recopila ninguna información de usuario desde el lanzador en sí, no hay datos personales que usar, compartir o procesar. El lanzador funciona completamente en su dispositivo como un proxy para modificar datos entre su cliente de Minecraft y los servidores de Minecraft.
+Utilizamos los datos limitados descritos anteriormente para los siguientes fines:
 
-Todo el procesamiento ocurre en su dispositivo, incluyendo:
+Métricas de uso: Las direcciones IP se contabilizan para comprender el uso diario activo del launcher de forma agregada. No se utilizan para identificar a usuarios individuales, rastrear comportamientos ni compartirlas con terceros.
 
-- Agregar capas personalizadas a su experiencia de juego
-- Revelar contenido del mercado oculto para su región
+Procesamiento de contenido: Tus datos DLC se procesan a través de nuestra API únicamente para añadir paquetes de recursos y elementos de mundos adicionales, permitiendo así el funcionamiento del launcher. No se almacenan, analizan ni utilizan para ningún otro propósito.
+
+Envío de cosméticos personalizados: Si envías diseños personalizados de capas o skins a través de nuestro servidor de Discord, podremos utilizar esos archivos para ponerlos a disposición de todos los usuarios de Bedrock Cosmos mediante el launcher. Si son aceptados, tus cosméticos enviados pasarán a formar parte de la colección compartida de la comunidad.
+
+El siguiente procesamiento se realiza localmente en tu dispositivo, incluyendo:
+
+- Añadir capas personalizadas a tu experiencia de juego
+- Mostrar contenido oculto del Marketplace
 - Restaurar funciones faltantes en paquetes de skins (capas, animaciones, skins)
 
-Envíos de Cosméticos Personalizados: Si envía diseños personalizados de capas o skins a través de nuestro servidor de Discord, podemos usar esos archivos para ponerlos a disposición de todos los usuarios de Bedrock Cosmos a través del lanzador. Sus cosméticos enviados pasan a formar parte de la colección compartida de la comunidad si son aceptados.
-
 4. Almacenamiento y Seguridad de Datos
-Bedrock Cosmos no recopila ni almacena ningún dato de usuario a través del lanzador. El lanzador opera como un proxy local en su dispositivo, interceptando y modificando el tráfico de red entre su cliente de Minecraft y los servidores de Minecraft para proporcionar capas y paquetes de skins personalizados, revelar contenido oculto del mercado y restaurar la funcionalidad de los paquetes de skins.
+Métricas de uso: Las direcciones IP recopiladas para las métricas de uso se almacenan en nuestros servidores durante un máximo de 24 horas y se eliminan permanentemente cada día a medianoche (hora del este de EE. UU.). No asociamos las direcciones IP con cuentas de usuario individuales ni las conservamos más allá de este periodo.
 
-Envíos de Cosméticos Personalizados: Los diseños personalizados de capas y skins que usted envía voluntariamente a través de nuestro servidor de Discord se almacenan en nuestra base de datos junto con su nombre de usuario de Discord para la atribución del creador. Esto nos permite a nosotros y a otros usuarios identificar quién creó cada diseño. Los archivos enviados en sí no contienen ninguna información personal adicional más allá de su nombre de usuario de Discord.
+Procesamiento de contenido: Los datos DLC transmitidos a nuestra API se procesan de forma temporal para añadir el contenido adicional de Bedrock Cosmos y no se conservan en nuestros servidores una vez completada la solicitud.
+
+Envío de cosméticos personalizados: Los diseños personalizados de capas y skins que envíes voluntariamente a través de nuestro servidor de Discord se almacenan en nuestra base de datos junto con tu nombre de usuario de Discord para atribuir la autoría. Esto nos permite tanto a nosotros como a otros usuarios identificar quién creó cada diseño. Los archivos enviados no contienen información personal adicional aparte de tu nombre de usuario de Discord.
 
 5. Servicios de Terceros
 Bedrock Cosmos puede interactuar con servicios de terceros:
@@ -149,9 +158,9 @@ Bedrock Cosmos puede interactuar con servicios de terceros:
 Estos servicios de terceros tienen sus propias Políticas de Privacidad. Le recomendamos que revise sus políticas, ya que no somos responsables de sus prácticas de privacidad.
 
 6. Cookies y Seguimiento
-Bedrock Cosmos no utiliza cookies, tecnologías de seguimiento ni herramientas de análisis. El lanzador no rastrea su actividad, recopila estadísticas de uso ni monitorea su comportamiento de ninguna manera.
+El launcher de Bedrock Cosmos no utiliza cookies ni tecnologías de seguimiento basadas en navegador. Sin embargo, el launcher recopila direcciones IP a través de nuestra API para las métricas de uso diario, tal y como se describe en la Sección 2. Estos datos son de carácter agregado y se eliminan diariamente.
 
-Nuestro sitio web (bedrock-cosmos.app) utiliza una funcionalidad mínima y no emplea cookies de seguimiento ni análisis más allá de los registros básicos del servidor web que son estándar para cualquier sitio web.
+Nuestro sitio web, bedrock-cosmos.app, utiliza una funcionalidad mínima y no emplea cookies de seguimiento ni herramientas de analítica más allá de los registros básicos del servidor web, que son estándar en cualquier sitio web.
 
 7. Privacidad de los Menores
 Bedrock Cosmos no está dirigido a menores de 13 años. No recopilamos conscientemente información personal de menores de 13 años. Si usted es padre, madre o tutor y cree que su hijo nos ha proporcionado información personal, por favor contáctenos.
