@@ -20,14 +20,14 @@ namespace BedrockCosmos.App
     {
         private static readonly KeyValuePair<string, string>[] Languages =
         {
-            ["English"] = "en_US",
-            ["বাংলা"] = "bn_BD",
-            ["Deutsch"] = "de_DE",
-            ["Español"] = "es_ES",
-            ["Indonesia"] = "id_ID",
-            ["日本語"] = "ja_JP",
-            ["українська"] = "uk_UA",
-            ["Tiếng Việt"] = "vi_VN"
+            new KeyValuePair<string, string>("English", "en_US"),
+            new KeyValuePair<string, string>("বাংলা", "bn_BD"),
+            new KeyValuePair<string, string>("Deutsch", "de_DE"),
+            new KeyValuePair<string, string>("Español", "es_ES"),
+            new KeyValuePair<string, string>("Indonesia", "id_ID"),
+            new KeyValuePair<string, string>("日本語", "ja_JP"),
+            new KeyValuePair<string, string>("українська", "uk_UA"),
+            new KeyValuePair<string, string>("Tiếng Việt", "vi_VN")
         };
 
         private static readonly Dictionary<string, string> LanguageDict = Languages
