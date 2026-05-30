@@ -26,6 +26,7 @@ namespace BedrockCosmos.App
         private static JsonObject _currentNewsObj = null;
         private static List<string> _seenUuids = null;
 
+        private static readonly string _newsIconUrl = "https://bedrock-cosmos.app/icons/NewsIcon.png";
         private static readonly string _newsHistoryPath = Path.Combine(PathDefinitions.CustomJsonsDirectory, "News.json");
         private static readonly string _newsHistoryUuidsPath = Path.Combine(PathDefinitions.MiscDirectory, "NewsHistory.json");
         private static readonly string _currentNewsPath = Path.Combine(PathDefinitions.ResponsesDirectory, @"MainPages\CurrentNews_append.json");
@@ -40,6 +41,11 @@ namespace BedrockCosmos.App
         internal static bool SendToNewsAnnouncement
         {
             get { return _sendNewsToAnnouncement; }
+        }
+
+        internal static string NewsIconUrl
+        {
+            get { return _newsIconUrl; }
         }
 
         internal static string NewsHistoryPath
@@ -78,7 +84,7 @@ namespace BedrockCosmos.App
                     ["image"] = new JsonObject
                     {
                         ["id"] = "8642b05e-b0e1-4057-94d8-98552e53a23a",
-                        ["url"] = "https://bedrock-cosmos.app/icons/NewsIcon.png"
+                        ["url"] = _newsIconUrl
                     },
                     ["type"] = "BedrockCosmosNews"
                 }
@@ -96,6 +102,17 @@ namespace BedrockCosmos.App
                 CreateNewsHistoryFile();
 
             _newsHistoryObj = JsonNode.Parse(File.ReadAllText(_newsHistoryPath))?.AsObject();
+
+            // Re-updates old image URL in case it needs to change
+            if (_newsHistoryObj?["categoryInfo"]?["image"] is JsonObject imageObj)
+            {
+                var currentUrl = imageObj["url"]?.GetValue<string>();
+                if (currentUrl != _newsIconUrl)
+                {
+                    imageObj["url"] = _newsIconUrl;
+                    File.WriteAllText(_newsHistoryPath, _newsHistoryObj.ToJsonString(_jsonWriteIndented));
+                }
+;            }
         }
 
         internal static void RetrieveCurrentNews()
