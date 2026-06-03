@@ -31,7 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.StatusLabel = new System.Windows.Forms.Label();
-            this.TabControl = new System.Windows.Forms.TabControl();
+            this.TabControl = new BedrockCosmos.App.UI.TransparentTabControl();
             this.HomePage = new System.Windows.Forms.TabPage();
             this.VersionLabel = new System.Windows.Forms.Label();
             this.AboutButton = new System.Windows.Forms.Button();
@@ -1040,6 +1040,7 @@
             this.AccessibleName = "Bedrock Cosmos";
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.ControlBox = false;
             this.Controls.Add(this.TopPanel);
@@ -1070,7 +1071,7 @@
 
         #endregion
         private System.Windows.Forms.Label StatusLabel;
-        private System.Windows.Forms.TabControl TabControl;
+        private BedrockCosmos.App.UI.TransparentTabControl TabControl;
         private System.Windows.Forms.TabPage HomePage;
         private System.Windows.Forms.TabPage SettingsPage;
         private System.Windows.Forms.Panel TopPanel;
