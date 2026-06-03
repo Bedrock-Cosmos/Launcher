@@ -24,7 +24,7 @@ namespace BedrockCosmos.App.UI
             {
                 var page = new Panel
                 {
-                    Left = this.Left + 5,
+                    Left = this.Left + 4,
                     Top = this.Top + height,
                     Width = this.Width,
                     Height = this.Height - height,
