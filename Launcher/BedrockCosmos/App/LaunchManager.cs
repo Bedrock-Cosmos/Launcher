@@ -169,7 +169,9 @@ namespace BedrockCosmos.App
         {
             try
             {
-                gameProtocolProvider = new GameProtocolService();
+                if (gameProtocolProvider == null)
+                    gameProtocolProvider = new GameProtocolService();
+
                 gameProtocolProvider.NotifyGameProtocolActivation(896928775, uri, out int wasHandled);
 
                 if (wasHandled > 0)
