@@ -42,6 +42,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -51,6 +52,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
@@ -180,6 +182,7 @@
   <ItemGroup>
     <Compile Include="App\CosmosConsole.cs" />
     <Compile Include="App\DiscordRichPresence.cs" />
+    <Compile Include="App\GameProtocolProvider.cs" />
     <Compile Include="App\LanguageHandler.cs" />
     <Compile Include="App\LaunchManager.cs" />
     <Compile Include="App\PathDefinitions.cs" />

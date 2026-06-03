@@ -26,6 +26,7 @@ namespace BedrockCosmos.App
         private int _latestResponsesVersion = 0;
         private RoundGradientButton _launchButton = null;
         private System.Windows.Forms.Label _versionLabel = null;
+        private IGameProtocolProvider gameProtocolProvider = null;
 
         internal Version CurrentLauncherVersion
         {
@@ -166,6 +167,19 @@ namespace BedrockCosmos.App
 
         internal void OpenMinecraft(string uri = "")
         {
+            try
+            {
+                gameProtocolProvider = new GameProtocolService();
+                gameProtocolProvider.NotifyGameProtocolActivation(896928775, uri, out int wasHandled);
+
+                if (wasHandled > 0)
+                    return;
+            }
+            catch (Exception) {
+
+                CosmosConsole.WriteLine("Encountered game protocol provider issues.");
+            }
+
             try
             {
                 Process.Start("minecraft://" + uri);
