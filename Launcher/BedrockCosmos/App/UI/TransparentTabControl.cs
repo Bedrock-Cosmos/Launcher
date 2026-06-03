@@ -24,7 +24,7 @@ namespace BedrockCosmos.App.UI
             {
                 var page = new Panel
                 {
-                    Left = this.Left,
+                    Left = this.Left + 5,
                     Top = this.Top + height,
                     Width = this.Width,
                     Height = this.Height - height,
@@ -44,6 +44,7 @@ namespace BedrockCosmos.App.UI
         protected override void OnSelectedIndexChanged(EventArgs e)
         {
             base.OnSelectedIndexChanged(e);
+
             for (int tab = 0; tab < pages.Count; ++tab)
             {
                 pages[tab].Visible = tab == SelectedIndex;
@@ -52,7 +53,12 @@ namespace BedrockCosmos.App.UI
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing) foreach (var page in pages) page.Dispose();
+            if (disposing)
+            {
+                foreach (var page in pages)
+                    page.Dispose();
+            }
+
             base.Dispose(disposing);
         }
     }

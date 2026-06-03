@@ -164,7 +164,7 @@
             this.AboutButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.AboutButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.AboutButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.AboutButton.Location = new System.Drawing.Point(15, 391);
+            this.AboutButton.Location = new System.Drawing.Point(17, 391);
             this.AboutButton.Name = "AboutButton";
             this.AboutButton.Size = new System.Drawing.Size(25, 25);
             this.AboutButton.TabIndex = 17;
@@ -183,7 +183,7 @@
             this.SettingsButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.SettingsButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.SettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.SettingsButton.Location = new System.Drawing.Point(760, 391);
+            this.SettingsButton.Location = new System.Drawing.Point(761, 391);
             this.SettingsButton.Name = "SettingsButton";
             this.SettingsButton.Size = new System.Drawing.Size(25, 25);
             this.SettingsButton.TabIndex = 16;
