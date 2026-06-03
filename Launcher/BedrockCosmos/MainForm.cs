@@ -85,9 +85,20 @@ namespace BedrockCosmos
             // For bedrockcosmos:// URIs
             string handledUri = UriHandler.Handle(uri);
             if (!SettingsManager.ProxyStarted && !SettingsManager.BackgroundMode)
-                LaunchButton.PerformClick();
+            {
+                LaunchButton.Enabled = false;
+                BackgroundModeSwitch.Enabled = false;
+                StatusLabel.Text = "";
 
-            Process.Start("minecraft://" + handledUri);
+                CosmosConsole.WriteLine("Starting proxy...");
+                LaunchButton.Text = LanguageHandler.Get("Home.LaunchButton.Entering");
+                launchManager.UpdateLaunchButtonColor("purple");
+                StartLaunch(false, handledUri);
+            }
+            else
+            {
+                launchManager.OpenMinecraft(handledUri);
+            }
         }
 
         private void HandleBcPackFile(string filePath)
@@ -222,7 +233,7 @@ namespace BedrockCosmos
             }
         }
 
-        private async void StartLaunch(bool backgroundMode = false)
+        private async void StartLaunch(bool backgroundMode = false, string uri = "")
         {
             await launchManager.InternetCheck();
             await AsyncHttpOperations.TrackSessionStartAsync();
@@ -265,7 +276,7 @@ namespace BedrockCosmos
                         LaunchButton.Enabled = true;
                         BackgroundModeSwitch.Enabled = true;
                         LaunchButton.Text = LanguageHandler.Get("Home.LaunchButton.Running");
-                        launchManager.OpenMinecraft();
+                        launchManager.OpenMinecraft(uri);
                     }
                     else
                     {

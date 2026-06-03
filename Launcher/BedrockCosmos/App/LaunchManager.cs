@@ -164,11 +164,11 @@ namespace BedrockCosmos.App
             }
         }
 
-        internal void OpenMinecraft()
+        internal void OpenMinecraft(string uri = "")
         {
             try
             {
-                Process.Start("minecraft://");
+                Process.Start("minecraft://" + uri);
                 CosmosConsole.WriteLine("Opened Minecraft.");
             }
             catch (Exception)
