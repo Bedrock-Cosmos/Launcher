@@ -26,7 +26,7 @@ namespace BedrockCosmos.App.UI
                 {
                     Left = this.Left + 4,
                     Top = this.Top + height,
-                    Width = this.Width,
+                    Width = this.Width - 8,
                     Height = this.Height - height,
                     BackColor = Color.Transparent,
                     Visible = tab == this.SelectedIndex
