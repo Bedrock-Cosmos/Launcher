@@ -145,7 +145,9 @@ namespace BedrockCosmos.App
             if (!string.IsNullOrWhiteSpace(uuid))
                 _currentNewsUuid = uuid;
 
-            // Update dateReceived in the first message to current UTC time
+            // Sanitize surface/category and update dateReceived to current UTC time
+            _currentNewsObj["surface"] = "InboxMessage";
+            _currentNewsObj["inboxCategory"] = "BedrockCosmosNews";
             _currentNewsObj["dateReceived"] = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffffffZ");
 
             CosmosConsole.WriteLine($"Current news retrieved. ID: {_currentNewsUuid}");
