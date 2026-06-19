@@ -32,6 +32,10 @@ namespace BedrockCosmos
         public MainForm()
         {
             InitializeComponent();
+            TabControl.MakeTransparent();
+
+            if (File.Exists(PathDefinitions.AppDirectory + @"Background.png"))
+                ApplyLauncherBackground(PathDefinitions.AppDirectory + @"Background.png");
 
             if (!Directory.Exists(PathDefinitions.CosmosAppData))
                 Directory.CreateDirectory(PathDefinitions.CosmosAppData);
@@ -50,19 +54,11 @@ namespace BedrockCosmos
             LanguageHandler.AddLangsToComboBox(LanguageComboBox);
             SettingsManager.LoadSettings();
             ApplySettings();
-
-            if (File.Exists(PathDefinitions.AppDirectory + @"Background.png"))
-                ApplyLauncherBackground(PathDefinitions.AppDirectory + @"Background.png");
         }
 
         private void ApplyLauncherBackground(string imagePath)
         {
-            Image background = Image.FromFile(imagePath);
-            HomePage.BackgroundImage = background;
-            AboutPage.BackgroundImage = background;
-            SettingsPage.BackgroundImage = background;
-            UpdatePage.BackgroundImage = background;
-            DevPage.BackgroundImage = background;
+            this.BackgroundImage = Image.FromFile(imagePath);
         }
 
         public void HandleIncomingArgs(string[] args)
