@@ -3,7 +3,7 @@
 ; Non-commercial use only
 
 #define MyAppName "Bedrock Cosmos"
-#define MyAppVersion "1.1.0"
+#define MyAppVersion "1.1.1"
 #define MyAppPublisher "Bedrock Cosmos"
 #define MyAppURL "https://bedrock-cosmos.app/"
 #define MyAppExeName "BedrockCosmos.exe"
