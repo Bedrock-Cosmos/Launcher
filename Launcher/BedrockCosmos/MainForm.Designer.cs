@@ -47,6 +47,9 @@
             this.AboutLabel = new System.Windows.Forms.Label();
             this.AboutBackButton = new System.Windows.Forms.Button();
             this.SettingsPage = new System.Windows.Forms.TabPage();
+            this.NewsDescriptionLabel = new System.Windows.Forms.Label();
+            this.NewsSwitch = new BedrockCosmos.App.UI.Switch();
+            this.NewsTitleLabel = new System.Windows.Forms.Label();
             this.DiscordRichPresenceDescription = new System.Windows.Forms.Label();
             this.DiscordRichPresenceLabel = new System.Windows.Forms.Label();
             this.DiscordRichPresenceSwitch = new BedrockCosmos.App.UI.Switch();
@@ -83,9 +86,6 @@
             this.CloseButton = new System.Windows.Forms.Button();
             this.TrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.BackgroundModeTimer = new System.Windows.Forms.Timer(this.components);
-            this.NewsTitleLabel = new System.Windows.Forms.Label();
-            this.NewsSwitch = new BedrockCosmos.App.UI.Switch();
-            this.NewsDescriptionLabel = new System.Windows.Forms.Label();
             this.TabControl.SuspendLayout();
             this.HomePage.SuspendLayout();
             this.AboutPage.SuspendLayout();
@@ -104,7 +104,7 @@
             this.StatusLabel.BackColor = System.Drawing.Color.Transparent;
             this.StatusLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.StatusLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.StatusLabel.Location = new System.Drawing.Point(230, 278);
+            this.StatusLabel.Location = new System.Drawing.Point(238, 278);
             this.StatusLabel.Name = "StatusLabel";
             this.StatusLabel.Size = new System.Drawing.Size(340, 68);
             this.StatusLabel.TabIndex = 2;
@@ -118,10 +118,10 @@
             this.TabControl.Controls.Add(this.SettingsPage);
             this.TabControl.Controls.Add(this.UpdatePage);
             this.TabControl.Controls.Add(this.DevPage);
-            this.TabControl.Location = new System.Drawing.Point(-5, -5);
+            this.TabControl.Location = new System.Drawing.Point(-12, -5);
             this.TabControl.Name = "TabControl";
             this.TabControl.SelectedIndex = 0;
-            this.TabControl.Size = new System.Drawing.Size(814, 466);
+            this.TabControl.Size = new System.Drawing.Size(824, 466);
             this.TabControl.TabIndex = 5;
             // 
             // HomePage
@@ -136,7 +136,7 @@
             this.HomePage.Location = new System.Drawing.Point(4, 22);
             this.HomePage.Name = "HomePage";
             this.HomePage.Padding = new System.Windows.Forms.Padding(3);
-            this.HomePage.Size = new System.Drawing.Size(806, 440);
+            this.HomePage.Size = new System.Drawing.Size(816, 440);
             this.HomePage.TabIndex = 0;
             this.HomePage.Text = "Home";
             // 
@@ -145,7 +145,7 @@
             this.VersionLabel.BackColor = System.Drawing.Color.Transparent;
             this.VersionLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.VersionLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.VersionLabel.Location = new System.Drawing.Point(234, 398);
+            this.VersionLabel.Location = new System.Drawing.Point(240, 398);
             this.VersionLabel.Name = "VersionLabel";
             this.VersionLabel.Size = new System.Drawing.Size(336, 19);
             this.VersionLabel.TabIndex = 18;
@@ -164,7 +164,7 @@
             this.AboutButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.AboutButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.AboutButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.AboutButton.Location = new System.Drawing.Point(17, 391);
+            this.AboutButton.Location = new System.Drawing.Point(23, 393);
             this.AboutButton.Name = "AboutButton";
             this.AboutButton.Size = new System.Drawing.Size(25, 25);
             this.AboutButton.TabIndex = 17;
@@ -183,7 +183,7 @@
             this.SettingsButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.SettingsButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.SettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.SettingsButton.Location = new System.Drawing.Point(761, 391);
+            this.SettingsButton.Location = new System.Drawing.Point(770, 395);
             this.SettingsButton.Name = "SettingsButton";
             this.SettingsButton.Size = new System.Drawing.Size(25, 25);
             this.SettingsButton.TabIndex = 16;
@@ -203,7 +203,7 @@
             this.LaunchButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(188)))), ((int)(((byte)(71)))));
             this.LaunchButton.HoverForeColor = System.Drawing.Color.White;
             this.LaunchButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.LaunchButton.Location = new System.Drawing.Point(230, 175);
+            this.LaunchButton.Location = new System.Drawing.Point(238, 175);
             this.LaunchButton.MinimumSize = new System.Drawing.Size(144, 47);
             this.LaunchButton.Name = "LaunchButton";
             this.LaunchButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(188)))), ((int)(((byte)(71)))));
@@ -231,7 +231,7 @@
             this.AboutPage.Controls.Add(this.AboutBackButton);
             this.AboutPage.Location = new System.Drawing.Point(4, 22);
             this.AboutPage.Name = "AboutPage";
-            this.AboutPage.Size = new System.Drawing.Size(806, 440);
+            this.AboutPage.Size = new System.Drawing.Size(816, 440);
             this.AboutPage.TabIndex = 3;
             this.AboutPage.Text = "About";
             // 
@@ -242,7 +242,7 @@
             this.WebsiteLabel.BackColor = System.Drawing.Color.Transparent;
             this.WebsiteLabel.Font = new System.Drawing.Font("Segoe UI", 12F);
             this.WebsiteLabel.LinkColor = System.Drawing.Color.LightSkyBlue;
-            this.WebsiteLabel.Location = new System.Drawing.Point(540, 298);
+            this.WebsiteLabel.Location = new System.Drawing.Point(551, 298);
             this.WebsiteLabel.Name = "WebsiteLabel";
             this.WebsiteLabel.Size = new System.Drawing.Size(65, 21);
             this.WebsiteLabel.TabIndex = 14;
@@ -257,7 +257,7 @@
             this.WebsiteIcon.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("WebsiteIcon.BackgroundImage")));
             this.WebsiteIcon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.WebsiteIcon.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.WebsiteIcon.Location = new System.Drawing.Point(500, 293);
+            this.WebsiteIcon.Location = new System.Drawing.Point(511, 293);
             this.WebsiteIcon.Name = "WebsiteIcon";
             this.WebsiteIcon.Size = new System.Drawing.Size(32, 32);
             this.WebsiteIcon.TabIndex = 13;
@@ -271,7 +271,7 @@
             this.GitHubLabel.BackColor = System.Drawing.Color.Transparent;
             this.GitHubLabel.Font = new System.Drawing.Font("Segoe UI", 12F);
             this.GitHubLabel.LinkColor = System.Drawing.Color.LightSkyBlue;
-            this.GitHubLabel.Location = new System.Drawing.Point(392, 298);
+            this.GitHubLabel.Location = new System.Drawing.Point(403, 298);
             this.GitHubLabel.Name = "GitHubLabel";
             this.GitHubLabel.Size = new System.Drawing.Size(59, 21);
             this.GitHubLabel.TabIndex = 12;
@@ -287,7 +287,7 @@
             this.DiscordLabel.BackColor = System.Drawing.Color.Transparent;
             this.DiscordLabel.Font = new System.Drawing.Font("Segoe UI", 12F);
             this.DiscordLabel.LinkColor = System.Drawing.Color.LightSkyBlue;
-            this.DiscordLabel.Location = new System.Drawing.Point(235, 298);
+            this.DiscordLabel.Location = new System.Drawing.Point(246, 298);
             this.DiscordLabel.Name = "DiscordLabel";
             this.DiscordLabel.Size = new System.Drawing.Size(63, 21);
             this.DiscordLabel.TabIndex = 11;
@@ -302,7 +302,7 @@
             this.DiscordIcon.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("DiscordIcon.BackgroundImage")));
             this.DiscordIcon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.DiscordIcon.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.DiscordIcon.Location = new System.Drawing.Point(195, 293);
+            this.DiscordIcon.Location = new System.Drawing.Point(206, 293);
             this.DiscordIcon.Name = "DiscordIcon";
             this.DiscordIcon.Size = new System.Drawing.Size(32, 32);
             this.DiscordIcon.TabIndex = 9;
@@ -315,7 +315,7 @@
             this.GitHubIcon.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("GitHubIcon.BackgroundImage")));
             this.GitHubIcon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.GitHubIcon.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.GitHubIcon.Location = new System.Drawing.Point(352, 293);
+            this.GitHubIcon.Location = new System.Drawing.Point(363, 293);
             this.GitHubIcon.Name = "GitHubIcon";
             this.GitHubIcon.Size = new System.Drawing.Size(32, 32);
             this.GitHubIcon.TabIndex = 4;
@@ -326,7 +326,7 @@
             this.AboutLabel.BackColor = System.Drawing.Color.Transparent;
             this.AboutLabel.Font = new System.Drawing.Font("Segoe UI", 12F);
             this.AboutLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.AboutLabel.Location = new System.Drawing.Point(120, 86);
+            this.AboutLabel.Location = new System.Drawing.Point(131, 86);
             this.AboutLabel.Name = "AboutLabel";
             this.AboutLabel.Size = new System.Drawing.Size(560, 185);
             this.AboutLabel.TabIndex = 6;
@@ -345,7 +345,7 @@
             this.AboutBackButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.AboutBackButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.AboutBackButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.AboutBackButton.Location = new System.Drawing.Point(15, 391);
+            this.AboutBackButton.Location = new System.Drawing.Point(17, 394);
             this.AboutBackButton.Name = "AboutBackButton";
             this.AboutBackButton.Size = new System.Drawing.Size(25, 25);
             this.AboutBackButton.TabIndex = 5;
@@ -372,16 +372,57 @@
             this.SettingsPage.Location = new System.Drawing.Point(4, 22);
             this.SettingsPage.Name = "SettingsPage";
             this.SettingsPage.Padding = new System.Windows.Forms.Padding(3);
-            this.SettingsPage.Size = new System.Drawing.Size(806, 440);
+            this.SettingsPage.Size = new System.Drawing.Size(816, 440);
             this.SettingsPage.TabIndex = 1;
             this.SettingsPage.Text = "Settings";
+            // 
+            // NewsDescriptionLabel
+            // 
+            this.NewsDescriptionLabel.BackColor = System.Drawing.Color.Transparent;
+            this.NewsDescriptionLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.NewsDescriptionLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.NewsDescriptionLabel.Location = new System.Drawing.Point(78, 289);
+            this.NewsDescriptionLabel.Name = "NewsDescriptionLabel";
+            this.NewsDescriptionLabel.Size = new System.Drawing.Size(707, 41);
+            this.NewsDescriptionLabel.TabIndex = 25;
+            this.NewsDescriptionLabel.Text = "When enabled, announcements about Bedrock Cosmos will be displayed in game. A cus" +
+    "tom inbox section will also be shown to view announcements you have previously r" +
+    "eceived.";
+            this.NewsDescriptionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // NewsSwitch
+            // 
+            this.NewsSwitch.AutoSize = true;
+            this.NewsSwitch.BackColor = System.Drawing.Color.Transparent;
+            this.NewsSwitch.BaseColor = System.Drawing.Color.White;
+            this.NewsSwitch.BaseOffColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.NewsSwitch.BaseOnColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.NewsSwitch.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.NewsSwitch.Location = new System.Drawing.Point(23, 299);
+            this.NewsSwitch.Name = "NewsSwitch";
+            this.NewsSwitch.Size = new System.Drawing.Size(40, 20);
+            this.NewsSwitch.TabIndex = 24;
+            this.NewsSwitch.UseVisualStyleBackColor = false;
+            this.NewsSwitch.CheckedChanged += new System.EventHandler(this.NewsSwitch_CheckedChanged);
+            // 
+            // NewsTitleLabel
+            // 
+            this.NewsTitleLabel.AutoSize = true;
+            this.NewsTitleLabel.BackColor = System.Drawing.Color.Transparent;
+            this.NewsTitleLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.NewsTitleLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.NewsTitleLabel.Location = new System.Drawing.Point(19, 265);
+            this.NewsTitleLabel.Name = "NewsTitleLabel";
+            this.NewsTitleLabel.Size = new System.Drawing.Size(52, 21);
+            this.NewsTitleLabel.TabIndex = 23;
+            this.NewsTitleLabel.Text = "News";
             // 
             // DiscordRichPresenceDescription
             // 
             this.DiscordRichPresenceDescription.BackColor = System.Drawing.Color.Transparent;
             this.DiscordRichPresenceDescription.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.DiscordRichPresenceDescription.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.DiscordRichPresenceDescription.Location = new System.Drawing.Point(74, 139);
+            this.DiscordRichPresenceDescription.Location = new System.Drawing.Point(78, 139);
             this.DiscordRichPresenceDescription.Name = "DiscordRichPresenceDescription";
             this.DiscordRichPresenceDescription.Size = new System.Drawing.Size(707, 41);
             this.DiscordRichPresenceDescription.TabIndex = 22;
@@ -395,7 +436,7 @@
             this.DiscordRichPresenceLabel.BackColor = System.Drawing.Color.Transparent;
             this.DiscordRichPresenceLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.DiscordRichPresenceLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.DiscordRichPresenceLabel.Location = new System.Drawing.Point(15, 115);
+            this.DiscordRichPresenceLabel.Location = new System.Drawing.Point(19, 115);
             this.DiscordRichPresenceLabel.Name = "DiscordRichPresenceLabel";
             this.DiscordRichPresenceLabel.Size = new System.Drawing.Size(177, 21);
             this.DiscordRichPresenceLabel.TabIndex = 20;
@@ -409,7 +450,7 @@
             this.DiscordRichPresenceSwitch.BaseOffColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.DiscordRichPresenceSwitch.BaseOnColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.DiscordRichPresenceSwitch.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.DiscordRichPresenceSwitch.Location = new System.Drawing.Point(19, 149);
+            this.DiscordRichPresenceSwitch.Location = new System.Drawing.Point(23, 149);
             this.DiscordRichPresenceSwitch.Name = "DiscordRichPresenceSwitch";
             this.DiscordRichPresenceSwitch.Size = new System.Drawing.Size(40, 20);
             this.DiscordRichPresenceSwitch.TabIndex = 21;
@@ -441,7 +482,7 @@
             this.LanguageComboBox.ItemHeight = 26;
             this.LanguageComboBox.Items.AddRange(new object[] {
             "English"});
-            this.LanguageComboBox.Location = new System.Drawing.Point(19, 222);
+            this.LanguageComboBox.Location = new System.Drawing.Point(23, 222);
             this.LanguageComboBox.Name = "LanguageComboBox";
             this.LanguageComboBox.Size = new System.Drawing.Size(135, 32);
             this.LanguageComboBox.StartIndex = 0;
@@ -453,7 +494,7 @@
             this.LanguageDescriptionLabel.BackColor = System.Drawing.Color.Transparent;
             this.LanguageDescriptionLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.LanguageDescriptionLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.LanguageDescriptionLabel.Location = new System.Drawing.Point(165, 221);
+            this.LanguageDescriptionLabel.Location = new System.Drawing.Point(169, 221);
             this.LanguageDescriptionLabel.Name = "LanguageDescriptionLabel";
             this.LanguageDescriptionLabel.Size = new System.Drawing.Size(611, 32);
             this.LanguageDescriptionLabel.TabIndex = 18;
@@ -466,7 +507,7 @@
             this.LanguageTitleLabel.BackColor = System.Drawing.Color.Transparent;
             this.LanguageTitleLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LanguageTitleLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.LanguageTitleLabel.Location = new System.Drawing.Point(15, 190);
+            this.LanguageTitleLabel.Location = new System.Drawing.Point(19, 190);
             this.LanguageTitleLabel.Name = "LanguageTitleLabel";
             this.LanguageTitleLabel.Size = new System.Drawing.Size(85, 21);
             this.LanguageTitleLabel.TabIndex = 17;
@@ -484,7 +525,7 @@
             this.SettingsBackButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.SettingsBackButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.SettingsBackButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.SettingsBackButton.Location = new System.Drawing.Point(15, 391);
+            this.SettingsBackButton.Location = new System.Drawing.Point(17, 394);
             this.SettingsBackButton.Name = "SettingsBackButton";
             this.SettingsBackButton.Size = new System.Drawing.Size(25, 25);
             this.SettingsBackButton.TabIndex = 15;
@@ -496,7 +537,7 @@
             this.BackgroundModeDescriptionLabel.BackColor = System.Drawing.Color.Transparent;
             this.BackgroundModeDescriptionLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.BackgroundModeDescriptionLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.BackgroundModeDescriptionLabel.Location = new System.Drawing.Point(74, 64);
+            this.BackgroundModeDescriptionLabel.Location = new System.Drawing.Point(78, 64);
             this.BackgroundModeDescriptionLabel.Name = "BackgroundModeDescriptionLabel";
             this.BackgroundModeDescriptionLabel.Size = new System.Drawing.Size(707, 41);
             this.BackgroundModeDescriptionLabel.TabIndex = 14;
@@ -511,7 +552,7 @@
             this.BackgroundModeTitleLabel.BackColor = System.Drawing.Color.Transparent;
             this.BackgroundModeTitleLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.BackgroundModeTitleLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.BackgroundModeTitleLabel.Location = new System.Drawing.Point(15, 40);
+            this.BackgroundModeTitleLabel.Location = new System.Drawing.Point(19, 40);
             this.BackgroundModeTitleLabel.Name = "BackgroundModeTitleLabel";
             this.BackgroundModeTitleLabel.Size = new System.Drawing.Size(150, 21);
             this.BackgroundModeTitleLabel.TabIndex = 13;
@@ -525,7 +566,7 @@
             this.BackgroundModeSwitch.BaseOffColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.BackgroundModeSwitch.BaseOnColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.BackgroundModeSwitch.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.BackgroundModeSwitch.Location = new System.Drawing.Point(19, 74);
+            this.BackgroundModeSwitch.Location = new System.Drawing.Point(23, 74);
             this.BackgroundModeSwitch.Name = "BackgroundModeSwitch";
             this.BackgroundModeSwitch.Size = new System.Drawing.Size(40, 20);
             this.BackgroundModeSwitch.TabIndex = 12;
@@ -646,7 +687,7 @@
             this.DevPage.Controls.Add(this.ExportLogsButton);
             this.DevPage.Location = new System.Drawing.Point(4, 22);
             this.DevPage.Name = "DevPage";
-            this.DevPage.Size = new System.Drawing.Size(806, 440);
+            this.DevPage.Size = new System.Drawing.Size(816, 440);
             this.DevPage.TabIndex = 2;
             this.DevPage.Text = "Dev";
             // 
@@ -656,7 +697,7 @@
             this.DetailedLoggingLabel.BackColor = System.Drawing.Color.Transparent;
             this.DetailedLoggingLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.DetailedLoggingLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.DetailedLoggingLabel.Location = new System.Drawing.Point(502, 394);
+            this.DetailedLoggingLabel.Location = new System.Drawing.Point(508, 394);
             this.DetailedLoggingLabel.Name = "DetailedLoggingLabel";
             this.DetailedLoggingLabel.Size = new System.Drawing.Size(221, 19);
             this.DetailedLoggingLabel.TabIndex = 18;
@@ -674,7 +715,7 @@
             this.DevBackButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.DevBackButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.DevBackButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.DevBackButton.Location = new System.Drawing.Point(15, 391);
+            this.DevBackButton.Location = new System.Drawing.Point(17, 394);
             this.DevBackButton.Name = "DevBackButton";
             this.DevBackButton.Size = new System.Drawing.Size(25, 25);
             this.DevBackButton.TabIndex = 4;
@@ -687,7 +728,7 @@
             this.DevConsole.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.DevConsole.DetectUrls = false;
             this.DevConsole.ForeColor = System.Drawing.Color.White;
-            this.DevConsole.Location = new System.Drawing.Point(290, 41);
+            this.DevConsole.Location = new System.Drawing.Point(296, 41);
             this.DevConsole.Name = "DevConsole";
             this.DevConsole.ReadOnly = true;
             this.DevConsole.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
@@ -701,7 +742,7 @@
             this.EnableLoggingLabel.BackColor = System.Drawing.Color.Transparent;
             this.EnableLoggingLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.EnableLoggingLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.EnableLoggingLabel.Location = new System.Drawing.Point(306, 394);
+            this.EnableLoggingLabel.Location = new System.Drawing.Point(312, 394);
             this.EnableLoggingLabel.Name = "EnableLoggingLabel";
             this.EnableLoggingLabel.Size = new System.Drawing.Size(103, 19);
             this.EnableLoggingLabel.TabIndex = 11;
@@ -712,7 +753,7 @@
             this.DownloadZipProgressLabel.BackColor = System.Drawing.Color.Transparent;
             this.DownloadZipProgressLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.DownloadZipProgressLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.DownloadZipProgressLabel.Location = new System.Drawing.Point(162, 41);
+            this.DownloadZipProgressLabel.Location = new System.Drawing.Point(168, 41);
             this.DownloadZipProgressLabel.Name = "DownloadZipProgressLabel";
             this.DownloadZipProgressLabel.Size = new System.Drawing.Size(121, 46);
             this.DownloadZipProgressLabel.TabIndex = 4;
@@ -728,7 +769,7 @@
             this.DetailedLoggingSwitch.BaseOffColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.DetailedLoggingSwitch.BaseOnColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.DetailedLoggingSwitch.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.DetailedLoggingSwitch.Location = new System.Drawing.Point(729, 393);
+            this.DetailedLoggingSwitch.Location = new System.Drawing.Point(735, 393);
             this.DetailedLoggingSwitch.Name = "DetailedLoggingSwitch";
             this.DetailedLoggingSwitch.Size = new System.Drawing.Size(40, 20);
             this.DetailedLoggingSwitch.TabIndex = 17;
@@ -747,7 +788,7 @@
             this.FixProxyHangButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.FixProxyHangButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.FixProxyHangButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.FixProxyHangButton.Location = new System.Drawing.Point(13, 190);
+            this.FixProxyHangButton.Location = new System.Drawing.Point(19, 190);
             this.FixProxyHangButton.MinimumSize = new System.Drawing.Size(144, 47);
             this.FixProxyHangButton.Name = "FixProxyHangButton";
             this.FixProxyHangButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
@@ -773,7 +814,7 @@
             this.ResetNewsButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.ResetNewsButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.ResetNewsButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.ResetNewsButton.Location = new System.Drawing.Point(13, 240);
+            this.ResetNewsButton.Location = new System.Drawing.Point(19, 240);
             this.ResetNewsButton.MinimumSize = new System.Drawing.Size(144, 47);
             this.ResetNewsButton.Name = "ResetNewsButton";
             this.ResetNewsButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
@@ -799,7 +840,7 @@
             this.DisableDevMenuButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.DisableDevMenuButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.DisableDevMenuButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.DisableDevMenuButton.Location = new System.Drawing.Point(13, 290);
+            this.DisableDevMenuButton.Location = new System.Drawing.Point(19, 290);
             this.DisableDevMenuButton.MinimumSize = new System.Drawing.Size(144, 47);
             this.DisableDevMenuButton.Name = "DisableDevMenuButton";
             this.DisableDevMenuButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
@@ -825,7 +866,7 @@
             this.ClearLogsButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.ClearLogsButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.ClearLogsButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.ClearLogsButton.Location = new System.Drawing.Point(13, 140);
+            this.ClearLogsButton.Location = new System.Drawing.Point(19, 140);
             this.ClearLogsButton.MinimumSize = new System.Drawing.Size(144, 47);
             this.ClearLogsButton.Name = "ClearLogsButton";
             this.ClearLogsButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
@@ -847,7 +888,7 @@
             this.EnableLoggingSwitch.BaseOffColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.EnableLoggingSwitch.BaseOnColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.EnableLoggingSwitch.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.EnableLoggingSwitch.Location = new System.Drawing.Point(414, 393);
+            this.EnableLoggingSwitch.Location = new System.Drawing.Point(420, 393);
             this.EnableLoggingSwitch.Name = "EnableLoggingSwitch";
             this.EnableLoggingSwitch.Size = new System.Drawing.Size(40, 20);
             this.EnableLoggingSwitch.TabIndex = 10;
@@ -866,7 +907,7 @@
             this.DownloadZipButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.DownloadZipButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.DownloadZipButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.DownloadZipButton.Location = new System.Drawing.Point(13, 40);
+            this.DownloadZipButton.Location = new System.Drawing.Point(19, 40);
             this.DownloadZipButton.MinimumSize = new System.Drawing.Size(144, 47);
             this.DownloadZipButton.Name = "DownloadZipButton";
             this.DownloadZipButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
@@ -892,7 +933,7 @@
             this.ExportLogsButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.ExportLogsButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.ExportLogsButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.ExportLogsButton.Location = new System.Drawing.Point(13, 90);
+            this.ExportLogsButton.Location = new System.Drawing.Point(19, 90);
             this.ExportLogsButton.MinimumSize = new System.Drawing.Size(144, 47);
             this.ExportLogsButton.Name = "ExportLogsButton";
             this.ExportLogsButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
@@ -993,47 +1034,6 @@
             // 
             this.BackgroundModeTimer.Interval = 2500;
             this.BackgroundModeTimer.Tick += new System.EventHandler(this.BackgroundModeTimer_Tick);
-            // 
-            // NewsTitleLabel
-            // 
-            this.NewsTitleLabel.AutoSize = true;
-            this.NewsTitleLabel.BackColor = System.Drawing.Color.Transparent;
-            this.NewsTitleLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.NewsTitleLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.NewsTitleLabel.Location = new System.Drawing.Point(15, 265);
-            this.NewsTitleLabel.Name = "NewsTitleLabel";
-            this.NewsTitleLabel.Size = new System.Drawing.Size(52, 21);
-            this.NewsTitleLabel.TabIndex = 23;
-            this.NewsTitleLabel.Text = "News";
-            // 
-            // NewsSwitch
-            // 
-            this.NewsSwitch.AutoSize = true;
-            this.NewsSwitch.BackColor = System.Drawing.Color.Transparent;
-            this.NewsSwitch.BaseColor = System.Drawing.Color.White;
-            this.NewsSwitch.BaseOffColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
-            this.NewsSwitch.BaseOnColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.NewsSwitch.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.NewsSwitch.Location = new System.Drawing.Point(19, 299);
-            this.NewsSwitch.Name = "NewsSwitch";
-            this.NewsSwitch.Size = new System.Drawing.Size(40, 20);
-            this.NewsSwitch.TabIndex = 24;
-            this.NewsSwitch.UseVisualStyleBackColor = false;
-            this.NewsSwitch.CheckedChanged += new System.EventHandler(this.NewsSwitch_CheckedChanged);
-            // 
-            // NewsDescriptionLabel
-            // 
-            this.NewsDescriptionLabel.BackColor = System.Drawing.Color.Transparent;
-            this.NewsDescriptionLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.NewsDescriptionLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.NewsDescriptionLabel.Location = new System.Drawing.Point(74, 289);
-            this.NewsDescriptionLabel.Name = "NewsDescriptionLabel";
-            this.NewsDescriptionLabel.Size = new System.Drawing.Size(707, 41);
-            this.NewsDescriptionLabel.TabIndex = 25;
-            this.NewsDescriptionLabel.Text = "When enabled, announcements about Bedrock Cosmos will be displayed in game. A cus" +
-    "tom inbox section will also be shown to view announcements you have previously r" +
-    "eceived.";
-            this.NewsDescriptionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // MainForm
             // 
