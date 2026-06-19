@@ -190,6 +190,12 @@ namespace BedrockCosmos.App
             JsonObject announcement = JsonNode.Parse(_currentNewsObj.ToJsonString())?.AsObject();
             announcement["surface"] = "LoginAnnouncement";
 
+            // Generates new UUID for announcement to prevent not showing in inbox for versions >26.30
+            string annoucementId = announcement["id"]?.GetValue<string>();
+            string newId = Guid.NewGuid().ToString();
+            announcement["id"] = newId;
+            announcement["instanceId"] = newId;
+
             // Handles inboxed persona item lists
             if (announcement["template"]?.GetValue<string>() == "ContentListNoCTA")
                 announcement["template"] = "HeroImageCTA";
@@ -199,7 +205,7 @@ namespace BedrockCosmos.App
                 announcement.ToJsonString(_jsonWriteIndented)
             );
 
-            CosmosConsole.WriteLine($"LoginAnnouncement queued for ID: {announcement["id"]?.GetValue<string>()}");
+            CosmosConsole.WriteLine($"LoginAnnouncement queued for ID: {annoucementId}");
         }
 
         internal static void AddNewsToHistory()
