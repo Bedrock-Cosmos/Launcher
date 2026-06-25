@@ -264,7 +264,7 @@ namespace BedrockCosmos
 
                     await Task.Run(() =>
                     {
-                        controller.StartProxy();
+                        try { controller.StartProxy(); } catch { }
                     });
 
                     if (!backgroundMode) // Different button/label behaviors depending on current mode.
