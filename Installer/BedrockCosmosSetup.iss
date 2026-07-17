@@ -64,9 +64,9 @@ Source: "BedrockCosmos\BouncyCastle.Crypto.dll"; DestDir: "{app}"; Flags: ignore
 Source: "BedrockCosmos\BrotliSharpLib.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\DiscordRPC.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\Microsoft.Bcl.AsyncInterfaces.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "BedrockCosmos\Microsoft.Web.WebView2.Core.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "BedrockCosmos\Microsoft.Web.WebView2.WinForms.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "BedrockCosmos\Microsoft.Web.WebView2.Wpf.dll"; DestDir: "{app}"; Flags: ignoreversion
+;Source: "BedrockCosmos\Microsoft.Web.WebView2.Core.dll"; DestDir: "{app}"; Flags: ignoreversion
+;Source: "BedrockCosmos\Microsoft.Web.WebView2.WinForms.dll"; DestDir: "{app}"; Flags: ignoreversion
+;Source: "BedrockCosmos\Microsoft.Web.WebView2.Wpf.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\Microsoft.Win32.Registry.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "BedrockCosmos\System.Buffers.dll"; DestDir: "{app}"; Flags: ignoreversion
