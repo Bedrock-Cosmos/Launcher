@@ -47,6 +47,8 @@
             this.AboutLabel = new System.Windows.Forms.Label();
             this.AboutBackButton = new System.Windows.Forms.Button();
             this.SettingsPage = new System.Windows.Forms.TabPage();
+            this.SkinPacksEditorButton = new BedrockCosmos.App.UI.RoundButton();
+            this.CapesEditorButton = new BedrockCosmos.App.UI.RoundButton();
             this.NewsDescriptionLabel = new System.Windows.Forms.Label();
             this.NewsSwitch = new BedrockCosmos.App.UI.Switch();
             this.NewsTitleLabel = new System.Windows.Forms.Label();
@@ -60,6 +62,13 @@
             this.BackgroundModeDescriptionLabel = new System.Windows.Forms.Label();
             this.BackgroundModeTitleLabel = new System.Windows.Forms.Label();
             this.BackgroundModeSwitch = new BedrockCosmos.App.UI.Switch();
+            this.MenuEditorPage = new System.Windows.Forms.TabPage();
+            this.EnableMenuItemLabel = new System.Windows.Forms.Label();
+            this.EnableMenuItemToggle = new BedrockCosmos.App.UI.Switch();
+            this.CustomMenuLabel = new System.Windows.Forms.Label();
+            this.CustomMenuToggle = new BedrockCosmos.App.UI.Switch();
+            this.MenuTreeView = new BedrockCosmos.App.UI.TreeViewControl();
+            this.MenuEditorBackButton = new System.Windows.Forms.Button();
             this.UpdatePage = new System.Windows.Forms.TabPage();
             this.ChangelogLabel = new System.Windows.Forms.LinkLabel();
             this.UpdateLabel = new System.Windows.Forms.Label();
@@ -86,6 +95,8 @@
             this.CloseButton = new System.Windows.Forms.Button();
             this.TrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.BackgroundModeTimer = new System.Windows.Forms.Timer(this.components);
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.TabControl.SuspendLayout();
             this.HomePage.SuspendLayout();
             this.AboutPage.SuspendLayout();
@@ -93,10 +104,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.DiscordIcon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.GitHubIcon)).BeginInit();
             this.SettingsPage.SuspendLayout();
+            this.MenuEditorPage.SuspendLayout();
             this.UpdatePage.SuspendLayout();
             this.DevPage.SuspendLayout();
             this.TopPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.AppIcon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // StatusLabel
@@ -116,6 +129,7 @@
             this.TabControl.Controls.Add(this.HomePage);
             this.TabControl.Controls.Add(this.AboutPage);
             this.TabControl.Controls.Add(this.SettingsPage);
+            this.TabControl.Controls.Add(this.MenuEditorPage);
             this.TabControl.Controls.Add(this.UpdatePage);
             this.TabControl.Controls.Add(this.DevPage);
             this.TabControl.Location = new System.Drawing.Point(-12, -5);
@@ -356,6 +370,8 @@
             // 
             this.SettingsPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.SettingsPage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.SettingsPage.Controls.Add(this.SkinPacksEditorButton);
+            this.SettingsPage.Controls.Add(this.CapesEditorButton);
             this.SettingsPage.Controls.Add(this.NewsDescriptionLabel);
             this.SettingsPage.Controls.Add(this.NewsSwitch);
             this.SettingsPage.Controls.Add(this.NewsTitleLabel);
@@ -375,6 +391,56 @@
             this.SettingsPage.Size = new System.Drawing.Size(816, 440);
             this.SettingsPage.TabIndex = 1;
             this.SettingsPage.Text = "Settings";
+            // 
+            // SkinPacksEditorButton
+            // 
+            this.SkinPacksEditorButton.BackColor = System.Drawing.Color.Transparent;
+            this.SkinPacksEditorButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.SkinPacksEditorButton.DialogResult = System.Windows.Forms.DialogResult.None;
+            this.SkinPacksEditorButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.SkinPacksEditorButton.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.SkinPacksEditorButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.SkinPacksEditorButton.HoverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.SkinPacksEditorButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.SkinPacksEditorButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.SkinPacksEditorButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            this.SkinPacksEditorButton.Location = new System.Drawing.Point(221, 387);
+            this.SkinPacksEditorButton.Name = "SkinPacksEditorButton";
+            this.SkinPacksEditorButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.SkinPacksEditorButton.PixelOffsetType = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            this.SkinPacksEditorButton.PressedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.SkinPacksEditorButton.PressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.SkinPacksEditorButton.Radius = 5;
+            this.SkinPacksEditorButton.Size = new System.Drawing.Size(133, 32);
+            this.SkinPacksEditorButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            this.SkinPacksEditorButton.TabIndex = 27;
+            this.SkinPacksEditorButton.Text = "Edit Skin Packs Tab";
+            this.SkinPacksEditorButton.Click += new System.EventHandler(this.SkinPacksEditorButton_Click);
+            // 
+            // CapesEditorButton
+            // 
+            this.CapesEditorButton.BackColor = System.Drawing.Color.Transparent;
+            this.CapesEditorButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.CapesEditorButton.DialogResult = System.Windows.Forms.DialogResult.None;
+            this.CapesEditorButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.CapesEditorButton.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.CapesEditorButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.CapesEditorButton.HoverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.CapesEditorButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.CapesEditorButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.CapesEditorButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            this.CapesEditorButton.Location = new System.Drawing.Point(82, 387);
+            this.CapesEditorButton.Name = "CapesEditorButton";
+            this.CapesEditorButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.CapesEditorButton.PixelOffsetType = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            this.CapesEditorButton.PressedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.CapesEditorButton.PressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.CapesEditorButton.Radius = 5;
+            this.CapesEditorButton.Size = new System.Drawing.Size(133, 32);
+            this.CapesEditorButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            this.CapesEditorButton.TabIndex = 26;
+            this.CapesEditorButton.Text = "Edit Capes Tab";
+            this.CapesEditorButton.Click += new System.EventHandler(this.CapesEditorButton_Click);
             // 
             // NewsDescriptionLabel
             // 
@@ -573,6 +639,110 @@
             this.BackgroundModeSwitch.UseVisualStyleBackColor = false;
             this.BackgroundModeSwitch.CheckedChanged += new System.EventHandler(this.BackgroundModeToggle_CheckedChanged);
             // 
+            // MenuEditorPage
+            // 
+            this.MenuEditorPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.MenuEditorPage.Controls.Add(this.label1);
+            this.MenuEditorPage.Controls.Add(this.pictureBox1);
+            this.MenuEditorPage.Controls.Add(this.EnableMenuItemLabel);
+            this.MenuEditorPage.Controls.Add(this.EnableMenuItemToggle);
+            this.MenuEditorPage.Controls.Add(this.CustomMenuLabel);
+            this.MenuEditorPage.Controls.Add(this.CustomMenuToggle);
+            this.MenuEditorPage.Controls.Add(this.MenuTreeView);
+            this.MenuEditorPage.Controls.Add(this.MenuEditorBackButton);
+            this.MenuEditorPage.Location = new System.Drawing.Point(4, 22);
+            this.MenuEditorPage.Name = "MenuEditorPage";
+            this.MenuEditorPage.Size = new System.Drawing.Size(816, 440);
+            this.MenuEditorPage.TabIndex = 6;
+            this.MenuEditorPage.Text = "Menu Editor";
+            // 
+            // EnableMenuItemLabel
+            // 
+            this.EnableMenuItemLabel.AutoSize = true;
+            this.EnableMenuItemLabel.BackColor = System.Drawing.Color.Transparent;
+            this.EnableMenuItemLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.EnableMenuItemLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.EnableMenuItemLabel.Location = new System.Drawing.Point(657, 106);
+            this.EnableMenuItemLabel.Name = "EnableMenuItemLabel";
+            this.EnableMenuItemLabel.Size = new System.Drawing.Size(49, 19);
+            this.EnableMenuItemLabel.TabIndex = 15;
+            this.EnableMenuItemLabel.Text = "Enable";
+            this.EnableMenuItemLabel.Visible = false;
+            // 
+            // EnableMenuItemToggle
+            // 
+            this.EnableMenuItemToggle.AutoSize = true;
+            this.EnableMenuItemToggle.BackColor = System.Drawing.Color.Transparent;
+            this.EnableMenuItemToggle.BaseColor = System.Drawing.Color.White;
+            this.EnableMenuItemToggle.BaseOffColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.EnableMenuItemToggle.BaseOnColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.EnableMenuItemToggle.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.EnableMenuItemToggle.Location = new System.Drawing.Point(611, 106);
+            this.EnableMenuItemToggle.Name = "EnableMenuItemToggle";
+            this.EnableMenuItemToggle.Size = new System.Drawing.Size(40, 20);
+            this.EnableMenuItemToggle.TabIndex = 14;
+            this.EnableMenuItemToggle.UseVisualStyleBackColor = false;
+            this.EnableMenuItemToggle.Visible = false;
+            this.EnableMenuItemToggle.Click += new System.EventHandler(this.EnableMenuItemToggle_Click);
+            // 
+            // CustomMenuLabel
+            // 
+            this.CustomMenuLabel.AutoSize = true;
+            this.CustomMenuLabel.BackColor = System.Drawing.Color.Transparent;
+            this.CustomMenuLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.CustomMenuLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.CustomMenuLabel.Location = new System.Drawing.Point(66, 42);
+            this.CustomMenuLabel.Name = "CustomMenuLabel";
+            this.CustomMenuLabel.Size = new System.Drawing.Size(206, 19);
+            this.CustomMenuLabel.TabIndex = 13;
+            this.CustomMenuLabel.Text = "Use Custom Cape Page Settings";
+            // 
+            // CustomMenuToggle
+            // 
+            this.CustomMenuToggle.AutoSize = true;
+            this.CustomMenuToggle.BackColor = System.Drawing.Color.Transparent;
+            this.CustomMenuToggle.BaseColor = System.Drawing.Color.White;
+            this.CustomMenuToggle.BaseOffColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.CustomMenuToggle.BaseOnColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.CustomMenuToggle.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.CustomMenuToggle.Location = new System.Drawing.Point(20, 42);
+            this.CustomMenuToggle.Name = "CustomMenuToggle";
+            this.CustomMenuToggle.Size = new System.Drawing.Size(40, 20);
+            this.CustomMenuToggle.TabIndex = 12;
+            this.CustomMenuToggle.UseVisualStyleBackColor = false;
+            this.CustomMenuToggle.CheckedChanged += new System.EventHandler(this.CustomMenuToggle_CheckedChanged);
+            // 
+            // MenuTreeView
+            // 
+            this.MenuTreeView.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.MenuTreeView.Location = new System.Drawing.Point(20, 74);
+            this.MenuTreeView.MultiSelect = true;
+            this.MenuTreeView.Name = "MenuTreeView";
+            this.MenuTreeView.Size = new System.Drawing.Size(291, 305);
+            this.MenuTreeView.TabIndex = 7;
+            this.MenuTreeView.Text = "MenuTreeView";
+            this.MenuTreeView.Visible = false;
+            this.MenuTreeView.SelectedNodesChanged += new System.EventHandler(this.MenuTreeView_SelectedNodesChanged);
+            // 
+            // MenuEditorBackButton
+            // 
+            this.MenuEditorBackButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.MenuEditorBackButton.BackColor = System.Drawing.Color.Transparent;
+            this.MenuEditorBackButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("MenuEditorBackButton.BackgroundImage")));
+            this.MenuEditorBackButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.MenuEditorBackButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.MenuEditorBackButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.MenuEditorBackButton.FlatAppearance.BorderSize = 0;
+            this.MenuEditorBackButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.MenuEditorBackButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.MenuEditorBackButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.MenuEditorBackButton.Location = new System.Drawing.Point(17, 394);
+            this.MenuEditorBackButton.Name = "MenuEditorBackButton";
+            this.MenuEditorBackButton.Size = new System.Drawing.Size(25, 25);
+            this.MenuEditorBackButton.TabIndex = 5;
+            this.MenuEditorBackButton.UseVisualStyleBackColor = false;
+            this.MenuEditorBackButton.Click += new System.EventHandler(this.SettingsButton_Click);
+            // 
             // UpdatePage
             // 
             this.UpdatePage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
@@ -583,7 +753,7 @@
             this.UpdatePage.Controls.Add(this.UpdateButton);
             this.UpdatePage.Location = new System.Drawing.Point(4, 22);
             this.UpdatePage.Name = "UpdatePage";
-            this.UpdatePage.Size = new System.Drawing.Size(806, 440);
+            this.UpdatePage.Size = new System.Drawing.Size(816, 440);
             this.UpdatePage.TabIndex = 4;
             this.UpdatePage.Text = "Update";
             // 
@@ -640,7 +810,7 @@
             this.CancelUpdateButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.CancelUpdateButton.TabIndex = 12;
             this.CancelUpdateButton.Text = "Cancel";
-            this.CancelUpdateButton.Click += new System.EventHandler(this.CancelUpdateButton_Click);
+            this.CancelUpdateButton.Click += new System.EventHandler(this.ReturnToHomeScreen);
             // 
             // UpdateButton
             // 
@@ -1035,6 +1205,30 @@
             this.BackgroundModeTimer.Interval = 2500;
             this.BackgroundModeTimer.Tick += new System.EventHandler(this.BackgroundModeTimer_Tick);
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pictureBox1.Location = new System.Drawing.Point(549, 144);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(215, 203);
+            this.pictureBox1.TabIndex = 4;
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.Visible = false;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.Color.Transparent;
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.label1.Location = new System.Drawing.Point(395, 397);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(41, 19);
+            this.label1.TabIndex = 16;
+            this.label1.Text = "Label";
+            this.label1.Visible = false;
+            // 
             // MainForm
             // 
             this.AccessibleName = "Bedrock Cosmos";
@@ -1059,12 +1253,15 @@
             ((System.ComponentModel.ISupportInitialize)(this.GitHubIcon)).EndInit();
             this.SettingsPage.ResumeLayout(false);
             this.SettingsPage.PerformLayout();
+            this.MenuEditorPage.ResumeLayout(false);
+            this.MenuEditorPage.PerformLayout();
             this.UpdatePage.ResumeLayout(false);
             this.DevPage.ResumeLayout(false);
             this.DevPage.PerformLayout();
             this.TopPanel.ResumeLayout(false);
             this.TopPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.AppIcon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1126,6 +1323,17 @@
         private App.UI.Switch NewsSwitch;
         private System.Windows.Forms.Label NewsTitleLabel;
         private System.Windows.Forms.Label NewsDescriptionLabel;
+        private System.Windows.Forms.TabPage MenuEditorPage;
+        private App.UI.RoundButton SkinPacksEditorButton;
+        private App.UI.RoundButton CapesEditorButton;
+        private System.Windows.Forms.Button MenuEditorBackButton;
+        private App.UI.TreeViewControl MenuTreeView;
+        private System.Windows.Forms.Label CustomMenuLabel;
+        private App.UI.Switch CustomMenuToggle;
+        private System.Windows.Forms.Label EnableMenuItemLabel;
+        private App.UI.Switch EnableMenuItemToggle;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
 

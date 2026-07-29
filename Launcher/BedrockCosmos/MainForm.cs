@@ -1,12 +1,16 @@
 ﻿using AutoUpdaterDotNET;
 using BedrockCosmos.App;
+using BedrockCosmos.App.UI;
 using BedrockCosmos.Proxy;
 using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 // =============================================================================
 // Bedrock Cosmos - Copyright (c) 2026
@@ -469,6 +473,33 @@ namespace BedrockCosmos
                 DiscordRichPresence.UpdatePresence();
         }
 
+        private void CapesEditorButton_Click(object sender, EventArgs e)
+        {
+            TabControl.SelectedTab = MenuEditorPage;
+            MenuTreeView.Nodes.Clear();
+
+            TreeViewNode defaultCapes = new TreeViewNode("Default Capes"); 
+            defaultCapes.Nodes.Add(new TreeViewNode("Crafter Cape") { Tag = "00000000-0000-4000-0000-000000000002" });
+            defaultCapes.Nodes.Add(new TreeViewNode("Founder's Cape") { Tag = "00000000-0000-4000-0000-000000000003" });
+            defaultCapes.Nodes.Add(new TreeViewNode("Mojang Studios Cape") { Tag = "00000000-0000-4000-0000-000000000004" });
+            defaultCapes.Nodes.Add(new TreeViewNode("The PanCape!") { Tag = "00000000-0000-4000-0000-000000000005" });
+            MenuTreeView.Nodes.Add(defaultCapes);
+
+
+            TreeViewNode vanillaCapes = new TreeViewNode("Vanilla Capes");
+            vanillaCapes.Nodes.Add(new TreeViewNode("Minecon 2011 Cape") { Tag = "10000000-0000-4000-0000-000000000002" });
+            vanillaCapes.Nodes.Add(new TreeViewNode("Minecon 2012 Cape") { Tag = "10000000-0000-4000-0000-000000000003" });
+            vanillaCapes.Nodes.Add(new TreeViewNode("Minecon 2013 Cape") { Tag = "10000000-0000-4000-0000-000000000004" });
+            vanillaCapes.Nodes.Add(new TreeViewNode("Minecon 2015 Cape") { Tag = "10000000-0000-4000-0000-000000000005" });
+            vanillaCapes.Nodes.Add(new TreeViewNode("Minecon 2016 Cape") { Tag = "10000000-0000-4000-0000-000000000006" });
+            MenuTreeView.Nodes.Add(vanillaCapes);
+        }
+
+        private void SkinPacksEditorButton_Click(object sender, EventArgs e)
+        {
+            TabControl.SelectedTab = MenuEditorPage;
+        }
+
         private async void DownloadZipButton_Click(object sender, EventArgs e)
         {
             string fileUrl = "https://github.com/Bedrock-Cosmos/Responses/archive/refs/heads/main.zip";
@@ -614,9 +645,48 @@ namespace BedrockCosmos
             }
         }
 
-        private void CancelUpdateButton_Click(object sender, EventArgs e)
+        private void CustomMenuToggle_CheckedChanged(object sender, EventArgs e)
         {
-            TabControl.SelectedTab = HomePage;
+            MenuTreeView.Visible = CustomMenuToggle.Checked;
+            EnableMenuItemToggle.Visible = CustomMenuToggle.Checked;
+            EnableMenuItemLabel.Visible = CustomMenuToggle.Checked;
+            pictureBox1.Visible = CustomMenuToggle.Checked;
+            label1.Visible = CustomMenuToggle.Checked;
+        }
+
+        private void MenuTreeView_SelectedNodesChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                string tag = "";
+
+                if (MenuTreeView.SelectedNodes[0].Tag != null)
+                    tag = ", " + MenuTreeView.SelectedNodes[0].Tag.ToString();
+
+                label1.Text = MenuTreeView.SelectedNodes[0].Text + tag;
+                EnableMenuItemToggle.Checked = MenuTreeView.SelectedNodes[0].ForeColor == Color.Green;
+
+                if (MenuTreeView.SelectedNodes[1] != null)
+                {
+                    label1.Text = "Multiple Items Selected";
+                    EnableMenuItemToggle.Checked = MenuTreeView.SelectedNodes.All(n => n.ForeColor == Color.Green);
+                }
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+
+            }
+        }
+
+        private void EnableMenuItemToggle_Click(object sender, EventArgs e)
+        {
+            foreach (TreeViewNode node in MenuTreeView.SelectedNodes)
+            {
+                if (EnableMenuItemToggle.Checked)
+                    node.SetForeColorRecursive(Color.Green);
+                else
+                    node.SetForeColorRecursive(null);
+            }
         }
     }
 }

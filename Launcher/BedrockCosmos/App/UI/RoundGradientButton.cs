@@ -247,7 +247,7 @@ namespace BedrockCosmos.App.UI
             Font = new Font("Segoe UI", 10f);
             ForeColor = ColorTranslator.FromHtml("#F25D59");
             Size = new Size(144, 47);
-            MinimumSize = new Size(144, 47);
+            //MinimumSize = new Size(144, 47); Suggested minimum if keeping rounding at 20
             Cursor = Cursors.Hand;
 
             animationTimer = new Timer();
