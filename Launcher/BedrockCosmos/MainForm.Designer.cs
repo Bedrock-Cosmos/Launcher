@@ -63,6 +63,13 @@
             this.BackgroundModeTitleLabel = new System.Windows.Forms.Label();
             this.BackgroundModeSwitch = new BedrockCosmos.App.UI.Switch();
             this.MenuEditorPage = new System.Windows.Forms.TabPage();
+            this.ResetNodesButton = new BedrockCosmos.App.UI.RoundButton();
+            this.RemoveNodeButton = new BedrockCosmos.App.UI.RoundButton();
+            this.AddNodeButton = new BedrockCosmos.App.UI.RoundButton();
+            this.NodeDownButton = new System.Windows.Forms.Button();
+            this.NodeUpButton = new System.Windows.Forms.Button();
+            this.NodeStatus = new System.Windows.Forms.Label();
+            this.NodeThumbnail = new System.Windows.Forms.PictureBox();
             this.EnableMenuItemLabel = new System.Windows.Forms.Label();
             this.EnableMenuItemToggle = new BedrockCosmos.App.UI.Switch();
             this.CustomMenuLabel = new System.Windows.Forms.Label();
@@ -95,8 +102,6 @@
             this.CloseButton = new System.Windows.Forms.Button();
             this.TrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.BackgroundModeTimer = new System.Windows.Forms.Timer(this.components);
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.TabControl.SuspendLayout();
             this.HomePage.SuspendLayout();
             this.AboutPage.SuspendLayout();
@@ -105,11 +110,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.GitHubIcon)).BeginInit();
             this.SettingsPage.SuspendLayout();
             this.MenuEditorPage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.NodeThumbnail)).BeginInit();
             this.UpdatePage.SuspendLayout();
             this.DevPage.SuspendLayout();
             this.TopPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.AppIcon)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // StatusLabel
@@ -642,8 +647,13 @@
             // MenuEditorPage
             // 
             this.MenuEditorPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.MenuEditorPage.Controls.Add(this.label1);
-            this.MenuEditorPage.Controls.Add(this.pictureBox1);
+            this.MenuEditorPage.Controls.Add(this.ResetNodesButton);
+            this.MenuEditorPage.Controls.Add(this.RemoveNodeButton);
+            this.MenuEditorPage.Controls.Add(this.AddNodeButton);
+            this.MenuEditorPage.Controls.Add(this.NodeDownButton);
+            this.MenuEditorPage.Controls.Add(this.NodeUpButton);
+            this.MenuEditorPage.Controls.Add(this.NodeStatus);
+            this.MenuEditorPage.Controls.Add(this.NodeThumbnail);
             this.MenuEditorPage.Controls.Add(this.EnableMenuItemLabel);
             this.MenuEditorPage.Controls.Add(this.EnableMenuItemToggle);
             this.MenuEditorPage.Controls.Add(this.CustomMenuLabel);
@@ -656,13 +666,153 @@
             this.MenuEditorPage.TabIndex = 6;
             this.MenuEditorPage.Text = "Menu Editor";
             // 
+            // ResetNodesButton
+            // 
+            this.ResetNodesButton.BackColor = System.Drawing.Color.Transparent;
+            this.ResetNodesButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.ResetNodesButton.DialogResult = System.Windows.Forms.DialogResult.None;
+            this.ResetNodesButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.ResetNodesButton.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.ResetNodesButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.ResetNodesButton.HoverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.ResetNodesButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.ResetNodesButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.ResetNodesButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            this.ResetNodesButton.Location = new System.Drawing.Point(600, 330);
+            this.ResetNodesButton.MinimumSize = new System.Drawing.Size(144, 47);
+            this.ResetNodesButton.Name = "ResetNodesButton";
+            this.ResetNodesButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.ResetNodesButton.PixelOffsetType = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            this.ResetNodesButton.PressedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.ResetNodesButton.PressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.ResetNodesButton.Radius = 5;
+            this.ResetNodesButton.Size = new System.Drawing.Size(176, 47);
+            this.ResetNodesButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            this.ResetNodesButton.TabIndex = 22;
+            this.ResetNodesButton.Text = "Reset To Default";
+            this.ResetNodesButton.Click += new System.EventHandler(this.ResetNodesButton_Click);
+            // 
+            // RemoveNodeButton
+            // 
+            this.RemoveNodeButton.BackColor = System.Drawing.Color.Transparent;
+            this.RemoveNodeButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.RemoveNodeButton.DialogResult = System.Windows.Forms.DialogResult.None;
+            this.RemoveNodeButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.RemoveNodeButton.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.RemoveNodeButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.RemoveNodeButton.HoverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.RemoveNodeButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.RemoveNodeButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.RemoveNodeButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            this.RemoveNodeButton.Location = new System.Drawing.Point(600, 280);
+            this.RemoveNodeButton.MinimumSize = new System.Drawing.Size(144, 47);
+            this.RemoveNodeButton.Name = "RemoveNodeButton";
+            this.RemoveNodeButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.RemoveNodeButton.PixelOffsetType = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            this.RemoveNodeButton.PressedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.RemoveNodeButton.PressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.RemoveNodeButton.Radius = 5;
+            this.RemoveNodeButton.Size = new System.Drawing.Size(176, 47);
+            this.RemoveNodeButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            this.RemoveNodeButton.TabIndex = 21;
+            this.RemoveNodeButton.Text = "Remove Selected Nodes";
+            this.RemoveNodeButton.Click += new System.EventHandler(this.RemoveNodeButton_Click);
+            // 
+            // AddNodeButton
+            // 
+            this.AddNodeButton.BackColor = System.Drawing.Color.Transparent;
+            this.AddNodeButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.AddNodeButton.DialogResult = System.Windows.Forms.DialogResult.None;
+            this.AddNodeButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.AddNodeButton.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.AddNodeButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.AddNodeButton.HoverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.AddNodeButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.AddNodeButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.AddNodeButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            this.AddNodeButton.Location = new System.Drawing.Point(600, 230);
+            this.AddNodeButton.MinimumSize = new System.Drawing.Size(144, 47);
+            this.AddNodeButton.Name = "AddNodeButton";
+            this.AddNodeButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.AddNodeButton.PixelOffsetType = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            this.AddNodeButton.PressedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.AddNodeButton.PressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.AddNodeButton.Radius = 5;
+            this.AddNodeButton.Size = new System.Drawing.Size(176, 47);
+            this.AddNodeButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            this.AddNodeButton.TabIndex = 20;
+            this.AddNodeButton.Text = "Add Node";
+            this.AddNodeButton.Click += new System.EventHandler(this.AddNodeButton_Click);
+            // 
+            // NodeDownButton
+            // 
+            this.NodeDownButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.NodeDownButton.BackColor = System.Drawing.Color.Transparent;
+            this.NodeDownButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("NodeDownButton.BackgroundImage")));
+            this.NodeDownButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.NodeDownButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.NodeDownButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.NodeDownButton.FlatAppearance.BorderSize = 0;
+            this.NodeDownButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.NodeDownButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.NodeDownButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.NodeDownButton.Location = new System.Drawing.Point(555, 352);
+            this.NodeDownButton.Name = "NodeDownButton";
+            this.NodeDownButton.Size = new System.Drawing.Size(25, 25);
+            this.NodeDownButton.TabIndex = 18;
+            this.NodeDownButton.UseVisualStyleBackColor = false;
+            this.NodeDownButton.Click += new System.EventHandler(this.NodeDownButton_Click);
+            // 
+            // NodeUpButton
+            // 
+            this.NodeUpButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.NodeUpButton.BackColor = System.Drawing.Color.Transparent;
+            this.NodeUpButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("NodeUpButton.BackgroundImage")));
+            this.NodeUpButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.NodeUpButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.NodeUpButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.NodeUpButton.FlatAppearance.BorderSize = 0;
+            this.NodeUpButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.NodeUpButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.NodeUpButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.NodeUpButton.Location = new System.Drawing.Point(555, 321);
+            this.NodeUpButton.Name = "NodeUpButton";
+            this.NodeUpButton.Size = new System.Drawing.Size(25, 25);
+            this.NodeUpButton.TabIndex = 17;
+            this.NodeUpButton.UseVisualStyleBackColor = false;
+            this.NodeUpButton.Click += new System.EventHandler(this.NodeUpButton_Click);
+            // 
+            // NodeStatus
+            // 
+            this.NodeStatus.BackColor = System.Drawing.Color.Transparent;
+            this.NodeStatus.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.NodeStatus.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.NodeStatus.Location = new System.Drawing.Point(600, 152);
+            this.NodeStatus.Name = "NodeStatus";
+            this.NodeStatus.Size = new System.Drawing.Size(176, 75);
+            this.NodeStatus.TabIndex = 16;
+            this.NodeStatus.Text = "Label";
+            this.NodeStatus.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.NodeStatus.Visible = false;
+            // 
+            // NodeThumbnail
+            // 
+            this.NodeThumbnail.BackColor = System.Drawing.Color.Transparent;
+            this.NodeThumbnail.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.NodeThumbnail.Location = new System.Drawing.Point(604, 74);
+            this.NodeThumbnail.Name = "NodeThumbnail";
+            this.NodeThumbnail.Size = new System.Drawing.Size(172, 75);
+            this.NodeThumbnail.TabIndex = 4;
+            this.NodeThumbnail.TabStop = false;
+            this.NodeThumbnail.Visible = false;
+            // 
             // EnableMenuItemLabel
             // 
             this.EnableMenuItemLabel.AutoSize = true;
             this.EnableMenuItemLabel.BackColor = System.Drawing.Color.Transparent;
             this.EnableMenuItemLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.EnableMenuItemLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.EnableMenuItemLabel.Location = new System.Drawing.Point(657, 106);
+            this.EnableMenuItemLabel.Location = new System.Drawing.Point(416, 42);
             this.EnableMenuItemLabel.Name = "EnableMenuItemLabel";
             this.EnableMenuItemLabel.Size = new System.Drawing.Size(49, 19);
             this.EnableMenuItemLabel.TabIndex = 15;
@@ -677,7 +827,7 @@
             this.EnableMenuItemToggle.BaseOffColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.EnableMenuItemToggle.BaseOnColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.EnableMenuItemToggle.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.EnableMenuItemToggle.Location = new System.Drawing.Point(611, 106);
+            this.EnableMenuItemToggle.Location = new System.Drawing.Point(370, 42);
             this.EnableMenuItemToggle.Name = "EnableMenuItemToggle";
             this.EnableMenuItemToggle.Size = new System.Drawing.Size(40, 20);
             this.EnableMenuItemToggle.TabIndex = 14;
@@ -718,7 +868,7 @@
             this.MenuTreeView.Location = new System.Drawing.Point(20, 74);
             this.MenuTreeView.MultiSelect = true;
             this.MenuTreeView.Name = "MenuTreeView";
-            this.MenuTreeView.Size = new System.Drawing.Size(291, 305);
+            this.MenuTreeView.Size = new System.Drawing.Size(529, 305);
             this.MenuTreeView.TabIndex = 7;
             this.MenuTreeView.Text = "MenuTreeView";
             this.MenuTreeView.Visible = false;
@@ -1205,30 +1355,6 @@
             this.BackgroundModeTimer.Interval = 2500;
             this.BackgroundModeTimer.Tick += new System.EventHandler(this.BackgroundModeTimer_Tick);
             // 
-            // pictureBox1
-            // 
-            this.pictureBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pictureBox1.Location = new System.Drawing.Point(549, 144);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(215, 203);
-            this.pictureBox1.TabIndex = 4;
-            this.pictureBox1.TabStop = false;
-            this.pictureBox1.Visible = false;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.label1.Location = new System.Drawing.Point(395, 397);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(41, 19);
-            this.label1.TabIndex = 16;
-            this.label1.Text = "Label";
-            this.label1.Visible = false;
-            // 
             // MainForm
             // 
             this.AccessibleName = "Bedrock Cosmos";
@@ -1255,13 +1381,13 @@
             this.SettingsPage.PerformLayout();
             this.MenuEditorPage.ResumeLayout(false);
             this.MenuEditorPage.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.NodeThumbnail)).EndInit();
             this.UpdatePage.ResumeLayout(false);
             this.DevPage.ResumeLayout(false);
             this.DevPage.PerformLayout();
             this.TopPanel.ResumeLayout(false);
             this.TopPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.AppIcon)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1332,8 +1458,13 @@
         private App.UI.Switch CustomMenuToggle;
         private System.Windows.Forms.Label EnableMenuItemLabel;
         private App.UI.Switch EnableMenuItemToggle;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Label NodeStatus;
+        private System.Windows.Forms.PictureBox NodeThumbnail;
+        private System.Windows.Forms.Button NodeDownButton;
+        private System.Windows.Forms.Button NodeUpButton;
+        private App.UI.RoundButton ResetNodesButton;
+        private App.UI.RoundButton RemoveNodeButton;
+        private App.UI.RoundButton AddNodeButton;
     }
 }
 

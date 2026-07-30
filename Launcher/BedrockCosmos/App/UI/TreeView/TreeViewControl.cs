@@ -886,7 +886,7 @@ namespace BedrockCosmos.App.UI
             {
                 SelectedNodes.Remove(node);
 
-                // If we just removed both the anchor start AND end then reset them
+                // If removing both the anchor start AND end then reset them
                 if (_anchoredNodeStart == node && _anchoredNodeEnd == node)
                 {
                     if (SelectedNodes.Count > 0)
@@ -901,7 +901,7 @@ namespace BedrockCosmos.App.UI
                     }
                 }
 
-                // If we just removed the anchor start then update it accordingly
+                // If removing the anchor start then update it accordingly
                 if (_anchoredNodeStart == node)
                 {
                     if (_anchoredNodeEnd.VisibleIndex < node.VisibleIndex)
@@ -918,7 +918,7 @@ namespace BedrockCosmos.App.UI
                     }
                 }
 
-                // If we just removed the anchor end then update it accordingly
+                // If removing the anchor end then update it accordingly
                 if (_anchoredNodeEnd == node)
                 {
                     if (_anchoredNodeStart.VisibleIndex < node.VisibleIndex)
@@ -944,6 +944,76 @@ namespace BedrockCosmos.App.UI
             }
 
             Invalidate();
+        }
+
+        // Moves a single node one position earlier among its siblings
+        // (siblings = ParentNode.Nodes, or the tree's root Nodes if it's a
+        // root node). Returns true if the node actually moved. Does nothing
+        // if the node is already first among its siblings.
+        public bool MoveNodeUp(TreeViewNode node)
+        {
+            return MoveNode(node, -1);
+        }
+
+        // Moves a single node one position later among its siblings. Returns
+        // true if the node actually moved. Does nothing if the node is
+        // already last among its siblings.
+        public bool MoveNodeDown(TreeViewNode node)
+        {
+            return MoveNode(node, 1);
+        }
+
+        private bool MoveNode(TreeViewNode node, int direction)
+        {
+            if (node == null)
+            {
+                return false;
+            }
+
+            ObservableList<TreeViewNode> siblings = node.ParentNode != null ? node.ParentNode.Nodes : Nodes;
+
+            int index = siblings.IndexOf(node);
+            int newIndex = index + direction;
+
+            if (index < 0 || newIndex < 0 || newIndex >= siblings.Count)
+            {
+                return false;
+            }
+
+            siblings.Move(index, newIndex);
+
+            UpdateNodes();
+            EnsureVisible();
+
+            return true;
+        }
+
+        // Moves every currently selected node up by one position among its
+        // siblings. Selected nodes are processed top-to-bottom so a
+        // contiguous run of selected siblings shifts up together correctly.
+        // Note: if TreeViewNodeSorter is set, a later add/rename that
+        // triggers a re-sort will undo manual reordering like this.
+        public void MoveSelectedNodesUp()
+        {
+            List<TreeViewNode> ordered = SelectedNodes.OrderBy(n => n.VisibleIndex).ToList();
+
+            foreach (TreeViewNode node in ordered)
+            {
+                MoveNodeUp(node);
+            }
+        }
+
+        // Moves every currently selected node down by one position among its
+        // siblings. Selected nodes are processed bottom-to-top so a
+        // contiguous run of selected siblings shifts down together correctly.
+        public void MoveSelectedNodesDown()
+        {
+            List<TreeViewNode> ordered = SelectedNodes.OrderByDescending(n => n.VisibleIndex).ToList();
+
+            foreach (TreeViewNode node in ordered)
+            {
+                MoveNodeDown(node);
+            }
         }
 
         public Rectangle GetNodeFullRowArea(TreeViewNode node)

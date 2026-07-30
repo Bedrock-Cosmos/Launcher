@@ -3,14 +3,13 @@ using BedrockCosmos.App;
 using BedrockCosmos.App.UI;
 using BedrockCosmos.Proxy;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Documents;
 using System.Windows.Forms;
-using System.Xml.Linq;
 
 // =============================================================================
 // Bedrock Cosmos - Copyright (c) 2026
@@ -650,8 +649,8 @@ namespace BedrockCosmos
             MenuTreeView.Visible = CustomMenuToggle.Checked;
             EnableMenuItemToggle.Visible = CustomMenuToggle.Checked;
             EnableMenuItemLabel.Visible = CustomMenuToggle.Checked;
-            pictureBox1.Visible = CustomMenuToggle.Checked;
-            label1.Visible = CustomMenuToggle.Checked;
+            NodeThumbnail.Visible = CustomMenuToggle.Checked;
+            NodeStatus.Visible = CustomMenuToggle.Checked;
         }
 
         private void MenuTreeView_SelectedNodesChanged(object sender, EventArgs e)
@@ -663,12 +662,12 @@ namespace BedrockCosmos
                 if (MenuTreeView.SelectedNodes[0].Tag != null)
                     tag = ", " + MenuTreeView.SelectedNodes[0].Tag.ToString();
 
-                label1.Text = MenuTreeView.SelectedNodes[0].Text + tag;
+                NodeStatus.Text = MenuTreeView.SelectedNodes[0].Text + tag;
                 EnableMenuItemToggle.Checked = MenuTreeView.SelectedNodes[0].ForeColor == Color.Green;
 
-                if (MenuTreeView.SelectedNodes[1] != null)
+                if (MenuTreeView.SelectedNodes.Count > 1)
                 {
-                    label1.Text = "Multiple Items Selected";
+                    NodeStatus.Text = "Multiple Items Selected";
                     EnableMenuItemToggle.Checked = MenuTreeView.SelectedNodes.All(n => n.ForeColor == Color.Green);
                 }
             }
@@ -683,9 +682,88 @@ namespace BedrockCosmos
             foreach (TreeViewNode node in MenuTreeView.SelectedNodes)
             {
                 if (EnableMenuItemToggle.Checked)
+                {
                     node.SetForeColorRecursive(Color.Green);
+                    node.UpdateAncestorForeColors();
+                }
                 else
+                {
                     node.SetForeColorRecursive(null);
+                    node.UpdateAncestorForeColors();
+                }
+            }
+        }
+
+        private void NodeUpButton_Click(object sender, EventArgs e)
+        {
+            MenuTreeView.MoveSelectedNodesUp();
+        }
+
+        private void NodeDownButton_Click(object sender, EventArgs e)
+        {
+            MenuTreeView.MoveSelectedNodesDown();
+        }
+
+        private void AddNodeButton_Click(object sender, EventArgs e)
+        {
+            TreeViewNode target = MenuTreeView.FindNode(@"Default Capes");
+            if (target != null)
+            {
+                TreeViewNode newNode = new TreeViewNode("Dummy Cape");
+                target.Nodes.Add(newNode);
+                target.Expanded = true;
+
+                newNode.UpdateAncestorForeColors();
+            }
+        }
+
+        private void RemoveNodeButton_Click(object sender, EventArgs e)
+        {
+            if (!NodeStatus.Text.StartsWith("This action will delete"))
+            {
+                NodeStatus.Text = $"This action will delete {MenuTreeView.SelectedNodes.Count} nodes! Select Remove again to continue.";
+            }
+            else
+            {
+                List<TreeViewNode> toRemove = MenuTreeView.SelectedNodes.ToList();
+
+                foreach (TreeViewNode node in toRemove)
+                {
+                    node.Remove();
+                    node.UpdateAncestorForeColors();
+                }
+
+                NodeStatus.Text = "Nodes removed!";
+            }
+        }
+
+        private void ResetNodesButton_Click(object sender, EventArgs e)
+        {
+            if (!NodeStatus.Text.StartsWith("This action will reset"))
+            {
+                NodeStatus.Text = "This action will reset all nodes to their initial state. Select Reset again to continue.";
+            }
+            else
+            {
+                MenuTreeView.Nodes.Clear();
+
+                TreeViewNode defaultCapes = new TreeViewNode("Default Capes");
+                defaultCapes.Nodes.Add(new TreeViewNode("Crafter Cape") { Tag = "00000000-0000-4000-0000-000000000002" });
+                defaultCapes.Nodes.Add(new TreeViewNode("Founder's Cape") { Tag = "00000000-0000-4000-0000-000000000003" });
+                defaultCapes.Nodes.Add(new TreeViewNode("Mojang Studios Cape") { Tag = "00000000-0000-4000-0000-000000000004" });
+                defaultCapes.Nodes.Add(new TreeViewNode("The PanCape!") { Tag = "00000000-0000-4000-0000-000000000005" });
+                MenuTreeView.Nodes.Add(defaultCapes);
+
+
+                TreeViewNode vanillaCapes = new TreeViewNode("Vanilla Capes");
+                vanillaCapes.Nodes.Add(new TreeViewNode("Minecon 2011 Cape") { Tag = "10000000-0000-4000-0000-000000000002" });
+                vanillaCapes.Nodes.Add(new TreeViewNode("Minecon 2012 Cape") { Tag = "10000000-0000-4000-0000-000000000003" });
+                vanillaCapes.Nodes.Add(new TreeViewNode("Minecon 2013 Cape") { Tag = "10000000-0000-4000-0000-000000000004" });
+                vanillaCapes.Nodes.Add(new TreeViewNode("Minecon 2015 Cape") { Tag = "10000000-0000-4000-0000-000000000005" });
+                vanillaCapes.Nodes.Add(new TreeViewNode("Minecon 2016 Cape") { Tag = "10000000-0000-4000-0000-000000000006" });
+                MenuTreeView.Nodes.Add(vanillaCapes);
+
+                NodeStatus.Text = "Nodes reset!";
             }
         }
     }

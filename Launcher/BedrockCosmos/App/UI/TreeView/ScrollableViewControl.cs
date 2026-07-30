@@ -17,6 +17,7 @@ namespace BedrockCosmos.App.UI
         private bool _isDragging;
         private bool _disposed;
 
+        // The size of the "virtual" content being drawn, in content coordinates.
         protected Size ContentSize
         {
             get { return _contentSize; }
@@ -34,6 +35,8 @@ namespace BedrockCosmos.App.UI
             }
         }
 
+        // The currently visible region, expressed in content coordinates
+        // (Top/Left are the current scroll offsets).
         protected Rectangle Viewport
         {
             get
@@ -48,6 +51,7 @@ namespace BedrockCosmos.App.UI
             }
         }
 
+        // The current mouse position, translated into content coordinates
         protected Point OffsetMousePosition
         {
             get
@@ -61,6 +65,8 @@ namespace BedrockCosmos.App.UI
             }
         }
 
+        // Maximum number of content pixels the view will auto-scroll per
+        // drag-timer tick.
         protected int MaxDragChange { get; set; }
 
         protected bool IsDragging
@@ -106,11 +112,21 @@ namespace BedrockCosmos.App.UI
         {
             if (!_disposed && disposing)
             {
-                _dragTimer.Stop();
-                _dragTimer.Dispose();
+                if (_dragTimer != null)
+                {
+                    _dragTimer.Stop();
+                    _dragTimer.Dispose();
+                }
 
-                _vScrollBar.ValueChanged -= ScrollBar_ValueChanged;
-                _hScrollBar.ValueChanged -= ScrollBar_ValueChanged;
+                if (_vScrollBar != null)
+                {
+                    _vScrollBar.ValueChanged -= ScrollBar_ValueChanged;
+                }
+
+                if (_hScrollBar != null)
+                {
+                    _hScrollBar.ValueChanged -= ScrollBar_ValueChanged;
+                }
 
                 _disposed = true;
             }
@@ -147,7 +163,8 @@ namespace BedrockCosmos.App.UI
             g.TranslateTransform(Viewport.X, Viewport.Y);
         }
 
-        // Recomputes scrollbar visibility and ranges based on ContentSize.
+        // Recomputes scrollbar visibility and ranges based on ContentSize
+        // versus the current client area.
         private void UpdateScrollBars()
         {
             bool needV = _contentSize.Height > ClientRectangle.Height;
@@ -196,7 +213,8 @@ namespace BedrockCosmos.App.UI
             }
         }
 
-        // Scrolls in response to the mouse wheel.
+        // Scrolls in response to the mouse wheel. Vertical scrolling is used
+        // by default; hold Shift to scroll horizontally instead.
         protected virtual void HandleMouseWheel(MouseEventArgs e)
         {
             bool wantHorizontal = ModifierKeys == Keys.Shift;
@@ -271,8 +289,7 @@ namespace BedrockCosmos.App.UI
             _dragTimer.Stop();
         }
 
-        // Override in derived classes to draw content in content-space
-        // coordinates (i.e. as if there were no scrolling at all).
+        // Override in derived classes to draw content in content-space coords.
         protected virtual void PaintContent(Graphics g)
         {
         }

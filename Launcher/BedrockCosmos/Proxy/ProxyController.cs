@@ -278,6 +278,7 @@ namespace BedrockCosmos.Proxy
                         case ProxyUrlDefinitions.EnchantedUrl:
                         case ProxyUrlDefinitions.GalaxiteUrl:
                         case ProxyUrlDefinitions.LifeboatUrl:
+                        case ProxyUrlDefinitions.OneBlockUrl:
                         case ProxyUrlDefinitions.MegaSmpUrl:
                         case ProxyUrlDefinitions.MinevilleUrl:
                         case ProxyUrlDefinitions.MobMazeUrl:

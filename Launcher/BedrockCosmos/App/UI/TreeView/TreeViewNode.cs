@@ -202,7 +202,9 @@ namespace BedrockCosmos.App.UI
             }
         }
 
-        // Sets ForeColor on this node and every node beneath it.
+        // Sets ForeColor on this node and every node beneath it (pass null to
+        // clear the override back to the tree's default color). Repaints the
+        // tree once afterward rather than per-node.
         public void SetForeColorRecursive(Color? color)
         {
             ApplyForeColorRecursive(color);
@@ -221,6 +223,59 @@ namespace BedrockCosmos.App.UI
             {
                 child.ApplyForeColorRecursive(color);
             }
+        }
+
+        // Call this after changing THIS node's ForeColor (setting it,
+        // clearing it back to null, or changing it to a different color).
+        public void UpdateAncestorForeColors()
+        {
+            TreeViewNode current = ParentNode;
+
+            while (current != null)
+            {
+                Color? uniform = GetUniformChildForeColor(current);
+
+                if (current.ForeColor == uniform)
+                {
+                    break;
+                }
+
+                current.ForeColor = uniform;
+                current = current.ParentNode;
+            }
+
+            if (ParentTree != null)
+            {
+                ParentTree.Invalidate();
+            }
+        }
+
+        // Returns the single ForeColor shared by every child of parentNode,
+        // or null if parentNode has no children, or its children don't all
+        // share the same non-null color.
+        private static Color? GetUniformChildForeColor(TreeViewNode parentNode)
+        {
+            if (parentNode.Nodes.Count == 0)
+            {
+                return null;
+            }
+
+            Color? candidate = parentNode.Nodes[0].ForeColor;
+
+            if (candidate == null)
+            {
+                return null;
+            }
+
+            for (int i = 1; i < parentNode.Nodes.Count; i++)
+            {
+                if (parentNode.Nodes[i].ForeColor != candidate)
+                {
+                    return null;
+                }
+            }
+
+            return candidate;
         }
 
         private void OnTextChanged()

@@ -29,6 +29,7 @@ namespace BedrockCosmos.Proxy
         internal const string MegaSmpUrl = "https://store.mktpl.minecraft-services.net/api/v2.0/layout/pages/ServerOffers_0ad4e564-8dcd-4b16-bdf7-229f3c9a0cd0";
         internal const string MinevilleUrl = "https://store.mktpl.minecraft-services.net/api/v2.0/layout/pages/ServerOffers_9c3eac4f-c579-4525-80d9-723e705c992d";
         internal const string MobMazeUrl = "https://store.mktpl.minecraft-services.net/api/v2.0/layout/pages/ServerPage_master_player_account!163AC5C76001EEB1";
+        internal const string OneBlockUrl = "https://store.mktpl.minecraft-services.net/api/v2.0/layout/pages/ServerOffers_6a68b828-f178-4c06-bdcb-c1c7a7a80812";
         internal const string SoulSteelUrl = "https://store.mktpl.minecraft-services.net/api/v2.0/layout/pages/ServerPage_master_player_account!EBFC1BF4FAB55EFB";
         internal const string TheHiveUrl = "https://store.mktpl.minecraft-services.net/api/v2.0/layout/pages/ServerPage_master_player_account!DD292649E51DB5F9";
         internal const string EntitlementsUrl = "https://entitlements.mktpl.minecraft-services.net/api/v1.0/player/inventory?includeReceipt=true";

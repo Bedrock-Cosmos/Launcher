@@ -109,6 +109,23 @@ namespace BedrockCosmos.App.UI
             }
         }
 
+        public void Move(int oldIndex, int newIndex)
+        {
+            if (oldIndex == newIndex)
+            {
+                return;
+            }
+
+            if (oldIndex < 0 || oldIndex >= Count || newIndex < 0 || newIndex >= Count)
+            {
+                return;
+            }
+
+            T item = Items[oldIndex];
+            Items.RemoveAt(oldIndex);
+            Items.Insert(newIndex, item);
+        }
+
         public void Dispose()
         {
             if (_disposed)
