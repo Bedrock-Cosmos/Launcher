@@ -194,6 +194,7 @@
     <Compile Include="App\GameProtocolProvider.cs" />
     <Compile Include="App\LanguageHandler.cs" />
     <Compile Include="App\LaunchManager.cs" />
+    <Compile Include="App\MenuEditor\CapeMenuEditor.cs" />
     <Compile Include="App\PathDefinitions.cs" />
     <Compile Include="App\SettingsManager.cs" />
     <Compile Include="App\SingleInstanceHelper.cs" />

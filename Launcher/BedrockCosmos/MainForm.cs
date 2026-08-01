@@ -1,5 +1,6 @@
 ﻿using AutoUpdaterDotNET;
 using BedrockCosmos.App;
+using BedrockCosmos.App.MenuEditor;
 using BedrockCosmos.App.UI;
 using BedrockCosmos.Proxy;
 using System;
@@ -477,21 +478,7 @@ namespace BedrockCosmos
             TabControl.SelectedTab = MenuEditorPage;
             MenuTreeView.Nodes.Clear();
 
-            TreeViewNode defaultCapes = new TreeViewNode("Default Capes"); 
-            defaultCapes.Nodes.Add(new TreeViewNode("Crafter Cape") { Tag = "00000000-0000-4000-0000-000000000002" });
-            defaultCapes.Nodes.Add(new TreeViewNode("Founder's Cape") { Tag = "00000000-0000-4000-0000-000000000003" });
-            defaultCapes.Nodes.Add(new TreeViewNode("Mojang Studios Cape") { Tag = "00000000-0000-4000-0000-000000000004" });
-            defaultCapes.Nodes.Add(new TreeViewNode("The PanCape!") { Tag = "00000000-0000-4000-0000-000000000005" });
-            MenuTreeView.Nodes.Add(defaultCapes);
-
-
-            TreeViewNode vanillaCapes = new TreeViewNode("Vanilla Capes");
-            vanillaCapes.Nodes.Add(new TreeViewNode("Minecon 2011 Cape") { Tag = "10000000-0000-4000-0000-000000000002" });
-            vanillaCapes.Nodes.Add(new TreeViewNode("Minecon 2012 Cape") { Tag = "10000000-0000-4000-0000-000000000003" });
-            vanillaCapes.Nodes.Add(new TreeViewNode("Minecon 2013 Cape") { Tag = "10000000-0000-4000-0000-000000000004" });
-            vanillaCapes.Nodes.Add(new TreeViewNode("Minecon 2015 Cape") { Tag = "10000000-0000-4000-0000-000000000005" });
-            vanillaCapes.Nodes.Add(new TreeViewNode("Minecon 2016 Cape") { Tag = "10000000-0000-4000-0000-000000000006" });
-            MenuTreeView.Nodes.Add(vanillaCapes);
+            CapeMenuEditor.PopulateTree(MenuTreeView, Path.Combine(PathDefinitions.ResponsesDirectory, @"MainPages\Capes.json"));
         }
 
         private void SkinPacksEditorButton_Click(object sender, EventArgs e)
@@ -653,14 +640,41 @@ namespace BedrockCosmos
             NodeStatus.Visible = CustomMenuToggle.Checked;
         }
 
-        private void MenuTreeView_SelectedNodesChanged(object sender, EventArgs e)
+        private async void MenuTreeView_SelectedNodesChanged(object sender, EventArgs e)
         {
             try
             {
                 string tag = "";
 
                 if (MenuTreeView.SelectedNodes[0].Tag != null)
-                    tag = ", " + MenuTreeView.SelectedNodes[0].Tag.ToString();
+                {
+                    if (MenuTreeView.SelectedNodes.Count > 0 && MenuTreeView.SelectedNodes[0].Tag is CapeItemData data)
+                    {
+                        string id = data.Id;
+                        string thumbUrl = data.ThumbnailUrl;
+                        tag = ", " + id;
+
+                        if (MenuTreeView.SelectedNodes.Count == 1)
+                        {
+                            string thumbPath = Path.Combine(PathDefinitions.CacheDirectory, thumbUrl.Split('/').Last());
+
+                            if (!Directory.Exists(PathDefinitions.CacheDirectory))
+                                Directory.CreateDirectory(PathDefinitions.CacheDirectory);
+
+                            if (!File.Exists(thumbPath))
+                                try
+                                {
+                                    await AsyncHttpOperations.DownloadFileAsync(data.ThumbnailUrl, thumbPath);
+                                }
+                                catch
+                                {
+                                    return;
+                                }
+
+                            NodeThumbnail.BackgroundImage = new Bitmap(thumbPath);
+                        }
+                    }
+                }
 
                 NodeStatus.Text = MenuTreeView.SelectedNodes[0].Text + tag;
                 EnableMenuItemToggle.Checked = MenuTreeView.SelectedNodes[0].ForeColor == Color.Green;
@@ -746,23 +760,7 @@ namespace BedrockCosmos
             else
             {
                 MenuTreeView.Nodes.Clear();
-
-                TreeViewNode defaultCapes = new TreeViewNode("Default Capes");
-                defaultCapes.Nodes.Add(new TreeViewNode("Crafter Cape") { Tag = "00000000-0000-4000-0000-000000000002" });
-                defaultCapes.Nodes.Add(new TreeViewNode("Founder's Cape") { Tag = "00000000-0000-4000-0000-000000000003" });
-                defaultCapes.Nodes.Add(new TreeViewNode("Mojang Studios Cape") { Tag = "00000000-0000-4000-0000-000000000004" });
-                defaultCapes.Nodes.Add(new TreeViewNode("The PanCape!") { Tag = "00000000-0000-4000-0000-000000000005" });
-                MenuTreeView.Nodes.Add(defaultCapes);
-
-
-                TreeViewNode vanillaCapes = new TreeViewNode("Vanilla Capes");
-                vanillaCapes.Nodes.Add(new TreeViewNode("Minecon 2011 Cape") { Tag = "10000000-0000-4000-0000-000000000002" });
-                vanillaCapes.Nodes.Add(new TreeViewNode("Minecon 2012 Cape") { Tag = "10000000-0000-4000-0000-000000000003" });
-                vanillaCapes.Nodes.Add(new TreeViewNode("Minecon 2013 Cape") { Tag = "10000000-0000-4000-0000-000000000004" });
-                vanillaCapes.Nodes.Add(new TreeViewNode("Minecon 2015 Cape") { Tag = "10000000-0000-4000-0000-000000000005" });
-                vanillaCapes.Nodes.Add(new TreeViewNode("Minecon 2016 Cape") { Tag = "10000000-0000-4000-0000-000000000006" });
-                MenuTreeView.Nodes.Add(vanillaCapes);
-
+                CapeMenuEditor.PopulateTree(MenuTreeView, Path.Combine(PathDefinitions.ResponsesDirectory, @"MainPages\Capes.json"));
                 NodeStatus.Text = "Nodes reset!";
             }
         }
