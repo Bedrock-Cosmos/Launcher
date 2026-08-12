@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,6 +30,7 @@ namespace BedrockCosmos
     {
         private LaunchManager launchManager;
         private static ProxyController controller;
+        private Image backgroundSource;
 
         // For window movement
         bool drag = false;
@@ -62,7 +65,44 @@ namespace BedrockCosmos
 
         private void ApplyLauncherBackground(string imagePath)
         {
-            this.BackgroundImage = Image.FromFile(imagePath);
+            using (Image loaded = Image.FromFile(imagePath))
+                backgroundSource = new Bitmap(loaded);
+
+            ScaleLauncherBackground();
+        }
+
+        private void ScaleLauncherBackground()
+        {
+            if (backgroundSource == null)
+                return;
+
+            Size target = ClientSize;
+            if (target.Width <= 0 || target.Height <= 0)
+                return;
+
+            Image current = BackgroundImage;
+            if (current != null && current.Size == target)
+                return;
+
+            Bitmap scaled = new Bitmap(target.Width, target.Height, PixelFormat.Format24bppRgb);
+
+            using (Graphics graphics = Graphics.FromImage(scaled))
+            {
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                graphics.DrawImage(backgroundSource, new Rectangle(Point.Empty, target));
+            }
+
+            BackgroundImage = scaled;
+
+            if (current != null)
+                current.Dispose();
+        }
+
+        protected override void OnClientSizeChanged(EventArgs e)
+        {
+            base.OnClientSizeChanged(e);
+            ScaleLauncherBackground();
         }
 
         public void HandleIncomingArgs(string[] args)

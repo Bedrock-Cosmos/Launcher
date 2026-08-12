@@ -19,14 +19,15 @@ namespace BedrockCosmos.App.UI
                 return;
 
             var height = GetTabRect(0).Bottom;
+            var display = DisplayRectangle;
             // Move controls to panels
             for (int tab = 0; tab < TabCount; ++tab)
             {
                 var page = new Panel
                 {
-                    Left = this.Left + 4,
+                    Left = this.Left + display.Left,
                     Top = this.Top + height,
-                    Width = this.Width - 8,
+                    Width = display.Width,
                     Height = this.Height - height,
                     BackColor = Color.Transparent,
                     Visible = tab == this.SelectedIndex
