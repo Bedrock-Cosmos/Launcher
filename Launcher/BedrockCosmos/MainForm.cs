@@ -30,7 +30,7 @@ namespace BedrockCosmos
     {
         private LaunchManager launchManager;
         private static ProxyController controller;
-        private Image backgroundSource;
+        private Image launcherBackground;
 
         // For window movement
         bool drag = false;
@@ -38,11 +38,12 @@ namespace BedrockCosmos
 
         public MainForm()
         {
+            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
             InitializeComponent();
             TabControl.MakeTransparent();
 
             if (File.Exists(PathDefinitions.AppDirectory + @"Background.png"))
-                ApplyLauncherBackground(PathDefinitions.AppDirectory + @"Background.png");
+                GetLauncherBackground(PathDefinitions.AppDirectory + @"Background.png");
 
             if (!Directory.Exists(PathDefinitions.CosmosAppData))
                 Directory.CreateDirectory(PathDefinitions.CosmosAppData);
@@ -63,46 +64,36 @@ namespace BedrockCosmos
             ApplySettings();
         }
 
-        protected override void OnClientSizeChanged(EventArgs e)
+        private void GetLauncherBackground(string imagePath)
         {
-            base.OnClientSizeChanged(e);
-            ScaleLauncherBackground();
+            launcherBackground = Image.FromFile(imagePath);
         }
 
-        private void ApplyLauncherBackground(string imagePath)
+        // Used to scale the background properly in Tile mode
+        protected override void OnPaintBackground(PaintEventArgs e)
         {
-            using (Image loaded = Image.FromFile(imagePath))
-                backgroundSource = new Bitmap(loaded);
-
-            ScaleLauncherBackground();
-        }
-
-        private void ScaleLauncherBackground()
-        {
-            if (backgroundSource == null)
-                return;
-
-            Size target = ClientSize;
-            if (target.Width <= 0 || target.Height <= 0)
-                return;
-
-            Image current = BackgroundImage;
-            if (current != null && current.Size == target)
-                return;
-
-            Bitmap scaled = new Bitmap(target.Width, target.Height, PixelFormat.Format24bppRgb);
-
-            using (Graphics graphics = Graphics.FromImage(scaled))
+            if (launcherBackground != null)
             {
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                graphics.DrawImage(backgroundSource, new Rectangle(Point.Empty, target));
+                e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                using (var attributes = new ImageAttributes())
+                {
+                    attributes.SetWrapMode(WrapMode.TileFlipXY);
+
+                    Rectangle destRect = ClientRectangle;
+                    e.Graphics.DrawImage(
+                        launcherBackground,
+                        destRect,
+                        0, 0, launcherBackground.Width, launcherBackground.Height,
+                        GraphicsUnit.Pixel,
+                        attributes);
+                }
             }
-
-            BackgroundImage = scaled;
-
-            if (current != null)
-                current.Dispose();
+            else
+            {
+                base.OnPaintBackground(e);
+            }
         }
 
         public void HandleIncomingArgs(string[] args)

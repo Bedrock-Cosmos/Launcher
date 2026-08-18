@@ -146,7 +146,6 @@
             // HomePage
             // 
             this.HomePage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.HomePage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.HomePage.Controls.Add(this.VersionLabel);
             this.HomePage.Controls.Add(this.AboutButton);
             this.HomePage.Controls.Add(this.SettingsButton);
@@ -239,7 +238,6 @@
             // AboutPage
             // 
             this.AboutPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.AboutPage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.AboutPage.Controls.Add(this.WebsiteLabel);
             this.AboutPage.Controls.Add(this.WebsiteIcon);
             this.AboutPage.Controls.Add(this.GitHubLabel);
@@ -374,7 +372,6 @@
             // SettingsPage
             // 
             this.SettingsPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.SettingsPage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.SettingsPage.Controls.Add(this.SkinPacksEditorButton);
             this.SettingsPage.Controls.Add(this.CapesEditorButton);
             this.SettingsPage.Controls.Add(this.NewsDescriptionLabel);
@@ -991,7 +988,6 @@
             // DevPage
             // 
             this.DevPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.DevPage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.DevPage.Controls.Add(this.DetailedLoggingLabel);
             this.DevPage.Controls.Add(this.DevBackButton);
             this.DevPage.Controls.Add(this.DevConsole);
