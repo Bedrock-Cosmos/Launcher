@@ -63,6 +63,12 @@ namespace BedrockCosmos
             ApplySettings();
         }
 
+        protected override void OnClientSizeChanged(EventArgs e)
+        {
+            base.OnClientSizeChanged(e);
+            ScaleLauncherBackground();
+        }
+
         private void ApplyLauncherBackground(string imagePath)
         {
             using (Image loaded = Image.FromFile(imagePath))
@@ -97,12 +103,6 @@ namespace BedrockCosmos
 
             if (current != null)
                 current.Dispose();
-        }
-
-        protected override void OnClientSizeChanged(EventArgs e)
-        {
-            base.OnClientSizeChanged(e);
-            ScaleLauncherBackground();
         }
 
         public void HandleIncomingArgs(string[] args)
