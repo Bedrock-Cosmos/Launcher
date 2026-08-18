@@ -179,24 +179,27 @@ ReadyMemoGroup=Map Menu Start:
 ReadyMemoTasks=Tugas Tambahan:
 
 ;Inno6
-DownloadingLabel=Mengunduh berkas tambahan...
+DownloadingLabel2=Mengunduh berkas tambahan...
 ButtonStopDownload=&Setop Unduhan
 StopDownload=Anda yakin ingin berhenti mengunduh?
 ErrorDownloadAborted=Unduhan dibatalkan
 ErrorDownloadFailed=Gagal mengunduh: %1 %2
 ErrorDownloadSizeFailed=Gagal mendapatkan ukuran: %1 %2
-ErrorFileHash1=Ceksum berkas gagal: %1
-ErrorFileHash2=Ceksum berkas tidak sah: seharusnya %1, yang kami dapatkan %2
 ErrorProgress=Langkah tidak sah: %1 dari %2
 ErrorFileSize=Ukuran berkas tidak sah: seharusnya %1, yang kami dapatkan %2
 
 ; *** TExtractionWizardPage wizard page and Extract7ZipArchive
-ExtractionLabel=Mengektrasi berkas tambahan...
+ExtractingLabel=Mengektrasi berkas tambahan...
 ButtonStopExtraction=&Hentikan ekstrasi
 StopExtraction=Anda yakin ingin menghentikan ekstrasi?
 ErrorExtractionAborted=Ekstrasi dibatalkan
 ErrorExtractionFailed=Ekstraksi gagal: %1
 ;Inno6
+
+; *** Archive extraction failure details
+ArchiveIncorrectPassword=Kata sandi salah
+ArchiveIsCorrupted=Arsip rusak
+ArchiveUnsupportedFormat=Format arsip tidak didukung
 
 WizardPreparing=Bersiap Memasang
 PreparingDesc=Kami sedang bersiap memasang [name] pada komputer Anda.
@@ -238,11 +241,15 @@ AbortRetryIgnoreSelectAction=Pilih tindakan
 AbortRetryIgnoreRetry=&Coba lagi
 AbortRetryIgnoreIgnore=&Abaikan galat dan teruskan
 AbortRetryIgnoreCancel=Batalkan pemasangan
+RetryCancelSelectAction=Pilih tindakan
+RetryCancelRetry=&Coba lagi
+RetryCancelCancel=Batalkan
 ;Inno6
 
 StatusClosingApplications=Menutup aplikasi...
 StatusCreateDirs=Membuat direktori...
 StatusExtractFiles=Mengekstrak berkas...
+StatusDownloadFiles=Mengunduh berkas...
 StatusCreateIcons=Membuat pintasan...
 StatusCreateIniEntries=Membuat catatan INI...
 StatusCreateRegistryEntries=Membuat catatan Registry...
@@ -271,6 +278,14 @@ FileAbortRetryIgnoreIgnoreNotRecommended=&Abaikan galat dan teruskan (tidak disa
 
 SourceIsCorrupted=Berkas asal telah rusak
 SourceDoesntExist=Berkas asal "%1" tidak ada
+SourceVerificationFailed=Verifikasi berkas sumber gagal: %1
+VerificationSignatureDoesntExist=Berkas tanda tangan "%1" tidak ada
+VerificationSignatureInvalid=Berkas tanda tangan "%1" tidak valid
+VerificationKeyNotFound=Berkas tanda tangan "%1" menggunakan kunci yang tidak dikenal
+VerificationFileNameIncorrect=Nama berkas salah
+VerificationFileTagIncorrect=Tag berkas salah
+VerificationFileSizeIncorrect=Ukuran berkas salah
+VerificationFileHashIncorrect=Hash berkas salah
 
 ;Inno6
 ExistingFileReadOnly2=Berkas yang sudah ada tidak bisa ditimpa karena telah ditandai hanya-baca.
@@ -293,6 +308,8 @@ ErrorChangingAttr=Terjadi galat saat berusaha mengubah atribusi berkas yang suda
 ErrorCreatingTemp=Terjadi galat saat berusaha membuat berkas di direktori tujuan:
 ErrorReadingSource=Terjadi galat saat berusaha membaca berkas asal:
 ErrorCopying=Terjadi galat saat berusaha menyalin berkas:
+ErrorDownloading=Terjadi kesalahan saat mencoba mengunduh berkas:
+ErrorExtracting=Terjadi kesalahan saat mencoba mengekstrak arsip:
 ErrorReplacingExistingFile=Terjadi galat saat berusaha menimpa berkas yang sudah ada:
 ErrorRestartReplace=RestartReplace gagal:
 ErrorRenamingTemp=Terjadi galat saat berusaha mengubah nama berkas di direktori tujuan:
