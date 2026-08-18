@@ -37,7 +37,7 @@ InfoBeforeFile={#TextsDir}\CertificateAgreement\en_US.txt
 ; Uncomment the following line to run in non administrative install mode (install for current user only).
 ;PrivilegesRequired=lowest
 OutputDir=C:\InnoSetup
-OutputBaseFilename=mysetup
+OutputBaseFilename=BedrockCosmosSetup
 SetupIconFile={#SourceDir}\Icon.ico
 Compression=zip
 SolidCompression=yes
