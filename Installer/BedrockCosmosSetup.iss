@@ -49,6 +49,7 @@ Name: "bengali"; MessagesFile: "{#TextsDir}\Other\Bengali.isl"; LicenseFile: "{#
 Name: "german"; MessagesFile: "compiler:Languages\German.isl"; LicenseFile: "{#TextsDir}\TermsOfService\de_DE.txt"; InfoBeforeFile: "{#TextsDir}\CertificateAgreement\de_DE.txt"
 Name: "indonesian"; MessagesFile: "{#TextsDir}\Other\Indonesian.isl"; LicenseFile: "{#TextsDir}\TermsOfService\id_ID.txt"; InfoBeforeFile: "{#TextsDir}\CertificateAgreement\id_ID.txt"
 Name: "japanese"; MessagesFile: "compiler:Languages\Japanese.isl";  LicenseFile: "{#TextsDir}\TermsOfService\ja_JP.txt"; InfoBeforeFile: "{#TextsDir}\CertificateAgreement\ja_JP.txt"
+Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"; LicenseFile: "{#TextsDir}\TermsOfService\ru_RU.txt"; InfoBeforeFile: "{#TextsDir}\CertificateAgreement\ru_RU.txt"
 Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"; LicenseFile: "{#TextsDir}\TermsOfService\es_ES.txt"; InfoBeforeFile: "{#TextsDir}\CertificateAgreement\es_ES.txt"
 Name: "ukranian"; MessagesFile: "compiler:Languages\Ukrainian.isl"; LicenseFile: "{#TextsDir}\TermsOfService\uk_UA.txt"; InfoBeforeFile: "{#TextsDir}\CertificateAgreement\uk_UA.txt"
 Name: "vietnamese"; MessagesFile: "{#TextsDir}\Other\Vietnamese.isl"; LicenseFile: "{#TextsDir}\TermsOfService\vi_VN.txt"; InfoBeforeFile: "{#TextsDir}\CertificateAgreement\vi_VN.txt"
