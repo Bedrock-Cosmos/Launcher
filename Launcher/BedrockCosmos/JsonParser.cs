@@ -151,23 +151,22 @@ namespace BedrockCosmos
 
             try
             {
-                // Should ignore saving news if an official Minecraft announcement is present
-                // May need more testing
-                bool loginAnnouncementExists = false;
+                // Overwrite any existing official Minecraft LoginAnnouncement with our own
+                bool loginAnnouncementExisted = false;
                 if (announcementTargetArray != null)
                 {
-                    foreach (JsonNode node in announcementTargetArray)
+                    for (int i = announcementTargetArray.Count - 1; i >= 0; i--)
                     {
-                        JsonObject msg = node?.AsObject();
+                        JsonObject msg = announcementTargetArray[i]?.AsObject();
                         if (msg != null && msg["surface"]?.GetValue<string>() == "LoginAnnouncement")
                         {
-                            loginAnnouncementExists = true;
-                            break;
+                            loginAnnouncementExisted = true;
+                            announcementTargetArray.RemoveAt(i);
                         }
                     }
                 }
 
-                if (!loginAnnouncementExists && NewsManager.IsCurrentNewsNew())
+                if (NewsManager.IsCurrentNewsNew())
                 {
                     // Append front announcement
                     if (NewsManager.SendToNewsAnnouncement)
@@ -181,9 +180,10 @@ namespace BedrockCosmos
 
                     NewsManager.MarkCurrentNewsAsSeen();
                 }
-                else if (loginAnnouncementExists)
+
+                if (loginAnnouncementExisted)
                 {
-                    CosmosConsole.WriteLine(consoleSender, "Skipped appending and saving news data since an official Minecraft announcement is present.");
+                    CosmosConsole.WriteLine(consoleSender, "Overwrote existing official Minecraft LoginAnnouncement with custom news data.");
                 }
 
                 // Append Cosmos inbox
