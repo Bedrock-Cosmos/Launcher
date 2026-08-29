@@ -7,38 +7,25 @@ using System.IO;
 using System.Net;
 using System.Threading;
 
+// =============================================================================
+// Bedrock Cosmos - Copyright (c) 2026
+//
+// This file is part of Bedrock Cosmos, licensed under the MIT License.
+// You must read and agree to the terms of the MIT License before using,
+// copying, modifying, or distributing this code.
+//
+// MIT License - Full terms: https://opensource.org/licenses/MIT
+// =============================================================================
+
 namespace BedrockCosmos.App.UI
 {
-    /// <summary>
-    /// Process-wide, two-tier thumbnail cache shared by every <see cref="ImageTreeView"/>
-    /// instance, keyed by each node's <see cref="ImageItem.Id"/> (not its URL).
-    ///
-    /// Tier 1 - disk (%LocalAppData%\Bedrock Cosmos\Cache\{id}.png): once a
-    /// thumbnail has been downloaded it is written here forever, so it is only
-    /// ever fetched from the network once per machine.
-    ///
-    /// Tier 2 - memory: a small, capped LRU of decoded <see cref="Bitmap"/>
-    /// objects. This is the piece that actually keeps RAM usage flat regardless
-    /// of how many total items you've ever loaded - only the most recently used
-    /// ~<see cref="MaxMemoryEntries"/> thumbnails are ever resident at once; the
-    /// rest live only on disk until they're needed again (a fast local read, no
-    /// network round trip).
-    ///
-    /// Every downloaded image is also downscaled to <see cref="DecodeSize"/>
-    /// pixels before it is ever kept anywhere (cache or disk). Marketplace
-    /// thumbnail URLs can point at fairly large source images (some in the
-    /// sample payload request 800x450), and decoding/keeping those at full size
-    /// for a UI that only ever displays a small square is what actually causes
-    /// large memory growth - shrinking on first use fixes that at the source,
-    /// independent of where the result is cached.
-    /// </summary>
+    // Cache works by writing a thumbnail to disk if not downloaded before, then
+    // loads in to RAM, with a max of MaxMemoryEntries loaded at one time.
     internal static class ImageCache
     {
-        /// <summary>Maximum number of decoded thumbnails kept in RAM at once.</summary>
-        private const int MaxMemoryEntries = 250;
+        private const int MaxMemoryEntries = 250; // Max thumbnails in RAM at once.
 
-        /// <summary>Thumbnails are downscaled to at most this many pixels per side before being cached anywhere.</summary>
-        private const int DecodeSize = 64;
+        private const int DecodeSize = 64; // Cache size, e.g. 64x64 pixels.
 
         private static readonly Dictionary<string, Image> Memory = new Dictionary<string, Image>();
         private static readonly LinkedList<string> RecencyOrder = new LinkedList<string>();
@@ -48,14 +35,10 @@ namespace BedrockCosmos.App.UI
 
         private static readonly string CacheDirectory = PathDefinitions.CacheDirectory;
 
-        /// <summary>
-        /// Raised on a background thread once a thumbnail finishes loading
-        /// (from disk or network). The argument is the node id, not the URL.
-        /// Subscribers must marshal back to the UI thread before touching a control.
-        /// </summary>
+        // Raised on a background thread once a thumbnail finishes loading.
         public static event Action<string> ImageLoaded;
 
-        /// <summary>Returns the cached image for a node id, or null if it isn't in memory yet.</summary>
+        // Returns the cached image for a node id, or null if not in memory yet.
         public static Image TryGet(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -73,11 +56,7 @@ namespace BedrockCosmos.App.UI
             return null;
         }
 
-        /// <summary>
-        /// Kicks off a background load for the given node id/url if it isn't
-        /// already cached in memory or in flight. Safe to call repeatedly (e.g.
-        /// once per paint) without causing duplicate work.
-        /// </summary>
+        // Starts background load for node id/url if it isn't already cached in memory.
         public static void RequestLoad(string id, string url)
         {
             if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(url))
@@ -106,7 +85,7 @@ namespace BedrockCosmos.App.UI
                     using (var fileStream = File.OpenRead(path))
                     using (var decoded = Image.FromStream(fileStream))
                     {
-                        // Clone so the FileStream can be closed immediately.
+                        // Clone so FileStream can close immediately.
                         thumbnail = new Bitmap(decoded);
                     }
                 }
@@ -134,8 +113,7 @@ namespace BedrockCosmos.App.UI
             }
             catch
             {
-                // Bad URL / network hiccup / corrupt file - give up on this one
-                // thumbnail. The cell will keep re-requesting on future paints.
+                // Called if URL or connection is bad, can be re-requested.
                 lock (Lock)
                 {
                     InFlight.Remove(id);
@@ -145,16 +123,7 @@ namespace BedrockCosmos.App.UI
             RaiseImageLoaded(id);
         }
 
-        /// <summary>
-        /// Notifies every subscriber individually, isolating each one in its
-        /// own try/catch. This runs on a ThreadPool thread - on .NET Framework
-        /// an unhandled exception there terminates the whole process by
-        /// default, so a single subscriber that's been disposed (or, for a
-        /// design-time control instance, torn down by a Visual Studio designer
-        /// reload) must never be allowed to take the app - or the designer -
-        /// down with it, and must never be allowed to stop other, still-valid
-        /// subscribers from being notified.
-        /// </summary>
+        // Notifies every subscriber individually, isolating each one in its own try/catch.
         private static void RaiseImageLoaded(string id)
         {
             var handler = ImageLoaded;
@@ -169,8 +138,7 @@ namespace BedrockCosmos.App.UI
                 }
                 catch
                 {
-                    // Swallow - see remarks above. This is only a "please
-                    // redraw" signal, not critical work.
+                    // Only a redraw signal.
                 }
             }
         }
@@ -205,7 +173,7 @@ namespace BedrockCosmos.App.UI
             }
             catch
             {
-                // Non-fatal - worst case we just re-download next run.
+
             }
         }
 
@@ -221,7 +189,7 @@ namespace BedrockCosmos.App.UI
             return name;
         }
 
-        /// <summary>Must be called while holding <see cref="Lock"/>.</summary>
+        // Must be called while holding ImageCache.Lock.
         private static void StoreInMemory(string id, Image image)
         {
             if (Memory.TryGetValue(id, out var existing))
@@ -251,7 +219,7 @@ namespace BedrockCosmos.App.UI
             }
         }
 
-        /// <summary>Must be called while holding <see cref="Lock"/>.</summary>
+        // Must be called while holding ImageCache.Lock.
         private static void Touch(string id)
         {
             if (!RecencyNodes.TryGetValue(id, out var node))
@@ -261,7 +229,6 @@ namespace BedrockCosmos.App.UI
             RecencyNodes[id] = RecencyOrder.AddLast(id);
         }
 
-        /// <summary>Frees every in-memory bitmap (does not touch the on-disk cache). Call on app shutdown if you want to be tidy.</summary>
         public static void ClearMemoryCache()
         {
             lock (Lock)
@@ -275,7 +242,6 @@ namespace BedrockCosmos.App.UI
             }
         }
 
-        /// <summary>Deletes every file in the on-disk cache. Use sparingly (forces re-downloads).</summary>
         public static void ClearDiskCache()
         {
             try
@@ -285,7 +251,7 @@ namespace BedrockCosmos.App.UI
             }
             catch
             {
-                // Ignore - a locked file here isn't worth surfacing to the caller.
+
             }
         }
     }

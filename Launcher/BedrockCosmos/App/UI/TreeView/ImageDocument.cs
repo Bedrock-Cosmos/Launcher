@@ -4,30 +4,19 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
+// =============================================================================
+// Bedrock Cosmos - Copyright (c) 2026
+//
+// This file is part of Bedrock Cosmos, licensed under the MIT License.
+// You must read and agree to the terms of the MIT License before using,
+// copying, modifying, or distributing this code.
+//
+// MIT License - Full terms: https://opensource.org/licenses/MIT
+// =============================================================================
+
 namespace BedrockCosmos.App.UI
 {
-    /// <summary>
-    /// Loads category/item data out of a Marketplace-style JSON payload (the
-    /// "GridList" rows format) into <see cref="ImageCategory"/>/<see cref="ImageItem"/>,
-    /// and can write the *whole original document* back out to JSON after the
-    /// user has added, removed, reordered, or moved nodes between categories via
-    /// <see cref="ImageTreeView"/>.
-    ///
-    /// This keeps a live mutable copy of the source document
-    /// (System.Text.Json.Nodes.JsonNode) and edits only the parts that changed,
-    /// so unrelated fields on existing rows/items (rarity, ownership, pack
-    /// identity, creator page links, etc.) are preserved untouched. Brand new
-    /// rows/items (added at runtime rather than loaded from JSON) are
-    /// synthesized from a clone of a sibling, or a minimal fallback if there is
-    /// no sibling to copy from - see <see cref="NewRowFactory"/> and
-    /// <see cref="NewItemFactory"/> if you want to control that shape yourself
-    /// (useful when reusing this for a schema that differs slightly, e.g. skins
-    /// vs. capes).
-    ///
-    /// Requires the System.Text.Json NuGet package, version 6.0 or newer (the
-    /// System.Text.Json.Nodes mutable-DOM API used here isn't present in older
-    /// 4.x builds of the package).
-    /// </summary>
+    // Loads category/item data out of marketplace JSON response.
     public sealed class ImageDocument
     {
         private readonly JsonNode _root;
@@ -37,37 +26,23 @@ namespace BedrockCosmos.App.UI
         private readonly Dictionary<ImageItem, JsonObject> _itemNodes = new Dictionary<ImageItem, JsonObject>();
         private JsonArray _primaryRowsArray;
 
-        /// <summary>
-        /// The live category list. Pass this directly to <see cref="ImageTreeView.LoadData"/>
-        /// (it will be used as the control's backing list rather than copied) so
-        /// that every add/remove/move the user makes in the UI is automatically
-        /// reflected here with no extra synchronization step - just call
-        /// <see cref="ToJson"/> whenever you want to persist the current state.
-        /// </summary>
-        public List<ImageCategory> Categories { get; } = new List<ImageCategory>();
+        public List<ImageCategory> Categories { get; } = new List<ImageCategory>(); // Node operations (copy, move, etc.) are all stored here.
 
-        /// <summary>Optional override for how a brand-new category's underlying JSON row is built. Receives the category name.</summary>
-        public Func<string, JsonObject> NewRowFactory { get; set; }
+        public Func<string, JsonObject> NewRowFactory { get; set; } // Optional override for how a brand-new category's underlying JSON row is built - receives the category name.
 
-        /// <summary>Optional override for how a brand-new item's underlying JSON object is built (used only when no sibling exists to clone).</summary>
-        public Func<JsonObject> NewItemFactory { get; set; }
+        public Func<JsonObject> NewItemFactory { get; set; } // Optional override for how a brand-new item's underlying JSON object is built - used only when no sibling exists to clone.
 
         private ImageDocument(JsonNode root)
         {
             _root = root;
         }
 
-        /// <summary>Starts a brand-new, empty document (no source JSON) - useful when you want to build a category list from scratch and still export valid JSON later.</summary>
         public static ImageDocument CreateEmpty()
         {
-            return new ImageDocument(new JsonObject());
+            return new ImageDocument(new JsonObject()); // Makes from no source JSON.
         }
 
-        /// <summary>
-        /// Parses every "GridList" row found anywhere in the given JSON
-        /// (searched recursively under any property named "rows", so it does
-        /// not matter how deeply nested the layout is) into a flat category list.
-        /// </summary>
+        // Parses GridLists from marketplace JSON into ImageTreeView.
         public static ImageDocument LoadFromMarketplaceJson(string json)
         {
             JsonNode root = JsonNode.Parse(json);
@@ -86,8 +61,7 @@ namespace BedrockCosmos.App.UI
                     }
                     catch
                     {
-                        // One malformed/unexpected row shouldn't take down the
-                        // whole load - just skip it.
+                        // Skips if error.
                     }
                 }
             }
@@ -115,7 +89,7 @@ namespace BedrockCosmos.App.UI
                     itemsArray = compNode["items"] as JsonArray;
             }
 
-            // Rows with no item list are decorative (dividers, preview pieces, etc.) - skip.
+            // Skips any row with no ItemList in JSON.
             if (itemsArray == null)
                 return;
 
@@ -141,7 +115,7 @@ namespace BedrockCosmos.App.UI
                 }
                 catch
                 {
-                    // Skip malformed individual items rather than the whole category.
+                    // Skips if one item is malformed.
                 }
             }
 
@@ -153,11 +127,7 @@ namespace BedrockCosmos.App.UI
                 _primaryRowsArray = rowsArray;
         }
 
-        /// <summary>
-        /// Serializes the full original document back to JSON, with every
-        /// add/remove/reorder/move currently reflected in <see cref="Categories"/>
-        /// applied to the underlying tree first.
-        /// </summary>
+        // Serializes the full original document back to JSON + all operations performed.
         public string ToJson(bool indented = true)
         {
             SyncAllRowsArrays();
@@ -165,8 +135,6 @@ namespace BedrockCosmos.App.UI
             var options = new JsonSerializerOptions { WriteIndented = indented };
             return _root.ToJsonString(options);
         }
-
-        #region Syncing the mutable JSON tree to match Categories
 
         private void SyncAllRowsArrays()
         {
@@ -187,11 +155,8 @@ namespace BedrockCosmos.App.UI
                 list.Add(category);
             }
 
-            // Pass 1: ensure every category has a backing row node, update its
-            // header text, and detach every item-array's existing children so
-            // item nodes are free to be reclaimed by whichever category they
-            // now belong to (including a different one than they started in),
-            // regardless of which category happens to be processed first.
+            // Ensure every category has a backing row node, update its header text, and detach every item
+            // array's existing children so item nodes can be reclaimed by whichever category they now belong to.
             var itemListComponentsByCategory = new List<(JsonObject component, ImageCategory category)>();
 
             foreach (var category in Categories)
@@ -215,13 +180,11 @@ namespace BedrockCosmos.App.UI
                 }
             }
 
-            // Pass 2: rebuild each item list in the category's current order.
             foreach (var pair in itemListComponentsByCategory)
-                RebuildItemsArray(pair.component, pair.category);
+                RebuildItemsArray(pair.component, pair.category); // Rebuild each item list in the category's current order.
 
-            // Pass 3: reorder/add/remove the row slots within each rows array.
             foreach (var pair in categoriesByArray)
-                SyncRowSlots(pair.Key, pair.Value);
+                SyncRowSlots(pair.Key, pair.Value); // Reorder/add/remove the row slots within each rows array.
         }
 
         private JsonObject GetOrCreateRowNode(ImageCategory category)
@@ -256,9 +219,7 @@ namespace BedrockCosmos.App.UI
 
                 if (_itemNodes.TryGetValue(item, out var existingNode) && existingNode.Parent == null)
                 {
-                    // Either its original slot (now free after the detach pass
-                    // above) or - if it was moved here from another category -
-                    // its original node from that category, freed the same way.
+                    // Either its original slot or, if moved here from another category, its original node from that category.
                     node = existingNode;
                 }
                 else
@@ -292,10 +253,8 @@ namespace BedrockCosmos.App.UI
 
         private void SyncRowSlots(JsonArray rowsArray, List<ImageCategory> categoriesForThisArray)
         {
-            // Snapshot the original sequence, tagging which entries are
-            // GridList rows (managed by us) versus anything else (dividers,
-            // text rows, etc. - left alone and kept in their original relative
-            // position).
+            // Snapshots sequence and tags entries that are GridList rows (managed by us).
+            // Other parts like dividers and text rows are kept in the same spot.
             var originalSequence = new List<JsonNode>();
             var isGridListSlot = new List<bool>();
 
@@ -315,9 +274,8 @@ namespace BedrockCosmos.App.UI
             {
                 if (isGridListSlot[i])
                 {
-                    if (orderedRowNodes.Count > 0)
+                    if (orderedRowNodes.Count > 0) // Category was removed if not true.
                         rowsArray.Add(orderedRowNodes.Dequeue());
-                    // else: this slot's category was removed - drop the slot.
                 }
                 else
                 {
@@ -325,7 +283,7 @@ namespace BedrockCosmos.App.UI
                 }
             }
 
-            // Brand-new categories with no original slot get appended at the end.
+            // Brand-new categories get appended at the end.
             while (orderedRowNodes.Count > 0)
                 rowsArray.Add(orderedRowNodes.Dequeue());
         }
@@ -335,9 +293,7 @@ namespace BedrockCosmos.App.UI
             if (_primaryRowsArray != null)
                 return _primaryRowsArray;
 
-            // No pre-existing "rows" array was found (e.g. this document was
-            // started via CreateEmpty()) - synthesize a minimal container so
-            // new categories still have somewhere to live.
+            // Runs if no pre-existing "rows" array was found, e.g. started via CreateEmpty().
             var rowsArray = new JsonArray();
 
             if (_root is JsonObject rootObj)
@@ -358,10 +314,6 @@ namespace BedrockCosmos.App.UI
             _primaryRowsArray = rowsArray;
             return rowsArray;
         }
-
-        #endregion
-
-        #region Default row/item shapes for brand-new nodes
 
         private static JsonObject BuildDefaultRow(string categoryName)
         {
@@ -398,10 +350,6 @@ namespace BedrockCosmos.App.UI
             };
         }
 
-        #endregion
-
-        #region JSON helpers
-
         private static void FindRowsArrays(JsonNode node, List<JsonArray> result)
         {
             if (node is JsonObject obj)
@@ -427,12 +375,10 @@ namespace BedrockCosmos.App.UI
             }
         }
 
-        /// <summary>Safely reads a string value from a node that might be missing, null, or a different JSON kind.</summary>
+        // Reads a string value from a node that might be missing, null, etc.
         private static string GetString(JsonNode node)
         {
             return node is JsonValue value && value.TryGetValue<string>(out var s) ? s : null;
         }
-
-        #endregion
     }
 }

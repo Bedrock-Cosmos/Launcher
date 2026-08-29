@@ -6,31 +6,25 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
 
+// =============================================================================
+// Bedrock Cosmos - Copyright (c) 2026
+//
+// This file is part of Bedrock Cosmos, licensed under the MIT License.
+// You must read and agree to the terms of the MIT License before using,
+// copying, modifying, or distributing this code.
+//
+// MIT License - Full terms: https://opensource.org/licenses/MIT
+// =============================================================================
+
 namespace BedrockCosmos.App.UI
 {
-    /// <summary>
-    /// A collapsible tree of categories, each rendering its children as a wrapping
-    /// grid of square thumbnails, with multi-select, reordering, and drag-and-drop
-    /// (or copy) of items between categories. Generic enough to host capes,
-    /// skins, or any other collection of id/title/thumbnail-shaped nodes.
-    ///
-    /// This is a plain <see cref="Control"/> that does all of its own painting and
-    /// hit-testing rather than hosting one child control per node. With a few
-    /// hundred grid items on screen that keeps handle/GDI-object usage, and
-    /// therefore memory, essentially flat - important for staying comfortable on
-    /// Windows 7. Only rows currently scrolled into view are ever drawn, and
-    /// thumbnails are loaded lazily (see <see cref="ImageCache"/>) the first
-    /// time a visible cell needs one.
-    /// </summary>
     public class ImageTreeView : Control
     {
         #region Events
 
-        /// <summary>Raised whenever the selection changes.</summary>
-        public event EventHandler SelectionChanged;
+        public event EventHandler SelectionChanged; // Ran when selection changes.
 
-        /// <summary>Raised after any structural edit (add, remove, move, copy, expand/collapse).</summary>
-        public event EventHandler DataChanged;
+        public event EventHandler DataChanged; // Ran if an operation takes place (add, remove, move, copy, expand/collapse).
 
         #endregion
 
@@ -48,22 +42,11 @@ namespace BedrockCosmos.App.UI
         public Color ThumbHoverColor { get; set; } = Color.FromArgb(110, 110, 110);
         public Color DropIndicatorColor { get; set; } = Color.FromArgb(0, 188, 71);
 
-        /// <summary>Side length, in pixels, of each square grid cell.</summary>
         public int ItemSize { get; set; } = 64;
-
-        /// <summary>Gap, in pixels, between grid cells and around the grid edges.</summary>
         public int ItemPadding { get; set; } = 10;
-
-        /// <summary>Height, in pixels, of each category header row.</summary>
         public int HeaderHeight { get; set; } = 30;
-
-        /// <summary>Height reserved under each cell for its title label.</summary>
         public int ItemLabelHeight { get; set; } = 16;
-
-        /// <summary>Corner radius used for both cells and the scrollbar thumb.</summary>
         public int CornerRadius { get; set; } = 8;
-
-        /// <summary>Mouse movement, in pixels, required before a click-and-hold turns into a drag.</summary>
         public int DragThreshold { get; set; } = 4;
 
         private const int ScrollBarWidth = 12;
@@ -97,9 +80,7 @@ namespace BedrockCosmos.App.UI
         {
             public ImageCategory Category;
             public List<ImageItem> Items;
-
-            /// <summary>Index within Category.Items of this row's first item - lets drop-target math resolve a row-local slot to a global insertion point.</summary>
-            public int StartIndex;
+            public int StartIndex; // Index in Category.Items of the row's first item.
         }
 
         private readonly List<VisualRow> _rows = new List<VisualRow>();
@@ -114,8 +95,7 @@ namespace BedrockCosmos.App.UI
         private readonly HashSet<object> _selectionSet = new HashSet<object>();
         private object _shiftAnchor;
 
-        /// <summary>Selected nodes (mix of ImageCategory and ImageItem) in the order they were selected.</summary>
-        public IReadOnlyList<object> SelectedNodes => _selectionOrder;
+        public IReadOnlyList<object> SelectedNodes => _selectionOrder; // Selected items in the order they were selected.
 
         public IEnumerable<ImageItem> SelectedItems => _selectionOrder.OfType<ImageItem>();
 
@@ -144,14 +124,7 @@ namespace BedrockCosmos.App.UI
         private ImageCategory _dropTargetCategory;
         private ImageItem _dropTargetBeforeItem;
 
-        /// <summary>
-        /// The resolved insertion index (0..Category.Items.Count) within
-        /// <see cref="_dropTargetCategory"/> that <see cref="_dropTargetBeforeItem"/>
-        /// corresponds to, or -1 when there's no current target. This is what
-        /// the actual move/copy uses - purely a position in the list, with no
-        /// notion of "row".
-        /// </summary>
-        private int _dropTargetGlobalIndex = -1;
+        private int _dropTargetGlobalIndex = -1; // Insertion index used by moving/copying. -1 = no target.
 
         /// <summary>
         /// The specific visual row the cursor was hovering when the drop
