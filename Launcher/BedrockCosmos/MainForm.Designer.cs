@@ -814,7 +814,6 @@
             this.NodeStatus.TabIndex = 16;
             this.NodeStatus.Text = "Label";
             this.NodeStatus.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.NodeStatus.Visible = false;
             // 
             // EnableMenuItemLabel
             // 
@@ -827,7 +826,6 @@
             this.EnableMenuItemLabel.Size = new System.Drawing.Size(49, 19);
             this.EnableMenuItemLabel.TabIndex = 15;
             this.EnableMenuItemLabel.Text = "Enable";
-            this.EnableMenuItemLabel.Visible = false;
             // 
             // EnableMenuItemToggle
             // 
@@ -842,7 +840,6 @@
             this.EnableMenuItemToggle.Size = new System.Drawing.Size(40, 20);
             this.EnableMenuItemToggle.TabIndex = 14;
             this.EnableMenuItemToggle.UseVisualStyleBackColor = false;
-            this.EnableMenuItemToggle.Visible = false;
             this.EnableMenuItemToggle.Click += new System.EventHandler(this.EnableMenuItemToggle_Click);
             // 
             // CustomMenuLabel
@@ -864,6 +861,8 @@
             this.CustomMenuToggle.BaseColor = System.Drawing.Color.White;
             this.CustomMenuToggle.BaseOffColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.CustomMenuToggle.BaseOnColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.CustomMenuToggle.Checked = true;
+            this.CustomMenuToggle.CheckState = System.Windows.Forms.CheckState.Checked;
             this.CustomMenuToggle.Cursor = System.Windows.Forms.Cursors.Hand;
             this.CustomMenuToggle.Location = new System.Drawing.Point(20, 42);
             this.CustomMenuToggle.Name = "CustomMenuToggle";

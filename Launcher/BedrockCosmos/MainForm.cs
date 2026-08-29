@@ -710,6 +710,8 @@ namespace BedrockCosmos
             {
                 NodeStatus.Text = $"{currentNodes} items selected.";
             }
+
+            EnableMenuItemToggle.Checked = false;
         }
 
         private void EnableMenuItemToggle_Click(object sender, EventArgs e)
@@ -734,7 +736,21 @@ namespace BedrockCosmos
 
         private void RemoveNodeButton_Click(object sender, EventArgs e)
         {
-            CapeTreeView.RemoveSelectedNodes();
+            if (!NodeStatus.Text.StartsWith("This action will delete"))
+            {
+                int currentNodes = CapeTreeView.SelectedNodes.Count;
+                string plural = "";
+
+                if (currentNodes != 1)
+                    plural = "s";
+
+                NodeStatus.Text = $"This action will delete {CapeTreeView.SelectedNodes.Count} node{plural}! Select Remove again to continue.";
+            }
+            else
+            {
+                CapeTreeView.RemoveSelectedNodes();
+                NodeStatus.Text = "Nodes removed!";
+            }
         }
 
         private void ResetNodesButton_Click(object sender, EventArgs e)
