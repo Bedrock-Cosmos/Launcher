@@ -63,18 +63,17 @@
             this.BackgroundModeTitleLabel = new System.Windows.Forms.Label();
             this.BackgroundModeSwitch = new BedrockCosmos.App.UI.Switch();
             this.MenuEditorPage = new System.Windows.Forms.TabPage();
+            this.CapeTreeView = new BedrockCosmos.App.UI.ImageTreeView();
             this.ResetNodesButton = new BedrockCosmos.App.UI.RoundButton();
             this.RemoveNodeButton = new BedrockCosmos.App.UI.RoundButton();
             this.AddNodeButton = new BedrockCosmos.App.UI.RoundButton();
             this.NodeDownButton = new System.Windows.Forms.Button();
             this.NodeUpButton = new System.Windows.Forms.Button();
             this.NodeStatus = new System.Windows.Forms.Label();
-            this.NodeThumbnail = new System.Windows.Forms.PictureBox();
             this.EnableMenuItemLabel = new System.Windows.Forms.Label();
             this.EnableMenuItemToggle = new BedrockCosmos.App.UI.Switch();
             this.CustomMenuLabel = new System.Windows.Forms.Label();
             this.CustomMenuToggle = new BedrockCosmos.App.UI.Switch();
-            this.MenuTreeView = new BedrockCosmos.App.UI.TreeViewControl();
             this.MenuEditorBackButton = new System.Windows.Forms.Button();
             this.UpdatePage = new System.Windows.Forms.TabPage();
             this.ChangelogLabel = new System.Windows.Forms.LinkLabel();
@@ -110,7 +109,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.GitHubIcon)).BeginInit();
             this.SettingsPage.SuspendLayout();
             this.MenuEditorPage.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.NodeThumbnail)).BeginInit();
             this.UpdatePage.SuspendLayout();
             this.DevPage.SuspendLayout();
             this.TopPanel.SuspendLayout();
@@ -644,24 +642,50 @@
             // MenuEditorPage
             // 
             this.MenuEditorPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.MenuEditorPage.Controls.Add(this.CapeTreeView);
             this.MenuEditorPage.Controls.Add(this.ResetNodesButton);
             this.MenuEditorPage.Controls.Add(this.RemoveNodeButton);
             this.MenuEditorPage.Controls.Add(this.AddNodeButton);
             this.MenuEditorPage.Controls.Add(this.NodeDownButton);
             this.MenuEditorPage.Controls.Add(this.NodeUpButton);
             this.MenuEditorPage.Controls.Add(this.NodeStatus);
-            this.MenuEditorPage.Controls.Add(this.NodeThumbnail);
             this.MenuEditorPage.Controls.Add(this.EnableMenuItemLabel);
             this.MenuEditorPage.Controls.Add(this.EnableMenuItemToggle);
             this.MenuEditorPage.Controls.Add(this.CustomMenuLabel);
             this.MenuEditorPage.Controls.Add(this.CustomMenuToggle);
-            this.MenuEditorPage.Controls.Add(this.MenuTreeView);
             this.MenuEditorPage.Controls.Add(this.MenuEditorBackButton);
             this.MenuEditorPage.Location = new System.Drawing.Point(4, 22);
             this.MenuEditorPage.Name = "MenuEditorPage";
             this.MenuEditorPage.Size = new System.Drawing.Size(816, 440);
             this.MenuEditorPage.TabIndex = 6;
             this.MenuEditorPage.Text = "Menu Editor";
+            // 
+            // CapeTreeView
+            // 
+            this.CapeTreeView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.CapeTreeView.CornerRadius = 8;
+            this.CapeTreeView.DragThreshold = 4;
+            this.CapeTreeView.DropIndicatorColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(188)))), ((int)(((byte)(71)))));
+            this.CapeTreeView.EnabledHighlightColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(188)))), ((int)(((byte)(71)))));
+            this.CapeTreeView.HeaderHeight = 30;
+            this.CapeTreeView.HeaderTextColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.CapeTreeView.IdleBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(22)))), ((int)(((byte)(22)))));
+            this.CapeTreeView.IdleBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+            this.CapeTreeView.ItemLabelHeight = 16;
+            this.CapeTreeView.ItemPadding = 10;
+            this.CapeTreeView.ItemSize = 64;
+            this.CapeTreeView.ItemTitleColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.CapeTreeView.Location = new System.Drawing.Point(20, 80);
+            this.CapeTreeView.Name = "CapeTreeView";
+            this.CapeTreeView.SelectedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.CapeTreeView.SelectedHeaderTextColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.CapeTreeView.Size = new System.Drawing.Size(468, 297);
+            this.CapeTreeView.TabIndex = 23;
+            this.CapeTreeView.Text = "CapeTreeView";
+            this.CapeTreeView.ThumbColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.CapeTreeView.ThumbHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(110)))), ((int)(((byte)(110)))));
+            this.CapeTreeView.TrackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.CapeTreeView.SelectionChanged += new System.EventHandler(this.CapeTreeView_SelectionChanged);
             // 
             // ResetNodesButton
             // 
@@ -675,7 +699,7 @@
             this.ResetNodesButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.ResetNodesButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.ResetNodesButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.ResetNodesButton.Location = new System.Drawing.Point(491, 330);
+            this.ResetNodesButton.Location = new System.Drawing.Point(535, 330);
             this.ResetNodesButton.MinimumSize = new System.Drawing.Size(144, 47);
             this.ResetNodesButton.Name = "ResetNodesButton";
             this.ResetNodesButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
@@ -683,7 +707,7 @@
             this.ResetNodesButton.PressedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.ResetNodesButton.PressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.ResetNodesButton.Radius = 5;
-            this.ResetNodesButton.Size = new System.Drawing.Size(285, 47);
+            this.ResetNodesButton.Size = new System.Drawing.Size(257, 47);
             this.ResetNodesButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.ResetNodesButton.TabIndex = 22;
             this.ResetNodesButton.Text = "Reset To Default";
@@ -701,7 +725,7 @@
             this.RemoveNodeButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.RemoveNodeButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.RemoveNodeButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.RemoveNodeButton.Location = new System.Drawing.Point(491, 280);
+            this.RemoveNodeButton.Location = new System.Drawing.Point(535, 280);
             this.RemoveNodeButton.MinimumSize = new System.Drawing.Size(144, 47);
             this.RemoveNodeButton.Name = "RemoveNodeButton";
             this.RemoveNodeButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
@@ -709,7 +733,7 @@
             this.RemoveNodeButton.PressedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.RemoveNodeButton.PressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.RemoveNodeButton.Radius = 5;
-            this.RemoveNodeButton.Size = new System.Drawing.Size(285, 47);
+            this.RemoveNodeButton.Size = new System.Drawing.Size(257, 47);
             this.RemoveNodeButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.RemoveNodeButton.TabIndex = 21;
             this.RemoveNodeButton.Text = "Remove Selected Nodes";
@@ -727,7 +751,7 @@
             this.AddNodeButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.AddNodeButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.AddNodeButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.AddNodeButton.Location = new System.Drawing.Point(491, 230);
+            this.AddNodeButton.Location = new System.Drawing.Point(535, 230);
             this.AddNodeButton.MinimumSize = new System.Drawing.Size(144, 47);
             this.AddNodeButton.Name = "AddNodeButton";
             this.AddNodeButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
@@ -735,7 +759,7 @@
             this.AddNodeButton.PressedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.AddNodeButton.PressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.AddNodeButton.Radius = 5;
-            this.AddNodeButton.Size = new System.Drawing.Size(285, 47);
+            this.AddNodeButton.Size = new System.Drawing.Size(257, 47);
             this.AddNodeButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.AddNodeButton.TabIndex = 20;
             this.AddNodeButton.Text = "Add Node";
@@ -753,7 +777,7 @@
             this.NodeDownButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.NodeDownButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.NodeDownButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.NodeDownButton.Location = new System.Drawing.Point(443, 354);
+            this.NodeDownButton.Location = new System.Drawing.Point(494, 350);
             this.NodeDownButton.Name = "NodeDownButton";
             this.NodeDownButton.Size = new System.Drawing.Size(25, 25);
             this.NodeDownButton.TabIndex = 18;
@@ -772,7 +796,7 @@
             this.NodeUpButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.NodeUpButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.NodeUpButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.NodeUpButton.Location = new System.Drawing.Point(443, 323);
+            this.NodeUpButton.Location = new System.Drawing.Point(494, 319);
             this.NodeUpButton.Name = "NodeUpButton";
             this.NodeUpButton.Size = new System.Drawing.Size(25, 25);
             this.NodeUpButton.TabIndex = 17;
@@ -784,24 +808,13 @@
             this.NodeStatus.BackColor = System.Drawing.Color.Transparent;
             this.NodeStatus.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.NodeStatus.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.NodeStatus.Location = new System.Drawing.Point(491, 161);
+            this.NodeStatus.Location = new System.Drawing.Point(535, 161);
             this.NodeStatus.Name = "NodeStatus";
-            this.NodeStatus.Size = new System.Drawing.Size(285, 66);
+            this.NodeStatus.Size = new System.Drawing.Size(257, 66);
             this.NodeStatus.TabIndex = 16;
             this.NodeStatus.Text = "Label";
             this.NodeStatus.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.NodeStatus.Visible = false;
-            // 
-            // NodeThumbnail
-            // 
-            this.NodeThumbnail.BackColor = System.Drawing.Color.Transparent;
-            this.NodeThumbnail.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.NodeThumbnail.Location = new System.Drawing.Point(491, 58);
-            this.NodeThumbnail.Name = "NodeThumbnail";
-            this.NodeThumbnail.Size = new System.Drawing.Size(285, 100);
-            this.NodeThumbnail.TabIndex = 4;
-            this.NodeThumbnail.TabStop = false;
-            this.NodeThumbnail.Visible = false;
             // 
             // EnableMenuItemLabel
             // 
@@ -858,18 +871,6 @@
             this.CustomMenuToggle.TabIndex = 12;
             this.CustomMenuToggle.UseVisualStyleBackColor = false;
             this.CustomMenuToggle.CheckedChanged += new System.EventHandler(this.CustomMenuToggle_CheckedChanged);
-            // 
-            // MenuTreeView
-            // 
-            this.MenuTreeView.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.MenuTreeView.Location = new System.Drawing.Point(20, 74);
-            this.MenuTreeView.MultiSelect = true;
-            this.MenuTreeView.Name = "MenuTreeView";
-            this.MenuTreeView.Size = new System.Drawing.Size(414, 305);
-            this.MenuTreeView.TabIndex = 7;
-            this.MenuTreeView.Text = "MenuTreeView";
-            this.MenuTreeView.Visible = false;
-            this.MenuTreeView.SelectedNodesChanged += new System.EventHandler(this.MenuTreeView_SelectedNodesChanged);
             // 
             // MenuEditorBackButton
             // 
@@ -1377,7 +1378,6 @@
             this.SettingsPage.PerformLayout();
             this.MenuEditorPage.ResumeLayout(false);
             this.MenuEditorPage.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.NodeThumbnail)).EndInit();
             this.UpdatePage.ResumeLayout(false);
             this.DevPage.ResumeLayout(false);
             this.DevPage.PerformLayout();
@@ -1449,18 +1449,17 @@
         private App.UI.RoundButton SkinPacksEditorButton;
         private App.UI.RoundButton CapesEditorButton;
         private System.Windows.Forms.Button MenuEditorBackButton;
-        private App.UI.TreeViewControl MenuTreeView;
         private System.Windows.Forms.Label CustomMenuLabel;
         private App.UI.Switch CustomMenuToggle;
         private System.Windows.Forms.Label EnableMenuItemLabel;
         private App.UI.Switch EnableMenuItemToggle;
         private System.Windows.Forms.Label NodeStatus;
-        private System.Windows.Forms.PictureBox NodeThumbnail;
         private System.Windows.Forms.Button NodeDownButton;
         private System.Windows.Forms.Button NodeUpButton;
         private App.UI.RoundButton ResetNodesButton;
         private App.UI.RoundButton RemoveNodeButton;
         private App.UI.RoundButton AddNodeButton;
+        private App.UI.ImageTreeView CapeTreeView;
     }
 }
 

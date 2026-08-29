@@ -111,13 +111,13 @@
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <!--Reference Include="Microsoft.Web.WebView2.Core, Version=1.0.4129.50, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL"-->
-      <!--HintPath>..\packages\Microsoft.Web.WebView2.1.0.4129.50\lib\net462\Microsoft.Web.WebView2.Core.dll</HintPath-->
+    <!--HintPath>..\packages\Microsoft.Web.WebView2.1.0.4129.50\lib\net462\Microsoft.Web.WebView2.Core.dll</HintPath-->
     <!--/Reference-->
     <!--Reference Include="Microsoft.Web.WebView2.WinForms, Version=1.0.4129.50, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL"-->
-      <!--HintPath>..\packages\Microsoft.Web.WebView2.1.0.4129.50\lib\net462\Microsoft.Web.WebView2.WinForms.dll</HintPath-->
+    <!--HintPath>..\packages\Microsoft.Web.WebView2.1.0.4129.50\lib\net462\Microsoft.Web.WebView2.WinForms.dll</HintPath-->
     <!--/Reference-->
     <!--Reference Include="Microsoft.Web.WebView2.Wpf, Version=1.0.4129.50, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL"-->
-      <!--HintPath>..\packages\Microsoft.Web.WebView2.1.0.4129.50\lib\net462\Microsoft.Web.WebView2.Wpf.dll</HintPath-->
+    <!--HintPath>..\packages\Microsoft.Web.WebView2.1.0.4129.50\lib\net462\Microsoft.Web.WebView2.Wpf.dll</HintPath-->
     <!--/Reference-->
     <Reference Include="Microsoft.Win32.Registry, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Win32.Registry.5.0.0\lib\net461\Microsoft.Win32.Registry.dll</HintPath>
@@ -203,15 +203,13 @@
     <Compile Include="App\UI\TransparentTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="App\UI\TreeView\CustomScrollBar.cs" />
-    <Compile Include="App\UI\TreeView\ObservableList.cs" />
-    <Compile Include="App\UI\TreeView\ScrollableViewControl.cs">
+    <Compile Include="App\UI\TreeView\ImageCategory.cs" />
+    <Compile Include="App\UI\TreeView\ImageDocument.cs" />
+    <Compile Include="App\UI\TreeView\ImageTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="App\UI\TreeView\TreeViewControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="App\UI\TreeView\TreeViewNode.cs" />
+    <Compile Include="App\UI\TreeView\ImageItem.cs" />
+    <Compile Include="App\UI\TreeView\ImageCache.cs" />
     <Compile Include="App\UriHandler.cs" />
     <Compile Include="App\WindowHelper.cs" />
     <Compile Include="MainForm.cs">
@@ -310,6 +308,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

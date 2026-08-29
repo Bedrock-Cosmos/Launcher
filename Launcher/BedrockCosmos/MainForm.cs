@@ -13,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 // =============================================================================
 // Bedrock Cosmos - Copyright (c) 2026
@@ -507,9 +508,18 @@ namespace BedrockCosmos
         private void CapesEditorButton_Click(object sender, EventArgs e)
         {
             TabControl.SelectedTab = MenuEditorPage;
-            MenuTreeView.Nodes.Clear();
 
-            CapeMenuEditor.PopulateTree(MenuTreeView, Path.Combine(PathDefinitions.ResponsesDirectory, @"MainPages\Capes.json"));
+            try
+            {
+                string json = File.ReadAllText(Path.Combine(PathDefinitions.ResponsesDirectory, @"MainPages\Capes.json"));
+                var doc = ImageDocument.LoadFromMarketplaceJson(json);
+                CapeMenuEditor.ApplyHeaderTitleOverrides(doc.Categories);
+                CapeTreeView.LoadData(doc.Categories);
+            }
+            catch
+            {
+
+            }
         }
 
         private void SkinPacksEditorButton_Click(object sender, EventArgs e)
@@ -664,122 +674,67 @@ namespace BedrockCosmos
 
         private void CustomMenuToggle_CheckedChanged(object sender, EventArgs e)
         {
-            MenuTreeView.Visible = CustomMenuToggle.Checked;
             EnableMenuItemToggle.Visible = CustomMenuToggle.Checked;
             EnableMenuItemLabel.Visible = CustomMenuToggle.Checked;
-            NodeThumbnail.Visible = CustomMenuToggle.Checked;
             NodeStatus.Visible = CustomMenuToggle.Checked;
         }
 
-        private async void MenuTreeView_SelectedNodesChanged(object sender, EventArgs e)
+        private void CapeTreeView_SelectionChanged(object sender, EventArgs e)
         {
-            try
+            int currentNodes = CapeTreeView.SelectedNodes.Count;
+            bool hasSelection = currentNodes > 0;
+            RemoveNodeButton.Enabled = hasSelection;
+            NodeUpButton.Enabled = hasSelection;
+            NodeDownButton.Enabled = hasSelection;
+
+            if (!(currentNodes > 1))
             {
-                string tag = "";
+                var node = CapeTreeView.SelectedNodes.FirstOrDefault();
 
-                if (MenuTreeView.SelectedNodes[0].Tag != null)
+                switch (node)
                 {
-                    if (MenuTreeView.SelectedNodes.Count > 0 && MenuTreeView.SelectedNodes[0].Tag is CapeItemData data)
-                    {
-                        string id = data.Id;
-                        string thumbUrl = data.ThumbnailUrl;
-                        tag = ", " + id;
+                    case ImageItem item:
+                        NodeStatus.Text = $"{item.Title}, {item.Id}";
+                        break;
 
-                        if (MenuTreeView.SelectedNodes.Count == 1)
-                        {
-                            string thumbPath = Path.Combine(PathDefinitions.CacheDirectory, thumbUrl.Split('/').Last());
+                    case ImageCategory category:
+                        NodeStatus.Text = category.Name;
+                        break;
 
-                            if (!Directory.Exists(PathDefinitions.CacheDirectory))
-                                Directory.CreateDirectory(PathDefinitions.CacheDirectory);
-
-                            if (!File.Exists(thumbPath))
-                                try
-                                {
-                                    await AsyncHttpOperations.DownloadFileAsync(data.ThumbnailUrl, thumbPath);
-                                }
-                                catch
-                                {
-                                    return;
-                                }
-
-                            NodeThumbnail.BackgroundImage = new Bitmap(thumbPath);
-                        }
-                    }
-                }
-
-                NodeStatus.Text = MenuTreeView.SelectedNodes[0].Text + tag;
-                EnableMenuItemToggle.Checked = MenuTreeView.SelectedNodes[0].ForeColor == Color.Green;
-
-                if (MenuTreeView.SelectedNodes.Count > 1)
-                {
-                    NodeStatus.Text = "Multiple Items Selected";
-                    EnableMenuItemToggle.Checked = MenuTreeView.SelectedNodes.All(n => n.ForeColor == Color.Green);
+                    default:
+                        NodeStatus.Text = string.Empty; // Nothing selected
+                        break;
                 }
             }
-            catch (ArgumentOutOfRangeException)
+            else
             {
-
+                NodeStatus.Text = $"{currentNodes} items selected.";
             }
         }
 
         private void EnableMenuItemToggle_Click(object sender, EventArgs e)
         {
-            foreach (TreeViewNode node in MenuTreeView.SelectedNodes)
-            {
-                if (EnableMenuItemToggle.Checked)
-                {
-                    node.SetForeColorRecursive(Color.Green);
-                    node.UpdateAncestorForeColors();
-                }
-                else
-                {
-                    node.SetForeColorRecursive(null);
-                    node.UpdateAncestorForeColors();
-                }
-            }
+            CapeTreeView.SetSelectedEnabled(EnableMenuItemToggle.Checked);
         }
 
         private void NodeUpButton_Click(object sender, EventArgs e)
         {
-            MenuTreeView.MoveSelectedNodesUp();
+            CapeTreeView.MoveSelectedUp();
         }
 
         private void NodeDownButton_Click(object sender, EventArgs e)
         {
-            MenuTreeView.MoveSelectedNodesDown();
+            CapeTreeView.MoveSelectedDown();
         }
 
         private void AddNodeButton_Click(object sender, EventArgs e)
         {
-            TreeViewNode target = MenuTreeView.FindNode(@"Default Capes");
-            if (target != null)
-            {
-                TreeViewNode newNode = new TreeViewNode("Dummy Cape");
-                target.Nodes.Add(newNode);
-                target.Expanded = true;
-
-                newNode.UpdateAncestorForeColors();
-            }
+            CapeTreeView.AddItem("New Cape", thumbnailUrl: null);
         }
 
         private void RemoveNodeButton_Click(object sender, EventArgs e)
         {
-            if (!NodeStatus.Text.StartsWith("This action will delete"))
-            {
-                NodeStatus.Text = $"This action will delete {MenuTreeView.SelectedNodes.Count} nodes! Select Remove again to continue.";
-            }
-            else
-            {
-                List<TreeViewNode> toRemove = MenuTreeView.SelectedNodes.ToList();
-
-                foreach (TreeViewNode node in toRemove)
-                {
-                    node.Remove();
-                    node.UpdateAncestorForeColors();
-                }
-
-                NodeStatus.Text = "Nodes removed!";
-            }
+            CapeTreeView.RemoveSelectedNodes();
         }
 
         private void ResetNodesButton_Click(object sender, EventArgs e)
@@ -790,8 +745,10 @@ namespace BedrockCosmos
             }
             else
             {
-                MenuTreeView.Nodes.Clear();
-                CapeMenuEditor.PopulateTree(MenuTreeView, Path.Combine(PathDefinitions.ResponsesDirectory, @"MainPages\Capes.json"));
+                string json = File.ReadAllText(Path.Combine(PathDefinitions.ResponsesDirectory, @"MainPages\Capes.json"));
+                var doc = ImageDocument.LoadFromMarketplaceJson(json);
+                CapeMenuEditor.ApplyHeaderTitleOverrides(doc.Categories);
+                CapeTreeView.LoadData(doc.Categories);
                 NodeStatus.Text = "Nodes reset!";
             }
         }

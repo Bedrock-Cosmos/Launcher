@@ -28,9 +28,31 @@ namespace BedrockCosmos.App.MenuEditor
 
             };
 
+        // Gives more friendly names from dictionary to parent nodes in menu editor.
+        public static void ApplyHeaderTitleOverrides(IEnumerable<ImageCategory> categories)
+        {
+            if (categories == null)
+                return;
+
+            foreach (var category in categories)
+            {
+                if (string.IsNullOrEmpty(category.Name))
+                    continue;
+
+                foreach (var pair in HeaderTitleOverrides)
+                {
+                    if (category.Name.StartsWith(pair.Key, StringComparison.OrdinalIgnoreCase))
+                    {
+                        category.Name = pair.Value;
+                        break; // first match wins
+                    }
+                }
+            }
+        }
+
         // Parses the JSON at jsonFilePath and rebuilds treeView.Nodes from it.
         // GridLists are top-level, Items are within them.
-        public static void PopulateTree(TreeViewControl treeView, string jsonFilePath)
+        /*public static void PopulateTree(TreeViewControl treeView, string jsonFilePath)
         {
             string json = File.ReadAllText(jsonFilePath);
 
@@ -175,6 +197,6 @@ namespace BedrockCosmos.App.MenuEditor
                     ThumbnailUrl = thumbnailUrl
                 }
             };
-        }
+        }*/
     }
 }
