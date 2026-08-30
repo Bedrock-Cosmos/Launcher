@@ -103,6 +103,19 @@ namespace BedrockCosmos.App.UI
 
         #endregion
 
+        #region Clipboard
+
+        // References to the actual nodes (never copies) - resolved into new
+        // instances (Copy) or moved in place (Cut) only once Paste runs.
+        private readonly List<object> _clipboard = new List<object>();
+        private bool _clipboardIsCut;
+
+        public bool CanCopy => _selectionOrder.Count > 0;
+        public bool CanCut => _selectionOrder.Count > 0;
+        public bool CanPaste => _clipboard.Count > 0;
+
+        #endregion
+
         #region Scrolling
 
         private int _scrollOffset;
@@ -205,6 +218,8 @@ namespace BedrockCosmos.App.UI
 
             _autoScrollTimer = new Timer { Interval = 40 };
             _autoScrollTimer.Tick += OnAutoScrollTick;
+
+            BuildContextMenu();
         }
 
         protected override void Dispose(bool disposing)
@@ -218,6 +233,8 @@ namespace BedrockCosmos.App.UI
 
                 _autoScrollTimer.Stop();
                 _autoScrollTimer.Dispose();
+
+                _contextMenu?.Dispose();
             }
 
             base.Dispose(disposing);
@@ -486,7 +503,7 @@ namespace BedrockCosmos.App.UI
             using (var bgBrush = new SolidBrush(selected ? SelectedBackColor : IdleBackColor))
                 g.FillRectangle(bgBrush, 0, drawTop, rowWidth, row.Height);
 
-            if (beingDragged)
+            if (beingDragged || (_clipboardIsCut && _clipboard.Contains(category)))
             {
                 using (var fadeBrush = new SolidBrush(Color.FromArgb(140, IdleBackColor)))
                     g.FillRectangle(fadeBrush, 0, drawTop, rowWidth, row.Height);
@@ -639,9 +656,10 @@ namespace BedrockCosmos.App.UI
             }
 
             float previousAlpha = 1f;
-            if (beingDragged)
+            if (beingDragged || (_clipboardIsCut && _clipboard.Contains(item)))
             {
-                // Faint "ghost" look for items currently being dragged elsewhere.
+                // Faint "ghost" look for items currently being dragged elsewhere,
+                // or sitting on the clipboard waiting for a Cut to be pasted.
                 using (var fadeBrush = new SolidBrush(Color.FromArgb(140, IdleBackColor)))
                     g.FillPath(fadeBrush, RoundedRect(cellRect, CornerRadius));
             }
@@ -762,6 +780,12 @@ namespace BedrockCosmos.App.UI
         {
             base.OnMouseDown(e);
             Focus();
+
+            if (e.Button == MouseButtons.Right)
+            {
+                HandleRightClick(e.Location);
+                return;
+            }
 
             if (e.Button != MouseButtons.Left)
                 return;
@@ -963,11 +987,127 @@ namespace BedrockCosmos.App.UI
             {
                 SelectAll();
             }
+            else if (e.Control && e.KeyCode == Keys.C)
+            {
+                CopySelection();
+            }
+            else if (e.Control && e.KeyCode == Keys.X)
+            {
+                CutSelection();
+            }
+            else if (e.Control && e.KeyCode == Keys.V)
+            {
+                Paste();
+            }
             else if (e.KeyCode == Keys.Escape && _isDragging)
             {
                 EndDragState();
                 Invalidate();
             }
+        }
+
+        #endregion
+
+        #region Right-click context menu
+
+        private ContextMenuStrip _contextMenu;
+        private ToolStripMenuItem _copyMenuItem;
+        private ToolStripMenuItem _cutMenuItem;
+        private ToolStripMenuItem _pasteMenuItem;
+        private ToolStripMenuItem _deleteMenuItem;
+
+        private void BuildContextMenu()
+        {
+            _contextMenu = new ContextMenuStrip
+            {
+                Renderer = new DarkContextMenuRenderer(),
+                ShowImageMargin = false,
+                BackColor = Color.FromArgb(30, 30, 30),
+                Font = new Font("Segoe UI", 9F)
+            };
+
+            _copyMenuItem = new ToolStripMenuItem("Copy", null, (s, e) => CopySelection());
+            _cutMenuItem = new ToolStripMenuItem("Cut", null, (s, e) => CutSelection());
+            _pasteMenuItem = new ToolStripMenuItem("Paste", null, (s, e) => Paste());
+            _deleteMenuItem = new ToolStripMenuItem("Delete", null, (s, e) => RemoveSelectedNodes());
+
+            _contextMenu.Items.Add(_copyMenuItem);
+            _contextMenu.Items.Add(_cutMenuItem);
+            _contextMenu.Items.Add(_pasteMenuItem);
+            _contextMenu.Items.Add(new ToolStripSeparator());
+            _contextMenu.Items.Add(_deleteMenuItem);
+
+            // Enable/disable state is recomputed every time the menu opens
+            // rather than after every selection change, since it's cheap and
+            // this is the only place it's actually observed.
+            _contextMenu.Opening += (s, e) =>
+            {
+                _copyMenuItem.Enabled = CanCopy;
+                _cutMenuItem.Enabled = CanCut;
+                _pasteMenuItem.Enabled = CanPaste;
+                _deleteMenuItem.Enabled = _selectionOrder.Count > 0;
+            };
+        }
+
+        /// <summary>
+        /// Right-clicking a node that's already part of the current
+        /// multi-selection leaves the whole selection intact (so "right-click
+        /// one of five selected items, then Copy" copies all five) - the same
+        /// convention Explorer uses. Right-clicking anything else (an
+        /// unselected node, or empty space) replaces the selection first,
+        /// exactly like a plain left click would.
+        /// </summary>
+        private void HandleRightClick(Point location)
+        {
+            if (location.X >= ClientSize.Width - ScrollBarWidth)
+                return;
+
+            var hit = HitTest(location);
+
+            if (hit.Node == null)
+                ClearSelection();
+            else if (!_selectionSet.Contains(hit.Node))
+                SelectNode(hit.Node);
+
+            _contextMenu.Show(this, location);
+        }
+
+        /// <summary>Flat, dark ToolStripRenderer so the context menu matches the rest of the app instead of a stock white Windows menu.</summary>
+        private sealed class DarkContextMenuRenderer : ToolStripProfessionalRenderer
+        {
+            public DarkContextMenuRenderer() : base(new DarkContextMenuColorTable()) { }
+
+            protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
+            {
+                e.TextColor = e.Item.Enabled ? Color.FromArgb(153, 153, 153) : Color.FromArgb(90, 90, 90);
+                base.OnRenderItemText(e);
+            }
+
+            protected override void OnRenderToolStripBorder(ToolStripRenderEventArgs e)
+            {
+                using (var pen = new Pen(Color.FromArgb(60, 60, 60)))
+                    e.Graphics.DrawRectangle(pen, 0, 0, e.ToolStrip.Width - 1, e.ToolStrip.Height - 1);
+            }
+
+            protected override void OnRenderSeparator(ToolStripSeparatorRenderEventArgs e)
+            {
+                var bounds = new Rectangle(Point.Empty, e.Item.Size);
+                using (var pen = new Pen(Color.FromArgb(60, 60, 60)))
+                    e.Graphics.DrawLine(pen, 4, bounds.Height / 2, bounds.Width - 4, bounds.Height / 2);
+            }
+        }
+
+        private sealed class DarkContextMenuColorTable : ProfessionalColorTable
+        {
+            public override Color MenuItemSelected => Color.FromArgb(75, 75, 75);
+            public override Color MenuItemSelectedGradientBegin => Color.FromArgb(75, 75, 75);
+            public override Color MenuItemSelectedGradientEnd => Color.FromArgb(75, 75, 75);
+            public override Color MenuItemBorder => Color.FromArgb(0, 188, 71);
+            public override Color MenuBorder => Color.FromArgb(60, 60, 60);
+            public override Color ToolStripDropDownBackground => Color.FromArgb(30, 30, 30);
+            public override Color ImageMarginGradientBegin => Color.FromArgb(30, 30, 30);
+            public override Color ImageMarginGradientMiddle => Color.FromArgb(30, 30, 30);
+            public override Color ImageMarginGradientEnd => Color.FromArgb(30, 30, 30);
         }
 
         #endregion
@@ -1458,6 +1598,126 @@ namespace BedrockCosmos.App.UI
             else _categories.Insert(index, copy);
 
             return copy;
+        }
+
+        /// <summary>Snapshots the current selection into the clipboard for a later <see cref="Paste"/>. Repeatable.</summary>
+        public void CopySelection()
+        {
+            if (_selectionOrder.Count == 0)
+                return;
+
+            _clipboard.Clear();
+            _clipboard.AddRange(_selectionOrder);
+            _clipboardIsCut = false;
+            Invalidate();
+        }
+
+        /// <summary>
+        /// Snapshots the current selection into the clipboard, marked so the
+        /// next <see cref="Paste"/> moves the original nodes instead of
+        /// duplicating them. The originals stay put (and rendered faded, like
+        /// a drag) until that paste actually happens - nothing is removed by
+        /// calling this alone.
+        /// </summary>
+        public void CutSelection()
+        {
+            if (_selectionOrder.Count == 0)
+                return;
+
+            _clipboard.Clear();
+            _clipboard.AddRange(_selectionOrder);
+            _clipboardIsCut = true;
+            Invalidate();
+        }
+
+        /// <summary>
+        /// Pastes whatever is on the clipboard. The target follows the same
+        /// rule as <see cref="AddItem"/>: relative to whichever node is
+        /// currently selected first (a category appends into it; an item
+        /// inserts right after it in the same category), falling back to the
+        /// first category, or the top level for pasted categories. A Copy
+        /// clipboard can be pasted repeatedly; a Cut clipboard is consumed by
+        /// the first paste.
+        /// </summary>
+        public void Paste()
+        {
+            if (_clipboard.Count == 0)
+                return;
+
+            ImageCategory targetCategory = null;
+            ImageItem insertBeforeItem = null;
+            ImageCategory insertBeforeCategory = null;
+
+            object firstSelected = _selectionOrder.FirstOrDefault();
+            if (firstSelected is ImageCategory selectedCategory)
+            {
+                targetCategory = selectedCategory;
+                int categoryIndex = _categories.IndexOf(selectedCategory) + 1;
+                insertBeforeCategory = categoryIndex < _categories.Count ? _categories[categoryIndex] : null;
+            }
+            else if (firstSelected is ImageItem selectedItem && _parentMap.TryGetValue(selectedItem, out var owner))
+            {
+                targetCategory = owner;
+                int itemIndex = owner.Items.IndexOf(selectedItem) + 1;
+                insertBeforeItem = itemIndex < owner.Items.Count ? owner.Items[itemIndex] : null;
+            }
+            else if (_categories.Count > 0)
+            {
+                targetCategory = _categories[0];
+            }
+
+            var clipboardCategories = _clipboard.OfType<ImageCategory>().ToList();
+            var clipboardItems = _clipboard.OfType<ImageItem>().ToList();
+            var pastedNodes = new List<object>();
+
+            if (_clipboardIsCut)
+            {
+                foreach (var category in clipboardCategories)
+                {
+                    _categories.Remove(category);
+                    int index = insertBeforeCategory != null ? _categories.IndexOf(insertBeforeCategory) : -1;
+                    if (index < 0) _categories.Add(category);
+                    else _categories.Insert(index, category);
+                    pastedNodes.Add(category);
+                }
+
+                if (targetCategory != null)
+                {
+                    foreach (var item in clipboardItems)
+                    {
+                        MoveItemToCategory(item, targetCategory, insertBeforeItem);
+                        pastedNodes.Add(item);
+                    }
+                }
+
+                // A cut is single-use, same as the OS clipboard behavior most
+                // people expect: paste again afterward and nothing happens.
+                _clipboard.Clear();
+                _clipboardIsCut = false;
+            }
+            else
+            {
+                foreach (var category in clipboardCategories)
+                    pastedNodes.Add(CopyCategory(category, insertBeforeCategory));
+
+                if (targetCategory != null)
+                {
+                    foreach (var item in clipboardItems)
+                        pastedNodes.Add(CopyItemToCategory(item, targetCategory, insertBeforeItem));
+                }
+            }
+
+            if (pastedNodes.Count == 0)
+                return;
+
+            ClearSelectionInternal();
+            foreach (var node in pastedNodes)
+                AddToSelection(node);
+
+            RebuildLayout();
+            Invalidate();
+            SelectionChanged?.Invoke(this, EventArgs.Empty);
+            DataChanged?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion

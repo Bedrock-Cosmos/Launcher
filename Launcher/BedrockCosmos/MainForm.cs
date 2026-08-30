@@ -686,6 +686,9 @@ namespace BedrockCosmos
             RemoveNodeButton.Enabled = hasSelection;
             NodeUpButton.Enabled = hasSelection;
             NodeDownButton.Enabled = hasSelection;
+            CopyNodeButton.Enabled = CapeTreeView.CanCopy;
+            CutNodeButton.Enabled = CapeTreeView.CanCut;
+            PasteNodeButton.Enabled = CapeTreeView.CanPaste;
 
             if (!(currentNodes > 1))
             {
@@ -767,6 +770,23 @@ namespace BedrockCosmos
                 CapeTreeView.LoadData(doc.Categories);
                 NodeStatus.Text = "Nodes reset!";
             }
+        }
+
+        private void CopyNodeButton_Click(object sender, EventArgs e)
+        {
+            CapeTreeView.CopySelection();
+            PasteNodeButton.Enabled = CapeTreeView.CanPaste;
+        }
+
+        private void CutNodeButton_Click(object sender, EventArgs e)
+        {
+            CapeTreeView.CutSelection();
+            PasteNodeButton.Enabled = CapeTreeView.CanPaste;
+        }
+
+        private void PasteNodeButton_Click(object sender, EventArgs e)
+        {
+            CapeTreeView.Paste();
         }
     }
 }
