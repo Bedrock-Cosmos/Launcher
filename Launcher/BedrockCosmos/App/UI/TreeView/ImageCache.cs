@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Net;
 using System.Threading;
@@ -19,8 +18,7 @@ using System.Threading;
 
 namespace BedrockCosmos.App.UI
 {
-    // Cache works by writing a thumbnail to disk if not downloaded before, then
-    // loads in to RAM, with a max of MaxMemoryEntries loaded at one time.
+    // Cache loads thumbnails to RAM, with a max of MaxMemoryEntries loaded at one time.
     internal static class ImageCache
     {
         private const int MaxMemoryEntries = 250; // Max thumbnails in RAM at once.
@@ -32,8 +30,6 @@ namespace BedrockCosmos.App.UI
         private static readonly Dictionary<string, LinkedListNode<string>> RecencyNodes = new Dictionary<string, LinkedListNode<string>>();
         private static readonly HashSet<string> InFlight = new HashSet<string>();
         private static readonly object Lock = new object();
-
-        private static readonly string CacheDirectory = PathDefinitions.CacheDirectory;
 
         // Raised on a background thread once a thumbnail finishes loading.
         public static event Action<string> ImageLoaded;
@@ -77,32 +73,17 @@ namespace BedrockCosmos.App.UI
         {
             try
             {
-                string path = GetDiskPath(id);
                 Bitmap thumbnail;
 
-                if (File.Exists(path))
+                using (var client = new WebClient())
                 {
-                    using (var fileStream = File.OpenRead(path))
-                    using (var decoded = Image.FromStream(fileStream))
-                    {
-                        // Clone so FileStream can close immediately.
-                        thumbnail = new Bitmap(decoded);
-                    }
-                }
-                else
-                {
-                    using (var client = new WebClient())
-                    {
-                        byte[] bytes = client.DownloadData(url);
+                    byte[] bytes = client.DownloadData(url);
 
-                        using (var memoryStream = new MemoryStream(bytes))
-                        using (var fullSize = Image.FromStream(memoryStream))
-                        {
-                            thumbnail = DownscaleTo(fullSize, DecodeSize);
-                        }
+                    using (var memoryStream = new MemoryStream(bytes))
+                    using (var fullSize = Image.FromStream(memoryStream))
+                    {
+                        thumbnail = DownscaleTo(fullSize, DecodeSize);
                     }
-
-                    SaveToDisk(thumbnail, path);
                 }
 
                 lock (Lock)
@@ -164,31 +145,6 @@ namespace BedrockCosmos.App.UI
             return result;
         }
 
-        private static void SaveToDisk(Bitmap bitmap, string path)
-        {
-            try
-            {
-                Directory.CreateDirectory(Path.GetDirectoryName(path));
-                bitmap.Save(path, ImageFormat.Png);
-            }
-            catch
-            {
-
-            }
-        }
-
-        private static string GetDiskPath(string id)
-        {
-            return Path.Combine(CacheDirectory, SanitizeFileName(id) + ".png");
-        }
-
-        private static string SanitizeFileName(string name)
-        {
-            foreach (char invalidChar in Path.GetInvalidFileNameChars())
-                name = name.Replace(invalidChar, '_');
-            return name;
-        }
-
         // Must be called while holding ImageCache.Lock.
         private static void StoreInMemory(string id, Image image)
         {
@@ -239,19 +195,6 @@ namespace BedrockCosmos.App.UI
                 Memory.Clear();
                 RecencyOrder.Clear();
                 RecencyNodes.Clear();
-            }
-        }
-
-        public static void ClearDiskCache()
-        {
-            try
-            {
-                if (Directory.Exists(CacheDirectory))
-                    Directory.Delete(CacheDirectory, recursive: true);
-            }
-            catch
-            {
-
             }
         }
     }

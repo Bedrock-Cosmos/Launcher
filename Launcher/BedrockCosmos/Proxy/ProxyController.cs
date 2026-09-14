@@ -530,9 +530,14 @@ namespace BedrockCosmos.Proxy
 
         private void SetResponseBodyFromFile(string localPath, SessionEventArgs e)
         {
+            // Very rough implementation of loading a user's custom cape menu they made, will be changed later.
+            /*if (localPath.EndsWith("Capes.json") && File.Exists(Path.Combine(PathDefinitions.CustomJsonsDirectory, @"Capes.json")))
+                localPath = (Path.Combine(PathDefinitions.CustomJsonsDirectory, @"Capes.json"));*/
+
             string jsonContent = JsonParser.ReadJsonFileContent(localPath);
             e.SetResponseBodyString(jsonContent);
             //CosmosConsole.WriteLine("Parser", $"Replaced response for {e.HttpClient.Request.Url} using {Path.GetFileName(localPath)}");
+
 
             var userData = e.UserData as CustomUserData;
             userData.RequestLogs = userData.RequestLogs + $"└── On Response: Replaced original response using {Path.GetFileName(localPath)}\n";

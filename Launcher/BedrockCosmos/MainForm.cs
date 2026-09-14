@@ -11,6 +11,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
@@ -505,6 +506,8 @@ namespace BedrockCosmos
                 DiscordRichPresence.UpdatePresence();
         }
 
+        private ImageDocument _capesDocument;
+
         private void CapesEditorButton_Click(object sender, EventArgs e)
         {
             TabControl.SelectedTab = MenuEditorPage;
@@ -512,9 +515,9 @@ namespace BedrockCosmos
             try
             {
                 string json = File.ReadAllText(Path.Combine(PathDefinitions.ResponsesDirectory, @"MainPages\Capes.json"));
-                var doc = ImageDocument.LoadFromMarketplaceJson(json);
-                CapeMenuEditor.ApplyHeaderTitleOverrides(doc.Categories);
-                CapeTreeView.LoadData(doc.Categories);
+                _capesDocument = ImageDocument.LoadFromMarketplaceJson(json);
+                CapeMenuEditor.ApplyHeaderTitleOverrides(_capesDocument.Categories);
+                CapeTreeView.LoadData(_capesDocument.Categories);
             }
             catch
             {
@@ -711,7 +714,7 @@ namespace BedrockCosmos
             }
             else
             {
-                NodeStatus.Text = $"{currentNodes} items selected.";
+                NodeStatus.Text = $"{CapeTreeView.GetSelectedNodeCount()} nodes selected.";
             }
 
             EnableMenuItemToggle.Checked = false;
@@ -720,6 +723,16 @@ namespace BedrockCosmos
         private void EnableMenuItemToggle_Click(object sender, EventArgs e)
         {
             CapeTreeView.SetSelectedEnabled(EnableMenuItemToggle.Checked);
+        }
+
+        private void ShowNodeCountsToggle_CheckedChanged(object sender, EventArgs e)
+        {
+            CapeTreeView.ShowItemCountInHeader = ShowNodeCountsToggle.Checked;
+        }
+
+        private void NodeToTopButton_Click(object sender, EventArgs e)
+        {
+            CapeTreeView.MoveSelectedToTop();
         }
 
         private void NodeUpButton_Click(object sender, EventArgs e)
@@ -732,6 +745,16 @@ namespace BedrockCosmos
             CapeTreeView.MoveSelectedDown();
         }
 
+        private void NodeToBottomButton_Click(object sender, EventArgs e)
+        {
+            CapeTreeView.MoveSelectedToBottom();
+        }
+
+        private void AddCategoryButton_Click(object sender, EventArgs e)
+        {
+            CapeTreeView.AddCategory(name: "New Category");
+        }
+
         private void AddNodeButton_Click(object sender, EventArgs e)
         {
             CapeTreeView.AddItem("New Cape", thumbnailUrl: null);
@@ -741,13 +764,13 @@ namespace BedrockCosmos
         {
             if (!NodeStatus.Text.StartsWith("This action will delete"))
             {
-                int currentNodes = CapeTreeView.SelectedNodes.Count;
+                int currentNodes = CapeTreeView.GetSelectedNodeCount();
                 string plural = "";
 
                 if (currentNodes != 1)
                     plural = "s";
 
-                NodeStatus.Text = $"This action will delete {CapeTreeView.SelectedNodes.Count} node{plural}! Select Remove again to continue.";
+                NodeStatus.Text = $"This action will delete {currentNodes} node{plural}! Select Remove again to continue.";
             }
             else
             {
@@ -772,6 +795,11 @@ namespace BedrockCosmos
             }
         }
 
+        private void RenameNodeButton_Click(object sender, EventArgs e)
+        {
+            CapeTreeView.BeginRename();
+        }
+
         private void CopyNodeButton_Click(object sender, EventArgs e)
         {
             CapeTreeView.CopySelection();
@@ -787,6 +815,32 @@ namespace BedrockCosmos
         private void PasteNodeButton_Click(object sender, EventArgs e)
         {
             CapeTreeView.Paste();
+        }
+
+        private void ExportMenuButton_Click(object sender, EventArgs e)
+        {
+            if (_capesDocument == null)
+            {
+                NodeStatus.Text = "Nothing loaded to export.";
+                return;
+            }
+
+            if (!Directory.Exists(PathDefinitions.CustomJsonsDirectory))
+                Directory.CreateDirectory(PathDefinitions.CustomJsonsDirectory);
+
+            using (var dialog = new SaveFileDialog
+            {
+                Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*",
+                FileName = Path.Combine(PathDefinitions.CustomJsonsDirectory, @"Capes.json")
+            })
+            {
+                if (dialog.ShowDialog(this) != DialogResult.OK)
+                    return;
+
+                string json = _capesDocument.ToJson(indented: true);
+                File.WriteAllText(dialog.FileName, json, Encoding.UTF8);
+                NodeStatus.Text = "Exported!";
+            }
         }
     }
 }

@@ -101,6 +101,37 @@ namespace BedrockCosmos.App.UI
 
         public IEnumerable<ImageCategory> SelectedCategories => _selectionOrder.OfType<ImageCategory>();
 
+        public int GetSelectedNodeCount()
+        {
+            var covered = new HashSet<ImageItem>();
+
+            foreach (var category in SelectedCategories)
+                foreach (var item in category.Items)
+                    covered.Add(item);
+
+            foreach (var item in SelectedItems)
+                covered.Add(item);
+
+            return covered.Count;
+        }
+
+        public bool GenerateNewIdOnCopy { get; set; } = true; 
+
+        private bool _showItemCountInHeader = true;
+
+        public bool ShowItemCountInHeader
+        {
+            get => _showItemCountInHeader;
+            set
+            {
+                if (_showItemCountInHeader == value)
+                    return;
+
+                _showItemCountInHeader = value;
+                Invalidate();
+            }
+        }
+
         #endregion
 
         #region Clipboard
@@ -139,33 +170,15 @@ namespace BedrockCosmos.App.UI
 
         private int _dropTargetGlobalIndex = -1; // Insertion index used by moving/copying. -1 = no target.
 
-        /// <summary>
-        /// The specific visual row the cursor was hovering when the drop
-        /// target was last resolved (null if the target came from a header
-        /// hover, or there's no target). A boundary insertion point - e.g.
-        /// "before the first item of row 2" and "after the last item of row
-        /// 1" are the same list position - is genuinely ambiguous in terms of
-        /// a global index alone, so the caret is rendered using this plus
-        /// <see cref="_dropTargetLocalSlot"/> instead: always in whichever row
-        /// the cursor is actually over, never a neighboring one.
-        /// </summary>
-        private ItemsVisualRow _dropTargetVisualRow;
+        private ItemsVisualRow _dropTargetVisualRow; // Caret rendered with this + dropTargetLocalSlot.
 
-        /// <summary>Slot within <see cref="_dropTargetVisualRow"/> (0..row.Items.Count) where the caret should render.</summary>
-        private int _dropTargetLocalSlot;
+        private int _dropTargetLocalSlot; // Slot where caret renders.
 
-        /// <summary>
-        /// Non-null while dragging one or more category headers to reorder
-        /// them - mutually exclusive with <see cref="_draggedItems"/> (a given
-        /// drag is always either items or categories, never both).
-        /// </summary>
-        private List<ImageCategory> _draggedCategories;
+        private List<ImageCategory> _draggedCategories; // Non-null while dragging one or more categories.
 
-        /// <summary>True once a valid category reorder target has been resolved (distinct from "append at the end", which is also represented by a null <see cref="_categoryDropBeforeCategory"/>).</summary>
-        private bool _categoryDropHasTarget;
+        private bool _categoryDropHasTarget; // True once a valid category reorder target has been resolved.
 
-        /// <summary>The category the dragged group should land before, or null to append at the very end of the top-level list.</summary>
-        private ImageCategory _categoryDropBeforeCategory;
+        private ImageCategory _categoryDropBeforeCategory; // The category the dragged group should land before. null appends at the end of top-level list.
 
         #endregion
 
@@ -183,22 +196,7 @@ namespace BedrockCosmos.App.UI
 
         #region Construction
 
-        /// <summary>
-        /// True while running inside a WinForms designer host. Deliberately
-        /// computed via <see cref="LicenseManager.UsageMode"/> rather than the
-        /// inherited <see cref="Control.DesignMode"/> property - DesignMode is
-        /// unreliable (always false) when read from within a constructor,
-        /// since the control's Site isn't assigned until construction
-        /// finishes. Used to skip network/background-thread activity while
-        /// designing: the designer repeatedly creates and tears down control
-        /// instances (every rebuild, undo/redo, property change, etc.), and a
-        /// thumbnail load completing against an already-torn-down instance is
-        /// exactly the kind of race that used to be able to crash the design
-        /// surface - see the fix in ImageCache.RaiseImageLoaded and
-        /// OnImageLoaded below for the general-purpose (not just design-time)
-        /// version of that fix.
-        /// </summary>
-        private readonly bool _isDesignMode;
+        private readonly bool _isDesignMode; // Used to skip network/background-thread activity in VS designer.
 
         public ImageTreeView()
         {
@@ -226,15 +224,14 @@ namespace BedrockCosmos.App.UI
         {
             if (disposing)
             {
-                // Unsubscribe from the static/shared cache event - forgetting this
-                // would keep every control instance alive for the life of the process.
-                // Safe to call even if we never subscribed (design-time instances).
-                ImageCache.ImageLoaded -= OnImageLoaded;
+                ImageCache.ImageLoaded -= OnImageLoaded; // Unsub from the static/shared cache event.
 
                 _autoScrollTimer.Stop();
                 _autoScrollTimer.Dispose();
 
                 _contextMenu?.Dispose();
+                _renameTextBox?.Dispose();
+                _renameFont?.Dispose();
             }
 
             base.Dispose(disposing);
@@ -242,13 +239,7 @@ namespace BedrockCosmos.App.UI
 
         private void OnImageLoaded(string id)
         {
-            // Belt-and-suspenders alongside the fix in ImageCache.RaiseImageLoaded:
-            // this can run on a background thread at any time, including after
-            // the control has been disposed or its handle destroyed (e.g. the
-            // form closing while a thumbnail is still loading, or a WinForms
-            // designer reload). Every exit here is deliberately silent rather
-            // than throwing - a missed repaint is harmless, an unhandled
-            // exception on a ThreadPool thread is not.
+            // Can run on a background thread at any time (after control has been disposed, form closing, etc.).
             try
             {
                 if (IsDisposed || Disposing)
@@ -278,15 +269,9 @@ namespace BedrockCosmos.App.UI
 
         #region Loading data
 
-        /// <summary>
-        /// Replaces all data, clears selection, and rebuilds the layout. If
-        /// <paramref name="categories"/> is already a <see cref="List{T}"/> (for
-        /// example <c>ImageDocument.Categories</c>), that exact list is used as
-        /// the control's backing store rather than copied, so edits made here
-        /// stay live-visible to whoever handed it to you.
-        /// </summary>
         public void LoadData(IEnumerable<ImageCategory> categories)
         {
+            // Replaces all data, clears selection, and rebuilds layout.
             _categories = categories as List<ImageCategory> ?? categories?.ToList() ?? new List<ImageCategory>();
             RebuildParentMap();
             ClearSelectionInternal();
@@ -311,6 +296,7 @@ namespace BedrockCosmos.App.UI
         {
             base.OnResize(e);
             RebuildLayout();
+            RepositionRenameBoxIfActive();
             Invalidate();
         }
 
@@ -362,7 +348,73 @@ namespace BedrockCosmos.App.UI
             if (_scrollOffset < 0) _scrollOffset = 0;
         }
 
-        /// <summary>Binary search for the row (if any) whose vertical span contains content-space y.</summary>
+        // Scroll into view when a node operation takes place.
+        private void ScrollNodeIntoView(object node)
+        {
+            if (TryGetNodeVerticalBounds(node, out int top, out int bottom))
+                ScrollRangeIntoView(top, bottom);
+        }
+
+        // Same as above but for multiple nodes.
+        private void ScrollNodesIntoView(IEnumerable<object> nodes)
+        {
+            int? minTop = null;
+            int? maxBottom = null;
+
+            foreach (var node in nodes)
+            {
+                if (!TryGetNodeVerticalBounds(node, out int top, out int bottom))
+                    continue;
+
+                minTop = minTop.HasValue ? Math.Min(minTop.Value, top) : top;
+                maxBottom = maxBottom.HasValue ? Math.Max(maxBottom.Value, bottom) : bottom;
+            }
+
+            if (minTop.HasValue)
+                ScrollRangeIntoView(minTop.Value, maxBottom.Value);
+        }
+
+        private void ScrollRangeIntoView(int top, int bottom)
+        {
+            int viewportHeight = ClientSize.Height;
+
+            if (bottom - top > viewportHeight)
+                _scrollOffset = top; // Anchors to top if range is taller than viewport.
+            else if (bottom > _scrollOffset + viewportHeight)
+                _scrollOffset = bottom - viewportHeight; // Off the bottom - scroll down.
+            else if (top < _scrollOffset)
+                _scrollOffset = top; // Off the top - scroll up.
+            else
+                return; // Already fully visible.
+
+            ClampScrollOffset();
+        }
+
+        private bool TryGetNodeVerticalBounds(object node, out int top, out int bottom)
+        {
+            foreach (var row in _rows)
+            {
+                if (row is HeaderVisualRow headerRow && headerRow.Category == node)
+                {
+                    top = row.Top;
+                    bottom = row.Top + row.Height;
+                    return true;
+                }
+
+                if (row is ItemsVisualRow itemsRow && node is ImageItem item && itemsRow.Items.Contains(item))
+                {
+                    top = row.Top;
+                    bottom = row.Top + row.Height;
+                    return true;
+                }
+            }
+
+            top = 0;
+            bottom = 0;
+            return false;
+        }
+
+        // Binary search for the row (if any) whose vertical span contains content-space y.
         private int FindRowIndexAtY(int y)
         {
             int lo = 0, hi = _rows.Count - 1;
@@ -377,7 +429,7 @@ namespace BedrockCosmos.App.UI
             return -1;
         }
 
-        /// <summary>Binary search for the first row that is even partially visible given the current scroll offset.</summary>
+        // Binary search for the first row that is partially at current scroll offset.
         private int FindFirstVisibleRowIndex()
         {
             int lo = 0, hi = _rows.Count - 1, answer = _rows.Count;
@@ -401,17 +453,13 @@ namespace BedrockCosmos.App.UI
             public bool OnHeaderIndicator;
         }
 
-        /// <summary>Right margin, in pixels, between the enabled/disabled indicator dot and the scrollbar track.</summary>
-        private const int HeaderIndicatorRightMargin = 10;
+        private const int HeaderIndicatorRightMargin = 10; // Right margin (pixels) between the enabled/disabled indicator dot and scrollbar.
 
-        /// <summary>Diameter, in pixels, of the enabled/disabled indicator dot.</summary>
-        private const int HeaderIndicatorSize = 10;
+        private const int HeaderIndicatorSize = 10; // Diameter (pixels) of enabled/disabled indicator dot.
 
-        /// <summary>Left edge, in pixels, where the header's text label starts (just after the arrow).</summary>
-        private const int HeaderTextStartX = 28;
+        private const int HeaderTextStartX = 28; // Left edge (pixels) where header's text label starts (just after the arrow).
 
-        /// <summary>Left edge, in pixels, of the header's enabled/disabled indicator dot - right-aligned against the scrollbar rather than tied to the arrow/text, so there's no dead space between them.</summary>
-        private int GetHeaderIndicatorX()
+        private int GetHeaderIndicatorX() // Left edge, in pixels, of the header's enabled/disabled indicator dot.
         {
             int rowWidth = ClientSize.Width - ScrollBarWidth;
             return rowWidth - HeaderIndicatorSize - HeaderIndicatorRightMargin;
@@ -448,7 +496,7 @@ namespace BedrockCosmos.App.UI
                 if (column < 0 || column >= itemsRow.Items.Count) return result;
 
                 int cellLeft = ItemPadding + column * cellStride;
-                if (location.X < cellLeft || location.X > cellLeft + ItemSize) return result; // gap between cells
+                if (location.X < cellLeft || location.X > cellLeft + ItemSize) return result; // Gap between cells.
 
                 result.Node = itemsRow.Items[column];
             }
@@ -540,21 +588,21 @@ namespace BedrockCosmos.App.UI
 
             if (totalCount > 0 && enabledCount == totalCount)
             {
-                // All children enabled - solid dot.
+                // All children enabled = solid dot.
                 using (var brush = new SolidBrush(EnabledHighlightColor))
                     g.FillEllipse(brush, indicatorRect);
             }
             else if (enabledCount > 0)
             {
-                // Some, but not all, children enabled - hollow ring.
+                // Some children enabled = hollow ring.
                 using (var pen = new Pen(EnabledHighlightColor, 2f))
                     g.DrawEllipse(pen, indicatorRect);
             }
-            // No children enabled: no indicator drawn, but the hit-zone at
-            // indicatorX still works so the user can click there to enable
-            // everything from a fully-off state.
+            // No children enabled = no indicator drawn.
 
-            string label = $"{category.Name} ({category.Items.Count})";
+            string label = _showItemCountInHeader
+                ? $"{category.Name} ({category.Items.Count})"
+                : category.Name;
             using (var font = new Font("Segoe UI", 10f, FontStyle.Bold))
             using (var textBrush = new SolidBrush(selected ? SelectedHeaderTextColor : HeaderTextColor))
             using (var format = new StringFormat
@@ -584,11 +632,8 @@ namespace BedrockCosmos.App.UI
             int x = ItemPadding;
             int cellStride = ItemSize + ItemPadding;
 
-            // Reference equality on the exact row that was hovered - not just
-            // a matching list index - so a boundary position (which is
-            // ambiguous in terms of a plain index: "end of this row" and
-            // "start of the next" are the same list position) always renders
-            // in whichever row the cursor is actually over, never a neighbor.
+            // Reference equality (visually) on the exact row that was hovered
+            // Used mainly for end/start of rows.
             bool showCaretInThisRow = _isDragging && _dropTargetVisualRow == row;
 
             for (int i = 0; i < row.Items.Count; i++)
@@ -617,7 +662,7 @@ namespace BedrockCosmos.App.UI
                 g.DrawLine(pen, x - ItemPadding / 2, y, x - ItemPadding / 2, y + ItemSize);
         }
 
-        /// <summary>Full-width horizontal line marking where a dragged category will land.</summary>
+        // Horizontal line marking where a dragged category will land.
         private void DrawCategoryDropLine(Graphics g, int y)
         {
             int width = ClientSize.Width - ScrollBarWidth;
@@ -633,10 +678,7 @@ namespace BedrockCosmos.App.UI
 
             using (var path = RoundedRect(cellRect, CornerRadius))
             {
-                // Selection always wins over the plain "enabled" border, but if
-                // the selected item is also enabled the selection background
-                // itself becomes the enabled color instead of plain gray, so
-                // you can still tell at a glance which selected items are enabled.
+                // Background of node color, determined based on enabled, selected, or idle.
                 Color backgroundColor;
                 if (selected)
                     backgroundColor = item.IsEnabled ? EnabledHighlightColor : SelectedBackColor;
@@ -655,11 +697,9 @@ namespace BedrockCosmos.App.UI
                 }
             }
 
-            float previousAlpha = 1f;
             if (beingDragged || (_clipboardIsCut && _clipboard.Contains(item)))
             {
-                // Faint "ghost" look for items currently being dragged elsewhere,
-                // or sitting on the clipboard waiting for a Cut to be pasted.
+                // "Ghost" look for items currently being dragged or Cut.
                 using (var fadeBrush = new SolidBrush(Color.FromArgb(140, IdleBackColor)))
                     g.FillPath(fadeBrush, RoundedRect(cellRect, CornerRadius));
             }
@@ -669,9 +709,7 @@ namespace BedrockCosmos.App.UI
 
             if (_isDesignMode)
             {
-                // Never touch the network or the disk cache from inside a
-                // WinForms designer host - a plain placeholder is enough to
-                // preview the layout.
+                // Ignores thumbnail cache in VS design mode using a placeholder.
                 DrawPlaceholderThumbnail(g, imageRect);
             }
             else
@@ -709,7 +747,7 @@ namespace BedrockCosmos.App.UI
             return path;
         }
 
-        /// <summary>A generic "picture" glyph shown in place of a real thumbnail while running inside the designer.</summary>
+        // Placeholder thumbnails for VS designer.
         private static void DrawPlaceholderThumbnail(Graphics g, Rectangle rect)
         {
             var glyphColor = Color.FromArgb(90, 90, 90);
@@ -810,17 +848,19 @@ namespace BedrockCosmos.App.UI
 
             if (hit.Node is ImageCategory hitCategory)
             {
+                
                 if (hit.OnHeaderArrow)
                 {
                     ToggleCategoryExpansion(hitCategory);
                     return;
                 }
 
-                if (hit.OnHeaderIndicator)
+                // Can uncomment to allow for the enabled indicator to also be used as a means of enabling all nodes in a category.
+                /*if (hit.OnHeaderIndicator)
                 {
                     ToggleCategoryEnabledState(hitCategory);
                     return;
-                }
+                }*/
             }
 
             if (hit.Node == null)
@@ -831,24 +871,12 @@ namespace BedrockCosmos.App.UI
 
             bool shift = (ModifierKeys & Keys.Shift) == Keys.Shift;
 
-            // Both items and category headers (aside from their arrow/indicator
-            // hot-zones, already handled above) can be dragged.
+            // Both items and category headers can be dragged.
             bool isDraggableCandidate = hit.Node is ImageItem || hit.Node is ImageCategory;
 
             if (isDraggableCandidate && _selectionSet.Contains(hit.Node) && !shift)
             {
-                // Might be the start of a drag of the whole current selection -
-                // defer this click's effect on selection until MouseUp rather
-                // than applying it immediately. This matters for Ctrl too, not
-                // just a plain click: Ctrl+clicking an already-selected node
-                // is normally a "toggle it off" gesture, but if the user is
-                // about to Ctrl-drag the whole selection to copy it, applying
-                // that toggle immediately would rip the node right back out of
-                // the selection before the drag even starts. If this turns out
-                // to be a plain click with no drag, SelectNode (called from
-                // MouseUp) re-reads the modifier keys at that point and does
-                // the right thing either way - toggles off if Ctrl is still
-                // held, or collapses the selection down to just this node if not.
+                // Defers click's effect on selection until MouseUp rather than applying immediately.
                 _pendingSelectClick = true;
             }
             else
@@ -877,6 +905,7 @@ namespace BedrockCosmos.App.UI
                 int deltaPixels = e.Y - _dragStartMouseY;
                 _scrollOffset = _dragStartScrollOffset + (int)(deltaPixels * ((double)scrollRange / trackRange));
                 ClampScrollOffset();
+                RepositionRenameBoxIfActive();
                 Invalidate();
                 return;
             }
@@ -954,15 +983,8 @@ namespace BedrockCosmos.App.UI
 
             var hit = HitTest(e.Location);
 
-            // The arrow and indicator each already toggle on every single
-            // click (both clicks of a double-click fire their own MouseDown
-            // normally). If this handler also toggled expansion there, a
-            // quick double-click on the arrow ended up performing three
-            // toggles instead of two - two from the clicks themselves plus
-            // one extra from here - leaving it in the wrong state. Only a
-            // double-click on the "plain" part of the header (not the arrow
-            // or indicator) should expand/collapse.
-            if (hit.Node is ImageCategory category && !hit.OnHeaderArrow && !hit.OnHeaderIndicator)
+            // Prevents caret from being affected by double-clicking to expand a tree.
+            if (hit.Node is ImageCategory category && !hit.OnHeaderArrow /*&& !hit.OnHeaderIndicator*/) // Can uncomment if OnHeaderIndicator functionality is re-enabled.
                 ToggleCategoryExpansion(category);
         }
 
@@ -970,6 +992,7 @@ namespace BedrockCosmos.App.UI
         {
             _scrollOffset += delta;
             ClampScrollOffset();
+            RepositionRenameBoxIfActive();
             Invalidate();
         }
 
@@ -999,6 +1022,10 @@ namespace BedrockCosmos.App.UI
             {
                 Paste();
             }
+            else if (e.KeyCode == Keys.F2 && _selectionOrder.Count == 1)
+            {
+                BeginRename();
+            }
             else if (e.KeyCode == Keys.Escape && _isDragging)
             {
                 EndDragState();
@@ -1014,6 +1041,7 @@ namespace BedrockCosmos.App.UI
         private ToolStripMenuItem _copyMenuItem;
         private ToolStripMenuItem _cutMenuItem;
         private ToolStripMenuItem _pasteMenuItem;
+        private ToolStripMenuItem _renameMenuItem;
         private ToolStripMenuItem _deleteMenuItem;
 
         private void BuildContextMenu()
@@ -1029,34 +1057,29 @@ namespace BedrockCosmos.App.UI
             _copyMenuItem = new ToolStripMenuItem("Copy", null, (s, e) => CopySelection());
             _cutMenuItem = new ToolStripMenuItem("Cut", null, (s, e) => CutSelection());
             _pasteMenuItem = new ToolStripMenuItem("Paste", null, (s, e) => Paste());
+            _renameMenuItem = new ToolStripMenuItem("Rename", null, (s, e) => BeginRename());
             _deleteMenuItem = new ToolStripMenuItem("Delete", null, (s, e) => RemoveSelectedNodes());
 
             _contextMenu.Items.Add(_copyMenuItem);
             _contextMenu.Items.Add(_cutMenuItem);
             _contextMenu.Items.Add(_pasteMenuItem);
             _contextMenu.Items.Add(new ToolStripSeparator());
+            _contextMenu.Items.Add(_renameMenuItem);
             _contextMenu.Items.Add(_deleteMenuItem);
 
-            // Enable/disable state is recomputed every time the menu opens
-            // rather than after every selection change, since it's cheap and
-            // this is the only place it's actually observed.
+            // Enable/disable state is recomputed every time the menu opens rather than after every selection change (cheaper).
             _contextMenu.Opening += (s, e) =>
             {
                 _copyMenuItem.Enabled = CanCopy;
                 _cutMenuItem.Enabled = CanCut;
                 _pasteMenuItem.Enabled = CanPaste;
+                _renameMenuItem.Enabled = _selectionOrder.Count == 1; // Renaming more than one node at once doesn't make sense.
                 _deleteMenuItem.Enabled = _selectionOrder.Count > 0;
             };
         }
 
-        /// <summary>
-        /// Right-clicking a node that's already part of the current
-        /// multi-selection leaves the whole selection intact (so "right-click
-        /// one of five selected items, then Copy" copies all five) - the same
-        /// convention Explorer uses. Right-clicking anything else (an
-        /// unselected node, or empty space) replaces the selection first,
-        /// exactly like a plain left click would.
-        /// </summary>
+        // Right-clicking a node that's part of the current multi-selection leaves the selection intact.
+        // Right-clicking an unselected node empty space replaces the selection first like a plain left click.
         private void HandleRightClick(Point location)
         {
             if (location.X >= ClientSize.Width - ScrollBarWidth)
@@ -1072,7 +1095,6 @@ namespace BedrockCosmos.App.UI
             _contextMenu.Show(this, location);
         }
 
-        /// <summary>Flat, dark ToolStripRenderer so the context menu matches the rest of the app instead of a stock white Windows menu.</summary>
         private sealed class DarkContextMenuRenderer : ToolStripProfessionalRenderer
         {
             public DarkContextMenuRenderer() : base(new DarkContextMenuColorTable()) { }
@@ -1112,13 +1134,186 @@ namespace BedrockCosmos.App.UI
 
         #endregion
 
+        #region Inline rename
+
+        private TextBox _renameTextBox;
+        private Font _renameFont;
+        private object _renameTarget;
+
+        // Starts inline-editing the display name of a node, Esc discards the rename.
+        public void BeginRename(object node = null)
+        {
+            node = node ?? _selectionOrder.FirstOrDefault();
+            if (node == null)
+                return;
+
+            CommitRename(); // Finish any rename already in progress first.
+
+            string currentText;
+            bool centered;
+
+            if (node is ImageCategory category)
+            {
+                currentText = category.Name;
+                centered = false;
+            }
+            else if (node is ImageItem item)
+            {
+                currentText = item.Title;
+                centered = true;
+            }
+            else
+            {
+                return;
+            }
+
+            if (!TryGetNodeLabelBounds(node, out var bounds))
+                return;
+
+            _renameTarget = node;
+            _renameFont = node is ImageCategory
+                ? new Font("Segoe UI", 10f, FontStyle.Bold)
+                : new Font("Segoe UI", 7.5f);
+
+            _renameTextBox = new TextBox
+            {
+                BorderStyle = BorderStyle.FixedSingle,
+                BackColor = Color.FromArgb(45, 45, 45),
+                ForeColor = Color.White,
+                Font = _renameFont,
+                Text = currentText,
+                TextAlign = centered ? HorizontalAlignment.Center : HorizontalAlignment.Left
+            };
+
+            _renameTextBox.KeyDown += RenameTextBox_KeyDown;
+            _renameTextBox.LostFocus += RenameTextBox_LostFocus;
+
+            Controls.Add(_renameTextBox);
+            PositionRenameBox(bounds);
+            _renameTextBox.BringToFront();
+            _renameTextBox.Focus();
+            _renameTextBox.SelectAll();
+        }
+
+        private void RenameTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true; // Otherwise it also dings/adds a newline.
+                CommitRename();
+            }
+            else if (e.KeyCode == Keys.Escape)
+            {
+                e.SuppressKeyPress = true;
+                CancelRename();
+            }
+        }
+
+        private void RenameTextBox_LostFocus(object sender, EventArgs e) => CommitRename();
+
+        private void CommitRename()
+        {
+            var box = _renameTextBox;
+            var target = _renameTarget;
+            if (box == null || target == null)
+                return;
+
+            string newText = box.Text.Trim();
+            RemoveRenameBox();
+
+            // Discard an empty name.
+            if (string.IsNullOrEmpty(newText))
+                return;
+
+            if (target is ImageCategory category)
+                category.Name = newText;
+            else if (target is ImageItem item)
+                item.Title = newText;
+            else
+                return;
+
+            RebuildLayout();
+            Invalidate();
+            DataChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void CancelRename() => RemoveRenameBox();
+
+        private void RemoveRenameBox()
+        {
+            var box = _renameTextBox;
+            if (box == null)
+                return;
+
+            // Null fields before touching Controls collectionto prevent re-firing LostFocus.
+            _renameTextBox = null;
+            _renameTarget = null;
+
+            box.KeyDown -= RenameTextBox_KeyDown;
+            box.LostFocus -= RenameTextBox_LostFocus;
+            Controls.Remove(box);
+            box.Dispose();
+
+            _renameFont?.Dispose();
+            _renameFont = null;
+        }
+
+        private void PositionRenameBox(RectangleF bounds)
+        {
+            _renameTextBox?.SetBounds((int)bounds.X, (int)bounds.Y, (int)bounds.Width, (int)bounds.Height);
+        }
+
+        // Keeps the rename textbox glued to its node's label whenever the scroll position or the control's size changes underneath it.
+        private void RepositionRenameBoxIfActive()
+        {
+            if (_renameTarget == null)
+                return;
+
+            if (TryGetNodeLabelBounds(_renameTarget, out var bounds))
+                PositionRenameBox(bounds);
+            else
+                CommitRename();
+        }
+
+        // Finds on-screen rect of a category header's name label or an item's title label.
+        private bool TryGetNodeLabelBounds(object node, out RectangleF bounds)
+        {
+            foreach (var row in _rows)
+            {
+                if (row is HeaderVisualRow headerRow && headerRow.Category == node)
+                {
+                    int indicatorX = GetHeaderIndicatorX();
+                    int textWidth = Math.Max(0, indicatorX - HeaderTextStartX - 8);
+                    int drawTop = row.Top - _scrollOffset;
+
+                    bounds = new RectangleF(HeaderTextStartX, drawTop, textWidth, row.Height);
+                    return true;
+                }
+
+                if (row is ItemsVisualRow itemsRow && node is ImageItem item)
+                {
+                    int index = itemsRow.Items.IndexOf(item);
+                    if (index < 0)
+                        continue;
+
+                    int cellStride = ItemSize + ItemPadding;
+                    int x = ItemPadding + index * cellStride;
+                    int drawTop = row.Top - _scrollOffset;
+
+                    bounds = new RectangleF(x - 4, drawTop + ItemSize + 2, ItemSize + 8, ItemLabelHeight);
+                    return true;
+                }
+            }
+
+            bounds = RectangleF.Empty;
+            return false;
+        }
+
+        #endregion
+
         #region Drag and drop between categories
 
-        /// <summary>
-        /// Called on every mouse-move while dragging items. Starts, adjusts,
-        /// or stops the auto-scroll timer depending on how close the cursor
-        /// is to the top/bottom edge of the control.
-        /// </summary>
+        // Called on every mouse-move while dragging items to update auto-scroll timer based on movement.
         private void UpdateAutoScroll(Point location)
         {
             int direction = 0;
@@ -1154,14 +1349,12 @@ namespace BedrockCosmos.App.UI
 
             ScrollByPixels(_autoScrollDirection * ComputeAutoScrollSpeed(_lastDragMouseLocation.Y));
 
-            // The content just moved under a (possibly) stationary cursor -
-            // recompute what's actually under it now and redraw the caret
-            // there, otherwise it would lag a whole mouse-move behind.
+            // Content just moved under a possibly stationary cursor, recomputes what is under it and redraws caret there to not be behind.
             UpdateDropTarget(_lastDragMouseLocation);
             Invalidate();
         }
 
-        /// <summary>Faster the closer the cursor is to the exact top/bottom edge, slower near the inner boundary of the trigger zone.</summary>
+        // Faster the closer the cursor is to the exact top/bottom edge, slower near the inner boundary of the trigger zone.
         private int ComputeAutoScrollSpeed(int y)
         {
             int distanceFromEdge = y < AutoScrollEdgeSize ? y : ClientSize.Height - y;
@@ -1193,10 +1386,7 @@ namespace BedrockCosmos.App.UI
 
             Cursor = Cursors.Hand;
 
-            // Without capture, mouse events stop arriving the instant the
-            // cursor leaves the control's bounds - which is exactly what
-            // happens when dragging toward the top/bottom edge to trigger
-            // auto-scroll, or just dragging slightly too far in general.
+            // Without capture, mouse events stop arriving the instant the cursor leaves the control's bounds.
             Capture = true;
         }
 
@@ -1208,15 +1398,7 @@ namespace BedrockCosmos.App.UI
                 UpdateDropTarget(location);
         }
 
-        /// <summary>
-        /// Resolves where a dragged group of categories would land. Hovering
-        /// anywhere within a category's whole visual block - its header plus
-        /// every one of its currently-visible item rows, not just the thin
-        /// header strip - counts: the top half of that whole block targets
-        /// "insert before this category", the bottom half targets "insert
-        /// after" (i.e. before whichever category currently follows it, or
-        /// append if it's the last one).
-        /// </summary>
+        // Resolves where a dragged group of categories would land.
         private void UpdateCategoryDropTarget(Point location)
         {
             if (location.X >= ClientSize.Width - ScrollBarWidth)
@@ -1231,9 +1413,7 @@ namespace BedrockCosmos.App.UI
 
             if (rowIndex < 0)
             {
-                // Below everything (or above it, if the content doesn't even
-                // fill the control) - only "past the very end" is a
-                // meaningful target here, meaning append.
+                // Below everything (or above it, if the content doesn't fill the control).
                 bool pastEnd = _rows.Count > 0 && contentY >= _rows[_rows.Count - 1].Top + _rows[_rows.Count - 1].Height;
                 _categoryDropHasTarget = pastEnd;
                 _categoryDropBeforeCategory = null;
@@ -1264,7 +1444,7 @@ namespace BedrockCosmos.App.UI
             }
         }
 
-        /// <summary>Finds the top/bottom content-space bounds spanning every visual row (header and item rows alike) that belongs to the given category.</summary>
+        // Finds the top/bottom content-space bounds spanning every visual row (header and item rows alike) that belongs to the given category.
         private bool TryGetCategoryBlockBounds(ImageCategory category, out int top, out int bottom)
         {
             top = 0;
@@ -1309,9 +1489,9 @@ namespace BedrockCosmos.App.UI
             if (row is HeaderVisualRow header)
             {
                 _dropTargetCategory = header.Category;
-                _dropTargetBeforeItem = null; // drop = append to this category
+                _dropTargetBeforeItem = null; // Drop = append to this category.
                 _dropTargetGlobalIndex = header.Category.Items.Count;
-                _dropTargetVisualRow = null; // no items row involved - the header's own highlight is the visual cue
+                _dropTargetVisualRow = null; // No items row involved, the header's own highlight is the visual cue.
                 _dropTargetLocalSlot = 0;
                 return;
             }
@@ -1336,14 +1516,9 @@ namespace BedrockCosmos.App.UI
             _dropTargetLocalSlot = 0;
         }
 
-        /// <summary>
-        /// Resolves an x coordinate within an items row to an insertion anchor:
-        /// hovering the left half of a cell (or the gap before it) targets
-        /// "insert before that item"; hovering the right half of a cell (or the
-        /// gap after it, including empty trailing space in a short last row)
-        /// targets "insert after that item" - which becomes "insert before the
-        /// next item", or null (append) past the category's last item.
-        /// </summary>
+        // Resolves an x coordinate within an items row to an insertion anchor:
+        // Hovering the left half of a cell (& gap before it) targets "insert before the item"
+        // Hovering the right half of a cell (& gap after it) targets "insert after that item".
         private ImageItem ResolveDropAnchor(ItemsVisualRow row, int x, out int globalIndex, out int localSlot)
         {
             int cellStride = ItemSize + ItemPadding;
@@ -1358,7 +1533,7 @@ namespace BedrockCosmos.App.UI
             {
                 int column = localX / cellStride;
                 int withinCell = localX - column * cellStride;
-                bool rightHalf = withinCell >= ItemSize / 2; // the trailing padding gap counts as the right half of its column
+                bool rightHalf = withinCell >= ItemSize / 2; // Trailing padding gap counts as the right half of its column.
                 rawSlot = column + (rightHalf ? 1 : 0);
             }
 
@@ -1367,12 +1542,7 @@ namespace BedrockCosmos.App.UI
             var category = row.Category;
             globalIndex = row.StartIndex + localSlot;
 
-            // Deliberately returns the raw item at this position even if it's
-            // one of the items currently being dragged, so the caret can
-            // render exactly where the cursor is - including right next to,
-            // or between, items in the drag itself. See ResolveStableAnchor
-            // for how this gets reconciled into a fixed reference point once
-            // the drop actually happens.
+            // Returns the raw item at this position to render the caret in the right spot.
             return globalIndex < category.Items.Count ? category.Items[globalIndex] : null;
         }
 
@@ -1384,12 +1554,11 @@ namespace BedrockCosmos.App.UI
             }
             else if (_dropTargetCategory != null && _draggedItems != null && _draggedItems.Count > 0)
             {
+                List<ImageItem> affectedItems;
+
                 if (copy)
                 {
-                    // Copies are brand-new ImageItem instances, never part of
-                    // _draggedItems, so the raw hover anchor is always safe to
-                    // use directly here even if it happens to be one of the
-                    // originals - nothing about the originals is being removed.
+                    // Copies are brand-new ImageItem instances.
                     var copies = _draggedItems
                         .Select(item => CopyItemToCategory(item, _dropTargetCategory, _dropTargetBeforeItem))
                         .ToList();
@@ -1397,23 +1566,23 @@ namespace BedrockCosmos.App.UI
                     ClearSelectionInternal();
                     foreach (var newItem in copies)
                         AddToSelection(newItem);
+
+                    affectedItems = copies;
                 }
                 else
                 {
-                    // For an actual move, the hover anchor might itself be one
-                    // of the items being moved (that's exactly what lets the
-                    // caret track the cursor between/next to dragged items -
-                    // see ResolveDropAnchor). Resolve it to the nearest stable
-                    // (not-being-moved) item once, up front, so every dragged
-                    // item lands relative to the same fixed reference point
-                    // regardless of processing order.
+                    // For an actual move, the hover anchor might itself be one of the items being moved.
+                    // Resolved to the nearest stable (not-moved) item once, up front.
                     var stableAnchor = ResolveStableAnchor(_dropTargetCategory, _dropTargetBeforeItem);
 
                     foreach (var item in _draggedItems)
                         MoveItemToCategory(item, _dropTargetCategory, stableAnchor);
+
+                    affectedItems = _draggedItems;
                 }
 
                 RebuildLayout();
+                ScrollNodesIntoView(affectedItems);
                 SelectionChanged?.Invoke(this, EventArgs.Empty);
                 DataChanged?.Invoke(this, EventArgs.Empty);
             }
@@ -1421,18 +1590,17 @@ namespace BedrockCosmos.App.UI
             EndDragState();
         }
 
-        /// <summary>Reorders (or, with Ctrl held, duplicates) the dragged categories to just before the resolved drop target.</summary>
+        // Reorders (or, with Ctrl held, duplicates) the dragged categories to just before the resolved drop target.
         private void CompleteCategoryDrag(bool copy)
         {
             if (!_categoryDropHasTarget || _draggedCategories == null || _draggedCategories.Count == 0)
                 return;
 
+            List<ImageCategory> affectedCategories;
+
             if (copy)
             {
-                // Copies are brand-new ImageCategory instances, never part of
-                // _draggedCategories, so the raw hover anchor is always safe
-                // to use directly - nothing about the originals is being
-                // removed or reordered.
+                // Copies are brand-new ImageCategory instances.
                 var copies = _draggedCategories
                     .Select(category => CopyCategory(category, _categoryDropBeforeCategory))
                     .ToList();
@@ -1440,15 +1608,12 @@ namespace BedrockCosmos.App.UI
                 ClearSelectionInternal();
                 foreach (var newCategory in copies)
                     AddToSelection(newCategory);
+
+                affectedCategories = copies;
             }
             else
             {
-                // Same idea as ResolveStableAnchor for items: the raw hover
-                // target might itself be one of the categories being moved
-                // (that's what lets the drop line track the cursor
-                // between/next to dragged categories), so resolve it to a
-                // fixed, non-moving reference point once before actually
-                // reordering the list.
+                // Same as items' ResolveStableAnchor but for categories.
                 var stableAnchor = _categoryDropBeforeCategory;
                 if (stableAnchor != null && _draggedCategories.Contains(stableAnchor))
                 {
@@ -1471,19 +1636,18 @@ namespace BedrockCosmos.App.UI
                     int insertIndex = _categories.IndexOf(stableAnchor);
                     _categories.InsertRange(insertIndex, _draggedCategories);
                 }
+
+                affectedCategories = _draggedCategories;
             }
 
             RebuildLayout();
+            ScrollNodesIntoView(affectedCategories);
             SelectionChanged?.Invoke(this, EventArgs.Empty);
             DataChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        /// <summary>
-        /// Walks forward from <paramref name="rawAnchor"/> to the nearest item
-        /// that isn't part of the current drag (or off the end, meaning
-        /// append), so a move can use a fixed reference point that won't
-        /// itself be relocated partway through the operation.
-        /// </summary>
+        // Walks forward from rawAnchor to the nearest item that isn't part of the current drag
+        // so a move can use a fixed reference point that won't be relocated partway through the operation.
         private ImageItem ResolveStableAnchor(ImageCategory category, ImageItem rawAnchor)
         {
             if (rawAnchor == null || !_draggedItems.Contains(rawAnchor))
@@ -1519,7 +1683,6 @@ namespace BedrockCosmos.App.UI
             Invalidate();
         }
 
-        /// <summary>Moves an item into a (possibly different) category, optionally inserting it before an existing sibling instead of at the end.</summary>
         public void MoveItemToCategory(ImageItem item, ImageCategory targetCategory, ImageItem insertBefore = null)
         {
             if (item == null || targetCategory == null)
@@ -1532,7 +1695,6 @@ namespace BedrockCosmos.App.UI
             _parentMap[item] = targetCategory;
         }
 
-        /// <summary>Duplicates an item into a (possibly different) category, leaving the original in place. Returns the new copy.</summary>
         public ImageItem CopyItemToCategory(ImageItem item, ImageCategory targetCategory, ImageItem insertBefore = null, string newId = null)
         {
             if (item == null || targetCategory == null)
@@ -1540,7 +1702,7 @@ namespace BedrockCosmos.App.UI
 
             var copy = new ImageItem
             {
-                Id = newId ?? Guid.NewGuid().ToString(),
+                Id = newId ?? (GenerateNewIdOnCopy ? Guid.NewGuid().ToString() : item.Id),
                 Title = item.Title,
                 ThumbnailUrl = item.ThumbnailUrl,
                 IsEnabled = item.IsEnabled,
@@ -1559,12 +1721,6 @@ namespace BedrockCosmos.App.UI
             else category.Items.Insert(index, item);
         }
 
-        /// <summary>
-        /// Duplicates an entire category - including a fresh copy of every
-        /// child item, each with a newly generated id so it never collides
-        /// with the original - and inserts it among the top-level categories,
-        /// optionally right before an existing one instead of at the end.
-        /// </summary>
         public ImageCategory CopyCategory(ImageCategory category, ImageCategory insertBefore = null)
         {
             if (category == null)
@@ -1582,7 +1738,7 @@ namespace BedrockCosmos.App.UI
             {
                 var itemCopy = new ImageItem
                 {
-                    Id = Guid.NewGuid().ToString(),
+                    Id = GenerateNewIdOnCopy ? Guid.NewGuid().ToString() : item.Id,
                     Title = item.Title,
                     ThumbnailUrl = item.ThumbnailUrl,
                     IsEnabled = item.IsEnabled,
@@ -1600,7 +1756,7 @@ namespace BedrockCosmos.App.UI
             return copy;
         }
 
-        /// <summary>Snapshots the current selection into the clipboard for a later <see cref="Paste"/>. Repeatable.</summary>
+        // Copy, cut, and paste use a clipboard in the app for their operations.
         public void CopySelection()
         {
             if (_selectionOrder.Count == 0)
@@ -1612,13 +1768,6 @@ namespace BedrockCosmos.App.UI
             Invalidate();
         }
 
-        /// <summary>
-        /// Snapshots the current selection into the clipboard, marked so the
-        /// next <see cref="Paste"/> moves the original nodes instead of
-        /// duplicating them. The originals stay put (and rendered faded, like
-        /// a drag) until that paste actually happens - nothing is removed by
-        /// calling this alone.
-        /// </summary>
         public void CutSelection()
         {
             if (_selectionOrder.Count == 0)
@@ -1630,15 +1779,6 @@ namespace BedrockCosmos.App.UI
             Invalidate();
         }
 
-        /// <summary>
-        /// Pastes whatever is on the clipboard. The target follows the same
-        /// rule as <see cref="AddItem"/>: relative to whichever node is
-        /// currently selected first (a category appends into it; an item
-        /// inserts right after it in the same category), falling back to the
-        /// first category, or the top level for pasted categories. A Copy
-        /// clipboard can be pasted repeatedly; a Cut clipboard is consumed by
-        /// the first paste.
-        /// </summary>
         public void Paste()
         {
             if (_clipboard.Count == 0)
@@ -1690,8 +1830,7 @@ namespace BedrockCosmos.App.UI
                     }
                 }
 
-                // A cut is single-use, same as the OS clipboard behavior most
-                // people expect: paste again afterward and nothing happens.
+                // Cut is single-use.
                 _clipboard.Clear();
                 _clipboardIsCut = false;
             }
@@ -1715,6 +1854,7 @@ namespace BedrockCosmos.App.UI
                 AddToSelection(node);
 
             RebuildLayout();
+            ScrollNodesIntoView(pastedNodes);
             Invalidate();
             SelectionChanged?.Invoke(this, EventArgs.Empty);
             DataChanged?.Invoke(this, EventArgs.Empty);
@@ -1806,7 +1946,6 @@ namespace BedrockCosmos.App.UI
             _selectionOrder.Clear();
         }
 
-        /// <summary>Clears the current selection.</summary>
         public void ClearSelection()
         {
             ClearSelectionInternal();
@@ -1814,7 +1953,7 @@ namespace BedrockCosmos.App.UI
             SelectionChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        /// <summary>Selects every category and (if expanded) every item.</summary>
+        // Selects every category and (if expanded) every item.
         public void SelectAll()
         {
             ClearSelectionInternal();
@@ -1857,14 +1996,7 @@ namespace BedrockCosmos.App.UI
 
         #region Enabled state
 
-        /// <summary>
-        /// Sets the "enabled" highlight (see <see cref="ImageItem.IsEnabled"/>)
-        /// on every currently selected item. If a category is selected, every
-        /// item under it is set as well (whether or not those items are
-        /// individually selected too). Does nothing (and doesn't raise
-        /// <see cref="DataChanged"/>) if nothing is selected or the value
-        /// wouldn't actually change anything.
-        /// </summary>
+        // Sets selected nodes to be "enabled" (highlighted a different color).
         public void SetSelectedEnabled(bool enabled)
         {
             bool changed = false;
@@ -1889,13 +2021,7 @@ namespace BedrockCosmos.App.UI
             DataChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        /// <summary>
-        /// Flips the "enabled" highlight on the current selection. Individual
-        /// items toggle their own current state. A selected category toggles
-        /// as a whole - the way a tri-state checkbox usually does - going to
-        /// "all enabled" unless every item under it is already enabled, in
-        /// which case it goes to "all disabled".
-        /// </summary>
+        // Flips enabled state on current selection.
         public void ToggleSelectedEnabled()
         {
             bool changed = false;
@@ -1920,7 +2046,6 @@ namespace BedrockCosmos.App.UI
             DataChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        /// <summary>Sets every item under <paramref name="category"/> to the given enabled state, independent of the current selection.</summary>
         public void SetCategoryEnabled(ImageCategory category, bool enabled)
         {
             if (category == null)
@@ -1937,11 +2062,6 @@ namespace BedrockCosmos.App.UI
             DataChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        /// <summary>
-        /// Toggles a category as a whole (see <see cref="ToggleSelectedEnabled"/>
-        /// for the exact rule), independent of the current selection. This is
-        /// what clicking a header's enabled-indicator dot calls.
-        /// </summary>
         public void ToggleCategoryEnabledState(ImageCategory category)
         {
             if (category == null || category.Items.Count == 0)
@@ -1963,7 +2083,7 @@ namespace BedrockCosmos.App.UI
             return true;
         }
 
-        /// <summary>Returns true if anything actually changed.</summary>
+        // Returns true if anything actually changed.
         private static bool ToggleCategoryEnabledCore(ImageCategory category)
         {
             bool allEnabled = category.Items.All(i => i.IsEnabled);
@@ -1980,10 +2100,8 @@ namespace BedrockCosmos.App.UI
 
         #region Reordering (within the same parent)
 
-        /// <summary>Moves every selected node up one position within its own parent list.</summary>
         public void MoveSelectedUp() => MoveSelected(-1);
 
-        /// <summary>Moves every selected node down one position within its own parent list.</summary>
         public void MoveSelectedDown() => MoveSelected(1);
 
         private void MoveSelected(int direction)
@@ -2000,6 +2118,7 @@ namespace BedrockCosmos.App.UI
                 MoveWithinList(group.Key.Items, new HashSet<ImageItem>(group), direction);
 
             RebuildLayout();
+            ScrollNodesIntoView(_selectionOrder);
             Invalidate();
             DataChanged?.Invoke(this, EventArgs.Empty);
         }
@@ -2032,11 +2151,9 @@ namespace BedrockCosmos.App.UI
             }
         }
 
-        /// <summary>Moves every selected node to the very top of its own parent list.</summary>
-        public void MoveSelectedToTop() => MoveSelectedToEdge(toTop: true);
+        public void MoveSelectedToTop() => MoveSelectedToEdge(toTop: true); // Moves to top of parent list.
 
-        /// <summary>Moves every selected node to the very bottom of its own parent list.</summary>
-        public void MoveSelectedToBottom() => MoveSelectedToEdge(toTop: false);
+        public void MoveSelectedToBottom() => MoveSelectedToEdge(toTop: false); // Moves to bottom of parent list.
 
         private void MoveSelectedToEdge(bool toTop)
         {
@@ -2052,6 +2169,7 @@ namespace BedrockCosmos.App.UI
                 MoveToEdge(group.Key.Items, group.ToList(), toTop);
 
             RebuildLayout();
+            ScrollNodesIntoView(_selectionOrder);
             Invalidate();
             DataChanged?.Invoke(this, EventArgs.Empty);
         }
@@ -2069,25 +2187,18 @@ namespace BedrockCosmos.App.UI
 
         #region Add / remove
 
-        /// <summary>Adds a brand-new, empty category (e.g. for a new skin/cape grouping) and returns it.</summary>
         public ImageCategory AddCategory(string name)
         {
             var category = new ImageCategory { Name = name, Items = new List<ImageItem>() };
             _categories.Add(category);
             RebuildLayout();
+            ScrollNodeIntoView(category);
             Invalidate();
             DataChanged?.Invoke(this, EventArgs.Empty);
             return category;
         }
 
-        /// <summary>
-        /// Adds a new child node. It is placed directly under whichever node was
-        /// selected first: if that's a category, the new node is appended to it;
-        /// if it's an existing item, the new node is inserted right after it in
-        /// the same category. Falls back to the first category if nothing is
-        /// selected, and returns null if there are no categories at all.
-        /// </summary>
-        public ImageItem AddItem(string title, string thumbnailUrl, string id = null)
+        public ImageItem AddItem(string title, string thumbnailUrl, string id = null) // Adds child node.
         {
             ImageCategory targetCategory = null;
             int insertIndex = -1;
@@ -2123,15 +2234,15 @@ namespace BedrockCosmos.App.UI
                 targetCategory.Items.Insert(insertIndex, newItem);
 
             _parentMap[newItem] = targetCategory;
-            targetCategory.IsExpanded = true;
 
             RebuildLayout();
+            ScrollNodeIntoView(newItem);
             Invalidate();
             DataChanged?.Invoke(this, EventArgs.Empty);
             return newItem;
         }
 
-        /// <summary>Removes every currently selected category (and its children) and every currently selected item.</summary>
+        // Removes every currently selected category (and its children) and every currently selected item.
         public void RemoveSelectedNodes()
         {
             if (_selectionOrder.Count == 0)
