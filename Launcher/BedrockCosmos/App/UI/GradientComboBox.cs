@@ -12,8 +12,30 @@ namespace BedrockCosmos.App.UI
     public class GradientComboBox : ComboBox
     {
         private const int ComboBoxSetTopIndexMessage = 0x015C;
-        private const int DropDownPadding = 10;
+        private const int BaseDropDownPadding = 10;
         private const int MaxVisibleDropDownItems = 8;
+        private const int BaseBorderRadius = 5;
+        private const int BaseTextLeftMargin = 12;
+        private const int BaseTextRightReserve = 36;
+        private const int BaseArrowLeftMargin = 3;
+        private const int BaseArrowRightReserve = 4;
+        private const int BaseDividerRightOffset = 24;
+        private const int BaseDividerShadowRightOffset = 25;
+        private const int BaseDividerTopMargin = 4;
+        private const int BaseDividerBottomReserve = 9;
+        private const int BaseItemHeightPadding = 8;
+        private const int BaseMinItemHeight = 22;
+
+        private int _DropDownPaddingScaled;
+        private int _BorderRadiusScaled;
+        private int _TextLeftMarginScaled;
+        private int _TextRightReserveScaled;
+        private int _ArrowLeftMarginScaled;
+        private int _ArrowRightReserveScaled;
+        private int _DividerRightOffsetScaled;
+        private int _DividerShadowRightOffsetScaled;
+        private int _DividerTopMarginScaled;
+        private int _DividerBottomReserveScaled;
 
         private int _StartIndex = 0;
         private Color _HoverSelectionColor;
@@ -123,12 +145,33 @@ namespace BedrockCosmos.App.UI
 
             BackColor = Color.FromArgb(246, 246, 246);
             ForeColor = Color.FromArgb(76, 76, 97);
-            Size = new Size(135, 26);
             Font = new Font("Segoe UI", 10f, FontStyle.Regular);
-            ItemHeight = Math.Max(22, Font.Height + 8);
             Cursor = Cursors.Hand;
 
+            RefreshScaledMetrics();
+            Size = new Size(LogicalToDeviceUnits(135), LogicalToDeviceUnits(26));
+            ItemHeight = Math.Max(_MinItemHeightScaled, Font.Height + _ItemHeightPaddingScaled);
+
             RefreshDropDownMetrics();
+        }
+
+        private int _ItemHeightPaddingScaled;
+        private int _MinItemHeightScaled;
+
+        private void RefreshScaledMetrics()
+        {
+            _DropDownPaddingScaled = LogicalToDeviceUnits(BaseDropDownPadding);
+            _BorderRadiusScaled = LogicalToDeviceUnits(BaseBorderRadius);
+            _TextLeftMarginScaled = LogicalToDeviceUnits(BaseTextLeftMargin);
+            _TextRightReserveScaled = LogicalToDeviceUnits(BaseTextRightReserve);
+            _ArrowLeftMarginScaled = LogicalToDeviceUnits(BaseArrowLeftMargin);
+            _ArrowRightReserveScaled = LogicalToDeviceUnits(BaseArrowRightReserve);
+            _DividerRightOffsetScaled = LogicalToDeviceUnits(BaseDividerRightOffset);
+            _DividerShadowRightOffsetScaled = LogicalToDeviceUnits(BaseDividerShadowRightOffset);
+            _DividerTopMarginScaled = LogicalToDeviceUnits(BaseDividerTopMargin);
+            _DividerBottomReserveScaled = LogicalToDeviceUnits(BaseDividerBottomReserve);
+            _ItemHeightPaddingScaled = LogicalToDeviceUnits(BaseItemHeightPadding);
+            _MinItemHeightScaled = LogicalToDeviceUnits(BaseMinItemHeight);
         }
 
         protected override void OnHandleCreated(EventArgs e)
@@ -137,10 +180,19 @@ namespace BedrockCosmos.App.UI
             RefreshDropDownMetrics();
         }
 
+        protected override void OnDpiChangedAfterParent(EventArgs e)
+        {
+            base.OnDpiChangedAfterParent(e);
+            RefreshScaledMetrics();
+            ItemHeight = Math.Max(_MinItemHeightScaled, Font.Height + _ItemHeightPaddingScaled);
+            RefreshDropDownMetrics();
+            Invalidate();
+        }
+
         protected override void OnFontChanged(EventArgs e)
         {
             base.OnFontChanged(e);
-            ItemHeight = Math.Max(22, Font.Height + 8);
+            ItemHeight = Math.Max(_MinItemHeightScaled, Font.Height + _ItemHeightPaddingScaled);
             RefreshDropDownMetrics();
             Invalidate();
         }
@@ -176,9 +228,9 @@ namespace BedrockCosmos.App.UI
             }
 
             Rectangle textBounds = new Rectangle(
-                itemBounds.X + DropDownPadding,
+                itemBounds.X + _DropDownPaddingScaled,
                 itemBounds.Y,
-                Math.Max(0, itemBounds.Width - (DropDownPadding * 2)),
+                Math.Max(0, itemBounds.Width - (_DropDownPaddingScaled * 2)),
                 itemBounds.Height);
 
             TextRenderer.DrawText(
@@ -235,7 +287,7 @@ namespace BedrockCosmos.App.UI
             graphics.Clear(Parent != null ? Parent.BackColor : BackColor);
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
-            using (GraphicsPath borderPath = RoundRectangle.RoundRect(0, 0, Width - 1, Height - 1, 5))
+            using (GraphicsPath borderPath = RoundRectangle.RoundRect(0, 0, Width - 1, Height - 1, _BorderRadiusScaled))
             using (LinearGradientBrush backgroundBrush = new LinearGradientBrush(ClientRectangle, _ColorD, _ColorE, 90f))
             using (Pen borderPen = new Pen(_ColorF))
             using (Brush dividerBrush = new SolidBrush(_ColorH))
@@ -252,7 +304,7 @@ namespace BedrockCosmos.App.UI
                     graphics,
                     Text,
                     Font,
-                    new Rectangle(12, 0, Width - 36, Height),
+                    new Rectangle(_TextLeftMarginScaled, 0, Width - _TextRightReserveScaled, Height),
                     ForeColor,
                     TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPadding);
 
@@ -260,15 +312,16 @@ namespace BedrockCosmos.App.UI
                     "6",
                     arrowFont,
                     arrowBrush,
-                    new Rectangle(3, 0, Width - 4, Height),
+                    new Rectangle(_ArrowLeftMarginScaled, 0, Width - _ArrowRightReserveScaled, Height),
                     new StringFormat
                     {
                         LineAlignment = StringAlignment.Center,
                         Alignment = StringAlignment.Far
                     });
 
-                graphics.FillRectangle(dividerBrush, new Rectangle(Width - 24, 4, 1, Height - 9));
-                graphics.FillRectangle(dividerShadowBrush, new Rectangle(Width - 25, 4, 1, Height - 9));
+                int dividerWidth = Math.Max(1, LogicalToDeviceUnits(1));
+                graphics.FillRectangle(dividerBrush, new Rectangle(Width - _DividerRightOffsetScaled, _DividerTopMarginScaled, dividerWidth, Height - _DividerBottomReserveScaled));
+                graphics.FillRectangle(dividerShadowBrush, new Rectangle(Width - _DividerShadowRightOffsetScaled, _DividerTopMarginScaled, dividerWidth, Height - _DividerBottomReserveScaled));
             }
         }
 

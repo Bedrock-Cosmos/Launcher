@@ -119,6 +119,36 @@ namespace BedrockCosmos.App.UI
             set { _HoverBackColor = value; Invalidate(); }
         }
 
+        private Image _ButtonImage;
+
+        [Browsable(true)]
+        [Description("Image drawn on top of the button surface.")]
+        public Image ButtonImage
+        {
+            get { return _ButtonImage; }
+            set { _ButtonImage = value; Invalidate(); }
+        }
+
+        private ContentAlignment _ButtonImageAlign = ContentAlignment.MiddleCenter;
+
+        [Browsable(true)]
+        [Description("Alignment of ButtonImage within the button.")]
+        public ContentAlignment ButtonImageAlign
+        {
+            get { return _ButtonImageAlign; }
+            set { _ButtonImageAlign = value; Invalidate(); }
+        }
+
+        private Size _ButtonImageSize = Size.Empty;
+
+        [Browsable(true)]
+        [Description("Explicit draw size for ButtonImage. Leave at 0,0 to auto-fit inside the button while preserving aspect ratio.")]
+        public Size ButtonImageSize
+        {
+            get { return _ButtonImageSize; }
+            set { _ButtonImageSize = value; Invalidate(); }
+        }
+
         private bool _IsDefault;
         private DialogResult dlgResult;
 
@@ -287,6 +317,75 @@ namespace BedrockCosmos.App.UI
             }
         }
 
+        private void DrawButtonImage(Graphics g)
+        {
+            if (_ButtonImage == null)
+                return;
+
+            SizeF targetSize;
+
+            if (_ButtonImageSize != Size.Empty)
+            {
+                targetSize = _ButtonImageSize;
+            }
+            else
+            {
+                float scale = Math.Min(
+                    buttonRect.Width / _ButtonImage.Width,
+                    buttonRect.Height / _ButtonImage.Height);
+
+                targetSize = new SizeF(_ButtonImage.Width * scale, _ButtonImage.Height * scale);
+            }
+
+            PointF location = GetAlignedLocation(buttonRect, targetSize, _ButtonImageAlign);
+
+            GraphicsState state = g.Save();
+            g.SetClip(roundRectPath);
+            g.DrawImage(_ButtonImage, new RectangleF(location, targetSize));
+            g.Restore(state);
+        }
+
+        private PointF GetAlignedLocation(RectangleF bounds, SizeF size, ContentAlignment align)
+        {
+            float x, y;
+
+            switch (align)
+            {
+                case ContentAlignment.TopLeft:
+                case ContentAlignment.MiddleLeft:
+                case ContentAlignment.BottomLeft:
+                    x = bounds.X;
+                    break;
+                case ContentAlignment.TopRight:
+                case ContentAlignment.MiddleRight:
+                case ContentAlignment.BottomRight:
+                    x = bounds.Right - size.Width;
+                    break;
+                default:
+                    x = bounds.X + (bounds.Width - size.Width) / 2f;
+                    break;
+            }
+
+            switch (align)
+            {
+                case ContentAlignment.TopLeft:
+                case ContentAlignment.TopCenter:
+                case ContentAlignment.TopRight:
+                    y = bounds.Y;
+                    break;
+                case ContentAlignment.BottomLeft:
+                case ContentAlignment.BottomCenter:
+                case ContentAlignment.BottomRight:
+                    y = bounds.Bottom - size.Height;
+                    break;
+                default:
+                    y = bounds.Y + (bounds.Height - size.Height) / 2f;
+                    break;
+            }
+
+            return new PointF(x, y);
+        }
+
         private void DrawButton(Graphics g)
         {
             Color penColor;
@@ -339,6 +438,7 @@ namespace BedrockCosmos.App.UI
             roundRectPath = RoundedRect(buttonRect, _Radius, _Radius, true, true, true, true);
 
             FillButton(g);
+            DrawButtonImage(g);
             DrawButton(g);
         }
 

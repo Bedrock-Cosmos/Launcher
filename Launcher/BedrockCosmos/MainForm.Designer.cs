@@ -219,6 +219,9 @@
             // LaunchButton
             // 
             this.LaunchButton.BackColor = System.Drawing.Color.Transparent;
+            this.LaunchButton.ButtonImage = null;
+            this.LaunchButton.ButtonImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.LaunchButton.ButtonImageSize = new System.Drawing.Size(0, 0);
             this.LaunchButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.LaunchButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.LaunchButton.FilledBackColorBottom = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(114)))), ((int)(((byte)(47)))));
@@ -405,6 +408,9 @@
             // SkinPacksEditorButton
             // 
             this.SkinPacksEditorButton.BackColor = System.Drawing.Color.Transparent;
+            this.SkinPacksEditorButton.ButtonImage = null;
+            this.SkinPacksEditorButton.ButtonImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.SkinPacksEditorButton.ButtonImageSize = new System.Drawing.Size(0, 0);
             this.SkinPacksEditorButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.SkinPacksEditorButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.SkinPacksEditorButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
@@ -430,6 +436,9 @@
             // CapesEditorButton
             // 
             this.CapesEditorButton.BackColor = System.Drawing.Color.Transparent;
+            this.CapesEditorButton.ButtonImage = null;
+            this.CapesEditorButton.ButtonImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.CapesEditorButton.ButtonImageSize = new System.Drawing.Size(0, 0);
             this.CapesEditorButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.CapesEditorButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.CapesEditorButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
@@ -683,6 +692,9 @@
             // ExportMenuButton
             // 
             this.ExportMenuButton.BackColor = System.Drawing.Color.Transparent;
+            this.ExportMenuButton.ButtonImage = null;
+            this.ExportMenuButton.ButtonImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.ExportMenuButton.ButtonImageSize = new System.Drawing.Size(0, 0);
             this.ExportMenuButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.ExportMenuButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.ExportMenuButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
@@ -709,6 +721,10 @@
             // RenameNodeButton
             // 
             this.RenameNodeButton.BackColor = System.Drawing.Color.Transparent;
+            this.RenameNodeButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.RenameNodeButton.ButtonImage = ((System.Drawing.Image)(resources.GetObject("RenameNodeButton.ButtonImage")));
+            this.RenameNodeButton.ButtonImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.RenameNodeButton.ButtonImageSize = new System.Drawing.Size(0, 0);
             this.RenameNodeButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.RenameNodeButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.RenameNodeButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
@@ -718,18 +734,17 @@
             this.RenameNodeButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.RenameNodeButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.RenameNodeButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.RenameNodeButton.Location = new System.Drawing.Point(198, 383);
-            this.RenameNodeButton.MinimumSize = new System.Drawing.Size(144, 47);
+            this.RenameNodeButton.Location = new System.Drawing.Point(20, 42);
+            this.RenameNodeButton.MinimumSize = new System.Drawing.Size(10, 10);
             this.RenameNodeButton.Name = "RenameNodeButton";
             this.RenameNodeButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.RenameNodeButton.PixelOffsetType = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
             this.RenameNodeButton.PressedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.RenameNodeButton.PressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.RenameNodeButton.Radius = 5;
-            this.RenameNodeButton.Size = new System.Drawing.Size(144, 47);
+            this.RenameNodeButton.Size = new System.Drawing.Size(32, 32);
             this.RenameNodeButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.RenameNodeButton.TabIndex = 32;
-            this.RenameNodeButton.Text = "Rename";
             this.RenameNodeButton.Click += new System.EventHandler(this.RenameNodeButton_Click);
             // 
             // ShowNodeCountsLabel
@@ -764,6 +779,9 @@
             // AddCategoryButton
             // 
             this.AddCategoryButton.BackColor = System.Drawing.Color.Transparent;
+            this.AddCategoryButton.ButtonImage = null;
+            this.AddCategoryButton.ButtonImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.AddCategoryButton.ButtonImageSize = new System.Drawing.Size(0, 0);
             this.AddCategoryButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.AddCategoryButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.AddCategoryButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
@@ -828,6 +846,9 @@
             // PasteNodeButton
             // 
             this.PasteNodeButton.BackColor = System.Drawing.Color.Transparent;
+            this.PasteNodeButton.ButtonImage = ((System.Drawing.Image)(resources.GetObject("PasteNodeButton.ButtonImage")));
+            this.PasteNodeButton.ButtonImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.PasteNodeButton.ButtonImageSize = new System.Drawing.Size(0, 0);
             this.PasteNodeButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.PasteNodeButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.PasteNodeButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
@@ -837,23 +858,25 @@
             this.PasteNodeButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.PasteNodeButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.PasteNodeButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.PasteNodeButton.Location = new System.Drawing.Point(648, 383);
-            this.PasteNodeButton.MinimumSize = new System.Drawing.Size(144, 47);
+            this.PasteNodeButton.Location = new System.Drawing.Point(134, 42);
+            this.PasteNodeButton.MinimumSize = new System.Drawing.Size(10, 10);
             this.PasteNodeButton.Name = "PasteNodeButton";
             this.PasteNodeButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.PasteNodeButton.PixelOffsetType = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
             this.PasteNodeButton.PressedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.PasteNodeButton.PressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.PasteNodeButton.Radius = 5;
-            this.PasteNodeButton.Size = new System.Drawing.Size(144, 47);
+            this.PasteNodeButton.Size = new System.Drawing.Size(32, 32);
             this.PasteNodeButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.PasteNodeButton.TabIndex = 26;
-            this.PasteNodeButton.Text = "Paste";
             this.PasteNodeButton.Click += new System.EventHandler(this.PasteNodeButton_Click);
             // 
             // CutNodeButton
             // 
             this.CutNodeButton.BackColor = System.Drawing.Color.Transparent;
+            this.CutNodeButton.ButtonImage = ((System.Drawing.Image)(resources.GetObject("CutNodeButton.ButtonImage")));
+            this.CutNodeButton.ButtonImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.CutNodeButton.ButtonImageSize = new System.Drawing.Size(0, 0);
             this.CutNodeButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.CutNodeButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.CutNodeButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
@@ -863,23 +886,25 @@
             this.CutNodeButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.CutNodeButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.CutNodeButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.CutNodeButton.Location = new System.Drawing.Point(498, 383);
-            this.CutNodeButton.MinimumSize = new System.Drawing.Size(144, 47);
+            this.CutNodeButton.Location = new System.Drawing.Point(96, 42);
+            this.CutNodeButton.MinimumSize = new System.Drawing.Size(10, 10);
             this.CutNodeButton.Name = "CutNodeButton";
             this.CutNodeButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.CutNodeButton.PixelOffsetType = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
             this.CutNodeButton.PressedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.CutNodeButton.PressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.CutNodeButton.Radius = 5;
-            this.CutNodeButton.Size = new System.Drawing.Size(144, 47);
+            this.CutNodeButton.Size = new System.Drawing.Size(32, 32);
             this.CutNodeButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.CutNodeButton.TabIndex = 25;
-            this.CutNodeButton.Text = "Cut";
             this.CutNodeButton.Click += new System.EventHandler(this.CutNodeButton_Click);
             // 
             // CopyNodeButton
             // 
             this.CopyNodeButton.BackColor = System.Drawing.Color.Transparent;
+            this.CopyNodeButton.ButtonImage = ((System.Drawing.Image)(resources.GetObject("CopyNodeButton.ButtonImage")));
+            this.CopyNodeButton.ButtonImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.CopyNodeButton.ButtonImageSize = new System.Drawing.Size(0, 0);
             this.CopyNodeButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.CopyNodeButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.CopyNodeButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
@@ -889,18 +914,17 @@
             this.CopyNodeButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.CopyNodeButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.CopyNodeButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.CopyNodeButton.Location = new System.Drawing.Point(348, 383);
-            this.CopyNodeButton.MinimumSize = new System.Drawing.Size(144, 47);
+            this.CopyNodeButton.Location = new System.Drawing.Point(58, 42);
+            this.CopyNodeButton.MinimumSize = new System.Drawing.Size(10, 10);
             this.CopyNodeButton.Name = "CopyNodeButton";
             this.CopyNodeButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.CopyNodeButton.PixelOffsetType = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
             this.CopyNodeButton.PressedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.CopyNodeButton.PressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.CopyNodeButton.Radius = 5;
-            this.CopyNodeButton.Size = new System.Drawing.Size(144, 47);
+            this.CopyNodeButton.Size = new System.Drawing.Size(32, 32);
             this.CopyNodeButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.CopyNodeButton.TabIndex = 24;
-            this.CopyNodeButton.Text = "Copy";
             this.CopyNodeButton.Click += new System.EventHandler(this.CopyNodeButton_Click);
             // 
             // CapeTreeView
@@ -935,6 +959,9 @@
             // ResetNodesButton
             // 
             this.ResetNodesButton.BackColor = System.Drawing.Color.Transparent;
+            this.ResetNodesButton.ButtonImage = null;
+            this.ResetNodesButton.ButtonImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.ResetNodesButton.ButtonImageSize = new System.Drawing.Size(0, 0);
             this.ResetNodesButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.ResetNodesButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.ResetNodesButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
@@ -961,6 +988,9 @@
             // RemoveNodeButton
             // 
             this.RemoveNodeButton.BackColor = System.Drawing.Color.Transparent;
+            this.RemoveNodeButton.ButtonImage = null;
+            this.RemoveNodeButton.ButtonImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.RemoveNodeButton.ButtonImageSize = new System.Drawing.Size(0, 0);
             this.RemoveNodeButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.RemoveNodeButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.RemoveNodeButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
@@ -987,6 +1017,9 @@
             // AddNodeButton
             // 
             this.AddNodeButton.BackColor = System.Drawing.Color.Transparent;
+            this.AddNodeButton.ButtonImage = null;
+            this.AddNodeButton.ButtonImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.AddNodeButton.ButtonImageSize = new System.Drawing.Size(0, 0);
             this.AddNodeButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.AddNodeButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.AddNodeButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
@@ -1066,7 +1099,7 @@
             this.EnableMenuItemLabel.BackColor = System.Drawing.Color.Transparent;
             this.EnableMenuItemLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.EnableMenuItemLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.EnableMenuItemLabel.Location = new System.Drawing.Point(324, 42);
+            this.EnableMenuItemLabel.Location = new System.Drawing.Point(741, 397);
             this.EnableMenuItemLabel.Name = "EnableMenuItemLabel";
             this.EnableMenuItemLabel.Size = new System.Drawing.Size(49, 19);
             this.EnableMenuItemLabel.TabIndex = 15;
@@ -1080,7 +1113,7 @@
             this.EnableMenuItemToggle.BaseOffColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.EnableMenuItemToggle.BaseOnColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.EnableMenuItemToggle.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.EnableMenuItemToggle.Location = new System.Drawing.Point(278, 42);
+            this.EnableMenuItemToggle.Location = new System.Drawing.Point(695, 397);
             this.EnableMenuItemToggle.Name = "EnableMenuItemToggle";
             this.EnableMenuItemToggle.Size = new System.Drawing.Size(40, 20);
             this.EnableMenuItemToggle.TabIndex = 14;
@@ -1093,7 +1126,7 @@
             this.CustomMenuLabel.BackColor = System.Drawing.Color.Transparent;
             this.CustomMenuLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.CustomMenuLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.CustomMenuLabel.Location = new System.Drawing.Point(66, 42);
+            this.CustomMenuLabel.Location = new System.Drawing.Point(483, 397);
             this.CustomMenuLabel.Name = "CustomMenuLabel";
             this.CustomMenuLabel.Size = new System.Drawing.Size(206, 19);
             this.CustomMenuLabel.TabIndex = 13;
@@ -1109,7 +1142,7 @@
             this.CustomMenuToggle.Checked = true;
             this.CustomMenuToggle.CheckState = System.Windows.Forms.CheckState.Checked;
             this.CustomMenuToggle.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.CustomMenuToggle.Location = new System.Drawing.Point(20, 42);
+            this.CustomMenuToggle.Location = new System.Drawing.Point(437, 397);
             this.CustomMenuToggle.Name = "CustomMenuToggle";
             this.CustomMenuToggle.Size = new System.Drawing.Size(40, 20);
             this.CustomMenuToggle.TabIndex = 12;
@@ -1181,6 +1214,9 @@
             // CancelUpdateButton
             // 
             this.CancelUpdateButton.BackColor = System.Drawing.Color.Transparent;
+            this.CancelUpdateButton.ButtonImage = null;
+            this.CancelUpdateButton.ButtonImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.CancelUpdateButton.ButtonImageSize = new System.Drawing.Size(0, 0);
             this.CancelUpdateButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.CancelUpdateButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.CancelUpdateButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
@@ -1207,6 +1243,9 @@
             // UpdateButton
             // 
             this.UpdateButton.BackColor = System.Drawing.Color.Transparent;
+            this.UpdateButton.ButtonImage = null;
+            this.UpdateButton.ButtonImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.UpdateButton.ButtonImageSize = new System.Drawing.Size(0, 0);
             this.UpdateButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.UpdateButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.UpdateButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
@@ -1340,6 +1379,9 @@
             // FixProxyHangButton
             // 
             this.FixProxyHangButton.BackColor = System.Drawing.Color.Transparent;
+            this.FixProxyHangButton.ButtonImage = null;
+            this.FixProxyHangButton.ButtonImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.FixProxyHangButton.ButtonImageSize = new System.Drawing.Size(0, 0);
             this.FixProxyHangButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.FixProxyHangButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.FixProxyHangButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
@@ -1366,6 +1408,9 @@
             // ResetNewsButton
             // 
             this.ResetNewsButton.BackColor = System.Drawing.Color.Transparent;
+            this.ResetNewsButton.ButtonImage = null;
+            this.ResetNewsButton.ButtonImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.ResetNewsButton.ButtonImageSize = new System.Drawing.Size(0, 0);
             this.ResetNewsButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.ResetNewsButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.ResetNewsButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
@@ -1392,6 +1437,9 @@
             // DisableDevMenuButton
             // 
             this.DisableDevMenuButton.BackColor = System.Drawing.Color.Transparent;
+            this.DisableDevMenuButton.ButtonImage = null;
+            this.DisableDevMenuButton.ButtonImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.DisableDevMenuButton.ButtonImageSize = new System.Drawing.Size(0, 0);
             this.DisableDevMenuButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.DisableDevMenuButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.DisableDevMenuButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
@@ -1418,6 +1466,9 @@
             // ClearLogsButton
             // 
             this.ClearLogsButton.BackColor = System.Drawing.Color.Transparent;
+            this.ClearLogsButton.ButtonImage = null;
+            this.ClearLogsButton.ButtonImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.ClearLogsButton.ButtonImageSize = new System.Drawing.Size(0, 0);
             this.ClearLogsButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.ClearLogsButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.ClearLogsButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
@@ -1459,6 +1510,9 @@
             // DownloadZipButton
             // 
             this.DownloadZipButton.BackColor = System.Drawing.Color.Transparent;
+            this.DownloadZipButton.ButtonImage = null;
+            this.DownloadZipButton.ButtonImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.DownloadZipButton.ButtonImageSize = new System.Drawing.Size(0, 0);
             this.DownloadZipButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.DownloadZipButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.DownloadZipButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
@@ -1485,6 +1539,9 @@
             // ExportLogsButton
             // 
             this.ExportLogsButton.BackColor = System.Drawing.Color.Transparent;
+            this.ExportLogsButton.ButtonImage = null;
+            this.ExportLogsButton.ButtonImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.ExportLogsButton.ButtonImageSize = new System.Drawing.Size(0, 0);
             this.ExportLogsButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.ExportLogsButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.ExportLogsButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));

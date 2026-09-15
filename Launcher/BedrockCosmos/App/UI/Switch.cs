@@ -11,8 +11,22 @@ namespace BedrockCosmos.App.UI
 {
     public class Switch : System.Windows.Forms.CheckBox
     {
+        private const int BaseWidth = 40;
+        private const int BaseHeight = 20;
+        private const int BaseKnobSize = 16;
+        private const int BaseKnobMarginY = 2;
+        private const int BaseKnobOffX = 3;
+        private const int BaseAnimationStep = 2;
+
         private readonly Timer AnimationTimer;
-        private int PointAnimationNum = 3;
+        private int PointAnimationNum;
+        private int _ScaledWidth;
+        private int _ScaledHeight;
+        private int _ScaledKnobSize;
+        private int _ScaledKnobMarginY;
+        private int _ScaledKnobOffX;
+        private int _ScaledKnobOnX;
+        private int _ScaledAnimationStep;
         private Color _BaseColor = Color.White;
         private Color _BaseOnColor = Color.Cyan;
         private Color _BaseOffColor = Color.Gray;
@@ -52,9 +66,38 @@ namespace BedrockCosmos.App.UI
 
             DoubleBuffered = true;
             BackColor = Color.Transparent;
-            Height = 20;
-            Width = 42;
             Cursor = Cursors.Hand;
+
+            RefreshScaledMetrics();
+            Height = _ScaledHeight;
+            Width = _ScaledWidth;
+            PointAnimationNum = Checked ? _ScaledKnobOnX : _ScaledKnobOffX;
+        }
+
+        private void RefreshScaledMetrics()
+        {
+            _ScaledWidth = LogicalToDeviceUnits(BaseWidth);
+            _ScaledHeight = LogicalToDeviceUnits(BaseHeight);
+            _ScaledKnobSize = LogicalToDeviceUnits(BaseKnobSize);
+            _ScaledKnobMarginY = LogicalToDeviceUnits(BaseKnobMarginY);
+            _ScaledKnobOffX = LogicalToDeviceUnits(BaseKnobOffX);
+            _ScaledAnimationStep = Math.Max(1, LogicalToDeviceUnits(BaseAnimationStep));
+            _ScaledKnobOnX = _ScaledWidth - _ScaledKnobSize - _ScaledKnobOffX;
+        }
+
+        protected override void OnDpiChangedAfterParent(EventArgs e)
+        {
+            base.OnDpiChangedAfterParent(e);
+
+            bool wasOn = PointAnimationNum > (_ScaledKnobOffX + _ScaledKnobOnX) / 2;
+            RefreshScaledMetrics();
+
+            AnimationTimer.Stop();
+            PointAnimationNum = wasOn ? _ScaledKnobOnX : _ScaledKnobOffX;
+
+            Height = _ScaledHeight;
+            Width = _ScaledWidth;
+            Invalidate();
         }
 
         protected override void OnCheckedChanged(EventArgs e)
@@ -63,12 +106,12 @@ namespace BedrockCosmos.App.UI
 
             if (Checked)
             {
-                if (PointAnimationNum < 21)
+                if (PointAnimationNum < _ScaledKnobOnX)
                     AnimationTimer.Start();
             }
             else
             {
-                if (PointAnimationNum > 3)
+                if (PointAnimationNum > _ScaledKnobOffX)
                     AnimationTimer.Start();
             }
         }
@@ -76,8 +119,8 @@ namespace BedrockCosmos.App.UI
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            Height = 20;
-            Width = 40;
+            Height = _ScaledHeight;
+            Width = _ScaledWidth;
             Invalidate();
         }
 
@@ -116,16 +159,16 @@ namespace BedrockCosmos.App.UI
             }
 
             using (SolidBrush knobBrush = new SolidBrush(_BaseColor))
-                graphics.FillEllipse(knobBrush, new RectangleF(PointAnimationNum, 2, 16, 16));
+                graphics.FillEllipse(knobBrush, new RectangleF(PointAnimationNum, _ScaledKnobMarginY, _ScaledKnobSize, _ScaledKnobSize));
         }
 
         private void AnimationTick(object sender, EventArgs e)
         {
             if (Checked)
             {
-                if (PointAnimationNum < 21)
+                if (PointAnimationNum < _ScaledKnobOnX)
                 {
-                    PointAnimationNum += 2;
+                    PointAnimationNum = Math.Min(_ScaledKnobOnX, PointAnimationNum + _ScaledAnimationStep);
                     Invalidate();
                 }
                 else
@@ -135,9 +178,9 @@ namespace BedrockCosmos.App.UI
             }
             else
             {
-                if (PointAnimationNum > 3)
+                if (PointAnimationNum > _ScaledKnobOffX)
                 {
-                    PointAnimationNum -= 2;
+                    PointAnimationNum = Math.Max(_ScaledKnobOffX, PointAnimationNum - _ScaledAnimationStep);
                     Invalidate();
                 }
                 else
