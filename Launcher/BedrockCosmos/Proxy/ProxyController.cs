@@ -531,8 +531,8 @@ namespace BedrockCosmos.Proxy
         private void SetResponseBodyFromFile(string localPath, SessionEventArgs e)
         {
             // Very rough implementation of loading a user's custom cape menu they made, will be changed later.
-            /*if (localPath.EndsWith("Capes.json") && File.Exists(Path.Combine(PathDefinitions.CustomJsonsDirectory, @"Capes.json")))
-                localPath = (Path.Combine(PathDefinitions.CustomJsonsDirectory, @"Capes.json"));*/
+            if (localPath.EndsWith("Capes.json") && File.Exists(Path.Combine(PathDefinitions.CustomJsonsDirectory, @"Capes.json")))
+                localPath = (Path.Combine(PathDefinitions.CustomJsonsDirectory, @"Capes.json"));
 
             string jsonContent = JsonParser.ReadJsonFileContent(localPath);
             e.SetResponseBodyString(jsonContent);

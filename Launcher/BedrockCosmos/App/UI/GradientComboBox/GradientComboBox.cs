@@ -50,8 +50,47 @@ namespace BedrockCosmos.App.UI
         private Color _ColorH = Color.FromArgb(224, 222, 220);
         private Color _ColorI = Color.FromArgb(250, 249, 249);
 
+        // Replaces the native ComboBox listbox popup.
+        private const int WM_LBUTTONDOWN = 0x0201;
+        private const int WM_LBUTTONDBLCLK = 0x0203;
+        private const int WM_KEYDOWN = 0x0100;
+        private const int WM_SYSKEYDOWN = 0x0104;
+
+        private ToolStripDropDown _dropDownPopup;
+        private GradientComboDropDownList _dropDownList;
+        private bool _suppressNextOpen;
+
+        private Color _ScrollTrackColor = Color.FromArgb(242, 241, 240);
+        private Color _ScrollThumbColor = Color.FromArgb(180, 180, 180);
+        private Color _ScrollThumbHoverColor = Color.FromArgb(119, 119, 118);
+        private int _ScrollBarWidth = 12;
+
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+
+        public Color ScrollTrackColor
+        {
+            get { return _ScrollTrackColor; }
+            set { _ScrollTrackColor = value; _dropDownList?.Invalidate(); }
+        }
+
+        public Color ScrollThumbColor
+        {
+            get { return _ScrollThumbColor; }
+            set { _ScrollThumbColor = value; _dropDownList?.Invalidate(); }
+        }
+
+        public Color ScrollThumbHoverColor
+        {
+            get { return _ScrollThumbHoverColor; }
+            set { _ScrollThumbHoverColor = value; _dropDownList?.Invalidate(); }
+        }
+
+        public int ScrollBarWidth
+        {
+            get { return _ScrollBarWidth; }
+            set { _ScrollBarWidth = Math.Max(4, value); _dropDownList?.Invalidate(); }
+        }
 
         public int StartIndex
         {
@@ -205,26 +244,32 @@ namespace BedrockCosmos.App.UI
 
         protected override void OnDrawItem(DrawItemEventArgs e)
         {
+            // Kept for design-time / fallback compatibility.
             if (e.Index < 0)
                 return;
 
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-
-            Rectangle itemBounds = e.Bounds;
             bool isSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
+            DrawDropDownItem(e.Graphics, e.Index, e.Bounds, isSelected);
+        }
+
+        internal string GetDropDownItemText(int index) => GetItemText(Items[index]);
+
+        internal void DrawDropDownItem(Graphics graphics, int index, Rectangle itemBounds, bool isHighlighted)
+        {
             Color selectedBackColor = _HoverSelectionColor.IsEmpty
                 ? Color.FromArgb(70, 70, 70)
                 : _HoverSelectionColor;
-            Color itemBackColor = isSelected ? selectedBackColor : _ColorC;
-            Color itemTextColor = isSelected ? Color.WhiteSmoke : ForeColor;
+            Color itemBackColor = isHighlighted ? selectedBackColor : _ColorC;
+            Color itemTextColor = isHighlighted ? Color.WhiteSmoke : ForeColor;
 
             using (SolidBrush backgroundBrush = new SolidBrush(itemBackColor))
             using (SolidBrush accentBrush = new SolidBrush(Color.FromArgb(153, 153, 153)))
             {
-                e.Graphics.FillRectangle(backgroundBrush, itemBounds);
+                graphics.FillRectangle(backgroundBrush, itemBounds);
 
-                if (isSelected)
-                    e.Graphics.FillRectangle(accentBrush, new Rectangle(itemBounds.X, itemBounds.Y, 3, itemBounds.Height));
+                if (isHighlighted)
+                    graphics.FillRectangle(accentBrush, new Rectangle(itemBounds.X, itemBounds.Y, 3, itemBounds.Height));
             }
 
             Rectangle textBounds = new Rectangle(
@@ -234,9 +279,9 @@ namespace BedrockCosmos.App.UI
                 itemBounds.Height);
 
             TextRenderer.DrawText(
-                e.Graphics,
-                GetItemText(Items[e.Index]),
-                e.Font,
+                graphics,
+                GetDropDownItemText(index),
+                Font,
                 textBounds,
                 itemTextColor,
                 TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPadding);
@@ -277,6 +322,130 @@ namespace BedrockCosmos.App.UI
         {
             base.OnDropDownClosed(e);
             Invalidate();
+        }
+
+        protected override bool IsInputKey(Keys keyData)
+        {
+            if (DropDownStyle == ComboBoxStyle.DropDownList)
+            {
+                Keys code = keyData & Keys.KeyCode;
+                if (code == Keys.Enter || code == Keys.Space)
+                    return true;
+            }
+            return base.IsInputKey(keyData);
+        }
+
+        // Intercepts the clicks/keys that would open the native drop-down listbox.
+        protected override void WndProc(ref Message m)
+        {
+            if (DropDownStyle == ComboBoxStyle.DropDownList && Enabled)
+            {
+                switch (m.Msg)
+                {
+                    case WM_LBUTTONDOWN:
+                    case WM_LBUTTONDBLCLK:
+                        Focus();
+                        if (_suppressNextOpen)
+                        {
+                            _suppressNextOpen = false;
+                            return;
+                        }
+                        ToggleCustomDropDown();
+                        return;
+
+                    case WM_KEYDOWN:
+                    case WM_SYSKEYDOWN:
+                        Keys key = (Keys)m.WParam.ToInt32();
+                        bool altHeld = (ModifierKeys & Keys.Alt) == Keys.Alt;
+                        if (key == Keys.F4 || key == Keys.Enter || key == Keys.Space
+                            || ((key == Keys.Down || key == Keys.Up) && altHeld))
+                        {
+                            ToggleCustomDropDown();
+                            return;
+                        }
+                        break;
+                }
+            }
+
+            base.WndProc(ref m);
+        }
+
+        private bool CustomDropDownOpen => _dropDownPopup != null && _dropDownPopup.Visible;
+
+        private void EnsureCustomDropDownCreated()
+        {
+            if (_dropDownList != null)
+                return;
+
+            _dropDownList = new GradientComboDropDownList(this);
+
+            ToolStripControlHost host = new ToolStripControlHost(_dropDownList)
+            {
+                Margin = Padding.Empty,
+                Padding = Padding.Empty,
+                AutoSize = false
+            };
+
+            _dropDownPopup = new ToolStripDropDown
+            {
+                Padding = Padding.Empty,
+                AutoSize = false,
+                DropShadowEnabled = true
+            };
+            _dropDownPopup.Items.Add(host);
+
+            // Auto-closes when it detects a click outside its bounds
+            _dropDownPopup.Closed += (s, e) =>
+            {
+                _suppressNextOpen = true;
+                if (IsHandleCreated)
+                    BeginInvoke(new Action(() => _suppressNextOpen = false));
+                else
+                    _suppressNextOpen = false;
+            };
+        }
+
+        private void ToggleCustomDropDown()
+        {
+            if (CustomDropDownOpen)
+                CloseCustomDropDown(commit: false);
+            else
+                OpenCustomDropDown();
+        }
+
+        private void OpenCustomDropDown()
+        {
+            RefreshDropDownMetrics();
+            EnsureCustomDropDownCreated();
+
+            int width = Math.Max(DropDownWidth, Width);
+            int height = DropDownHeight;
+
+            _dropDownList.Size = new Size(width, height);
+            _dropDownList.PrepareForShow(SelectedIndex);
+
+            _dropDownPopup.Size = new Size(width, height);
+            _dropDownPopup.Show(this, new Point(0, Height));
+            _dropDownList.Focus();
+        }
+
+        internal void CloseCustomDropDown(bool commit, int selectedIndex = -1)
+        {
+            if (commit && selectedIndex >= 0 && selectedIndex < Items.Count)
+                SelectedIndex = selectedIndex;
+
+            _dropDownPopup?.Close();
+            if (IsHandleCreated)
+                Focus();
+            Invalidate();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                _dropDownPopup?.Dispose();
+
+            base.Dispose(disposing);
         }
 
         protected override void OnPaint(PaintEventArgs e)

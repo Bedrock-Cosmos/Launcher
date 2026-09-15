@@ -115,7 +115,10 @@ namespace BedrockCosmos.App.UI
             return covered.Count;
         }
 
-        public bool GenerateNewIdOnCopy { get; set; } = true; 
+        public bool GenerateNewIdOnCopy { get; set; } = true;
+
+        // When true, adding, pasting, or dropping a node into a collapsed category automatically expands it.
+        public bool AutoExpandCategoryOnInsert { get; set; } = false;
 
         private bool _showItemCountInHeader = true;
 
@@ -144,6 +147,15 @@ namespace BedrockCosmos.App.UI
         public bool CanCopy => _selectionOrder.Count > 0;
         public bool CanCut => _selectionOrder.Count > 0;
         public bool CanPaste => _clipboard.Count > 0;
+
+        // Where pasted nodes land relative to the currently selected node(s).
+        public enum PastePosition
+        {
+            Right, // Insert pasted nodes after the current selection (default, existing behavior).
+            Left   // Insert pasted nodes before the current selection.
+        }
+
+        public PastePosition PastePlacement { get; set; } = PastePosition.Right;
 
         #endregion
 
@@ -817,6 +829,11 @@ namespace BedrockCosmos.App.UI
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
+
+            // Finishes rename if user clicked off the control.
+            if (_renameTextBox != null)
+                CommitRename();
+
             Focus();
 
             if (e.Button == MouseButtons.Right)
@@ -848,7 +865,7 @@ namespace BedrockCosmos.App.UI
 
             if (hit.Node is ImageCategory hitCategory)
             {
-                
+
                 if (hit.OnHeaderArrow)
                 {
                     ToggleCategoryExpansion(hitCategory);
@@ -1226,11 +1243,27 @@ namespace BedrockCosmos.App.UI
                 return;
 
             if (target is ImageCategory category)
+            {
                 category.Name = newText;
+            }
             else if (target is ImageItem item)
+            {
                 item.Title = newText;
+
+                // When copies intentionally share an Id (GenerateNewIdOnCopy == false), keeps display names in sync.
+                if (!GenerateNewIdOnCopy && !string.IsNullOrEmpty(item.Id))
+                {
+                    foreach (var other in _parentMap.Keys)
+                    {
+                        if (other != item && other.Id == item.Id)
+                            other.Title = newText;
+                    }
+                }
+            }
             else
+            {
                 return;
+            }
 
             RebuildLayout();
             Invalidate();
@@ -1260,7 +1293,73 @@ namespace BedrockCosmos.App.UI
 
         private void PositionRenameBox(RectangleF bounds)
         {
-            _renameTextBox?.SetBounds((int)bounds.X, (int)bounds.Y, (int)bounds.Width, (int)bounds.Height);
+            var box = _renameTextBox;
+            if (box == null)
+                return;
+
+            var expanded = ComputeExpandedRenameBounds(_renameTarget, bounds, box.Text);
+
+            box.Multiline = expanded.NeedsWrap;
+            box.WordWrap = expanded.NeedsWrap;
+            box.SetBounds((int)expanded.Bounds.X, (int)expanded.Bounds.Y, (int)expanded.Bounds.Width, (int)expanded.Bounds.Height);
+        }
+
+        private struct ExpandedRenameBounds
+        {
+            public RectangleF Bounds;
+            public bool NeedsWrap;
+        }
+
+        // Grows rename box so the full name is visible while editing.
+        private ExpandedRenameBounds ComputeExpandedRenameBounds(object node, RectangleF baseBounds, string text)
+        {
+            if (string.IsNullOrEmpty(text) || _renameFont == null)
+                return new ExpandedRenameBounds { Bounds = baseBounds, NeedsWrap = false };
+
+            const float horizontalPadding = 12f; // Room for the textbox's border/internal margin.
+
+            float neededWidth;
+            using (var g = CreateGraphics())
+                neededWidth = g.MeasureString(text, _renameFont, int.MaxValue, StringFormat.GenericTypographic).Width + horizontalPadding;
+
+            if (neededWidth <= baseBounds.Width)
+                return new ExpandedRenameBounds { Bounds = baseBounds, NeedsWrap = false };
+
+            float availableLeft = 0f;
+            float availableRight = ClientSize.Width - ScrollBarWidth;
+            float availableWidth = Math.Max(baseBounds.Width, availableRight - availableLeft);
+
+            bool centered = node is ImageItem; // Item labels are centered under their cell; headers are left-aligned.
+            float width = Math.Min(neededWidth, availableWidth);
+            float x;
+
+            if (centered)
+            {
+                float centerX = baseBounds.X + baseBounds.Width / 2f;
+                x = centerX - width / 2f;
+            }
+            else
+            {
+                x = baseBounds.X;
+            }
+
+            if (x < availableLeft) x = availableLeft;
+            if (x + width > availableRight) x = Math.Max(availableLeft, availableRight - width);
+
+            bool needsWrap = neededWidth > width; // Even at full available width, the text still doesn't fit on one line.
+            float height = baseBounds.Height;
+
+            if (needsWrap)
+            {
+                int lineCount = Math.Max(1, (int)Math.Ceiling(neededWidth / width));
+                height = baseBounds.Height * lineCount;
+            }
+
+            return new ExpandedRenameBounds
+            {
+                Bounds = new RectangleF(x, baseBounds.Y, width, height),
+                NeedsWrap = needsWrap
+            };
         }
 
         // Keeps the rename textbox glued to its node's label whenever the scroll position or the control's size changes underneath it.
@@ -1572,8 +1671,8 @@ namespace BedrockCosmos.App.UI
                 else
                 {
                     // For an actual move, the hover anchor might itself be one of the items being moved.
-                    // Resolved to the nearest stable (not-moved) item once, up front.
-                    var stableAnchor = ResolveStableAnchor(_dropTargetCategory, _dropTargetBeforeItem);
+                    // Resolves to the nearest not-moved item up front.
+                    var stableAnchor = ResolveStableAnchor(_dropTargetCategory, _dropTargetBeforeItem, _draggedItems);
 
                     foreach (var item in _draggedItems)
                         MoveItemToCategory(item, _dropTargetCategory, stableAnchor);
@@ -1613,16 +1712,7 @@ namespace BedrockCosmos.App.UI
             }
             else
             {
-                // Same as items' ResolveStableAnchor but for categories.
-                var stableAnchor = _categoryDropBeforeCategory;
-                if (stableAnchor != null && _draggedCategories.Contains(stableAnchor))
-                {
-                    int index = _categories.IndexOf(stableAnchor) + 1;
-                    while (index < _categories.Count && _draggedCategories.Contains(_categories[index]))
-                        index++;
-
-                    stableAnchor = index < _categories.Count ? _categories[index] : null;
-                }
+                var stableAnchor = ResolveStableCategoryAnchor(_categoryDropBeforeCategory, _draggedCategories);
 
                 foreach (var category in _draggedCategories)
                     _categories.Remove(category);
@@ -1646,11 +1736,11 @@ namespace BedrockCosmos.App.UI
             DataChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        // Walks forward from rawAnchor to the nearest item that isn't part of the current drag
-        // so a move can use a fixed reference point that won't be relocated partway through the operation.
-        private ImageItem ResolveStableAnchor(ImageCategory category, ImageItem rawAnchor)
+        // Walks forward from rawAnchor to the nearest item that isn't itself one of the items being
+        // moved, so a move can use a fixed reference point that won't be relocated.
+        private static ImageItem ResolveStableAnchor(ImageCategory category, ImageItem rawAnchor, ICollection<ImageItem> movingItems)
         {
-            if (rawAnchor == null || !_draggedItems.Contains(rawAnchor))
+            if (rawAnchor == null || !movingItems.Contains(rawAnchor))
                 return rawAnchor;
 
             int index = category.Items.IndexOf(rawAnchor);
@@ -1658,10 +1748,27 @@ namespace BedrockCosmos.App.UI
                 return null;
 
             index++;
-            while (index < category.Items.Count && _draggedItems.Contains(category.Items[index]))
+            while (index < category.Items.Count && movingItems.Contains(category.Items[index]))
                 index++;
 
             return index < category.Items.Count ? category.Items[index] : null;
+        }
+
+        // Same idea as ResolveStableAnchor but for top-level categories.
+        private ImageCategory ResolveStableCategoryAnchor(ImageCategory rawAnchor, ICollection<ImageCategory> movingCategories)
+        {
+            if (rawAnchor == null || !movingCategories.Contains(rawAnchor))
+                return rawAnchor;
+
+            int index = _categories.IndexOf(rawAnchor);
+            if (index < 0)
+                return null;
+
+            index++;
+            while (index < _categories.Count && movingCategories.Contains(_categories[index]))
+                index++;
+
+            return index < _categories.Count ? _categories[index] : null;
         }
 
         private void EndDragState()
@@ -1683,6 +1790,13 @@ namespace BedrockCosmos.App.UI
             Invalidate();
         }
 
+        // Expands a category automatically if AutoExpandCategoryOnInsert is turned on and it's currently collapsed.
+        private void MaybeAutoExpand(ImageCategory category)
+        {
+            if (AutoExpandCategoryOnInsert && category != null && !category.IsExpanded)
+                category.IsExpanded = true;
+        }
+
         public void MoveItemToCategory(ImageItem item, ImageCategory targetCategory, ImageItem insertBefore = null)
         {
             if (item == null || targetCategory == null)
@@ -1693,6 +1807,7 @@ namespace BedrockCosmos.App.UI
 
             InsertItem(targetCategory, item, insertBefore);
             _parentMap[item] = targetCategory;
+            MaybeAutoExpand(targetCategory);
         }
 
         public ImageItem CopyItemToCategory(ImageItem item, ImageCategory targetCategory, ImageItem insertBefore = null, string newId = null)
@@ -1711,6 +1826,7 @@ namespace BedrockCosmos.App.UI
 
             InsertItem(targetCategory, copy, insertBefore);
             _parentMap[copy] = targetCategory;
+            MaybeAutoExpand(targetCategory);
             return copy;
         }
 
@@ -1792,14 +1908,30 @@ namespace BedrockCosmos.App.UI
             if (firstSelected is ImageCategory selectedCategory)
             {
                 targetCategory = selectedCategory;
-                int categoryIndex = _categories.IndexOf(selectedCategory) + 1;
-                insertBeforeCategory = categoryIndex < _categories.Count ? _categories[categoryIndex] : null;
+
+                if (PastePlacement == PastePosition.Left)
+                {
+                    insertBeforeCategory = selectedCategory;
+                }
+                else
+                {
+                    int categoryIndex = _categories.IndexOf(selectedCategory) + 1;
+                    insertBeforeCategory = categoryIndex < _categories.Count ? _categories[categoryIndex] : null;
+                }
             }
             else if (firstSelected is ImageItem selectedItem && _parentMap.TryGetValue(selectedItem, out var owner))
             {
                 targetCategory = owner;
-                int itemIndex = owner.Items.IndexOf(selectedItem) + 1;
-                insertBeforeItem = itemIndex < owner.Items.Count ? owner.Items[itemIndex] : null;
+
+                if (PastePlacement == PastePosition.Left)
+                {
+                    insertBeforeItem = selectedItem;
+                }
+                else
+                {
+                    int itemIndex = owner.Items.IndexOf(selectedItem) + 1;
+                    insertBeforeItem = itemIndex < owner.Items.Count ? owner.Items[itemIndex] : null;
+                }
             }
             else if (_categories.Count > 0)
             {
@@ -1812,10 +1944,12 @@ namespace BedrockCosmos.App.UI
 
             if (_clipboardIsCut)
             {
+                var stableAnchorCategory = ResolveStableCategoryAnchor(insertBeforeCategory, clipboardCategories);
+
                 foreach (var category in clipboardCategories)
                 {
                     _categories.Remove(category);
-                    int index = insertBeforeCategory != null ? _categories.IndexOf(insertBeforeCategory) : -1;
+                    int index = stableAnchorCategory != null ? _categories.IndexOf(stableAnchorCategory) : -1;
                     if (index < 0) _categories.Add(category);
                     else _categories.Insert(index, category);
                     pastedNodes.Add(category);
@@ -1823,9 +1957,11 @@ namespace BedrockCosmos.App.UI
 
                 if (targetCategory != null)
                 {
+                    var stableAnchorItem = ResolveStableAnchor(targetCategory, insertBeforeItem, clipboardItems);
+
                     foreach (var item in clipboardItems)
                     {
-                        MoveItemToCategory(item, targetCategory, insertBeforeItem);
+                        MoveItemToCategory(item, targetCategory, stableAnchorItem);
                         pastedNodes.Add(item);
                     }
                 }
@@ -2234,6 +2370,7 @@ namespace BedrockCosmos.App.UI
                 targetCategory.Items.Insert(insertIndex, newItem);
 
             _parentMap[newItem] = targetCategory;
+            MaybeAutoExpand(targetCategory);
 
             RebuildLayout();
             ScrollNodeIntoView(newItem);

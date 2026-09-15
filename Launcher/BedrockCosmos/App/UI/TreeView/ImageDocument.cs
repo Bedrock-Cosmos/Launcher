@@ -127,16 +127,15 @@ namespace BedrockCosmos.App.UI
                 _primaryRowsArray = rowsArray;
         }
 
-        // Serializes the full original document back to JSON + all operations performed.
-        public string ToJson(bool indented = true)
+        public string ToJson(bool indented = true, bool includeItemCountInCategoryName = false)
         {
-            SyncAllRowsArrays();
+            SyncAllRowsArrays(includeItemCountInCategoryName);
 
             var options = new JsonSerializerOptions { WriteIndented = indented };
             return _root.ToJsonString(options);
         }
 
-        private void SyncAllRowsArrays()
+        private void SyncAllRowsArrays(bool includeItemCountInCategoryName = false)
         {
             var categoriesByArray = new Dictionary<JsonArray, List<ImageCategory>>();
 
@@ -170,7 +169,9 @@ namespace BedrockCosmos.App.UI
                     string type = GetString(comp["$type"]);
                     if (type == "HeaderComponent" && comp["text"] is JsonObject textObj)
                     {
-                        textObj["value"] = category.Name;
+                        textObj["value"] = includeItemCountInCategoryName
+                            ? $"{category.Name} ({category.Items.Count})"
+                            : category.Name;
                     }
                     else if (type == "ItemListComponent")
                     {

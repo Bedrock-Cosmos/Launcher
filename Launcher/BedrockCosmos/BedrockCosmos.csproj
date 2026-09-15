@@ -190,7 +190,10 @@
     <Compile Include="App\PathDefinitions.cs" />
     <Compile Include="App\SettingsManager.cs" />
     <Compile Include="App\SingleInstanceHelper.cs" />
-    <Compile Include="App\UI\GradientComboBox.cs">
+    <Compile Include="App\UI\GradientComboBox\GradientComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="App\UI\GradientComboBox\GradientComboBoxDropdownList.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="App\UI\RoundGradientButton.cs">

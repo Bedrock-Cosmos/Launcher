@@ -837,7 +837,7 @@ namespace BedrockCosmos
                 if (dialog.ShowDialog(this) != DialogResult.OK)
                     return;
 
-                string json = _capesDocument.ToJson(indented: true);
+                string json = _capesDocument.ToJson(indented: true, includeItemCountInCategoryName: CapeTreeView.ShowItemCountInHeader);
                 File.WriteAllText(dialog.FileName, json, Encoding.UTF8);
                 NodeStatus.Text = "Exported!";
             }
