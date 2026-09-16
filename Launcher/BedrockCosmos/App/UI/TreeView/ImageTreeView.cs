@@ -139,8 +139,8 @@ namespace BedrockCosmos.App.UI
 
         #region Clipboard
 
-        // References to the actual nodes (never copies) - resolved into new
-        // instances (Copy) or moved in place (Cut) only once Paste runs.
+        // References to the actual nodes (not copies) - resolved into new
+        // instances (Copy) or moved in place (Cut) once Paste runs.
         private readonly List<object> _clipboard = new List<object>();
         private bool _clipboardIsCut;
 
@@ -242,6 +242,13 @@ namespace BedrockCosmos.App.UI
                 _autoScrollTimer.Dispose();
 
                 _contextMenu?.Dispose();
+
+                if (_renameCommitFilter != null)
+                {
+                    Application.RemoveMessageFilter(_renameCommitFilter);
+                    _renameCommitFilter = null;
+                }
+
                 _renameTextBox?.Dispose();
                 _renameFont?.Dispose();
             }
@@ -830,7 +837,7 @@ namespace BedrockCosmos.App.UI
         {
             base.OnMouseDown(e);
 
-            // Finishes rename if user clicked off the control.
+            // User clicked off app, finishes rename.
             if (_renameTextBox != null)
                 CommitRename();
 
@@ -1156,6 +1163,50 @@ namespace BedrockCosmos.App.UI
         private TextBox _renameTextBox;
         private Font _renameFont;
         private object _renameTarget;
+        private RenameCommitMessageFilter _renameCommitFilter;
+        private Control _renameHost; // Control the rename box is actually parented to (see BeginRename).
+
+        // Commits rename if clicking elsewhere in the app.
+        private sealed class RenameCommitMessageFilter : IMessageFilter
+        {
+            private const int WM_LBUTTONDOWN = 0x0201;
+            private const int WM_RBUTTONDOWN = 0x0204;
+            private const int WM_MBUTTONDOWN = 0x0207;
+            private const int WM_NCLBUTTONDOWN = 0x00A1;
+            private const int WM_NCRBUTTONDOWN = 0x00A4;
+            private const int WM_NCMBUTTONDOWN = 0x00A7;
+
+            private readonly ImageTreeView _owner;
+
+            public RenameCommitMessageFilter(ImageTreeView owner) => _owner = owner;
+
+            public bool PreFilterMessage(ref Message m)
+            {
+                switch (m.Msg)
+                {
+                    case WM_LBUTTONDOWN:
+                    case WM_RBUTTONDOWN:
+                    case WM_MBUTTONDOWN:
+                    case WM_NCLBUTTONDOWN:
+                    case WM_NCRBUTTONDOWN:
+                    case WM_NCMBUTTONDOWN:
+                        break;
+                    default:
+                        return false;
+                }
+
+                var box = _owner._renameTextBox;
+                if (box == null || box.IsDisposed)
+                    return false;
+
+                // A click landing on the rename box itself is normal editing, only a click elsewhere commits.
+                if (m.HWnd == box.Handle)
+                    return false;
+
+                _owner.CommitRename();
+                return false;
+            }
+        }
 
         // Starts inline-editing the display name of a node, Esc discards the rename.
         public void BeginRename(object node = null)
@@ -1199,17 +1250,26 @@ namespace BedrockCosmos.App.UI
                 ForeColor = Color.White,
                 Font = _renameFont,
                 Text = currentText,
-                TextAlign = centered ? HorizontalAlignment.Center : HorizontalAlignment.Left
+                TextAlign = centered ? HorizontalAlignment.Center : HorizontalAlignment.Left,
+                Multiline = true,
+                WordWrap = true,
+                ScrollBars = ScrollBars.None,
+                AcceptsReturn = false
             };
 
             _renameTextBox.KeyDown += RenameTextBox_KeyDown;
             _renameTextBox.LostFocus += RenameTextBox_LostFocus;
+            _renameTextBox.TextChanged += RenameTextBox_TextChanged;
 
-            Controls.Add(_renameTextBox);
+            _renameHost = (Control)TopLevelControl ?? this;
+            _renameHost.Controls.Add(_renameTextBox);
             PositionRenameBox(bounds);
             _renameTextBox.BringToFront();
             _renameTextBox.Focus();
             _renameTextBox.SelectAll();
+
+            _renameCommitFilter = new RenameCommitMessageFilter(this);
+            Application.AddMessageFilter(_renameCommitFilter);
         }
 
         private void RenameTextBox_KeyDown(object sender, KeyEventArgs e)
@@ -1227,6 +1287,9 @@ namespace BedrockCosmos.App.UI
         }
 
         private void RenameTextBox_LostFocus(object sender, EventArgs e) => CommitRename();
+
+        // Rescales the box's height (never its fixed width) as the user types, wrapping more or less as needed.
+        private void RenameTextBox_TextChanged(object sender, EventArgs e) => RepositionRenameBoxIfActive();
 
         private void CommitRename()
         {
@@ -1250,7 +1313,7 @@ namespace BedrockCosmos.App.UI
             {
                 item.Title = newText;
 
-                // When copies intentionally share an Id (GenerateNewIdOnCopy == false), keeps display names in sync.
+                // Keeps the same name for nodes with the same UUID if not generating a new UUID.
                 if (!GenerateNewIdOnCopy && !string.IsNullOrEmpty(item.Id))
                 {
                     foreach (var other in _parentMap.Keys)
@@ -1284,8 +1347,16 @@ namespace BedrockCosmos.App.UI
 
             box.KeyDown -= RenameTextBox_KeyDown;
             box.LostFocus -= RenameTextBox_LostFocus;
-            Controls.Remove(box);
+            box.TextChanged -= RenameTextBox_TextChanged;
+            (_renameHost ?? this).Controls.Remove(box);
+            _renameHost = null;
             box.Dispose();
+
+            if (_renameCommitFilter != null)
+            {
+                Application.RemoveMessageFilter(_renameCommitFilter);
+                _renameCommitFilter = null;
+            }
 
             _renameFont?.Dispose();
             _renameFont = null;
@@ -1297,69 +1368,48 @@ namespace BedrockCosmos.App.UI
             if (box == null)
                 return;
 
-            var expanded = ComputeExpandedRenameBounds(_renameTarget, bounds, box.Text);
-
-            box.Multiline = expanded.NeedsWrap;
-            box.WordWrap = expanded.NeedsWrap;
-            box.SetBounds((int)expanded.Bounds.X, (int)expanded.Bounds.Y, (int)expanded.Bounds.Width, (int)expanded.Bounds.Height);
+            RectangleF expanded = ComputeExpandedRenameBounds(bounds, box.Text);
+            Rectangle hostBounds = TranslateToHostBounds(expanded);
+            box.SetBounds(hostBounds.X, hostBounds.Y, hostBounds.Width, hostBounds.Height);
         }
 
-        private struct ExpandedRenameBounds
+        private Rectangle TranslateToHostBounds(RectangleF localBounds)
         {
-            public RectangleF Bounds;
-            public bool NeedsWrap;
+            var host = _renameHost ?? this;
+            if (host == this)
+                return Rectangle.Round(localBounds);
+
+            Point topLeftScreen = PointToScreen(new Point((int)Math.Round(localBounds.X), (int)Math.Round(localBounds.Y)));
+            Point topLeftHost = host.PointToClient(topLeftScreen);
+            return new Rectangle(topLeftHost.X, topLeftHost.Y, (int)Math.Round(localBounds.Width), (int)Math.Round(localBounds.Height));
         }
 
-        // Grows rename box so the full name is visible while editing.
-        private ExpandedRenameBounds ComputeExpandedRenameBounds(object node, RectangleF baseBounds, string text)
+        private RectangleF ComputeExpandedRenameBounds(RectangleF baseBounds, string text)
         {
+            float width = baseBounds.Width + ItemPadding * 2f;
+            float x = baseBounds.X + baseBounds.Width / 2f - width / 2f;
+
             if (string.IsNullOrEmpty(text) || _renameFont == null)
-                return new ExpandedRenameBounds { Bounds = baseBounds, NeedsWrap = false };
+                return new RectangleF(x, baseBounds.Y, width, baseBounds.Height);
 
-            const float horizontalPadding = 12f; // Room for the textbox's border/internal margin.
-
-            float neededWidth;
+            float height;
             using (var g = CreateGraphics())
-                neededWidth = g.MeasureString(text, _renameFont, int.MaxValue, StringFormat.GenericTypographic).Width + horizontalPadding;
-
-            if (neededWidth <= baseBounds.Width)
-                return new ExpandedRenameBounds { Bounds = baseBounds, NeedsWrap = false };
-
-            float availableLeft = 0f;
-            float availableRight = ClientSize.Width - ScrollBarWidth;
-            float availableWidth = Math.Max(baseBounds.Width, availableRight - availableLeft);
-
-            bool centered = node is ImageItem; // Item labels are centered under their cell; headers are left-aligned.
-            float width = Math.Min(neededWidth, availableWidth);
-            float x;
-
-            if (centered)
             {
-                float centerX = baseBounds.X + baseBounds.Width / 2f;
-                x = centerX - width / 2f;
-            }
-            else
-            {
-                x = baseBounds.X;
+                float singleLineWidth = g.MeasureString(text, _renameFont, int.MaxValue, StringFormat.GenericTypographic).Width + 6f; // Small padding for the box border.
+
+                if (singleLineWidth <= width)
+                {
+                    height = baseBounds.Height;
+                }
+                else
+                {
+                    // Measure how tall the text becomes once it actually wraps at this fixed width.
+                    SizeF wrapped = g.MeasureString(text, _renameFont, Math.Max(1, (int)width));
+                    height = Math.Max(baseBounds.Height, wrapped.Height + 6f); // Small padding for the box border.
+                }
             }
 
-            if (x < availableLeft) x = availableLeft;
-            if (x + width > availableRight) x = Math.Max(availableLeft, availableRight - width);
-
-            bool needsWrap = neededWidth > width; // Even at full available width, the text still doesn't fit on one line.
-            float height = baseBounds.Height;
-
-            if (needsWrap)
-            {
-                int lineCount = Math.Max(1, (int)Math.Ceiling(neededWidth / width));
-                height = baseBounds.Height * lineCount;
-            }
-
-            return new ExpandedRenameBounds
-            {
-                Bounds = new RectangleF(x, baseBounds.Y, width, height),
-                NeedsWrap = needsWrap
-            };
+            return new RectangleF(x, baseBounds.Y, width, height);
         }
 
         // Keeps the rename textbox glued to its node's label whenever the scroll position or the control's size changes underneath it.
@@ -1616,7 +1666,7 @@ namespace BedrockCosmos.App.UI
         }
 
         // Resolves an x coordinate within an items row to an insertion anchor:
-        // Hovering the left half of a cell (& gap before it) targets "insert before the item"
+        // Hovering the left half of a cell (& gap before it) targets "insert before the item".
         // Hovering the right half of a cell (& gap after it) targets "insert after that item".
         private ImageItem ResolveDropAnchor(ItemsVisualRow row, int x, out int globalIndex, out int localSlot)
         {
@@ -1670,8 +1720,7 @@ namespace BedrockCosmos.App.UI
                 }
                 else
                 {
-                    // For an actual move, the hover anchor might itself be one of the items being moved.
-                    // Resolves to the nearest not-moved item up front.
+                    // Hover anchor might itself be one of the items being moved, resolves to the nearest not-moved item.
                     var stableAnchor = ResolveStableAnchor(_dropTargetCategory, _dropTargetBeforeItem, _draggedItems);
 
                     foreach (var item in _draggedItems)
@@ -1736,8 +1785,7 @@ namespace BedrockCosmos.App.UI
             DataChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        // Walks forward from rawAnchor to the nearest item that isn't itself one of the items being
-        // moved, so a move can use a fixed reference point that won't be relocated.
+        // Walks forward from rawAnchor to nearest item that isn't itself one that's being removed.
         private static ImageItem ResolveStableAnchor(ImageCategory category, ImageItem rawAnchor, ICollection<ImageItem> movingItems)
         {
             if (rawAnchor == null || !movingItems.Contains(rawAnchor))
@@ -1944,6 +1992,7 @@ namespace BedrockCosmos.App.UI
 
             if (_clipboardIsCut)
             {
+                // Resolves anchor to a stable reference first before pasting.
                 var stableAnchorCategory = ResolveStableCategoryAnchor(insertBeforeCategory, clipboardCategories);
 
                 foreach (var category in clipboardCategories)
