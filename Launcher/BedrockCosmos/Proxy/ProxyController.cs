@@ -48,6 +48,7 @@ namespace BedrockCosmos.Proxy
             proxyServer = new ProxyServer();
             proxyServer.CertificateManager.PfxFilePath = Path.Combine(PathDefinitions.CosmosAppData, @"CosmosRootCert.pfx");
             proxyServer.CertificateManager.CertificateStorage = new CertificateStorage(PathDefinitions.CosmosAppData);
+            proxyServer.CertificateManager.CertificateValidDays = 90;
 
             proxyServer.ExceptionFunc = async exception =>
             {
@@ -83,7 +84,7 @@ namespace BedrockCosmos.Proxy
             proxyServer.BeforeResponse += OnResponse;
             proxyServer.AfterResponse += OnAfterResponse;
 
-            explicitEndPoint = new ExplicitProxyEndPoint(IPAddress.Any, 8000);
+            explicitEndPoint = new ExplicitProxyEndPoint(IPAddress.Loopback, 8000);
 
             explicitEndPoint.BeforeTunnelConnectRequest += OnBeforeTunnelConnectRequest;
             explicitEndPoint.BeforeTunnelConnectResponse += OnBeforeTunnelConnectResponse;

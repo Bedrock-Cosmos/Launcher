@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
 using System.Text;
@@ -52,16 +53,26 @@ namespace BedrockCosmos.App
 
             await Task.Run(() =>
             {
+                string normalizedExtractRoot = Path.GetFullPath(extractPath);
+                if (!normalizedExtractRoot.EndsWith(Path.DirectorySeparatorChar.ToString()))
+                    normalizedExtractRoot += Path.DirectorySeparatorChar;
+
                 using (ZipArchive archive = ZipFile.OpenRead(zipFilePath))
                 {
                     foreach (ZipArchiveEntry entry in archive.Entries)
                     {
-                        string destinationFilePath = Path.Combine(extractPath, entry.FullName);
+                        string destinationFilePath = Path.GetFullPath(Path.Combine(normalizedExtractRoot, entry.FullName));
+
+                        if (!destinationFilePath.StartsWith(normalizedExtractRoot, StringComparison.OrdinalIgnoreCase))
+                            throw new IOException($"Zip entry is outside of the target extraction directory: {entry.FullName}");
 
                         if (entry.FullName.EndsWith("/"))
                             Directory.CreateDirectory(destinationFilePath);
                         else
+                        {
+                            Directory.CreateDirectory(Path.GetDirectoryName(destinationFilePath));
                             entry.ExtractToFile(destinationFilePath, overwrite: true);
+                        }
                     }
                 }
 

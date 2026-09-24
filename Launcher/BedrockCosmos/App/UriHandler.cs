@@ -91,17 +91,32 @@ internal static class UriHandler
         }
     }
 
+    private static readonly System.Text.RegularExpressions.Regex SafeCreatorNamePattern =
+        new System.Text.RegularExpressions.Regex(@"^[A-Za-z0-9_\-]+$", System.Text.RegularExpressions.RegexOptions.Compiled);
+
     private static string HandleDressingRoomOffer(string offerID, string creatorName)
     {
         // Determine which JSON file to search
         string jsonPath;
         if (!string.IsNullOrEmpty(creatorName))
         {
-            jsonPath = Path.Combine(
-                PathDefinitions.ResponsesDirectory,
-                "MainPages", "Creators", "Persona",
-                $"{creatorName}_Persona.json"
-            );
+            if (!SafeCreatorNamePattern.IsMatch(creatorName))
+            {
+                CosmosConsole.WriteLine($"Rejected creator name from URI (invalid characters): {creatorName}");
+                return null;
+            }
+
+            string personaDir = Path.Combine(PathDefinitions.ResponsesDirectory, "MainPages", "Creators", "Persona");
+            jsonPath = Path.Combine(personaDir, $"{creatorName}_Persona.json");
+
+            // Confirms generated path still lands inside expected directory.
+            string resolvedPersonaDir = Path.GetFullPath(personaDir) + Path.DirectorySeparatorChar;
+            string resolvedJsonPath = Path.GetFullPath(jsonPath);
+            if (!resolvedJsonPath.StartsWith(resolvedPersonaDir, StringComparison.OrdinalIgnoreCase))
+            {
+                CosmosConsole.WriteLine($"Rejected creator name from URI (path escapes expected directory): {creatorName}");
+                return null;
+            }
         }
         else
         {
