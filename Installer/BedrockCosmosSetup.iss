@@ -3,7 +3,7 @@
 ; Non-commercial use only
 
 #define MyAppName "Bedrock Cosmos"
-#define MyAppVersion "1.1.2"
+#define MyAppVersion "1.1.3"
 #define MyAppPublisher "Bedrock Cosmos"
 #define MyAppURL "https://bedrock-cosmos.app/"
 #define MyAppExeName "BedrockCosmos.exe"
@@ -64,6 +64,7 @@ Source: "{#BuildDir}\AutoUpdater.NET.dll"; DestDir: "{app}"; Flags: ignoreversio
 Source: "{#BuildDir}\Background.png"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#BuildDir}\BCPackIcon.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#BuildDir}\BouncyCastle.Crypto.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#BuildDir}\BouncyCastle.Cryptography.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#BuildDir}\BrotliSharpLib.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#BuildDir}\DiscordRPC.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#BuildDir}\Microsoft.Bcl.AsyncInterfaces.dll"; DestDir: "{app}"; Flags: ignoreversion
