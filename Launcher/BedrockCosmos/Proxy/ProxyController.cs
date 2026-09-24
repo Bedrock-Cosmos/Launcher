@@ -106,6 +106,7 @@ namespace BedrockCosmos.Proxy
 
             proxyServer.BeforeRequest -= OnRequest;
             proxyServer.BeforeResponse -= OnResponse;
+            proxyServer.AfterResponse -= OnAfterResponse;
 
             proxyServer.Stop();
 
