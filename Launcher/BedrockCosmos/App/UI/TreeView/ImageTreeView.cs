@@ -143,10 +143,10 @@ namespace BedrockCosmos.App.UI
         // instances (Copy) or moved in place (Cut) once Paste runs.
         private readonly List<object> _clipboard = new List<object>();
         private bool _clipboardIsCut;
-
-        public bool CanCopy => _selectionOrder.Count > 0;
+        public bool AllowCopying { get; set; } = true;
+        public bool CanCopy => AllowCopying && _selectionOrder.Count > 0;
         public bool CanCut => _selectionOrder.Count > 0;
-        public bool CanPaste => _clipboard.Count > 0;
+        public bool CanPaste => _clipboard.Count > 0 && (_clipboardIsCut || AllowCopying);
 
         // Where pasted nodes land relative to the currently selected node(s).
         public enum PastePosition
@@ -248,6 +248,8 @@ namespace BedrockCosmos.App.UI
                     Application.RemoveMessageFilter(_renameCommitFilter);
                     _renameCommitFilter = null;
                 }
+
+                RestoreCursorAfterRenameResize(); // Never leave the cursor suppressed past the rename itself.
 
                 _renameTextBox?.Dispose();
                 _renameFont?.Dispose();
@@ -929,7 +931,7 @@ namespace BedrockCosmos.App.UI
                 int deltaPixels = e.Y - _dragStartMouseY;
                 _scrollOffset = _dragStartScrollOffset + (int)(deltaPixels * ((double)scrollRange / trackRange));
                 ClampScrollOffset();
-                RepositionRenameBoxIfActive();
+                CommitRename(); // Scrolling ends renames.
                 Invalidate();
                 return;
             }
@@ -1016,7 +1018,7 @@ namespace BedrockCosmos.App.UI
         {
             _scrollOffset += delta;
             ClampScrollOffset();
-            RepositionRenameBoxIfActive();
+            CommitRename(); // Scrolling ends renames.
             Invalidate();
         }
 
@@ -1061,10 +1063,13 @@ namespace BedrockCosmos.App.UI
 
         #region Right-click context menu
 
+        public bool HideDisabledContextMenuItems { get; set; } = false;
+
         private ContextMenuStrip _contextMenu;
         private ToolStripMenuItem _copyMenuItem;
         private ToolStripMenuItem _cutMenuItem;
         private ToolStripMenuItem _pasteMenuItem;
+        private ToolStripSeparator _contextMenuSeparator;
         private ToolStripMenuItem _renameMenuItem;
         private ToolStripMenuItem _deleteMenuItem;
 
@@ -1081,24 +1086,58 @@ namespace BedrockCosmos.App.UI
             _copyMenuItem = new ToolStripMenuItem("Copy", null, (s, e) => CopySelection());
             _cutMenuItem = new ToolStripMenuItem("Cut", null, (s, e) => CutSelection());
             _pasteMenuItem = new ToolStripMenuItem("Paste", null, (s, e) => Paste());
+            _contextMenuSeparator = new ToolStripSeparator();
             _renameMenuItem = new ToolStripMenuItem("Rename", null, (s, e) => BeginRename());
             _deleteMenuItem = new ToolStripMenuItem("Delete", null, (s, e) => RemoveSelectedNodes());
 
             _contextMenu.Items.Add(_copyMenuItem);
             _contextMenu.Items.Add(_cutMenuItem);
             _contextMenu.Items.Add(_pasteMenuItem);
-            _contextMenu.Items.Add(new ToolStripSeparator());
+            _contextMenu.Items.Add(_contextMenuSeparator);
             _contextMenu.Items.Add(_renameMenuItem);
             _contextMenu.Items.Add(_deleteMenuItem);
 
-            // Enable/disable state is recomputed every time the menu opens rather than after every selection change (cheaper).
+            // Enable/disable (and, if requested, visible/hidden) state is recomputed every time the menu
+            // opens rather than after every selection change (cheaper).
             _contextMenu.Opening += (s, e) =>
             {
-                _copyMenuItem.Enabled = CanCopy;
-                _cutMenuItem.Enabled = CanCut;
-                _pasteMenuItem.Enabled = CanPaste;
-                _renameMenuItem.Enabled = _selectionOrder.Count == 1; // Renaming more than one node at once doesn't make sense.
-                _deleteMenuItem.Enabled = _selectionOrder.Count > 0;
+                bool canCopy = CanCopy;
+                bool canCut = CanCut;
+                bool canPaste = CanPaste;
+                bool canRename = _selectionOrder.Count == 1; // Renaming more than one node at once doesn't make sense.
+                bool canDelete = _selectionOrder.Count > 0;
+
+                _copyMenuItem.Enabled = canCopy;
+                _cutMenuItem.Enabled = canCut;
+                _pasteMenuItem.Enabled = canPaste;
+                _renameMenuItem.Enabled = canRename;
+                _deleteMenuItem.Enabled = canDelete;
+
+                if (!HideDisabledContextMenuItems)
+                {
+                    _copyMenuItem.Visible = true;
+                    _cutMenuItem.Visible = true;
+                    _pasteMenuItem.Visible = true;
+                    _renameMenuItem.Visible = true;
+                    _deleteMenuItem.Visible = true;
+                    _contextMenuSeparator.Visible = true;
+                    return;
+                }
+
+                _copyMenuItem.Visible = canCopy;
+                _cutMenuItem.Visible = canCut;
+                _pasteMenuItem.Visible = canPaste;
+                _renameMenuItem.Visible = canRename;
+                _deleteMenuItem.Visible = canDelete;
+
+                // Only keep the separator if there's something visible on both sides of it to separate.
+                bool clipboardGroupVisible = canCopy || canCut || canPaste;
+                bool nodeGroupVisible = canRename || canDelete;
+                _contextMenuSeparator.Visible = clipboardGroupVisible && nodeGroupVisible;
+
+                // Nothing left to show at all - don't pop up an empty menu.
+                if (!clipboardGroupVisible && !nodeGroupVisible)
+                    e.Cancel = true;
             };
         }
 
@@ -1166,15 +1205,18 @@ namespace BedrockCosmos.App.UI
         private RenameCommitMessageFilter _renameCommitFilter;
         private Control _renameHost; // Control the rename box is actually parented to (see BeginRename).
 
-        // Commits rename if clicking elsewhere in the app.
+        // Commits rename if clicking elsewhere in the app; also restores the cursor (see
+        // SuppressCursorReappearFromResize) on the first real mouse movement or click anywhere.
         private sealed class RenameCommitMessageFilter : IMessageFilter
         {
+            private const int WM_MOUSEMOVE = 0x0200;
             private const int WM_LBUTTONDOWN = 0x0201;
             private const int WM_RBUTTONDOWN = 0x0204;
             private const int WM_MBUTTONDOWN = 0x0207;
             private const int WM_NCLBUTTONDOWN = 0x00A1;
             private const int WM_NCRBUTTONDOWN = 0x00A4;
             private const int WM_NCMBUTTONDOWN = 0x00A7;
+            private const int WM_NCMOUSEMOVE = 0x00A0;
 
             private readonly ImageTreeView _owner;
 
@@ -1184,13 +1226,20 @@ namespace BedrockCosmos.App.UI
             {
                 switch (m.Msg)
                 {
+                    case WM_MOUSEMOVE:
+                    case WM_NCMOUSEMOVE:
+                        _owner.RestoreCursorAfterRenameResize();
+                        return false;
+
                     case WM_LBUTTONDOWN:
                     case WM_RBUTTONDOWN:
                     case WM_MBUTTONDOWN:
                     case WM_NCLBUTTONDOWN:
                     case WM_NCRBUTTONDOWN:
                     case WM_NCMBUTTONDOWN:
+                        _owner.RestoreCursorAfterRenameResize();
                         break;
+
                     default:
                         return false;
                 }
@@ -1358,6 +1407,8 @@ namespace BedrockCosmos.App.UI
                 _renameCommitFilter = null;
             }
 
+            RestoreCursorAfterRenameResize();
+
             _renameFont?.Dispose();
             _renameFont = null;
         }
@@ -1368,9 +1419,34 @@ namespace BedrockCosmos.App.UI
             if (box == null)
                 return;
 
+            Size previousSize = box.Size;
+
             RectangleF expanded = ComputeExpandedRenameBounds(bounds, box.Text);
             Rectangle hostBounds = TranslateToHostBounds(expanded);
             box.SetBounds(hostBounds.X, hostBounds.Y, hostBounds.Width, hostBounds.Height);
+
+            if (box.Size != previousSize)
+                SuppressCursorReappearFromResize();
+        }
+
+        private bool _cursorHiddenForRenameResize;
+
+        private void SuppressCursorReappearFromResize()
+        {
+            if (_cursorHiddenForRenameResize)
+                return;
+
+            System.Windows.Forms.Cursor.Hide();
+            _cursorHiddenForRenameResize = true;
+        }
+
+        private void RestoreCursorAfterRenameResize()
+        {
+            if (!_cursorHiddenForRenameResize)
+                return;
+
+            System.Windows.Forms.Cursor.Show();
+            _cursorHiddenForRenameResize = false;
         }
 
         private Rectangle TranslateToHostBounds(RectangleF localBounds)
@@ -1697,6 +1773,8 @@ namespace BedrockCosmos.App.UI
 
         private void CompleteDrag(bool copy)
         {
+            copy = copy && AllowCopying; // Ctrl+Drag falls back to a plain move when copying is disabled.
+
             if (_draggedCategories != null)
             {
                 CompleteCategoryDrag(copy);
@@ -1860,7 +1938,7 @@ namespace BedrockCosmos.App.UI
 
         public ImageItem CopyItemToCategory(ImageItem item, ImageCategory targetCategory, ImageItem insertBefore = null, string newId = null)
         {
-            if (item == null || targetCategory == null)
+            if (!AllowCopying || item == null || targetCategory == null)
                 return null;
 
             var copy = new ImageItem
@@ -1887,7 +1965,7 @@ namespace BedrockCosmos.App.UI
 
         public ImageCategory CopyCategory(ImageCategory category, ImageCategory insertBefore = null)
         {
-            if (category == null)
+            if (!AllowCopying || category == null)
                 return null;
 
             var copy = new ImageCategory
@@ -1923,7 +2001,7 @@ namespace BedrockCosmos.App.UI
         // Copy, cut, and paste use a clipboard in the app for their operations.
         public void CopySelection()
         {
-            if (_selectionOrder.Count == 0)
+            if (!AllowCopying || _selectionOrder.Count == 0)
                 return;
 
             _clipboard.Clear();
@@ -1946,6 +2024,10 @@ namespace BedrockCosmos.App.UI
         public void Paste()
         {
             if (_clipboard.Count == 0)
+                return;
+
+            // Pasting still allowed from Cuts if Copying is disabled.
+            if (!_clipboardIsCut && !AllowCopying)
                 return;
 
             ImageCategory targetCategory = null;
