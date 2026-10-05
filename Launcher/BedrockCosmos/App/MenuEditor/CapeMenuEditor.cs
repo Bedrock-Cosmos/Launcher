@@ -1,8 +1,7 @@
 ﻿using BedrockCosmos.App.UI;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace BedrockCosmos.App.MenuEditor
 {
@@ -15,17 +14,14 @@ namespace BedrockCosmos.App.MenuEditor
 
     public static class CapeMenuEditor
     {
+        private static readonly Regex TrailingNumberRegex = new Regex(@"\s*\(\d+\)\s*$", RegexOptions.Compiled);
+
         // Dictionary for updating category titles.
         private static readonly Dictionary<string, string> HeaderTitleOverrides =
             new Dictionary<string, string>
             {
                 { "dr.collector_title.owned", "Default Capes" },
-                { "Vanilla", "Vanilla Capes" },
-                { "Spin-Off", "Spin-Off Capes" },
-                { "Custom", "Custom Capes" },
-                { "Click on \'\'By Creator\'\'", "Creator Capes" },
-                { "Skin Pack", "Skin Pack Capes" }
-
+                { "Click on \'\'By Creator\'\'", "Creator Capes" }
             };
 
         // Gives more friendly names from dictionary to parent nodes in menu editor.
@@ -39,6 +35,8 @@ namespace BedrockCosmos.App.MenuEditor
                 if (string.IsNullOrEmpty(category.Name))
                     continue;
 
+                category.Name = StripTrailingNumber(category.Name);
+
                 foreach (var pair in HeaderTitleOverrides)
                 {
                     if (category.Name.StartsWith(pair.Key, StringComparison.OrdinalIgnoreCase))
@@ -48,6 +46,14 @@ namespace BedrockCosmos.App.MenuEditor
                     }
                 }
             }
+        }
+
+        public static string StripTrailingNumber(string title)
+        {
+            if (string.IsNullOrEmpty(title))
+                return title;
+
+            return TrailingNumberRegex.Replace(title, "");
         }
 
         // Parses the JSON at jsonFilePath and rebuilds treeView.Nodes from it.

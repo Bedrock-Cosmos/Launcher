@@ -10,6 +10,16 @@
 
 namespace BedrockCosmos.App.UI
 {
+    public enum ItemRarity
+    {
+        None = 0,
+        Common,
+        Uncommon,
+        Rare,
+        Epic,
+        Legendary
+    }
+
     // Child node under the expandable parent, like a specific cape or skin pack.
     public sealed class ImageItem
     {
@@ -17,6 +27,7 @@ namespace BedrockCosmos.App.UI
         public string Title { get; set; }
         public string ThumbnailUrl { get; set; }
         public bool IsEnabled { get; set; }
+        public ItemRarity Rarity { get; set; } = ItemRarity.None; // Optional.
         public object Tag { get; set; }
         public override string ToString() => Title ?? Id ?? base.ToString();
     }

@@ -21,6 +21,8 @@ namespace BedrockCosmos.App
         private static bool _discordRpc = true;
         private static string _language = "en_US";
         private static bool _news = true;
+        private static bool _editorNodeCount = true; // Might change this to be dependant on the saved menu file rather than a launcher setting.
+        private static bool _editorNodeIds = false;
         private static int _devMenuClicks = 0;
         private static bool _devMenuEnabled = false;
         private static bool _enableLogging = false;
@@ -57,6 +59,18 @@ namespace BedrockCosmos.App
         {
             get { return _news; }
             set { _news = value; SaveSettings(); }
+        }
+
+        internal static bool EditorNodeCount
+        {
+            get { return _editorNodeCount; }
+            set { _editorNodeCount = value; SaveSettings(); }
+        }
+
+        internal static bool EditorNodeIds
+        {
+            get { return _editorNodeIds; }
+            set { _editorNodeIds = value; SaveSettings(); }
         }
 
         internal static int DevMenuClicks
@@ -124,6 +138,8 @@ namespace BedrockCosmos.App
                 DiscordRpc = _discordRpc,
                 Language = _language,
                 News = _news,
+                EditorNodeCount = _editorNodeCount,
+                EditorNodeIds = _editorNodeIds,
                 DevMenuEnabled = _devMenuEnabled,
                 EnableLogging = _enableLogging,
                 DetailedLogging = _detailedLogging
@@ -150,6 +166,8 @@ namespace BedrockCosmos.App
                     try { _discordRpc = settings["DiscordRpc"]?.GetValue<bool>() ?? _discordRpc; } catch { }
                     try { _language = settings["Language"]?.GetValue<string>() ?? _language; } catch { }
                     try { _news = settings["News"]?.GetValue<bool>() ?? _news; } catch { }
+                    try { _editorNodeCount = settings["EditorNodeCount"]?.GetValue<bool>() ?? _editorNodeCount; } catch { }
+                    try { _editorNodeIds = settings["EditorNodeIds"]?.GetValue<bool>() ?? _editorNodeIds; } catch { }
                     try { _devMenuEnabled = settings["DevMenuEnabled"]?.GetValue<bool>() ?? _devMenuEnabled; } catch { }
                     try { _enableLogging = settings["EnableLogging"]?.GetValue<bool>() ?? _enableLogging; } catch { }
                     try { _detailedLogging = settings["DetailedLogging"]?.GetValue<bool>() ?? _detailedLogging; } catch { }

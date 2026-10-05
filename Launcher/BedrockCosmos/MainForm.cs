@@ -15,6 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 // =============================================================================
 // Bedrock Cosmos - Copyright (c) 2026
@@ -30,6 +31,7 @@ namespace BedrockCosmos
 {
     public partial class MainForm : Form
     {
+        private ImageDocument capesDocument;
         private LaunchManager launchManager;
         private static ProxyController controller;
         private Image launcherBackground;
@@ -175,6 +177,23 @@ namespace BedrockCosmos
 
             // News
             NewsSwitch.Checked = SettingsManager.News;
+
+            // Menu Editor - Node Count
+            CapeTreeView.ShowItemCountInHeader = SettingsManager.EditorNodeCount;
+            if (SettingsManager.EditorNodeCount)
+            {
+                ShowNodeCountButton.NormalBackColor = Color.FromArgb(0, 188, 71);
+                ShowNodeCountButton.HoverBackColor = Color.FromArgb(0, 188, 71);
+                ShowNodeCountButton.PressedBackColor = Color.FromArgb(0, 188, 71);
+            }
+
+            // Menu Editor - Show Node IDs
+            if (SettingsManager.EditorNodeIds)
+            {
+                ShowNodeIdsButton.NormalBackColor = Color.FromArgb(0, 188, 71);
+                ShowNodeIdsButton.HoverBackColor = Color.FromArgb(0, 188, 71);
+                ShowNodeIdsButton.PressedBackColor = Color.FromArgb(0, 188, 71);
+            }
 
             // Logging
             EnableLoggingSwitch.Checked = SettingsManager.EnableLogging;
@@ -506,18 +525,25 @@ namespace BedrockCosmos
                 DiscordRichPresence.UpdatePresence();
         }
 
-        private ImageDocument _capesDocument;
-
         private void CapesEditorButton_Click(object sender, EventArgs e)
         {
             TabControl.SelectedTab = MenuEditorPage;
+            string activeCapesFile = "";
+            string customCapesFile = Path.Combine(PathDefinitions.CustomJsonsDirectory, @"Capes.json");
+            string defaultCapesFile = Path.Combine(PathDefinitions.ResponsesDirectory, @"MainPages\Capes.json");
+            // Need to add a case for if the jsons have not been downloaded yet.
+
+            if (File.Exists(customCapesFile))
+                activeCapesFile = customCapesFile;
+            else
+                activeCapesFile = defaultCapesFile;
 
             try
             {
-                string json = File.ReadAllText(Path.Combine(PathDefinitions.ResponsesDirectory, @"MainPages\Capes.json"));
-                _capesDocument = ImageDocument.LoadFromMarketplaceJson(json);
-                CapeMenuEditor.ApplyHeaderTitleOverrides(_capesDocument.Categories);
-                CapeTreeView.LoadData(_capesDocument.Categories);
+                string json = File.ReadAllText(activeCapesFile);
+                capesDocument = ImageDocument.LoadFromMarketplaceJson(json);
+                CapeMenuEditor.ApplyHeaderTitleOverrides(capesDocument.Categories);
+                CapeTreeView.LoadData(capesDocument.Categories);
             }
             catch
             {
@@ -677,9 +703,9 @@ namespace BedrockCosmos
 
         private void CustomMenuToggle_CheckedChanged(object sender, EventArgs e)
         {
-            EnableMenuItemToggle.Visible = CustomMenuToggle.Checked;
-            EnableMenuItemLabel.Visible = CustomMenuToggle.Checked;
-            NodeStatus.Visible = CustomMenuToggle.Checked;
+            //EnableMenuItemToggle.Visible = CustomMenuToggle.Checked;
+            //EnableMenuItemLabel.Visible = CustomMenuToggle.Checked;
+            //NodeStatus.Visible = CustomMenuToggle.Checked;
         }
 
         private void CapeTreeView_SelectionChanged(object sender, EventArgs e)
@@ -700,7 +726,10 @@ namespace BedrockCosmos
                 switch (node)
                 {
                     case ImageItem item:
-                        NodeStatus.Text = $"{item.Title}, {item.Id}";
+                        UpdateNodePreview();
+                        NodeStatus.Text = $"{item.Title}";
+                        if (SettingsManager.EditorNodeIds) { NodeStatus.Text = NodeStatus.Text + $"\n{item.Id}"; }
+                        NodeRarityComboBox.Text = item.Rarity.ToString();
                         break;
 
                     case ImageCategory category:
@@ -715,9 +744,27 @@ namespace BedrockCosmos
             else
             {
                 NodeStatus.Text = $"{CapeTreeView.GetSelectedNodeCount()} nodes selected.";
+                NodeRarityComboBox.Text = "-";
             }
 
             EnableMenuItemToggle.Checked = false;
+        }
+
+        private void UpdateNodePreview()
+        {
+            var item = CapeTreeView.SelectedItems.FirstOrDefault();
+
+            Image copy = null;
+            if (item != null)
+            {
+                copy = ImageCache.TryGetCopy(item.Id);
+                if (copy == null)
+                    ImageCache.RequestLoad(item.Id, item.ThumbnailUrl); // Not in memory yet, ImageLoaded will call back.
+            }
+
+            var old = ActiveNodePreview.ButtonImage;
+            ActiveNodePreview.ButtonImage = copy;
+            old?.Dispose();
         }
 
         private void EnableMenuItemToggle_Click(object sender, EventArgs e)
@@ -725,9 +772,42 @@ namespace BedrockCosmos
             CapeTreeView.SetSelectedEnabled(EnableMenuItemToggle.Checked);
         }
 
-        private void ShowNodeCountsToggle_CheckedChanged(object sender, EventArgs e)
+        private void ShowNodeCountButton_Click(object sender, EventArgs e)
         {
-            CapeTreeView.ShowItemCountInHeader = ShowNodeCountsToggle.Checked;
+            if (ShowNodeCountButton.NormalBackColor != Color.FromArgb(75, 75, 75))
+            {
+                SettingsManager.EditorNodeCount = false;
+                CapeTreeView.ShowItemCountInHeader = SettingsManager.EditorNodeCount;
+                ShowNodeCountButton.NormalBackColor = Color.FromArgb(75, 75, 75);
+                ShowNodeCountButton.HoverBackColor = Color.FromArgb(75, 75, 75);
+                ShowNodeCountButton.PressedBackColor = Color.FromArgb(75, 75, 75);
+            }
+            else
+            {
+                SettingsManager.EditorNodeCount = true;
+                CapeTreeView.ShowItemCountInHeader = SettingsManager.EditorNodeCount;
+                ShowNodeCountButton.NormalBackColor = Color.FromArgb(0, 188, 71);
+                ShowNodeCountButton.HoverBackColor = Color.FromArgb(0, 188, 71);
+                ShowNodeCountButton.PressedBackColor = Color.FromArgb(0, 188, 71);
+            }   
+        }
+
+        private void ShowNodeIdsButton_Click(object sender, EventArgs e)
+        {
+            if (ShowNodeIdsButton.NormalBackColor != Color.FromArgb(75, 75, 75))
+            {
+                SettingsManager.EditorNodeIds = false;
+                ShowNodeIdsButton.NormalBackColor = Color.FromArgb(75, 75, 75);
+                ShowNodeIdsButton.HoverBackColor = Color.FromArgb(75, 75, 75);
+                ShowNodeIdsButton.PressedBackColor = Color.FromArgb(75, 75, 75);
+            }
+            else
+            {
+                SettingsManager.EditorNodeIds = true;
+                ShowNodeIdsButton.NormalBackColor = Color.FromArgb(0, 188, 71);
+                ShowNodeIdsButton.HoverBackColor = Color.FromArgb(0, 188, 71);
+                ShowNodeIdsButton.PressedBackColor = Color.FromArgb(0, 188, 71);
+            }
         }
 
         private void NodeToTopButton_Click(object sender, EventArgs e)
@@ -817,27 +897,51 @@ namespace BedrockCosmos
             CapeTreeView.Paste();
         }
 
-        private void ExportMenuButton_Click(object sender, EventArgs e)
+        private void NodeRarityComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_capesDocument == null)
+            ItemRarity rarity = (ItemRarity)NodeRarityComboBox.SelectedIndex;
+
+            if (rarity != 0) // Does not alter if set to nothing.
+                CapeTreeView.SetSelectedRarity(rarity);
+        }
+
+        private void SaveMenuButton_Click(object sender, EventArgs e)
+        {
+            if (capesDocument == null)
             {
-                NodeStatus.Text = "Nothing loaded to export.";
+                NodeStatus.Text = "Nothing loaded to save.";
                 return;
             }
 
             if (!Directory.Exists(PathDefinitions.CustomJsonsDirectory))
                 Directory.CreateDirectory(PathDefinitions.CustomJsonsDirectory);
 
+            string json = capesDocument.ToJson(indented: true, includeItemCountInCategoryName: CapeTreeView.ShowItemCountInHeader);
+            File.WriteAllText(Path.Combine(PathDefinitions.CustomJsonsDirectory, @"Capes.json"), json, Encoding.UTF8);
+            NodeStatus.Text = "Saved!";
+        }
+
+        private void ExportMenuButton_Click(object sender, EventArgs e)
+        {
+            if (capesDocument == null)
+            {
+                NodeStatus.Text = "Nothing loaded to export.";
+                return;
+            }
+
+            string userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            string defaultPath = Path.Combine(userProfile, @"Downloads\Capes.json");
+
             using (var dialog = new SaveFileDialog
             {
                 Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*",
-                FileName = Path.Combine(PathDefinitions.CustomJsonsDirectory, @"Capes.json")
+                FileName = defaultPath
             })
             {
                 if (dialog.ShowDialog(this) != DialogResult.OK)
                     return;
 
-                string json = _capesDocument.ToJson(indented: true, includeItemCountInCategoryName: CapeTreeView.ShowItemCountInHeader);
+                string json = capesDocument.ToJson(indented: true, includeItemCountInCategoryName: CapeTreeView.ShowItemCountInHeader);
                 File.WriteAllText(dialog.FileName, json, Encoding.UTF8);
                 NodeStatus.Text = "Exported!";
             }

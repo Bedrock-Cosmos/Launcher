@@ -41,6 +41,35 @@ namespace BedrockCosmos.App.UI
         public Color ThumbColor { get; set; } = Color.FromArgb(75, 75, 75);
         public Color ThumbHoverColor { get; set; } = Color.FromArgb(110, 110, 110);
         public Color DropIndicatorColor { get; set; } = Color.FromArgb(0, 188, 71);
+        public Color CommonRarityColor { get; set; } = Color.FromArgb(153, 153, 153);
+        public Color UncommonRarityColor { get; set; } = Color.FromArgb(76, 175, 80);
+        public Color RareRarityColor { get; set; } = Color.FromArgb(52, 120, 246);
+        public Color EpicRarityColor { get; set; } = Color.FromArgb(163, 73, 214);
+        public Color LegendaryRarityColor { get; set; } = Color.FromArgb(240, 180, 30);
+
+        public enum RarityDisplayMode
+        {
+            None,
+            Background,
+            BackgroundAndNames
+        }
+
+        private RarityDisplayMode _showRarityColors = RarityDisplayMode.Background;
+
+        [Category("Appearance")]
+        [DefaultValue(RarityDisplayMode.Background)]
+        public RarityDisplayMode ShowRarityColors
+        {
+            get => _showRarityColors;
+            set
+            {
+                if (_showRarityColors == value)
+                    return;
+
+                _showRarityColors = value;
+                Invalidate();
+            }
+        }
 
         public int ItemSize { get; set; } = 64;
         public int ItemPadding { get; set; } = 10;
@@ -696,23 +725,25 @@ namespace BedrockCosmos.App.UI
             bool selected = _selectionSet.Contains(item);
             bool beingDragged = _isDragging && _draggedItems != null && _draggedItems.Contains(item);
             var cellRect = new Rectangle(x, y, ItemSize, ItemSize);
+            bool hasRarity = TryGetRarityColor(item.Rarity, out Color rarityColor);
 
             using (var path = RoundedRect(cellRect, CornerRadius))
             {
                 // Background of node color, determined based on enabled, selected, or idle.
                 Color backgroundColor;
+
                 if (selected)
-                    backgroundColor = item.IsEnabled ? EnabledHighlightColor : SelectedBackColor;
+                    backgroundColor = item.IsEnabled ? EnabledHighlightColor : (hasRarity ? rarityColor : SelectedBackColor);
                 else
-                    backgroundColor = IdleBackColor;
+                    backgroundColor = hasRarity ? Blend(IdleBackColor, rarityColor, 0.30f) : IdleBackColor;
 
                 using (var bgBrush = new SolidBrush(backgroundColor))
                     g.FillPath(bgBrush, path);
 
                 if (!selected)
                 {
-                    var borderColor = item.IsEnabled ? EnabledHighlightColor : IdleBorderColor;
-                    float borderWidth = item.IsEnabled ? 2f : 1f;
+                    Color borderColor = item.IsEnabled ? EnabledHighlightColor : (hasRarity ? rarityColor : IdleBorderColor);
+                    float borderWidth = item.IsEnabled ? 2f : 1f; // Border grows to 2px if node is enabled.
                     using (var pen = new Pen(borderColor, borderWidth))
                         g.DrawPath(pen, path);
                 }
@@ -743,7 +774,8 @@ namespace BedrockCosmos.App.UI
             }
 
             using (var font = new Font("Segoe UI", 7.5f))
-            using (var brush = new SolidBrush(ItemTitleColor))
+            using (var brush = new SolidBrush(
+                hasRarity && _showRarityColors == RarityDisplayMode.BackgroundAndNames ? rarityColor : ItemTitleColor))
             using (var format = new StringFormat
             {
                 Alignment = StringAlignment.Center,
@@ -754,6 +786,34 @@ namespace BedrockCosmos.App.UI
                 var labelRect = new RectangleF(x - 4, y + ItemSize + 2, ItemSize + 8, ItemLabelHeight);
                 g.DrawString(item.Title, font, brush, labelRect, format);
             }
+        }
+
+        // Gets the display color for a rarity, false if none or rarity is turned off.
+        private bool TryGetRarityColor(ItemRarity rarity, out Color color)
+        {
+            color = Color.Empty;
+
+            if (_showRarityColors == RarityDisplayMode.None)
+                return false;
+
+            switch (rarity)
+            {
+                case ItemRarity.Common: color = CommonRarityColor; return true;
+                case ItemRarity.Uncommon: color = UncommonRarityColor; return true;
+                case ItemRarity.Rare: color = RareRarityColor; return true;
+                case ItemRarity.Epic: color = EpicRarityColor; return true;
+                case ItemRarity.Legendary: color = LegendaryRarityColor; return true;
+                default: return false;
+            }
+        }
+
+        // Mixes "amount" (0-1) of "top" over "baseColor".
+        private static Color Blend(Color baseColor, Color top, float amount)
+        {
+            return Color.FromArgb(
+                (int)(baseColor.R + (top.R - baseColor.R) * amount),
+                (int)(baseColor.G + (top.G - baseColor.G) * amount),
+                (int)(baseColor.B + (top.B - baseColor.B) * amount));
         }
 
         private static GraphicsPath RoundedRect(Rectangle bounds, int radius)
@@ -1071,6 +1131,8 @@ namespace BedrockCosmos.App.UI
         private ToolStripMenuItem _pasteMenuItem;
         private ToolStripSeparator _contextMenuSeparator;
         private ToolStripMenuItem _renameMenuItem;
+        private ToolStripMenuItem _rarityMenuItem;
+        private readonly Dictionary<ItemRarity, ToolStripMenuItem> _rarityOptionItems = new Dictionary<ItemRarity, ToolStripMenuItem>();
         private ToolStripMenuItem _deleteMenuItem;
 
         private void BuildContextMenu()
@@ -1088,6 +1150,15 @@ namespace BedrockCosmos.App.UI
             _pasteMenuItem = new ToolStripMenuItem("Paste", null, (s, e) => Paste());
             _contextMenuSeparator = new ToolStripSeparator();
             _renameMenuItem = new ToolStripMenuItem("Rename", null, (s, e) => BeginRename());
+            _rarityMenuItem = new ToolStripMenuItem("Rarity");
+            foreach (ItemRarity rarity in Enum.GetValues(typeof(ItemRarity)))
+            {
+                var captured = rarity;
+                var option = new ToolStripMenuItem(rarity.ToString(), null, (s, e) => SetSelectedRarity(captured));
+                _rarityOptionItems[rarity] = option;
+                _rarityMenuItem.DropDownItems.Add(option);
+            }
+
             _deleteMenuItem = new ToolStripMenuItem("Delete", null, (s, e) => RemoveSelectedNodes());
 
             _contextMenu.Items.Add(_copyMenuItem);
@@ -1095,6 +1166,7 @@ namespace BedrockCosmos.App.UI
             _contextMenu.Items.Add(_pasteMenuItem);
             _contextMenu.Items.Add(_contextMenuSeparator);
             _contextMenu.Items.Add(_renameMenuItem);
+            _contextMenu.Items.Add(_rarityMenuItem);
             _contextMenu.Items.Add(_deleteMenuItem);
 
             // Enable/disable (and, if requested, visible/hidden) state is recomputed every time the menu
@@ -1106,6 +1178,17 @@ namespace BedrockCosmos.App.UI
                 bool canPaste = CanPaste;
                 bool canRename = _selectionOrder.Count == 1; // Renaming more than one node at once doesn't make sense.
                 bool canDelete = _selectionOrder.Count > 0;
+                var rarityTargets = GetSelectedItemsIncludingCategories();
+                bool canSetRarity = rarityTargets.Count > 0;
+
+                _rarityMenuItem.Enabled = canSetRarity;
+
+                // Checks the current rarity if every selected node shares it.
+                ItemRarity? sharedRarity = canSetRarity && rarityTargets.All(i => i.Rarity == rarityTargets[0].Rarity)
+                    ? rarityTargets[0].Rarity
+                    : (ItemRarity?)null;
+                foreach (var pair in _rarityOptionItems)
+                    pair.Value.Checked = sharedRarity.HasValue && sharedRarity.Value == pair.Key;
 
                 _copyMenuItem.Enabled = canCopy;
                 _cutMenuItem.Enabled = canCut;
@@ -1119,6 +1202,7 @@ namespace BedrockCosmos.App.UI
                     _cutMenuItem.Visible = true;
                     _pasteMenuItem.Visible = true;
                     _renameMenuItem.Visible = true;
+                    _rarityMenuItem.Visible = true;
                     _deleteMenuItem.Visible = true;
                     _contextMenuSeparator.Visible = true;
                     return;
@@ -1128,11 +1212,12 @@ namespace BedrockCosmos.App.UI
                 _cutMenuItem.Visible = canCut;
                 _pasteMenuItem.Visible = canPaste;
                 _renameMenuItem.Visible = canRename;
+                _rarityMenuItem.Visible = canSetRarity;
                 _deleteMenuItem.Visible = canDelete;
 
                 // Only keep the separator if there's something visible on both sides of it to separate.
                 bool clipboardGroupVisible = canCopy || canCut || canPaste;
-                bool nodeGroupVisible = canRename || canDelete;
+                bool nodeGroupVisible = canRename || canSetRarity || canDelete;
                 _contextMenuSeparator.Visible = clipboardGroupVisible && nodeGroupVisible;
 
                 // Nothing left to show at all - don't pop up an empty menu.
@@ -1947,6 +2032,7 @@ namespace BedrockCosmos.App.UI
                 Title = item.Title,
                 ThumbnailUrl = item.ThumbnailUrl,
                 IsEnabled = item.IsEnabled,
+                Rarity = item.Rarity,
                 Tag = item.Tag
             };
 
@@ -1984,6 +2070,7 @@ namespace BedrockCosmos.App.UI
                     Title = item.Title,
                     ThumbnailUrl = item.ThumbnailUrl,
                     IsEnabled = item.IsEnabled,
+                    Rarity = item.Rarity,
                     Tag = item.Tag
                 };
 
@@ -2261,6 +2348,84 @@ namespace BedrockCosmos.App.UI
 
         #endregion
 
+        #region Rarity
+
+        // Sets the rarity of every selected node.
+        public void SetSelectedRarity(ItemRarity rarity)
+        {
+            var targets = GetSelectedItemsIncludingCategories();
+            if (targets.Count == 0)
+                return;
+
+            bool changed = false;
+            foreach (var item in targets)
+                changed |= SetItemRarityCore(item, rarity);
+
+            if (!changed)
+                return;
+
+            Invalidate();
+            DataChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        // Sets the rarity of a specific node.
+        public void SetItemRarity(ImageItem item, ItemRarity rarity)
+        {
+            if (item == null || !SetItemRarityCore(item, rarity))
+                return;
+
+            Invalidate();
+            DataChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private bool SetItemRarityCore(ImageItem item, ItemRarity rarity)
+        {
+            bool changed = false;
+
+            if (item.Rarity != rarity)
+            {
+                item.Rarity = rarity;
+                changed = true;
+            }
+
+            if (!GenerateNewIdOnCopy && !string.IsNullOrEmpty(item.Id))
+            {
+                foreach (var other in _parentMap.Keys)
+                {
+                    if (other != item && other.Id == item.Id && other.Rarity != rarity)
+                    {
+                        other.Rarity = rarity;
+                        changed = true;
+                    }
+                }
+            }
+
+            return changed;
+        }
+
+        private List<ImageItem> GetSelectedItemsIncludingCategories()
+        {
+            var result = new List<ImageItem>();
+            var seen = new HashSet<ImageItem>();
+
+            foreach (var node in _selectionOrder)
+            {
+                if (node is ImageItem item)
+                {
+                    if (seen.Add(item)) result.Add(item);
+                }
+                else if (node is ImageCategory category)
+                {
+                    foreach (var child in category.Items)
+                        if (seen.Add(child)) result.Add(child);
+                }
+            }
+
+            return result;
+        }
+
+        #endregion
+
         #region Enabled state
 
         // Sets selected nodes to be "enabled" (highlighted a different color).
@@ -2465,7 +2630,7 @@ namespace BedrockCosmos.App.UI
             return category;
         }
 
-        public ImageItem AddItem(string title, string thumbnailUrl, string id = null) // Adds child node.
+        public ImageItem AddItem(string title, string thumbnailUrl, string id = null, ItemRarity rarity = ItemRarity.None) // Adds child node.
         {
             ImageCategory targetCategory = null;
             int insertIndex = -1;
@@ -2492,7 +2657,8 @@ namespace BedrockCosmos.App.UI
             {
                 Id = id ?? Guid.NewGuid().ToString(),
                 Title = string.IsNullOrEmpty(title) ? "New Item" : title,
-                ThumbnailUrl = thumbnailUrl
+                ThumbnailUrl = thumbnailUrl,
+                Rarity = rarity
             };
 
             if (insertIndex < 0 || insertIndex > targetCategory.Items.Count)

@@ -107,7 +107,8 @@ namespace BedrockCosmos.App.UI
                     {
                         Id = GetString(itemNode["id"]),
                         Title = GetString(itemNode["title"]),
-                        ThumbnailUrl = GetString(itemNode["thumbnail"]?["url"])
+                        ThumbnailUrl = GetString(itemNode["thumbnail"]?["url"]),
+                        Rarity = ParseRarity(GetString(itemNode["rarity"]))
                     };
 
                     category.Items.Add(item);
@@ -233,6 +234,15 @@ namespace BedrockCosmos.App.UI
 
                 node["id"] = item.Id;
                 node["title"] = item.Title;
+
+                if (item.Rarity != ItemRarity.None)
+                {
+                    node["rarity"] = item.Rarity.ToString().ToLowerInvariant();
+                }
+                else if (ParseRarity(GetString(node["rarity"])) != ItemRarity.None)
+                {
+                    node["rarity"] = "common"; // Defaults to common if rarity value is missing.
+                }
 
                 if (!string.IsNullOrEmpty(item.ThumbnailUrl))
                 {
@@ -374,6 +384,17 @@ namespace BedrockCosmos.App.UI
                         FindRowsArrays(child, result);
                 }
             }
+        }
+
+        // Converts JSON "rarity" string (common, uncommon, rare, epic, legendary) - anything else is None.
+        private static ItemRarity ParseRarity(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return ItemRarity.None;
+
+            return Enum.TryParse(value.Trim(), true, out ItemRarity rarity) && Enum.IsDefined(typeof(ItemRarity), rarity)
+                ? rarity
+                : ItemRarity.None;
         }
 
         // Reads a string value from a node that might be missing, null, etc.

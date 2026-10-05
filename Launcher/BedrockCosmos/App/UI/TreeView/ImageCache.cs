@@ -175,6 +175,22 @@ namespace BedrockCosmos.App.UI
             }
         }
 
+        // Returns an independent copy of a cached thumbnail.
+        public static Image TryGetCopy(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return null;
+
+            lock (Lock)
+            {
+                if (!Memory.TryGetValue(id, out var image))
+                    return null;
+
+                Touch(id);
+                return new Bitmap(image);
+            }
+        }
+
         // Must be called while holding ImageCache.Lock.
         private static void Touch(string id)
         {
