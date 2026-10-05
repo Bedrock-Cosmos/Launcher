@@ -408,6 +408,68 @@ namespace BedrockCosmos
             }
         }
 
+        internal static string AppendJsonToEmotesMenu(string originalJsonContent, string emotesPath, string dividerPath)
+        {
+            if (!File.Exists(emotesPath) || !File.Exists(dividerPath))
+            {
+                CosmosConsole.WriteLine(consoleSender, $"One or more files were not found: {emotesPath} / {dividerPath}");
+                return originalJsonContent;
+            }
+
+            JsonObject originalJson = JsonNode.Parse(originalJsonContent, null, _parseOptions)?.AsObject();
+            JsonArray emoteRows = JsonNode.Parse(File.ReadAllText(emotesPath), null, _parseOptions)?.AsArray(); // Root is an array.
+            JsonObject divider = JsonNode.Parse(File.ReadAllText(dividerPath), null, _parseOptions)?.AsObject();
+            JsonArray rows = originalJson?["result"]?["layout"]?[0]?["rows"]?.AsArray();
+
+            if (rows == null || emoteRows == null || divider == null)
+            {
+                CosmosConsole.WriteLine(consoleSender, "Could not parse rows, emotes, or divider for emotes append.");
+                return originalJsonContent;
+            }
+
+            int ownedIndex = -1;
+            for (int i = 0; i < rows.Count; i++)
+            {
+                if (rows[i]?.ToJsonString().Contains("dr.collector_title.owned") == true)
+                {
+                    ownedIndex = i;
+                    break;
+                }
+            }
+
+            if (ownedIndex == -1)
+            {
+                CosmosConsole.WriteLine(consoleSender, "Could not find dr.collector_title.owned row.");
+                return originalJsonContent;
+            }
+
+            // Find the first VerticalLineDivider after Owned row.
+            int dividerIndex = -1;
+            for (int i = ownedIndex + 1; i < rows.Count; i++)
+            {
+                if (rows[i]?["controlId"]?.GetValue<string>() == "VerticalLineDivider")
+                {
+                    dividerIndex = i;
+                    break;
+                }
+            }
+
+            if (dividerIndex == -1)
+            {
+                CosmosConsole.WriteLine(consoleSender, "Could not find VerticalLineDivider after the owned row.");
+                return originalJsonContent;
+            }
+
+            int insertIndex = dividerIndex + 1;
+            foreach (JsonNode row in emoteRows)
+            {
+                rows.Insert(insertIndex++, JsonNode.Parse(row.ToJsonString(), null, _parseOptions)); // Re-parse.
+            }
+            rows.Insert(insertIndex, JsonNode.Parse(divider.ToJsonString(), null, _parseOptions));
+
+            return originalJson.ToJsonString();
+        }
+
         internal static string ExtractPlayfabSearchId(string originalPlayfabData)
         {
             // UUID Pattern

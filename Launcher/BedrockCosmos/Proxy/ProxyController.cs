@@ -312,6 +312,9 @@ namespace BedrockCosmos.Proxy
                         case ProxyUrlDefinitions.PersonaSkinSelectorUrl:
                             await HandlePersonaSkinSelectorRequest(localPath, e);
                             break;
+                        case ProxyUrlDefinitions.EmotesMenuUrl:
+                            await HandleEmotesMenuRequest(localPath, e);
+                            break;
 
 
                         default:
@@ -523,6 +526,19 @@ namespace BedrockCosmos.Proxy
 
             var userData = e.UserData as CustomUserData;
             userData.RequestLogs = userData.RequestLogs + $"└── On Response: Appended original response using {Path.GetFileName(localPath)}\n";
+        }
+
+        private async Task HandleEmotesMenuRequest(string localPath, SessionEventArgs e)
+        {
+            string responseBody = await e.GetResponseBodyAsString();
+            string emotesPath = localPath;
+            string dividerPath = PathDefinitions.ResponsesDirectory + @"MainPages\VerticalLineDivider_append.json";
+
+            string appendedJson = JsonParser.AppendJsonToEmotesMenu(responseBody, emotesPath, dividerPath);
+            e.SetResponseBodyString(appendedJson);
+
+            var userData = e.UserData as CustomUserData;
+            userData.RequestLogs += $"└── On Response: Appended original response using {Path.GetFileName(localPath)}\n";
         }
 
         private void HandleDefaultRequest(string localPath, SessionEventArgs e)

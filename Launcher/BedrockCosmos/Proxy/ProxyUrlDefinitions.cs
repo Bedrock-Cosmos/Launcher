@@ -38,5 +38,6 @@ namespace BedrockCosmos.Proxy
         internal const string DressingRoomPersonaProfileUrl = "https://store.mktpl.minecraft-services.net/api/v2.0/layout/pages/DressingRoom_PersonaProfile";
         internal const string PersonaCharacterCreatorUrl = "https://store.mktpl.minecraft-services.net/api/v2.0/layout/pages/MultiItemPage_PersonaCharacterCreator";
         internal const string PersonaSkinSelectorUrl = "https://store.mktpl.minecraft-services.net/api/v2.0/layout/pages/MultiItemPage_PersonaSkinSelector";
+        internal const string EmotesMenuUrl = "https://store.mktpl.minecraft-services.net/api/v2.0/layout/pages/DressingRoom_Emotes";
     }
 }
