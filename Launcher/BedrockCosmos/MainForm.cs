@@ -842,17 +842,20 @@ namespace BedrockCosmos
 
         private void RemoveNodeButton_Click(object sender, EventArgs e)
         {
-            if (!NodeStatus.Text.StartsWith("This action will delete"))
-            {
-                int currentNodes = CapeTreeView.GetSelectedNodeCount();
-                string plural = "";
+            int currentNodes = CapeTreeView.GetSelectedNodeCount();
+            string plural = "";
 
-                if (currentNodes != 1)
-                    plural = "s";
+            if (currentNodes != 1)
+                plural = "s";
 
-                NodeStatus.Text = $"This action will delete {currentNodes} node{plural}! Select Remove again to continue.";
-            }
-            else
+            DialogResult result = StyledMessageBox.Show(
+                this,
+                $"This action will delete {currentNodes} node{plural}! Are you sure that you wish to proceed?",
+                "Delete",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            if (result == DialogResult.Yes)
             {
                 CapeTreeView.RemoveSelectedNodes();
                 NodeStatus.Text = "Nodes removed!";
@@ -861,11 +864,14 @@ namespace BedrockCosmos
 
         private void ResetNodesButton_Click(object sender, EventArgs e)
         {
-            if (!NodeStatus.Text.StartsWith("This action will reset"))
-            {
-                NodeStatus.Text = "This action will reset all nodes to their initial state. Select Reset again to continue.";
-            }
-            else
+            DialogResult result = StyledMessageBox.Show(
+                this,
+                "This action will reset all menu items to their initial state! Are you sure that you wish to proceed?",
+                "Reset",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            if (result == DialogResult.Yes)
             {
                 string json = File.ReadAllText(Path.Combine(PathDefinitions.ResponsesDirectory, @"MainPages\Capes.json"));
                 var doc = ImageDocument.LoadFromMarketplaceJson(json);
