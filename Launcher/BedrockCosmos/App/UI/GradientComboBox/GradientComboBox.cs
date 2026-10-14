@@ -39,6 +39,8 @@ namespace BedrockCosmos.App.UI
 
         private int _StartIndex = 0;
         private Color _HoverSelectionColor;
+        private Color _HoverTextColor = Color.WhiteSmoke;
+        private Color _HoverAccentColor = Color.FromArgb(153, 153, 153);
 
         private Color _ColorA = Color.FromArgb(246, 132, 85);
         private Color _ColorB = Color.FromArgb(231, 108, 57);
@@ -117,6 +119,18 @@ namespace BedrockCosmos.App.UI
                 _HoverSelectionColor = value;
                 Invalidate();
             }
+        }
+
+        public Color HoverTextColor
+        {
+            get { return _HoverTextColor; }
+            set { _HoverTextColor = value; _dropDownList?.Invalidate(); }
+        }
+
+        public Color HoverAccentColor
+        {
+            get { return _HoverAccentColor; }
+            set { _HoverAccentColor = value; _dropDownList?.Invalidate(); }
         }
 
         public Color ColorA
@@ -261,10 +275,10 @@ namespace BedrockCosmos.App.UI
                 ? Color.FromArgb(70, 70, 70)
                 : _HoverSelectionColor;
             Color itemBackColor = isHighlighted ? selectedBackColor : _ColorC;
-            Color itemTextColor = isHighlighted ? Color.WhiteSmoke : ForeColor;
+            Color itemTextColor = isHighlighted ? _HoverTextColor : ForeColor;
 
             using (SolidBrush backgroundBrush = new SolidBrush(itemBackColor))
-            using (SolidBrush accentBrush = new SolidBrush(Color.FromArgb(153, 153, 153)))
+            using (SolidBrush accentBrush = new SolidBrush(_HoverAccentColor))
             {
                 graphics.FillRectangle(backgroundBrush, itemBounds);
 
@@ -298,6 +312,30 @@ namespace BedrockCosmos.App.UI
         protected override void OnPaintBackground(PaintEventArgs e)
         {
             base.OnPaintBackground(e);
+        }
+
+        private void PaintParentBackground(Graphics g)
+        {
+            if (Parent == null)
+            {
+                g.Clear(BackColor);
+                return;
+            }
+
+            GraphicsState state = g.Save();
+            try
+            {
+                g.TranslateTransform(-Left, -Top);
+                using (var pe = new PaintEventArgs(g, new Rectangle(Left, Top, Width, Height)))
+                {
+                    InvokePaintBackground(Parent, pe);
+                    InvokePaint(Parent, pe);
+                }
+            }
+            finally
+            {
+                g.Restore(state);
+            }
         }
 
         protected override void OnResize(EventArgs e)
@@ -453,7 +491,7 @@ namespace BedrockCosmos.App.UI
             base.OnPaint(e);
 
             Graphics graphics = e.Graphics;
-            graphics.Clear(Parent != null ? Parent.BackColor : BackColor);
+            PaintParentBackground(graphics);
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
             using (GraphicsPath borderPath = RoundRectangle.RoundRect(0, 0, Width - 1, Height - 1, _BorderRadiusScaled))
@@ -464,9 +502,7 @@ namespace BedrockCosmos.App.UI
             using (Brush arrowBrush = new SolidBrush(_ColorG))
             using (Font arrowFont = new Font("Marlett", 13f, FontStyle.Regular))
             {
-                graphics.SetClip(borderPath);
-                graphics.FillRectangle(backgroundBrush, ClientRectangle);
-                graphics.ResetClip();
+                graphics.FillPath(backgroundBrush, borderPath);
                 graphics.DrawPath(borderPen, borderPath);
 
                 TextRenderer.DrawText(

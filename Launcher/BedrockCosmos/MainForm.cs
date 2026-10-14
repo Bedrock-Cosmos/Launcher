@@ -4,7 +4,6 @@ using BedrockCosmos.App.MenuEditor;
 using BedrockCosmos.App.UI;
 using BedrockCosmos.Proxy;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -14,8 +13,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml.Linq;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 // =============================================================================
 // Bedrock Cosmos - Copyright (c) 2026
@@ -35,6 +32,7 @@ namespace BedrockCosmos
         private LaunchManager launchManager;
         private static ProxyController controller;
         private Image launcherBackground;
+        private readonly ThemeManager themes = new ThemeManager();
 
         // For window movement
         bool drag = false;
@@ -42,8 +40,10 @@ namespace BedrockCosmos
 
         public MainForm()
         {
-            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
+            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
             InitializeComponent();
+            ApplyHalloweenTheme();
+
             TabControl.MakeTransparent();
 
             if (File.Exists(PathDefinitions.AppDirectory + @"Background.png"))
@@ -66,7 +66,10 @@ namespace BedrockCosmos
             LanguageHandler.AddLangsToComboBox(LanguageComboBox);
             SettingsManager.LoadSettings();
             ApplySettings();
+            ShowSplashMessage();
         }
+
+        private FormWindowState lastWindowState = FormWindowState.Normal;
 
         private void GetLauncherBackground(string imagePath)
         {
@@ -98,6 +101,68 @@ namespace BedrockCosmos
             {
                 base.OnPaintBackground(e);
             }
+        }
+
+        // Next two overrides keep the custom background in place if window size is changed or window is minimized.
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            base.OnSizeChanged(e);
+
+            if (WindowState != FormWindowState.Minimized && lastWindowState == FormWindowState.Minimized)
+            {
+                Invalidate(true);
+                Update();
+            }
+            lastWindowState = WindowState;
+        }
+
+        protected override void OnVisibleChanged(EventArgs e)
+        {
+            base.OnVisibleChanged(e);
+            if (Visible)
+            {
+                Invalidate(true);
+                Update();
+            }
+        }
+
+        private void ShowSplashMessage()
+        {
+            DateTime todaysDate = DateTime.Today;
+            if (todaysDate.Month == 10 && todaysDate.Day == 31)
+                StatusLabel.Text = "Happy Halloween!";
+            else if (todaysDate.Month == 12 && todaysDate.Day == 25)
+                StatusLabel.Text = "Merry Christmas!";
+        }
+
+        private void ApplyHalloweenTheme()
+        {
+            var t = Theme.Dark.Clone();
+            t.Background = Color.FromArgb(0, 6, 16);
+            t.BackgroundDeep = Color.FromArgb(0, 6, 16);
+            t.Surface = Color.FromArgb(0, 6, 16);
+            t.Accent = Color.FromArgb(244, 148, 15);
+            t.AccentDark = Color.FromArgb(224, 79, 0);
+            t.ComboBorder = Color.FromArgb(244, 148, 15);
+            t.ComboArrow = Color.FromArgb(244, 148, 15);
+            t.ComboDivider = Color.FromArgb(0, 6, 16);
+            t.ComboDividerShadow = Color.FromArgb(0, 6, 16);
+            t.ButtonNormal = Color.FromArgb(50, 56, 66);
+            t.ButtonHover = Color.FromArgb(50, 56, 66);
+            t.ButtonPressed = Color.FromArgb(50, 56, 66);
+            t.DropdownHover = Color.FromArgb(50, 56, 66);
+            t.DropdownHoverText = Color.FromArgb(245, 190, 120);
+            t.DropdownHoverAccent = Color.FromArgb(244, 148, 15);
+            t.ButtonPressed = Color.FromArgb(50, 56, 66);
+            t.SwitchOff = Color.FromArgb(30, 36, 46);
+            t.SwitchOn = Color.FromArgb(50, 56, 66);
+            t.SwitchKnob = Color.FromArgb(244, 148, 15);
+            t.ScrollThumb = Color.FromArgb(30, 36, 46);
+            t.ScrollThumbHover = Color.FromArgb(50, 56, 66);
+            t.Text = Color.FromArgb(244, 148, 15);
+            t.IconColor = Color.FromArgb(244, 148, 15);
+            themes.ExcludeFromIconTint(AppIcon, LaunchButton);
+            themes.Apply(this, t);
         }
 
         public void HandleIncomingArgs(string[] args)

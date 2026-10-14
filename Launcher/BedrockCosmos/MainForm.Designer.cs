@@ -223,7 +223,7 @@
             // LaunchButton
             // 
             this.LaunchButton.BackColor = System.Drawing.Color.Transparent;
-            this.LaunchButton.ButtonImage = null;
+            this.LaunchButton.ButtonImage = ((System.Drawing.Image)(resources.GetObject("LaunchButton.ButtonImage")));
             this.LaunchButton.ButtonImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.LaunchButton.ButtonImageSize = new System.Drawing.Size(0, 0);
             this.LaunchButton.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -566,7 +566,9 @@
             this.LanguageComboBox.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.LanguageComboBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.LanguageComboBox.FormattingEnabled = true;
+            this.LanguageComboBox.HoverAccentColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.LanguageComboBox.HoverSelectionColor = System.Drawing.Color.Empty;
+            this.LanguageComboBox.HoverTextColor = System.Drawing.Color.WhiteSmoke;
             this.LanguageComboBox.IntegralHeight = false;
             this.LanguageComboBox.ItemHeight = 26;
             this.LanguageComboBox.Items.AddRange(new object[] {
@@ -860,7 +862,9 @@
             this.NodeRarityComboBox.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.NodeRarityComboBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.NodeRarityComboBox.FormattingEnabled = true;
+            this.NodeRarityComboBox.HoverAccentColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.NodeRarityComboBox.HoverSelectionColor = System.Drawing.Color.Empty;
+            this.NodeRarityComboBox.HoverTextColor = System.Drawing.Color.WhiteSmoke;
             this.NodeRarityComboBox.IntegralHeight = false;
             this.NodeRarityComboBox.ItemHeight = 26;
             this.NodeRarityComboBox.Items.AddRange(new object[] {

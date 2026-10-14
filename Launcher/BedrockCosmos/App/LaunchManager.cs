@@ -234,12 +234,20 @@ namespace BedrockCosmos.App
                 }
                 else
                 {
-                    _launchButton.FilledBackColorBottom = Color.FromArgb(0, 114, 47);
+                    /*_launchButton.FilledBackColorBottom = Color.FromArgb(0, 114, 47);
                     _launchButton.FilledBackColorTop = Color.FromArgb(0, 188, 71);
                     _launchButton.HoverBackColor = Color.FromArgb(0, 188, 71);
                     _launchButton.HoverFillColor = Color.FromArgb(0, 188, 71);
                     _launchButton.NormalBackColor = Color.FromArgb(0, 188, 71);
-                    _launchButton.PressedBackColor = Color.FromArgb(0, 188, 71);
+                    _launchButton.PressedBackColor = Color.FromArgb(0, 188, 71);*/
+
+                    // Halloween
+                    _launchButton.FilledBackColorBottom = Color.FromArgb(224, 79, 0);
+                    _launchButton.FilledBackColorTop = Color.FromArgb(244, 148, 15);
+                    _launchButton.HoverBackColor = Color.FromArgb(244, 148, 15);
+                    _launchButton.HoverFillColor = Color.FromArgb(244, 148, 15);
+                    _launchButton.NormalBackColor = Color.FromArgb(244, 148, 15);
+                    _launchButton.PressedBackColor = Color.FromArgb(244, 148, 15);
                 }
             } 
         }
