@@ -161,7 +161,7 @@ namespace BedrockCosmos
             t.ScrollThumbHover = Color.FromArgb(50, 56, 66);
             t.Text = Color.FromArgb(244, 148, 15);
             t.IconColor = Color.FromArgb(244, 148, 15);
-            themes.ExcludeFromIconTint(AppIcon, LaunchButton);
+            themes.ExcludeFromIconTint(AppIcon, LaunchButton, AboutButton);
             themes.Apply(this, t);
         }
 

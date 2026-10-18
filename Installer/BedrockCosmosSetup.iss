@@ -63,7 +63,6 @@ Source: "{#BuildDir}\{#MyAppExeName}.config"; DestDir: "{app}"; Flags: ignorever
 Source: "{#BuildDir}\AutoUpdater.NET.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#BuildDir}\Background.png"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#BuildDir}\BCPackIcon.ico"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#BuildDir}\BouncyCastle.Crypto.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#BuildDir}\BouncyCastle.Cryptography.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#BuildDir}\BrotliSharpLib.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#BuildDir}\DiscordRPC.dll"; DestDir: "{app}"; Flags: ignoreversion

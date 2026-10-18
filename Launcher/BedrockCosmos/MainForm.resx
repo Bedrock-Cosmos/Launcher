@@ -121,33 +121,19 @@
   <data name="AboutButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        DwAACw8BkvkDpQAABKZJREFUaEPtmk/oVUUUx7XSSqU/WJGB2ipaRX+00LYFQmTiH9wkuIlMqFb9QShX
-        ktGiEAk+UBlRmzb+ISjFXYFuDDIUEtykYQQFSRlRpHzlOzjvMO++uffd9/olfeHAe3POmTnn3pkzZ86d
-        WbP+RxnAPGAJsBxYBaw16fcy8+ZFvX8dwGzgTmAj8DFwFvgTuDiExJPMJ9aR7uzY79QAXAesB/YDv2aG
-        /gF8A+wDdgM7TfotWfEkk+Slq/YN6jOOMzH4DTwGHMuM+QXYY8fmRp0IyVj2A+umftSn+p7sGwIWAweB
-        fzzwUWANMCfK1kK67uOI+1TfhzRWlO0FwJPAGQ92EtgEXBvlukJ9uU/1rTE01uoo1xmeSi8BfwF/A28B
-        N0e5HNa5D3gN2AU8A9we5UpQ3x5DY2nMl4Frolwr2KAdft2/+Yk1dgrcCLxXiFw/Aptr5r/G8FgaU2PL
-        hsZxG+GnoY7OA49GfgnAp8GBnPSUq6cLsNJjy4atkV8Frwm9Wj2VWiceKBgf6duo1wQ7IxtkS/VDuAxH
-        Jy02PcFNkT8MwCsFw0u0JOo2AXjatmgjrYtmXhcKsRpQi656bgJvFowu0SNRtwleM1p30lVoHrnOpKQN
-        SXNSYbAxOkUAzxeMjqQnuzDqjgJwi22SbY9H/gCcdqQdu3pKJTghlKHR+JwOR71aOJKpj68b0xnnOxLU
-        LttpswO2FYxPpAh0f9SphTfNlAFsiPzL8NpQ8iahNZHfBp5i32epjCLOV8BDUbYtgKfc54HiWnE6rUxU
-        SVzn3CkBWKBF7TB+b9c3HOHc7GfbuijyJaCzgTzdE3kzDc6aZeuLkSemDjpiro+8tvA0fdDr5UPgI+dr
-        raLgMADrbOvnkaHjqTYbHXhGnieaANwGfJGtj5y0bu6OOm3h6XXBNl85NjtsKsk7PqDREjISOF1wIKd3
-        o14X+KQpm5fmjSoUaJB9A9ItANwKfFcwPNKJqNsFwF7393DeqAqHGncPSLcA8HbB6BKdirpd4BqA+luV
-        N6pco8adA9KVAO5yONSZYzvwQ8GBvh15w/2tyxvHdeRVzX1gvv+fKjgwFUc6Ty2nDc/muc+UHClOLVUA
-        1bh/QLoC3jMGUoUpOZLSqeV5Yy/hN2FKjhTDb28bojBpR4ZuiGb2maJM2pFyimJmb0njFBxpTBp7S+Mn
-        6UhNGq/oo8OKBhv3YDVJR5oPVkIfR12hjSOukFRVaqqOusK4xYeEWkeA64HXWzhSV3wQxikHJdQ4AtwD
-        fAZsifoltCoHCV4rKoJp0FYFuoQRjpwD3gF+B37SQSzqR3Qq0AldS6YJIxzJaVvULSGUTFuVW6WcF7FX
-        Rn4TnD5EoyN9WZNFACs6F7ETwmeFameyFHsYKaDcFPUi7MR4nxWELh96BOAOh8lYgNBmq5PkgqiTo/cP
-        PYKdeS779Pa+IkiUiwBuAJ5w1VG0Wg5GuQhHJy3s9Olt69hO5PjPfwzNcVV8nk7wVCtdGFBGOu6FAe3Y
-        k78wkKPhCocOPPkVDkUwUX6FQzJJXrpKAKd7hSPCb2gR8IIOOi0u1UhWOtKd3huoxZBrTjrR6bfaZuY1
-        p5mCS38Sr07y9E29AAAAAElFTkSuQmCC
+        EgAACxIB0t1+/AAAAWFJREFUaEPt17FpBkEMROHrwCW7CZfmUpzbqfgWywy/YB3owWSjN2xycM+z/FO+
+        Pt6+u3y+P79GV4pbxr1222OjoJWFuGXca7c9NgpaWYhbxr1222OjoJWFuGXca7c9NgpaWYhbxr1222Oj
+        oJWFuGXca7c9NgpaWYhbxr1222OjoJWFuGXca7ctJNGVoi+JrllZiL4kumZlIfqS6JqVhehLomtWFqIv
+        ia5ZWYi+JLpmZSH6kuhalmVZlpfwH8DYr9hNo69i19jPDwp20+ir2DX284OC3TT6KnaN/fygYDeNvopd
+        Yz8/KNhNo69i19jPDwp20+ir2DX284OC3TT6KnaN/fygYDeNvopdY/+ln5ub8R37kNvxHfuQ2/Ed+5Db
+        8R1/4ve7/ZaH6Jt0HzgwOaZv0n3gwOSYvkn3gQOTY/om3QcOTI7pm3QfODA5pm/SfeDA5Ji+SfeBA5Nj
+        +ibdyy1+APbY2X/PYJa8AAAAAElFTkSuQmCC
 </value>
   </data>
   <data name="SettingsButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        DwAACw8BkvkDpQAAA2lJREFUaEPt2TfoZFUUx/E1NkYUw9oYEBZdsDChhYIg4oqsqCgqLoKNhaGxEFEX
+        DgAACw4BQL7hQQAAA2lJREFUaEPt2TfoZFUUx/E1NkYUw9oYEBZdsDChhYIg4oqsqCgqLoKNhaGxEFEX
         wcIFA7hWH0MhiigoKIKhEXEXV9DCgKFRMGDOmBATB+4fxsN5//fe/N35TzFf+DUzc373vHfDuffOmjUL
         FixYMBbsjUfwTo9exnE5fm7ACfgO/wzQ1Tl+bsCZ+K1IutItOX5uwCX4u0i60j05fm6I4VIk3KWHc/xM
         wF7YI38eYBechGeLhLv0PjZiz+y3BPbLn60IHIOP8SGuxEET3x2NJ/FnkewQvYHTsWvzixd2Nl7CH7jo
@@ -168,7 +154,7 @@
   <data name="LaunchButton.ButtonImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAVQAAABkCAYAAADZn8isAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        EgAACxIB0t1+/AAAEwRJREFUeF7tnQ2wLEV1xw9677lPBN55DwFFfKCAiBKVCIJlJEEsBb8RFb8KIQLB
+        EQAACxEBf2RfkQAAEwRJREFUeF7tnQ2wLEV1xw9677lPBN55DwFFfKCAiBKVCIJlJEEsBb8RFb8KIQLB
         soKJCUlMlBC/YtBQj2hF8SPPSkUe8hGiUVGjAhL8NiiiRgE/AomKkqgkogmJqf9079uZM713t3dnZ+be
         /f+q/kW92Z7e3mb63J7u0+eIEEIIIYQQQgghhBBCCCGEEEIIIYQQQghpBDUTtXeJ2n+I2nZR+zVfhBBC
         yGqobRC1F4jad0XtF07Xidpvidq9/W2EEEIGBEN6mKhdLmp3JoxpWV8Tta2i9mRRu5evihBCFhe1h4va
@@ -255,7 +241,7 @@
   <data name="WebsiteIcon.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        DwAACw8BkvkDpQAACmFJREFUeF7tmwnQtlMZxxWihJRURLY22RtbWswIKck6Rpu2aSMV2YYo5IeUiqiZ
+        DgAACw4BQL7hQQAACmFJREFUeF7tmwnQtlMZxxWihJRURLY22RtbWswIKck6Rpu2aSMV2YYo5IeUiqiZ
         lJISWrSgGiUt2ptKtJe07/uqZf7Pe12P/309536W93u/L98333/mzDvv+Z/lvs99znWu7VlhheVYjiUC
         4A7Ag4DHA4cyh/OA84FXAi8CDgC2AVau/Zc6xAtvDjwHeB/wO+C/U5a/Ah8DjgJ2WKoWBFgfeDHwvcaL
         zbf8JnbM5nW+2w1ie78FuLXxAq3yDmBrYFPgdOBfjTat8lHg4XX+/xuAewNvAP7deFiVPwHnAJ+2upMb
@@ -305,7 +291,7 @@
   <data name="DiscordIcon.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAHN
-        WgABzVoBR48USAAABZlJREFUeF7tmmeonEUUhmOJiV2DBRUSwUQxCViIDQ2WoKAowaioGI01YED9YUEF
+        WQABzVkB6jY1JQAABZlJREFUeF7tmmeonEUUhmOJiV2DBRUSwUQxCViIDQ2WoKAowaioGI01YED9YUEF
         C4o8KsYuqCCoGFEjGMFGxIqCYPvhDwUL2MVu7F1ec77L3Hdnd+fbe/cmq98LLyz7zTnTzpyZc2bGjWvQ
         oEGDBg0aNGjQYNQAbArsDswDNvDvpQDWBY4AdgMm+ffVBsAawE7AecBLwF/A38ETvXwpQl+l53fgdeAi
         YFdgTS8/5gA2By4G3k4aKi4HFgDbaXBcrhQxsDsAZwEv28C+C1wCbOJyfQewPnAN8GXSoB+AK4BpVnYS
@@ -335,7 +321,7 @@
   <data name="GitHubIcon.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        DwAACw8BkvkDpQAABp5JREFUeF7tm2moVlUUhs1MG8wsslErsxQrMpqkEhtJo4mKRssSk7CI+lEa/Ygi
+        DgAACw4BQL7hQQAABp5JREFUeF7tm2moVlUUhs1MG8wsslErsxQrMpqkEhtJo4mKRssSk7CI+lEa/Ygi
         xUyCKMqeKIhKwqCCKLC0eZbS5rlooqJ5nideW5/3nHXXmfymI/jC++fetdde3zl77zXsdfr0WYM1aCuA
         AcA2wN7AVGAesBB4FHgOWAo8DtwNXA1MB/YDtgPW9/pWCwAbAnsBc4HlwBfAX8C/Jfk38BXwKnAdMB7Y
         2M9TKwBrAdsCFwNvAL8HP2xV+Sfwnq2eHYG+fv6uAtje3pTetDe+1fwOuAPYSQ/d29JRABsBlwBfBoa2
@@ -374,7 +360,7 @@ Bedrock Cosmos will always remain free and open-source. Our Discord and GitHub i
   <data name="AboutBackButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        DwAACw8BkvkDpQAAAZlJREFUaEPtmEErBWEUhq+ua2F1d9zCTvkP10p+gKzI4q6kxMrChs0VO1v1sOXP
+        DgAACw4BQL7hQQAAAZlJREFUaEPtmEErBWEUhq+ua2F1d9zCTvkP10p+gKzI4q6kxMrChs0VO1v1sOXP
         +Ad2kkQsEEkSnRw1HWdYznfG99TU1Jxb9+k97zQzjUYm8wNgAOgAo3Jur4cAaALrwCVwrudNO5c0KrEI
         vAAfetwAE3Y2WVRiC3guSMghqXTsfJKoxIIj8QishVgtldgw6yTHK9CLJDEH3DkS20DL/iY5VEL+rLdO
         PTufJIUkPIl+pCSkE946SSfCSOROVE7uREr80on9EBKahDxeeOsUI4k/OrETSSJ3onLq0gl5x/Y68Rap
@@ -387,7 +373,7 @@ Bedrock Cosmos will always remain free and open-source. Our Discord and GitHub i
   <data name="SettingsBackButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        DwAACw8BkvkDpQAAAZlJREFUaEPtmEErBWEUhq+ua2F1d9zCTvkP10p+gKzI4q6kxMrChs0VO1v1sOXP
+        DgAACw4BQL7hQQAAAZlJREFUaEPtmEErBWEUhq+ua2F1d9zCTvkP10p+gKzI4q6kxMrChs0VO1v1sOXP
         +Ad2kkQsEEkSnRw1HWdYznfG99TU1Jxb9+k97zQzjUYm8wNgAOgAo3Jur4cAaALrwCVwrudNO5c0KrEI
         vAAfetwAE3Y2WVRiC3guSMghqXTsfJKoxIIj8QishVgtldgw6yTHK9CLJDEH3DkS20DL/iY5VEL+rLdO
         PTufJIUkPIl+pCSkE946SSfCSOROVE7uREr80on9EBKahDxeeOsUI4k/OrETSSJ3onLq0gl5x/Y68Rap
@@ -602,7 +588,7 @@ Bedrock Cosmos will always remain free and open-source. Our Discord and GitHub i
   <data name="MenuEditorBackButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        DwAACw8BkvkDpQAAAZlJREFUaEPtmEErBWEUhq+ua2F1d9zCTvkP10p+gKzI4q6kxMrChs0VO1v1sOXP
+        DgAACw4BQL7hQQAAAZlJREFUaEPtmEErBWEUhq+ua2F1d9zCTvkP10p+gKzI4q6kxMrChs0VO1v1sOXP
         +Ad2kkQsEEkSnRw1HWdYznfG99TU1Jxb9+k97zQzjUYm8wNgAOgAo3Jur4cAaALrwCVwrudNO5c0KrEI
         vAAfetwAE3Y2WVRiC3guSMghqXTsfJKoxIIj8QishVgtldgw6yTHK9CLJDEH3DkS20DL/iY5VEL+rLdO
         PTufJIUkPIl+pCSkE946SSfCSOROVE7uREr80on9EBKahDxeeOsUI4k/OrETSSJ3onLq0gl5x/Y68Rap
@@ -615,7 +601,7 @@ Bedrock Cosmos will always remain free and open-source. Our Discord and GitHub i
   <data name="DevBackButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        DwAACw8BkvkDpQAAAZlJREFUaEPtmEErBWEUhq+ua2F1d9zCTvkP10p+gKzI4q6kxMrChs0VO1v1sOXP
+        DgAACw4BQL7hQQAAAZlJREFUaEPtmEErBWEUhq+ua2F1d9zCTvkP10p+gKzI4q6kxMrChs0VO1v1sOXP
         +Ad2kkQsEEkSnRw1HWdYznfG99TU1Jxb9+k97zQzjUYm8wNgAOgAo3Jur4cAaALrwCVwrudNO5c0KrEI
         vAAfetwAE3Y2WVRiC3guSMghqXTsfJKoxIIj8QishVgtldgw6yTHK9CLJDEH3DkS20DL/iY5VEL+rLdO
         PTufJIUkPIl+pCSkE946SSfCSOROVE7uREr80on9EBKahDxeeOsUI4k/OrETSSJ3onLq0gl5x/Y68Rap
@@ -628,7 +614,7 @@ Bedrock Cosmos will always remain free and open-source. Our Discord and GitHub i
   <data name="AppIcon.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        EAAACxABrSO9dQAACYdJREFUeF7tmmmMG9UdwP3e3NeSrAI9oCBALc0XoJRIpA0qUKQiWrWwXnvXu9nN
+        DwAACw8BkvkDpQAACYdJREFUeF7tmmmMG9UdwP3e3NeSrAI9oCBALc0XoJRIpA0qUKQiWrWwXnvXu9nN
         eu/13le8V3btHJvs4d0KQanUg36gH/KtQoIPbWlVpCAkWkW0DaIqqJnLc3rsmSQqZbOeamyzmFFoCUHE
         XvYn/b94nmc8v/fe///ejAOBHXbYYYcddqgqnDUOOusc9H/+ucBJcbucFPe4s8bVO+tcrf/4tsZe5TB7
         lRtyUlzGSXEXnTWuzVnnEH+7bYu9wt1ur3Jv26uc66QK8ZKzxu3yt9uW2MssaS9zg/YKt+kJKEnwRsI+
@@ -675,14 +661,14 @@ Bedrock Cosmos will always remain free and open-source. Our Discord and GitHub i
   <data name="MinimizeButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        DwAACw8BkvkDpQAAADdJREFUaEPtz8EJACAQA8Hrv4O0cE3qW58iCDID+0+qAAAAAGCVpJOMR/W+55gj
+        DgAACw4BQL7hQQAAADdJREFUaEPtz8EJACAQA8Hrv4O0cE3qW58iCDID+0+qAAAAAGCVpJOMR/W+55gj
         d3IEAAAAgG9N16piaJiXX3sAAAAASUVORK5CYII=
 </value>
   </data>
   <data name="CloseButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        DwAACw8BkvkDpQAAAsZJREFUaEPtmE3LTVEUxx+GMjBREkIMHkoGXlIkJQ8ZmnqUYsD1zAzMDOQDSOr+
+        DgAACw4BQL7hQQAAAsZJREFUaEPtmE3LTVEUxx+GMjBREkIMHkoGXlIkJQ8ZmnqUYsD1zAzMDOQDSOr+
         KANS+Aq+gIERSfIyoLwMvFNeo3Xbu9azrHv2vuec+zLYv/pP7tlrr7Pu/6x99tlTU4VCoVAoFPIBFgHH
         gC5wHlhtxzQFWAqcA24AZ4HldkwjgMXAHeCv0jtghx1bF2Ad8MzkeAWssWNrA5w0CaI+AFvs+EEBVgHP
         nflFl+z42gDXnQRRL4CdNiYXYD1wz5k36raNqQ1w0Umg9QnYZuNSJJyIumnjagNsAr45SbSkZ/bZ2H4A
