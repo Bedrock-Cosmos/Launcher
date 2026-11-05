@@ -939,9 +939,9 @@ namespace BedrockCosmos
             if (result == DialogResult.Yes)
             {
                 string json = File.ReadAllText(Path.Combine(PathDefinitions.ResponsesDirectory, @"MainPages\Capes.json"));
-                var doc = ImageDocument.LoadFromMarketplaceJson(json);
-                CapeMenuEditor.ApplyHeaderTitleOverrides(doc.Categories);
-                CapeTreeView.LoadData(doc.Categories);
+                capesDocument = ImageDocument.LoadFromMarketplaceJson(json);
+                CapeMenuEditor.ApplyHeaderTitleOverrides(capesDocument.Categories);
+                CapeTreeView.LoadData(capesDocument.Categories);
                 NodeStatus.Text = "Nodes reset!";
             }
         }

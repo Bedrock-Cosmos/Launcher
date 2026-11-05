@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -25,6 +26,141 @@ namespace BedrockCosmos.App.UI
         private readonly Dictionary<ImageCategory, JsonArray> _categoryOwningRowsArray = new Dictionary<ImageCategory, JsonArray>();
         private readonly Dictionary<ImageItem, JsonObject> _itemNodes = new Dictionary<ImageItem, JsonObject>();
         private JsonArray _primaryRowsArray;
+
+        // ---- Export layout constants (capes menu) ----
+        private const int MaxItemsPerList = 400; // Ceiling for the game, not real item count.
+        private const string OwnedTitleKey = "dr.collector_title.owned";
+        private const string CreatorTitle = "Creator Capes";
+        private const string CreatorDescription = "Click on ''By Creator'' to see all capes by them!";
+        private const string GrayDividerColor = "[0.70196,0.8392,0.8588,0.2]";
+        private const string BlueDividerColor = "[0.243,0.776,0.839,1]";
+
+        private static readonly Regex TrailingCountRegex = new Regex(@"\s*\(\d+\)\s*$", RegexOptions.Compiled);
+
+        private enum CategoryRole
+        {
+            Standard,
+            Owned,
+            Creator
+        }
+
+        private const string StandardHeaderTextJson = @"{
+  ""value"": """",
+  ""style"": {
+    ""highlightColor"": [],
+    ""alignment"": ""Left"",
+    ""textColor"": [ 1.0, 1.0, 1.0 ],
+    ""font"": ""MinecraftTen"",
+    ""showBackground"": false,
+    ""showOutline"": false,
+    ""indent"": 0.0,
+    ""buttonWidth"": 0.0,
+    ""color"": [],
+    ""offerControlIdType"": ""None""
+  },
+  ""replacements"": [ ""dr.categories.capes"" ]
+}";
+
+        // Header used by the Creator Capes grid itself (the ''By Creator'' hint line). Has no replacements.
+        private const string CreatorDescriptionTextJson = @"{
+  ""value"": """",
+  ""style"": {
+    ""highlightColor"": [],
+    ""alignment"": ""Left"",
+    ""textColor"": [ 0.243, 0.776, 0.839, 1.0 ],
+    ""font"": ""SmoothWithEmoticons"",
+    ""showBackground"": false,
+    ""showOutline"": false,
+    ""indent"": 0.0,
+    ""buttonWidth"": 0.0,
+    ""color"": [],
+    ""offerControlIdType"": ""None""
+  }
+}";
+
+        // Text row placed above the Creator Capes grid, holding the real category title.
+        private const string CreatorTitleRowJson = @"{
+  ""controlId"": ""TextRow"",
+  ""components"": [
+    {
+      ""text"": {
+        ""value"": """",
+        ""style"": {
+          ""highlightColor"": [],
+          ""alignment"": ""Left"",
+          ""textColor"": [ 0.098, 0.247, 0.608, 1.0 ],
+          ""font"": ""MinecraftTen"",
+          ""showBackground"": false,
+          ""showOutline"": false,
+          ""indent"": 0.0,
+          ""buttonWidth"": 0.0,
+          ""color"": [],
+          ""offerControlIdType"": ""None""
+        },
+        ""replacements"": []
+      },
+      ""type"": ""headerComp"",
+      ""$type"": ""HeaderComponent""
+    }
+  ]
+}";
+
+        private const string DividerJson = @"{
+  ""controlId"": ""VerticalLineDivider"",
+  ""components"": [
+    {
+      ""textureImage"": {
+        ""type"": ""Unknown"",
+        ""style"": {
+          ""highlightColor"": [],
+          ""alignment"": ""Left"",
+          ""textColor"": [],
+          ""font"": ""default"",
+          ""showBackground"": false,
+          ""showOutline"": false,
+          ""indent"": 0.0,
+          ""buttonWidth"": 0.0,
+          ""color"": __COLOR__,
+          ""offerControlIdType"": ""None""
+        }
+      },
+      ""type"": ""textureComp"",
+      ""$type"": ""TextureComponent""
+    }
+  ]
+}";
+
+        private const string PersonaDefaultButtonJson = @"{
+  ""type"": ""personaDefaultButtonComp"",
+  ""$type"": ""PersonaDefaultButton""
+}";
+
+        private const string DefaultRowJson = @"{
+  ""controlId"": ""GridList"",
+  ""components"": [
+    {
+      ""text"": {},
+      ""type"": ""headerComp"",
+      ""$type"": ""HeaderComponent""
+    },
+    {
+      ""items"": [],
+      ""totalItems"": 400,
+      ""customStoreRowConfiguration"": {
+        ""seeAllVisible"": false,
+        ""maxOffers"": 400,
+        ""arrowsVisible"": false,
+        ""visibleOffersPerRow"": 6
+      },
+      ""type"": ""itemListComp"",
+      ""$type"": ""ItemListComponent""
+    },
+    {
+      ""type"": ""dispPreviewPieceComp"",
+      ""$type"": ""DisplayPreviewedPieceOfferComponent""
+    }
+  ]
+}";
 
         public List<ImageCategory> Categories { get; } = new List<ImageCategory>(); // Node operations (copy, move, etc.) are all stored here.
 
@@ -155,7 +291,14 @@ namespace BedrockCosmos.App.UI
                 list.Add(category);
             }
 
-            // Ensure every category has a backing row node, update its header text, and detach every item
+            // Clears out old category/divider rows if every category is lost.
+            foreach (var owningArray in _categoryOwningRowsArray.Values)
+            {
+                if (!categoriesByArray.ContainsKey(owningArray))
+                    categoriesByArray[owningArray] = new List<ImageCategory>();
+            }
+
+            // Ensure every category has a backing row node, rewrite its header, and detach every item
             // array's existing children so item nodes can be reclaimed by whichever category they now belong to.
             var itemListComponentsByCategory = new List<(JsonObject component, ImageCategory category)>();
 
@@ -165,28 +308,35 @@ namespace BedrockCosmos.App.UI
                 if (!(rowNode["components"] is JsonArray components))
                     continue;
 
-                foreach (var comp in components.OfType<JsonObject>())
+                // Snapshot, components get removed while looping.
+                foreach (var comp in components.OfType<JsonObject>().ToList())
                 {
                     string type = GetString(comp["$type"]);
-                    if (type == "HeaderComponent" && comp["text"] is JsonObject textObj)
+                    if (type == "HeaderComponent")
                     {
-                        textObj["value"] = includeItemCountInCategoryName
-                            ? $"{category.Name} ({category.Items.Count})"
-                            : category.Name;
+                        // Rebuilt in full (style, replacements, etc.) based on category's name/role.
+                        comp["text"] = BuildHeaderText(category, includeItemCountInCategoryName);
                     }
                     else if (type == "ItemListComponent")
                     {
                         DetachAllChildren(comp);
                         itemListComponentsByCategory.Add((comp, category));
                     }
+                    else if (type == "PersonaDefaultButton")
+                    {
+                        components.Remove(comp); // Re-added on topmost category only.
+                    }
                 }
             }
+
+            if (Categories.Count > 0 && GetOrCreateRowNode(Categories[0])["components"] is JsonArray topComponents)
+                topComponents.Add(ParseObject(PersonaDefaultButtonJson));
 
             foreach (var pair in itemListComponentsByCategory)
                 RebuildItemsArray(pair.component, pair.category); // Rebuild each item list in the category's current order.
 
             foreach (var pair in categoriesByArray)
-                SyncRowSlots(pair.Key, pair.Value); // Reorder/add/remove the row slots within each rows array.
+                SyncRowSlots(pair.Key, pair.Value, includeItemCountInCategoryName); // Rebuild the row layout within each rows array.
         }
 
         private JsonObject GetOrCreateRowNode(ImageCategory category)
@@ -258,45 +408,66 @@ namespace BedrockCosmos.App.UI
                 itemsArray.Add(node);
             }
 
-            if (itemListComponent["totalItems"] != null)
-                itemListComponent["totalItems"] = category.Items.Count;
+            if (itemListComponent["totalItems"] == null)
+                itemListComponent["totalItems"] = MaxItemsPerList;
         }
 
-        private void SyncRowSlots(JsonArray rowsArray, List<ImageCategory> categoriesForThisArray)
+        private void SyncRowSlots(JsonArray rowsArray, List<ImageCategory> categoriesForThisArray, bool includeItemCountInCategoryName)
         {
-            // Snapshots sequence and tags entries that are GridList rows (managed by us).
-            // Other parts like dividers and text rows are kept in the same spot.
-            var originalSequence = new List<JsonNode>();
-            var isGridListSlot = new List<bool>();
-
-            for (int i = 0; i < rowsArray.Count; i++)
-            {
-                var node = rowsArray[i];
-                originalSequence.Add(node);
-                isGridListSlot.Add(node is JsonObject obj && GetString(obj["controlId"]) == "GridList");
-            }
+            // Empties the array, keeping only rows we don't manage.
+            var leadingRows = new List<JsonNode>();
+            var trailingRows = new List<JsonNode>();
+            bool passedCategoryRows = false;
 
             while (rowsArray.Count > 0)
+            {
+                JsonNode node = rowsArray[0];
                 rowsArray.RemoveAt(0);
 
-            var orderedRowNodes = new Queue<JsonObject>(categoriesForThisArray.Select(c => _categoryNodes[c]));
+                var obj = node as JsonObject;
+                string controlId = obj != null ? GetString(obj["controlId"]) : null;
 
-            for (int i = 0; i < originalSequence.Count; i++)
-            {
-                if (isGridListSlot[i])
+                if (controlId == "GridList" || (controlId == "TextRow" && IsCreatorTitleRow(obj)))
                 {
-                    if (orderedRowNodes.Count > 0) // Category was removed if not true.
-                        rowsArray.Add(orderedRowNodes.Dequeue());
+                    passedCategoryRows = true;
+                    continue;
                 }
+
+                if (controlId == "VerticalLineDivider")
+                    continue;
+
+                if (passedCategoryRows)
+                    trailingRows.Add(node);
                 else
-                {
-                    rowsArray.Add(originalSequence[i]);
-                }
+                    leadingRows.Add(node);
             }
 
-            // Brand-new categories get appended at the end.
-            while (orderedRowNodes.Count > 0)
-                rowsArray.Add(orderedRowNodes.Dequeue());
+            foreach (var row in leadingRows)
+                rowsArray.Add(row);
+
+            for (int i = 0; i < categoriesForThisArray.Count; i++)
+            {
+                var category = categoriesForThisArray[i];
+                bool isCreator = GetRole(category) == CategoryRole.Creator;
+                bool previousIsCreator = i > 0 && GetRole(categoriesForThisArray[i - 1]) == CategoryRole.Creator;
+
+                if (i > 0)
+                    rowsArray.Add(BuildDivider(isCreator || previousIsCreator));
+
+                if (isCreator)
+                    rowsArray.Add(BuildCreatorTitleRow(category, includeItemCountInCategoryName));
+
+                rowsArray.Add(_categoryNodes[category]);
+            }
+
+            if (categoriesForThisArray.Count > 0)
+            {
+                bool lastIsCreator = GetRole(categoriesForThisArray[categoriesForThisArray.Count - 1]) == CategoryRole.Creator;
+                rowsArray.Add(BuildDivider(lastIsCreator));
+            }
+
+            foreach (var row in trailingRows)
+                rowsArray.Add(row);
         }
 
         private JsonArray EnsurePrimaryRowsArray()
@@ -328,29 +499,97 @@ namespace BedrockCosmos.App.UI
 
         private static JsonObject BuildDefaultRow(string categoryName)
         {
-            var header = new JsonObject
-            {
-                ["type"] = "headerComp",
-                ["$type"] = "HeaderComponent",
-                ["text"] = new JsonObject
-                {
-                    ["value"] = categoryName,
-                    ["replacements"] = new JsonArray()
-                }
-            };
+            var row = ParseObject(DefaultRowJson);
+            var components = (JsonArray)row["components"];
+            components[0]["text"] = BuildStandardHeaderText(categoryName ?? "Unnamed");
+            return row;
+        }
 
-            var itemList = new JsonObject
-            {
-                ["type"] = "itemListComp",
-                ["$type"] = "ItemListComponent",
-                ["items"] = new JsonArray()
-            };
+        private static JsonObject ParseObject(string json)
+        {
+            return (JsonObject)JsonNode.Parse(json); // Always a fresh node, node can only have one parent.
+        }
 
-            return new JsonObject
+        private static string StripTrailingCount(string name)
+        {
+            return string.IsNullOrEmpty(name) ? name : TrailingCountRegex.Replace(name, "");
+        }
+
+        private static CategoryRole GetRole(ImageCategory category)
+        {
+            string name = StripTrailingCount(category.Name)?.Trim();
+
+            if (name == null)
+                return CategoryRole.Standard;
+
+            // Also accepts the raw JSON header values.
+            if (string.Equals(name, "Default Capes", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(name, "Owned Capes", StringComparison.OrdinalIgnoreCase) ||
+                name.StartsWith(OwnedTitleKey, StringComparison.OrdinalIgnoreCase))
+                return CategoryRole.Owned;
+
+            if (string.Equals(name, CreatorTitle, StringComparison.OrdinalIgnoreCase) ||
+                name.StartsWith(CreatorDescription.Substring(0, 24), StringComparison.OrdinalIgnoreCase))
+                return CategoryRole.Creator;
+
+            return CategoryRole.Standard;
+        }
+
+        private static JsonObject BuildStandardHeaderText(string value)
+        {
+            var text = ParseObject(StandardHeaderTextJson);
+            text["value"] = value;
+            return text;
+        }
+
+        private static JsonObject BuildHeaderText(ImageCategory category, bool includeItemCount)
+        {
+            switch (GetRole(category))
             {
-                ["controlId"] = "GridList",
-                ["components"] = new JsonArray(header, itemList)
-            };
+                case CategoryRole.Owned:
+                    return BuildStandardHeaderText(OwnedTitleKey);
+
+                case CategoryRole.Creator:
+                    var description = ParseObject(CreatorDescriptionTextJson);
+                    description["value"] = CreatorDescription;
+                    return description;
+
+                default:
+                    string name = includeItemCount
+                        ? $"{StripTrailingCount(category.Name)} ({category.Items.Count})"
+                        : category.Name;
+                    return BuildStandardHeaderText(name ?? "Unnamed");
+            }
+        }
+
+        private static JsonObject BuildCreatorTitleRow(ImageCategory category, bool includeItemCount)
+        {
+            var row = ParseObject(CreatorTitleRowJson);
+            var header = (JsonObject)((JsonArray)row["components"])[0];
+            header["text"]["value"] = includeItemCount
+                ? $"{CreatorTitle} ({category.Items.Count})"
+                : CreatorTitle;
+            return row;
+        }
+
+        private static JsonObject BuildDivider(bool blue)
+        {
+            return ParseObject(DividerJson.Replace("__COLOR__", blue ? BlueDividerColor : GrayDividerColor));
+        }
+
+        private static bool IsCreatorTitleRow(JsonObject row)
+        {
+            if (row == null || !(row["components"] is JsonArray components))
+                return false;
+
+            foreach (var comp in components.OfType<JsonObject>())
+            {
+                string value = GetString(comp["text"]?["value"]);
+                if (string.Equals(StripTrailingCount(value)?.Trim(), CreatorTitle, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+
+            return false;
         }
 
         private static JsonObject BuildDefaultItem()

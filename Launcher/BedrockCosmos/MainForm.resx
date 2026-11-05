@@ -121,7 +121,7 @@
   <data name="AboutButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        EgAACxIB0t1+/AAABKZJREFUaEPtmk/oVUUUx7XSSqU/WJGB2ipaRX+00LYFQmTiH9wkuIlMqFb9QShX
+        EQAACxEBf2RfkQAABKZJREFUaEPtmk/oVUUUx7XSSqU/WJGB2ipaRX+00LYFQmTiH9wkuIlMqFb9QShX
         ktGiEAk+UBlRmzb+ISjFXYFuDDIUEtykYQQFSRlRpHzlOzjvMO++uffd9/olfeHAe3POmTnn3pkzZ86d
         WbP+RxnAPGAJsBxYBaw16fcy8+ZFvX8dwGzgTmAj8DFwFvgTuDiExJPMJ9aR7uzY79QAXAesB/YDv2aG
         /gF8A+wDdgM7TfotWfEkk+Slq/YN6jOOMzH4DTwGHMuM+QXYY8fmRp0IyVj2A+umftSn+p7sGwIWAweB
@@ -218,7 +218,7 @@
   <data name="DiscordIcon.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAHN
-        VwABzVcBTr952wAABZlJREFUeF7tmmeonEUUhmOJiV2DBRUSwUQxCViIDQ2WoKAowaioGI01YED9YUEF
+        VgABzVYBnPibPwAABZlJREFUeF7tmmeonEUUhmOJiV2DBRUSwUQxCViIDQ2WoKAowaioGI01YED9YUEF
         C4o8KsYuqCCoGFEjGMFGxIqCYPvhDwUL2MVu7F1ec77L3Hdnd+fbe/cmq98LLyz7zTnTzpyZc2bGjWvQ
         oEGDBg0aNGjQYNQAbArsDswDNvDvpQDWBY4AdgMm+ffVBsAawE7AecBLwF/A38ETvXwpQl+l53fgdeAi
         YFdgTS8/5gA2By4G3k4aKi4HFgDbaXBcrhQxsDsAZwEv28C+C1wCbOJyfQewPnAN8GXSoB+AK4BpVnYS
@@ -541,7 +541,7 @@ Bedrock Cosmos will always remain free and open-source. Our Discord and GitHub i
   <data name="AppIcon.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        EgAACxIB0t1+/AAAB2dJREFUeF7tWntsU2UUR0UeggoL4gPEoFHkH0GURBSjookEjeKLGIxG1EQwEYyP
+        EQAACxEBf2RfkQAAB2dJREFUeF7tWntsU2UUR0UeggoL4gPEoFHkH0GURBSjookEjeKLGIxG1EQwEYyP
         nPCHW1+rdC0hoXNtqtsd0EL6F6OD7ol7lMHY1m2dG3RbbyfYrlvXjW20bGs3as7y3fntc8oY6npLf8nN
         uvb03vs773NuZ8xIIIEEEkggAVEBAG7Fg33/pgAALNBqtZv0ev27AJDEfh7XAIDb09LSdgYCge5gMBhM
         TU39GABuY+XiFgCwvKGhwRUlyMnJsaJHsHJxCQCYo1AovgyHwyOCApqbm7sBYC0A3MLKxxWQIAA8VVZW
