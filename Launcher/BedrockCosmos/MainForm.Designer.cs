@@ -223,7 +223,7 @@
             // LaunchButton
             // 
             this.LaunchButton.BackColor = System.Drawing.Color.Transparent;
-            this.LaunchButton.ButtonImage = ((System.Drawing.Image)(resources.GetObject("LaunchButton.ButtonImage")));
+            this.LaunchButton.ButtonImage = null;
             this.LaunchButton.ButtonImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.LaunchButton.ButtonImageSize = new System.Drawing.Size(0, 0);
             this.LaunchButton.Cursor = System.Windows.Forms.Cursors.Hand;

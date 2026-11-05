@@ -42,7 +42,7 @@ namespace BedrockCosmos
         {
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
             InitializeComponent();
-            ApplyHalloweenTheme();
+            //ApplyHalloweenTheme();
 
             TabControl.MakeTransparent();
 
