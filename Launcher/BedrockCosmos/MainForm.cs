@@ -45,6 +45,7 @@ namespace BedrockCosmos
             //ApplyHalloweenTheme();
 
             TabControl.MakeTransparent();
+            StyledMessageBox.TitleBarImage = AppIcon.BackgroundImage;
 
             if (File.Exists(PathDefinitions.AppDirectory + @"Background.png"))
                 GetLauncherBackground(PathDefinitions.AppDirectory + @"Background.png");
@@ -805,15 +806,20 @@ namespace BedrockCosmos
                         NodeStatus.Text = string.Empty; // Nothing selected
                         break;
                 }
+
+                //MultipleNodesIcon.Visible = false;
             }
             else
             {
                 NodeStatus.Text = $"{CapeTreeView.GetSelectedNodeCount()} nodes selected.";
                 NodeRarityComboBox.Text = "-";
+                //MultipleNodesIcon.Visible = true;
             }
 
             EnableMenuItemToggle.Checked = false;
         }
+
+        int ind = 0;
 
         private void UpdateNodePreview()
         {

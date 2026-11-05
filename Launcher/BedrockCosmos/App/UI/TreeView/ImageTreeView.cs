@@ -1245,12 +1245,21 @@ namespace BedrockCosmos.App.UI
 
         private sealed class DarkContextMenuRenderer : ToolStripProfessionalRenderer
         {
+            private static readonly Color MenuTextColor = Color.FromArgb(153, 153, 153);
+            private static readonly Color MenuDisabledTextColor = Color.FromArgb(90, 90, 90);
+
             public DarkContextMenuRenderer() : base(new DarkContextMenuColorTable()) { }
 
             protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
             {
-                e.TextColor = e.Item.Enabled ? Color.FromArgb(153, 153, 153) : Color.FromArgb(90, 90, 90);
+                e.TextColor = e.Item.Enabled ? MenuTextColor : MenuDisabledTextColor;
                 base.OnRenderItemText(e);
+            }
+
+            protected override void OnRenderArrow(ToolStripArrowRenderEventArgs e)
+            {
+                e.ArrowColor = e.Item.Enabled ? MenuTextColor : MenuDisabledTextColor;
+                base.OnRenderArrow(e);
             }
 
             protected override void OnRenderToolStripBorder(ToolStripRenderEventArgs e)

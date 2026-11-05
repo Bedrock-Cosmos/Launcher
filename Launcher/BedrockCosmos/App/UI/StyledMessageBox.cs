@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Media;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -12,34 +13,55 @@ namespace BedrockCosmos.App.UI
 {
     public sealed class StyledMessageBox : Form
     {
+        // Palette
         private static readonly Color BackdropColor = Color.FromArgb(20, 20, 20);
-        private static readonly Color BarColor      = Color.FromArgb(15, 15, 15);
-        private static readonly Color BorderColor   = Color.FromArgb(60, 60, 60);
-        private static readonly Color TextColor     = Color.FromArgb(153, 153, 153);
-        private static readonly Color Accent        = Color.FromArgb(0, 188, 71);
-        private static readonly Color AccentHover   = Color.FromArgb(0, 208, 80);
+        private static readonly Color BarColor = Color.FromArgb(15, 15, 15);
+        private static readonly Color BorderColor = Color.FromArgb(60, 60, 60);
+        private static readonly Color TextColor = Color.FromArgb(153, 153, 153);
+        private static readonly Color Accent = Color.FromArgb(0, 188, 71);
+        private static readonly Color AccentHover = Color.FromArgb(0, 208, 80);
+
+        // Layout (pixels at 100% DPI, scaled automatically). Tweak these to resize every dialog.
+        private const int MinDialogWidth = 280;   // Narrowest the dialog can get.
+        private const int MaxTextWidth = 340;     // Text wraps beyond this; main driver of dialog width.
+        private const int TitleBarHeight = 30;
+        private const int TitleIconSize = 25;
+        private const int ContentPadding = 16;
+        private const int GlyphSize = 32;         // Warning / error / custom image size.
+        private const int GlyphGap = 12;          // Space between the glyph and the text.
+        private const int ButtonWidth = 84;
+        private const int ButtonHeight = 28;
+        private const int ButtonSpacing = 4;      // Applied on each side of every button.
+        private const int ButtonBarPadding = 10;
+        private const float TitleFontSize = 10F;
+        private const float BodyFontSize = 10F;
+        private const float ButtonFontSize = 10F;
+
         public static string DefaultCaption { get; set; } = "Bedrock Cosmos";
         public static Func<DialogResult, string> ButtonTextProvider { get; set; } // For multi-language.
+        public static Image TitleBarImage { get; set; }
+        public static bool HighlightDefaultButton { get; set; } = false;
 
         public static DialogResult Show(
             string text,
             string caption = null,
             MessageBoxButtons buttons = MessageBoxButtons.OK,
             MessageBoxIcon icon = MessageBoxIcon.None,
-            MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
+            MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1,
+            Image customIcon = null)
         {
-            return Show((IWin32Window)null, text, caption, buttons, icon, defaultButton);
+            return Show((IWin32Window)null, text, caption, buttons, icon, defaultButton, customIcon);
         }
-
         public static DialogResult Show(
             IWin32Window owner,
             string text,
             string caption = null,
             MessageBoxButtons buttons = MessageBoxButtons.OK,
             MessageBoxIcon icon = MessageBoxIcon.None,
-            MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
+            MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1,
+            Image customIcon = null)
         {
-            using (var dialog = new StyledMessageBox(owner, text, caption ?? DefaultCaption, buttons, icon, defaultButton))
+            using (var dialog = new StyledMessageBox(owner, text, caption ?? DefaultCaption, buttons, icon, defaultButton, customIcon))
             {
                 return dialog.ShowDialog(owner);
             }
@@ -49,21 +71,24 @@ namespace BedrockCosmos.App.UI
         private readonly string _text;
         private readonly string _caption;
         private readonly MessageBoxIcon _icon;
+        private readonly Image _customIcon;
         private readonly DialogResult[] _results;
         private readonly DialogResult _escapeResult;
         private readonly Dictionary<Control, DialogResult> _buttonMap = new Dictionary<Control, DialogResult>();
         private readonly Control _defaultControl;
         private readonly Rectangle _ownerBounds;
+        private Bitmap _titleBitmap;
 
         private int S(int value) => (int)Math.Round(value * _scale);
 
         private StyledMessageBox(IWin32Window owner, string text, string caption,
-            MessageBoxButtons buttons, MessageBoxIcon icon, MessageBoxDefaultButton defaultButton)
+            MessageBoxButtons buttons, MessageBoxIcon icon, MessageBoxDefaultButton defaultButton, Image customIcon)
         {
             _scale = DeviceDpi / 96f;
             _text = text ?? string.Empty;
             _caption = caption ?? string.Empty;
             _icon = icon;
+            _customIcon = customIcon;
             _results = ResultsFor(buttons);
 
             if (Array.IndexOf(_results, DialogResult.Cancel) >= 0) _escapeResult = DialogResult.Cancel;
@@ -97,7 +122,7 @@ namespace BedrockCosmos.App.UI
                 RowCount = 3,
                 Location = Point.Empty,
                 Margin = Padding.Empty,
-                MinimumSize = new Size(S(360), 0),
+                MinimumSize = new Size(S(MinDialogWidth), 0),
                 Padding = new Padding(1)
             };
             root.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
@@ -113,18 +138,61 @@ namespace BedrockCosmos.App.UI
             if (_defaultControl != null) ActiveControl = _defaultControl;
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing) _titleBitmap?.Dispose();
+            base.Dispose(disposing);
+        }
+
         private static DialogResult[] ResultsFor(MessageBoxButtons buttons)
         {
             switch (buttons)
             {
-                case MessageBoxButtons.OK:               return new[] { DialogResult.OK };
-                case MessageBoxButtons.OKCancel:         return new[] { DialogResult.OK, DialogResult.Cancel };
+                case MessageBoxButtons.OK: return new[] { DialogResult.OK };
+                case MessageBoxButtons.OKCancel: return new[] { DialogResult.OK, DialogResult.Cancel };
                 case MessageBoxButtons.AbortRetryIgnore: return new[] { DialogResult.Abort, DialogResult.Retry, DialogResult.Ignore };
-                case MessageBoxButtons.YesNoCancel:      return new[] { DialogResult.Yes, DialogResult.No, DialogResult.Cancel };
-                case MessageBoxButtons.YesNo:            return new[] { DialogResult.Yes, DialogResult.No };
-                case MessageBoxButtons.RetryCancel:      return new[] { DialogResult.Retry, DialogResult.Cancel };
+                case MessageBoxButtons.YesNoCancel: return new[] { DialogResult.Yes, DialogResult.No, DialogResult.Cancel };
+                case MessageBoxButtons.YesNo: return new[] { DialogResult.Yes, DialogResult.No };
+                case MessageBoxButtons.RetryCancel: return new[] { DialogResult.Retry, DialogResult.Cancel };
                 default: throw new InvalidEnumArgumentException(nameof(buttons), (int)buttons, typeof(MessageBoxButtons));
             }
+        }
+
+        // Scales top left icon.
+        private static Bitmap ScaleToFit(Image source, int size)
+        {
+            var bitmap = new Bitmap(size, size, PixelFormat.Format32bppArgb);
+            using (var g = Graphics.FromImage(bitmap))
+            {
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                g.CompositingQuality = CompositingQuality.HighQuality;
+                g.SmoothingMode = SmoothingMode.HighQuality;
+
+                float ratio = Math.Min((float)size / source.Width, (float)size / source.Height);
+                float w = source.Width * ratio;
+                float h = source.Height * ratio;
+                g.DrawImage(source, (size - w) / 2f, (size - h) / 2f, w, h);
+            }
+            return bitmap;
+        }
+
+        private Bitmap CreateTitleBitmap(Form ownerForm)
+        {
+            int size = S(TitleIconSize);
+            try
+            {
+                if (TitleBarImage != null) return ScaleToFit(TitleBarImage, size);
+
+                if (ownerForm != null && ownerForm.Icon != null)
+                {
+                    using (var icon = new Icon(ownerForm.Icon, new Size(256, 256)))
+                    using (var source = icon.ToBitmap())
+                        return ScaleToFit(source, size);
+                }
+            }
+            catch (Exception) { }
+            return null;
         }
 
         private Control BuildTitleBar(Form ownerForm)
@@ -134,7 +202,7 @@ namespace BedrockCosmos.App.UI
                 BackColor = BarColor,
                 Dock = DockStyle.Fill,
                 Margin = Padding.Empty,
-                Size = new Size(S(100), S(40))
+                Size = new Size(S(100), S(TitleBarHeight))
             };
 
             var title = new Label
@@ -142,30 +210,31 @@ namespace BedrockCosmos.App.UI
                 AutoEllipsis = true,
                 BackColor = Color.Transparent,
                 Dock = DockStyle.Fill,
-                Font = new Font("Segoe UI", 12F),
+                Font = new Font("Segoe UI", TitleFontSize),
                 ForeColor = TextColor,
                 Text = _caption,
                 TextAlign = ContentAlignment.MiddleLeft,
                 UseMnemonic = false
             };
 
-            bar.Controls.Add(title);
+            bar.Controls.Add(title); // Fill control goes first.
 
-            if (ownerForm != null && ownerForm.Icon != null)
+            _titleBitmap = CreateTitleBitmap(ownerForm);
+            if (_titleBitmap != null)
             {
                 var iconBox = new PictureBox
                 {
                     Dock = DockStyle.Left,
-                    Image = new Icon(ownerForm.Icon, new Size(S(20), S(20))).ToBitmap(),
+                    Image = _titleBitmap,
                     SizeMode = PictureBoxSizeMode.CenterImage,
-                    Width = S(40)
+                    Width = S(TitleBarHeight)
                 };
                 iconBox.MouseDown += BeginDrag;
                 bar.Controls.Add(iconBox);
             }
             else
             {
-                title.Padding = new Padding(S(14), 0, 0, 0);
+                title.Padding = new Padding(S(10), 0, 0, 0);
             }
 
             if (_escapeResult != DialogResult.None)
@@ -174,11 +243,11 @@ namespace BedrockCosmos.App.UI
                 {
                     Cursor = Cursors.Hand,
                     Dock = DockStyle.Right,
-                    Font = new Font("Segoe UI Symbol", 10F),
+                    Font = new Font("Segoe UI Symbol", 9F),
                     ForeColor = TextColor,
                     Text = "\u2715",
                     TextAlign = ContentAlignment.MiddleCenter,
-                    Width = S(46)
+                    Width = S(38)
                 };
                 close.MouseEnter += (s, e) => { close.BackColor = Color.FromArgb(196, 43, 28); close.ForeColor = Color.White; };
                 close.MouseLeave += (s, e) => { close.BackColor = Color.Transparent; close.ForeColor = TextColor; };
@@ -201,25 +270,25 @@ namespace BedrockCosmos.App.UI
                 Dock = DockStyle.Fill,
                 FlowDirection = FlowDirection.LeftToRight,
                 Margin = Padding.Empty,
-                Padding = new Padding(S(24)),
+                Padding = new Padding(S(ContentPadding)),
                 WrapContents = false
             };
 
-            bool hasGlyph = _icon != MessageBoxIcon.None;
+            bool hasGlyph = _icon != MessageBoxIcon.None || _customIcon != null;
             if (hasGlyph)
             {
-                content.Controls.Add(new GlyphIcon(_icon, S(40)) { Margin = new Padding(0, 0, S(16), 0) });
+                content.Controls.Add(new GlyphIcon(_icon, _customIcon, S(GlyphSize)) { Margin = new Padding(0, 0, S(GlyphGap), 0) });
             }
 
             content.Controls.Add(new Label
             {
                 AutoSize = true,
                 BackColor = Color.Transparent,
-                Font = new Font("Segoe UI", 12F),
+                Font = new Font("Segoe UI", BodyFontSize),
                 ForeColor = TextColor,
                 Margin = Padding.Empty,
-                MaximumSize = new Size(S(440), 0),
-                MinimumSize = new Size(0, hasGlyph ? S(40) : 0), // Stays centered on icon.
+                MaximumSize = new Size(S(MaxTextWidth), 0),
+                MinimumSize = new Size(0, hasGlyph ? S(GlyphSize) : 0), // Stays centered on icon.
                 Text = _text,
                 TextAlign = ContentAlignment.MiddleLeft,
                 UseMnemonic = false
@@ -238,18 +307,18 @@ namespace BedrockCosmos.App.UI
                 Dock = DockStyle.Fill,
                 FlowDirection = FlowDirection.RightToLeft,
                 Margin = Padding.Empty,
-                Padding = new Padding(S(12), S(12), S(6), S(12)),
+                Padding = new Padding(S(ButtonBarPadding), S(ButtonBarPadding), S(ButtonBarPadding - ButtonSpacing), S(ButtonBarPadding)),
                 WrapContents = false
             };
 
-            int defaultIndex = Math.Min((int)defaultButton / 256, _results.Length - 1);   // Button1/2/3 = 0/256/512
+            int defaultIndex = Math.Min((int)defaultButton / 256, _results.Length - 1);
             defaultControl = null;
 
             // Right-To-Left flow.
             for (int i = _results.Length - 1; i >= 0; i--)
             {
                 var result = _results[i];
-                var button = CreateButton(result, primary: i == defaultIndex);
+                var button = CreateButton(result, primary: HighlightDefaultButton && i == defaultIndex);
                 button.TabIndex = i;
                 button.Click += (s, e) => DialogResult = result;
                 _buttonMap[button] = result;
@@ -269,10 +338,10 @@ namespace BedrockCosmos.App.UI
             {
                 BackColor = Color.Transparent,
                 Cursor = Cursors.Hand,
-                Font = new Font("Segoe UI", 12F),
-                Margin = new Padding(S(6), 0, S(6), 0),
-                Radius = 5,
-                Size = new Size(S(112), S(40)),
+                Font = new Font("Segoe UI", ButtonFontSize),
+                Margin = new Padding(S(ButtonSpacing), 0, S(ButtonSpacing), 0),
+                Radius = 4,
+                Size = new Size(S(ButtonWidth), S(ButtonHeight)),
                 Text = ButtonTextProvider?.Invoke(result) ?? result.ToString()
             };
 
@@ -315,8 +384,8 @@ namespace BedrockCosmos.App.UI
             base.OnShown(e);
             switch (_icon)
             {
-                case MessageBoxIcon.Error:       SystemSounds.Hand.Play(); break;
-                case MessageBoxIcon.Warning:     SystemSounds.Exclamation.Play(); break;
+                case MessageBoxIcon.Error: SystemSounds.Hand.Play(); break;
+                case MessageBoxIcon.Warning: SystemSounds.Exclamation.Play(); break;
                 case MessageBoxIcon.Information: SystemSounds.Asterisk.Play(); break;
             }
         }
@@ -376,7 +445,6 @@ namespace BedrockCosmos.App.UI
         }
 
         // Dragging.
-
         private const int WM_NCLBUTTONDOWN = 0xA1;
         private const int HT_CAPTION = 0x2;
 
@@ -393,10 +461,12 @@ namespace BedrockCosmos.App.UI
         private sealed class GlyphIcon : Control
         {
             private readonly MessageBoxIcon _kind;
+            private readonly Image _custom;
 
-            public GlyphIcon(MessageBoxIcon kind, int size)
+            public GlyphIcon(MessageBoxIcon kind, Image custom, int size)
             {
                 _kind = kind;
+                _custom = custom;
                 Size = new Size(size, size);
                 TabStop = false;
                 SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint |
@@ -407,6 +477,21 @@ namespace BedrockCosmos.App.UI
             protected override void OnPaint(PaintEventArgs e)
             {
                 var g = e.Graphics;
+
+                // Custom image replaces drawn glyph.
+                if (_custom != null)
+                {
+                    g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                    g.CompositingQuality = CompositingQuality.HighQuality;
+
+                    float ratio = Math.Min((float)Width / _custom.Width, (float)Height / _custom.Height);
+                    float w = _custom.Width * ratio;
+                    float h = _custom.Height * ratio;
+                    g.DrawImage(_custom, (Width - w) / 2f, (Height - h) / 2f, w, h);
+                    return;
+                }
+
                 g.SmoothingMode = SmoothingMode.AntiAlias;
                 g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
 
@@ -417,10 +502,10 @@ namespace BedrockCosmos.App.UI
 
                 switch (_kind)
                 {
-                    case MessageBoxIcon.Error:       fill = Color.FromArgb(214, 62, 62);  break;
-                    case MessageBoxIcon.Warning:     fill = Color.FromArgb(255, 185, 0);  glyph = "!"; glyphColor = Color.FromArgb(20, 20, 20); break;
+                    case MessageBoxIcon.Error: fill = Color.FromArgb(214, 62, 62); break;
+                    case MessageBoxIcon.Warning: fill = Color.FromArgb(255, 185, 0); glyph = "!"; glyphColor = Color.FromArgb(20, 20, 20); break;
                     case MessageBoxIcon.Information: fill = Color.FromArgb(56, 152, 255); glyph = "i"; break;
-                    default:                         fill = Color.FromArgb(0, 188, 71);   glyph = "?"; break;   // Question
+                    default: fill = Color.FromArgb(0, 188, 71); glyph = "?"; break;   // Question
                 }
 
                 using (var brush = new SolidBrush(fill))

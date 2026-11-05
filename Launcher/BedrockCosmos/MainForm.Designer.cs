@@ -30,13 +30,20 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.StatusLabel = new System.Windows.Forms.Label();
+            this.TopPanel = new System.Windows.Forms.Panel();
+            this.AppIcon = new System.Windows.Forms.PictureBox();
+            this.TopLabel = new System.Windows.Forms.Label();
+            this.MinimizeButton = new System.Windows.Forms.Button();
+            this.CloseButton = new System.Windows.Forms.Button();
+            this.TrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.BackgroundModeTimer = new System.Windows.Forms.Timer(this.components);
             this.TabControl = new BedrockCosmos.App.UI.TransparentTabControl();
             this.HomePage = new System.Windows.Forms.TabPage();
             this.VersionLabel = new System.Windows.Forms.Label();
             this.AboutButton = new System.Windows.Forms.Button();
             this.SettingsButton = new System.Windows.Forms.Button();
             this.LaunchButton = new BedrockCosmos.App.UI.RoundGradientButton();
+            this.StatusLabel = new System.Windows.Forms.Label();
             this.AboutPage = new System.Windows.Forms.TabPage();
             this.WebsiteLabel = new System.Windows.Forms.LinkLabel();
             this.WebsiteIcon = new System.Windows.Forms.PictureBox();
@@ -63,6 +70,7 @@
             this.BackgroundModeTitleLabel = new System.Windows.Forms.Label();
             this.BackgroundModeSwitch = new BedrockCosmos.App.UI.Switch();
             this.MenuEditorPage = new System.Windows.Forms.TabPage();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.ActiveNodePreview = new BedrockCosmos.App.UI.RoundButton();
             this.ShowNodeIdsButton = new BedrockCosmos.App.UI.RoundButton();
             this.ShowNodeCountButton = new BedrockCosmos.App.UI.RoundButton();
@@ -108,13 +116,8 @@
             this.EnableLoggingSwitch = new BedrockCosmos.App.UI.Switch();
             this.DownloadZipButton = new BedrockCosmos.App.UI.RoundButton();
             this.ExportLogsButton = new BedrockCosmos.App.UI.RoundButton();
-            this.TopPanel = new System.Windows.Forms.Panel();
-            this.AppIcon = new System.Windows.Forms.PictureBox();
-            this.TopLabel = new System.Windows.Forms.Label();
-            this.MinimizeButton = new System.Windows.Forms.Button();
-            this.CloseButton = new System.Windows.Forms.Button();
-            this.TrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
-            this.BackgroundModeTimer = new System.Windows.Forms.Timer(this.components);
+            this.TopPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.AppIcon)).BeginInit();
             this.TabControl.SuspendLayout();
             this.HomePage.SuspendLayout();
             this.AboutPage.SuspendLayout();
@@ -123,23 +126,98 @@
             ((System.ComponentModel.ISupportInitialize)(this.GitHubIcon)).BeginInit();
             this.SettingsPage.SuspendLayout();
             this.MenuEditorPage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.UpdatePage.SuspendLayout();
             this.DevPage.SuspendLayout();
-            this.TopPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.AppIcon)).BeginInit();
             this.SuspendLayout();
             // 
-            // StatusLabel
+            // TopPanel
             // 
-            this.StatusLabel.BackColor = System.Drawing.Color.Transparent;
-            this.StatusLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.StatusLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.StatusLabel.Location = new System.Drawing.Point(238, 278);
-            this.StatusLabel.Name = "StatusLabel";
-            this.StatusLabel.Size = new System.Drawing.Size(340, 68);
-            this.StatusLabel.TabIndex = 2;
-            this.StatusLabel.Text = "Waiting...";
-            this.StatusLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.TopPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
+            this.TopPanel.Controls.Add(this.AppIcon);
+            this.TopPanel.Controls.Add(this.TopLabel);
+            this.TopPanel.Controls.Add(this.MinimizeButton);
+            this.TopPanel.Controls.Add(this.CloseButton);
+            this.TopPanel.Location = new System.Drawing.Point(-1, 0);
+            this.TopPanel.Name = "TopPanel";
+            this.TopPanel.Size = new System.Drawing.Size(803, 46);
+            this.TopPanel.TabIndex = 6;
+            this.TopPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseDown);
+            this.TopPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseMove);
+            this.TopPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseUp);
+            // 
+            // AppIcon
+            // 
+            this.AppIcon.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("AppIcon.BackgroundImage")));
+            this.AppIcon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.AppIcon.Location = new System.Drawing.Point(8, 7);
+            this.AppIcon.Name = "AppIcon";
+            this.AppIcon.Size = new System.Drawing.Size(32, 32);
+            this.AppIcon.TabIndex = 3;
+            this.AppIcon.TabStop = false;
+            this.AppIcon.Click += new System.EventHandler(this.AppIcon_Click);
+            this.AppIcon.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseDown);
+            this.AppIcon.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseMove);
+            this.AppIcon.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseUp);
+            // 
+            // TopLabel
+            // 
+            this.TopLabel.AutoSize = true;
+            this.TopLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TopLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.TopLabel.Location = new System.Drawing.Point(46, 12);
+            this.TopLabel.Name = "TopLabel";
+            this.TopLabel.Size = new System.Drawing.Size(126, 21);
+            this.TopLabel.TabIndex = 2;
+            this.TopLabel.Text = "Bedrock Cosmos";
+            this.TopLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseDown);
+            this.TopLabel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseMove);
+            this.TopLabel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseUp);
+            // 
+            // MinimizeButton
+            // 
+            this.MinimizeButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.MinimizeButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("MinimizeButton.BackgroundImage")));
+            this.MinimizeButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.MinimizeButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
+            this.MinimizeButton.FlatAppearance.BorderSize = 0;
+            this.MinimizeButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
+            this.MinimizeButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
+            this.MinimizeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.MinimizeButton.Location = new System.Drawing.Point(732, 10);
+            this.MinimizeButton.Name = "MinimizeButton";
+            this.MinimizeButton.Size = new System.Drawing.Size(25, 25);
+            this.MinimizeButton.TabIndex = 1;
+            this.MinimizeButton.UseVisualStyleBackColor = true;
+            this.MinimizeButton.Click += new System.EventHandler(this.MinimizeButton_Click);
+            // 
+            // CloseButton
+            // 
+            this.CloseButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.CloseButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("CloseButton.BackgroundImage")));
+            this.CloseButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.CloseButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
+            this.CloseButton.FlatAppearance.BorderSize = 0;
+            this.CloseButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
+            this.CloseButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
+            this.CloseButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CloseButton.Location = new System.Drawing.Point(767, 10);
+            this.CloseButton.Name = "CloseButton";
+            this.CloseButton.Size = new System.Drawing.Size(25, 25);
+            this.CloseButton.TabIndex = 0;
+            this.CloseButton.UseVisualStyleBackColor = true;
+            this.CloseButton.Click += new System.EventHandler(this.CloseButton_Click);
+            // 
+            // TrayIcon
+            // 
+            this.TrayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("TrayIcon.Icon")));
+            this.TrayIcon.Text = "Bedrock Cosmos";
+            this.TrayIcon.Click += new System.EventHandler(this.TrayIcon_Click);
+            // 
+            // BackgroundModeTimer
+            // 
+            this.BackgroundModeTimer.Interval = 2500;
+            this.BackgroundModeTimer.Tick += new System.EventHandler(this.BackgroundModeTimer_Tick);
             // 
             // TabControl
             // 
@@ -249,6 +327,18 @@
             this.LaunchButton.TabIndex = 6;
             this.LaunchButton.Text = "LAUNCH";
             this.LaunchButton.Click += new System.EventHandler(this.LaunchButton_Click);
+            // 
+            // StatusLabel
+            // 
+            this.StatusLabel.BackColor = System.Drawing.Color.Transparent;
+            this.StatusLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.StatusLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.StatusLabel.Location = new System.Drawing.Point(238, 278);
+            this.StatusLabel.Name = "StatusLabel";
+            this.StatusLabel.Size = new System.Drawing.Size(340, 68);
+            this.StatusLabel.TabIndex = 2;
+            this.StatusLabel.Text = "Waiting...";
+            this.StatusLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // AboutPage
             // 
@@ -671,6 +761,7 @@
             // MenuEditorPage
             // 
             this.MenuEditorPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.MenuEditorPage.Controls.Add(this.pictureBox1);
             this.MenuEditorPage.Controls.Add(this.ActiveNodePreview);
             this.MenuEditorPage.Controls.Add(this.ShowNodeIdsButton);
             this.MenuEditorPage.Controls.Add(this.ShowNodeCountButton);
@@ -703,12 +794,23 @@
             this.MenuEditorPage.TabIndex = 6;
             this.MenuEditorPage.Text = "Menu Editor";
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pictureBox1.BackgroundImage")));
+            this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pictureBox1.Location = new System.Drawing.Point(732, 227);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(32, 32);
+            this.pictureBox1.TabIndex = 4;
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.Visible = false;
+            // 
             // ActiveNodePreview
             // 
             this.ActiveNodePreview.BackColor = System.Drawing.Color.Transparent;
             this.ActiveNodePreview.ButtonImage = null;
             this.ActiveNodePreview.ButtonImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.ActiveNodePreview.ButtonImageSize = new System.Drawing.Size(64, 64);
+            this.ActiveNodePreview.ButtonImageSize = new System.Drawing.Size(110, 110);
             this.ActiveNodePreview.Cursor = System.Windows.Forms.Cursors.Hand;
             this.ActiveNodePreview.DialogResult = System.Windows.Forms.DialogResult.None;
             this.ActiveNodePreview.Enabled = false;
@@ -1738,94 +1840,6 @@
             this.ExportLogsButton.Text = "Export Logs";
             this.ExportLogsButton.Click += new System.EventHandler(this.ExportLogsButton_Click);
             // 
-            // TopPanel
-            // 
-            this.TopPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
-            this.TopPanel.Controls.Add(this.AppIcon);
-            this.TopPanel.Controls.Add(this.TopLabel);
-            this.TopPanel.Controls.Add(this.MinimizeButton);
-            this.TopPanel.Controls.Add(this.CloseButton);
-            this.TopPanel.Location = new System.Drawing.Point(-1, 0);
-            this.TopPanel.Name = "TopPanel";
-            this.TopPanel.Size = new System.Drawing.Size(803, 46);
-            this.TopPanel.TabIndex = 6;
-            this.TopPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseDown);
-            this.TopPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseMove);
-            this.TopPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseUp);
-            // 
-            // AppIcon
-            // 
-            this.AppIcon.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("AppIcon.BackgroundImage")));
-            this.AppIcon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.AppIcon.Location = new System.Drawing.Point(8, 7);
-            this.AppIcon.Name = "AppIcon";
-            this.AppIcon.Size = new System.Drawing.Size(32, 32);
-            this.AppIcon.TabIndex = 3;
-            this.AppIcon.TabStop = false;
-            this.AppIcon.Click += new System.EventHandler(this.AppIcon_Click);
-            this.AppIcon.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseDown);
-            this.AppIcon.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseMove);
-            this.AppIcon.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseUp);
-            // 
-            // TopLabel
-            // 
-            this.TopLabel.AutoSize = true;
-            this.TopLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TopLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.TopLabel.Location = new System.Drawing.Point(46, 12);
-            this.TopLabel.Name = "TopLabel";
-            this.TopLabel.Size = new System.Drawing.Size(126, 21);
-            this.TopLabel.TabIndex = 2;
-            this.TopLabel.Text = "Bedrock Cosmos";
-            this.TopLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseDown);
-            this.TopLabel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseMove);
-            this.TopLabel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseUp);
-            // 
-            // MinimizeButton
-            // 
-            this.MinimizeButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.MinimizeButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("MinimizeButton.BackgroundImage")));
-            this.MinimizeButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.MinimizeButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
-            this.MinimizeButton.FlatAppearance.BorderSize = 0;
-            this.MinimizeButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
-            this.MinimizeButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
-            this.MinimizeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.MinimizeButton.Location = new System.Drawing.Point(732, 10);
-            this.MinimizeButton.Name = "MinimizeButton";
-            this.MinimizeButton.Size = new System.Drawing.Size(25, 25);
-            this.MinimizeButton.TabIndex = 1;
-            this.MinimizeButton.UseVisualStyleBackColor = true;
-            this.MinimizeButton.Click += new System.EventHandler(this.MinimizeButton_Click);
-            // 
-            // CloseButton
-            // 
-            this.CloseButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.CloseButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("CloseButton.BackgroundImage")));
-            this.CloseButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.CloseButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
-            this.CloseButton.FlatAppearance.BorderSize = 0;
-            this.CloseButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
-            this.CloseButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
-            this.CloseButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CloseButton.Location = new System.Drawing.Point(767, 10);
-            this.CloseButton.Name = "CloseButton";
-            this.CloseButton.Size = new System.Drawing.Size(25, 25);
-            this.CloseButton.TabIndex = 0;
-            this.CloseButton.UseVisualStyleBackColor = true;
-            this.CloseButton.Click += new System.EventHandler(this.CloseButton_Click);
-            // 
-            // TrayIcon
-            // 
-            this.TrayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("TrayIcon.Icon")));
-            this.TrayIcon.Text = "Bedrock Cosmos";
-            this.TrayIcon.Click += new System.EventHandler(this.TrayIcon_Click);
-            // 
-            // BackgroundModeTimer
-            // 
-            this.BackgroundModeTimer.Interval = 2500;
-            this.BackgroundModeTimer.Tick += new System.EventHandler(this.BackgroundModeTimer_Tick);
-            // 
             // MainForm
             // 
             this.AccessibleName = "Bedrock Cosmos";
@@ -1841,6 +1855,9 @@
             this.Name = "MainForm";
             this.Text = "Bedrock Cosmos";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.TopPanel.ResumeLayout(false);
+            this.TopPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.AppIcon)).EndInit();
             this.TabControl.ResumeLayout(false);
             this.HomePage.ResumeLayout(false);
             this.AboutPage.ResumeLayout(false);
@@ -1852,12 +1869,10 @@
             this.SettingsPage.PerformLayout();
             this.MenuEditorPage.ResumeLayout(false);
             this.MenuEditorPage.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.UpdatePage.ResumeLayout(false);
             this.DevPage.ResumeLayout(false);
             this.DevPage.PerformLayout();
-            this.TopPanel.ResumeLayout(false);
-            this.TopPanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.AppIcon)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1933,7 +1948,6 @@
         private App.UI.RoundButton ResetNodesButton;
         private App.UI.RoundButton RemoveNodeButton;
         private App.UI.RoundButton AddNodeButton;
-        private App.UI.ImageTreeView CapeTreeView;
         private App.UI.RoundButton PasteNodeButton;
         private App.UI.RoundButton CutNodeButton;
         private App.UI.RoundButton CopyNodeButton;
@@ -1948,6 +1962,8 @@
         private App.UI.RoundButton ShowNodeIdsButton;
         private App.UI.RoundButton ShowNodeCountButton;
         private App.UI.RoundButton ActiveNodePreview;
+        private App.UI.ImageTreeView CapeTreeView;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
 
