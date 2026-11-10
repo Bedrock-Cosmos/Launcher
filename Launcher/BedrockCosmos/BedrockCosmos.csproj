@@ -194,11 +194,17 @@
     <Compile Include="App\UI\GradientComboBox\GradientComboBoxDropdownList.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="App\UI\RoundButton\ButtonToolTip.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="App\UI\RoundButton\RoundButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="App\UI\RoundButton\RoundGradientButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="App\UI\StyledMessageBox.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="App\UI\RoundGradientButton.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="App\UI\Switch.cs">
       <SubType>Component</SubType>
@@ -232,9 +238,6 @@
     <Compile Include="Proxy\ProxyUrlDefinitions.cs" />
     <Compile Include="Proxy\ProxyEventArgsBaseExtensions.cs" />
     <Compile Include="Proxy\ProxyController.cs" />
-    <Compile Include="App\UI\RoundButton.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Proxy\ProxyClientState.cs" />
     <None Include="Texts\ru_RU.lang">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

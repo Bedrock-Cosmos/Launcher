@@ -859,6 +859,7 @@
             this.ShowNodeIdsButton.Size = new System.Drawing.Size(32, 32);
             this.ShowNodeIdsButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.ShowNodeIdsButton.TabIndex = 38;
+            this.ShowNodeIdsButton.TooltipText = "Show Node UUIDs";
             this.ShowNodeIdsButton.Click += new System.EventHandler(this.ShowNodeIdsButton_Click);
             // 
             // ShowNodeCountButton
@@ -887,6 +888,7 @@
             this.ShowNodeCountButton.Size = new System.Drawing.Size(32, 32);
             this.ShowNodeCountButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.ShowNodeCountButton.TabIndex = 37;
+            this.ShowNodeCountButton.TooltipText = "Show Total Nodes";
             this.ShowNodeCountButton.Click += new System.EventHandler(this.ShowNodeCountButton_Click);
             // 
             // ImportMenuButton
@@ -915,6 +917,7 @@
             this.ImportMenuButton.Size = new System.Drawing.Size(32, 32);
             this.ImportMenuButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.ImportMenuButton.TabIndex = 36;
+            this.ImportMenuButton.TooltipText = "Import";
             // 
             // SaveMenuButton
             // 
@@ -942,6 +945,7 @@
             this.SaveMenuButton.Size = new System.Drawing.Size(32, 32);
             this.SaveMenuButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.SaveMenuButton.TabIndex = 35;
+            this.SaveMenuButton.TooltipText = "Save";
             this.SaveMenuButton.Click += new System.EventHandler(this.SaveMenuButton_Click);
             // 
             // NodeRarityComboBox
@@ -1013,6 +1017,7 @@
             this.ExportMenuButton.Size = new System.Drawing.Size(32, 32);
             this.ExportMenuButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.ExportMenuButton.TabIndex = 33;
+            this.ExportMenuButton.TooltipText = "Export";
             this.ExportMenuButton.Click += new System.EventHandler(this.ExportMenuButton_Click);
             // 
             // RenameNodeButton
@@ -1042,6 +1047,7 @@
             this.RenameNodeButton.Size = new System.Drawing.Size(32, 32);
             this.RenameNodeButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.RenameNodeButton.TabIndex = 32;
+            this.RenameNodeButton.TooltipText = "Rename";
             this.RenameNodeButton.Click += new System.EventHandler(this.RenameNodeButton_Click);
             // 
             // AddCategoryButton
@@ -1070,6 +1076,7 @@
             this.AddCategoryButton.Size = new System.Drawing.Size(32, 32);
             this.AddCategoryButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.AddCategoryButton.TabIndex = 29;
+            this.AddCategoryButton.TooltipText = "Add Category";
             this.AddCategoryButton.Click += new System.EventHandler(this.AddCategoryButton_Click);
             // 
             // NodeToBottomButton
@@ -1136,6 +1143,7 @@
             this.PasteNodeButton.Size = new System.Drawing.Size(32, 32);
             this.PasteNodeButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.PasteNodeButton.TabIndex = 26;
+            this.PasteNodeButton.TooltipText = "Paste";
             this.PasteNodeButton.Click += new System.EventHandler(this.PasteNodeButton_Click);
             // 
             // CutNodeButton
@@ -1164,6 +1172,7 @@
             this.CutNodeButton.Size = new System.Drawing.Size(32, 32);
             this.CutNodeButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.CutNodeButton.TabIndex = 25;
+            this.CutNodeButton.TooltipText = "Cut";
             this.CutNodeButton.Click += new System.EventHandler(this.CutNodeButton_Click);
             // 
             // CopyNodeButton
@@ -1192,6 +1201,7 @@
             this.CopyNodeButton.Size = new System.Drawing.Size(32, 32);
             this.CopyNodeButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.CopyNodeButton.TabIndex = 24;
+            this.CopyNodeButton.TooltipText = "Copy";
             this.CopyNodeButton.Click += new System.EventHandler(this.CopyNodeButton_Click);
             // 
             // CapeTreeView
@@ -1258,6 +1268,7 @@
             this.ResetNodesButton.Size = new System.Drawing.Size(32, 32);
             this.ResetNodesButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.ResetNodesButton.TabIndex = 22;
+            this.ResetNodesButton.TooltipText = "Reset All";
             this.ResetNodesButton.Click += new System.EventHandler(this.ResetNodesButton_Click);
             // 
             // RemoveNodeButton
@@ -1286,6 +1297,7 @@
             this.RemoveNodeButton.Size = new System.Drawing.Size(32, 32);
             this.RemoveNodeButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.RemoveNodeButton.TabIndex = 21;
+            this.RemoveNodeButton.TooltipText = "Delete";
             this.RemoveNodeButton.Click += new System.EventHandler(this.RemoveNodeButton_Click);
             // 
             // AddNodeButton
@@ -1314,6 +1326,7 @@
             this.AddNodeButton.Size = new System.Drawing.Size(32, 32);
             this.AddNodeButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.AddNodeButton.TabIndex = 20;
+            this.AddNodeButton.TooltipText = "Add Node";
             this.AddNodeButton.Click += new System.EventHandler(this.AddNodeButton_Click);
             // 
             // NodeDownButton
