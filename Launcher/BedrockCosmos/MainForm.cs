@@ -796,6 +796,8 @@ namespace BedrockCosmos
             CopyNodeButton.Enabled = CapeTreeView.CanCopy;
             CutNodeButton.Enabled = CapeTreeView.CanCut;
             PasteNodeButton.Enabled = CapeTreeView.CanPaste;
+            RenameNodeButton.Enabled = CapeTreeView.CanRename;
+            RemoveNodeButton.Enabled = CapeTreeView.CanDelete;
 
             if (!(currentNodes > 1))
             {

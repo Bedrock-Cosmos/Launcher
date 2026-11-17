@@ -1251,6 +1251,7 @@
             this.CapeTreeView.HeaderHeight = 30;
             this.CapeTreeView.HeaderTextColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.CapeTreeView.HideDisabledContextMenuItems = false;
+            this.CapeTreeView.HideNoRarityOption = true;
             this.CapeTreeView.IdleBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(22)))), ((int)(((byte)(22)))));
             this.CapeTreeView.IdleBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
             this.CapeTreeView.ItemLabelHeight = 16;

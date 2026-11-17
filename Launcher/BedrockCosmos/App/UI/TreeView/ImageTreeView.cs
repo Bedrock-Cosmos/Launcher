@@ -56,6 +56,9 @@ namespace BedrockCosmos.App.UI
         [Category("Action"), Description("Raised after selected nodes have been deleted.")]
         public event EventHandler<NodesEventArgs> AfterDelete;
 
+        [Category("Behavior"), DefaultValue(false)]
+        public bool HideNoRarityOption { get; set; } = false;
+
         protected virtual void OnBeforeCopy(NodesCancelEventArgs e) => BeforeCopy?.Invoke(this, e);
         protected virtual void OnAfterCopy(NodesEventArgs e) => AfterCopy?.Invoke(this, e);
         protected virtual void OnBeforeCut(NodesCancelEventArgs e) => BeforeCut?.Invoke(this, e);
@@ -213,10 +216,19 @@ namespace BedrockCosmos.App.UI
         // instances (Copy) or moved in place (Cut) once Paste runs.
         private readonly List<object> _clipboard = new List<object>();
         private bool _clipboardIsCut;
-        public bool AllowCopying { get; set; } = true;
+
+        [Category("Behavior"), DefaultValue(true)] public bool AllowCopying { get; set; } = true;
+        [Category("Behavior"), DefaultValue(true)] public bool AllowCutting { get; set; } = true;
+        [Category("Behavior"), DefaultValue(true)] public bool AllowPasting { get; set; } = true;
+        [Category("Behavior"), DefaultValue(true)] public bool AllowDeleting { get; set; } = true;
+        [Category("Behavior"), DefaultValue(true)] public bool AllowDragging { get; set; } = true;
+        [Category("Behavior"), DefaultValue(true)] public bool AllowRenaming { get; set; } = true;
+        
         public bool CanCopy => AllowCopying && _selectionOrder.Count > 0;
-        public bool CanCut => _selectionOrder.Count > 0;
-        public bool CanPaste => _clipboard.Count > 0 && (_clipboardIsCut || AllowCopying);
+        public bool CanCut => AllowCutting && _selectionOrder.Count > 0;
+        public bool CanPaste => AllowPasting && _clipboard.Count > 0 && (_clipboardIsCut || AllowCopying);
+        public bool CanDelete => AllowDeleting && _selectionOrder.Count > 0;
+        public bool CanRename => AllowRenaming && _selectionOrder.Count == 1;
 
         // Where pasted nodes land relative to the currently selected node(s).
         public enum PastePosition
@@ -999,7 +1011,7 @@ namespace BedrockCosmos.App.UI
             bool shift = (ModifierKeys & Keys.Shift) == Keys.Shift;
 
             // Both items and category headers can be dragged.
-            bool isDraggableCandidate = hit.Node is ImageItem || hit.Node is ImageCategory;
+            bool isDraggableCandidate = AllowDragging && (hit.Node is ImageItem || hit.Node is ImageCategory);
 
             if (isDraggableCandidate && _selectionSet.Contains(hit.Node) && !shift)
             {
@@ -1217,8 +1229,8 @@ namespace BedrockCosmos.App.UI
                 bool canCopy = CanCopy;
                 bool canCut = CanCut;
                 bool canPaste = CanPaste;
-                bool canRename = _selectionOrder.Count == 1; // Renaming more than one node at once doesn't make sense.
-                bool canDelete = _selectionOrder.Count > 0;
+                bool canRename = CanRename;
+                bool canDelete = CanDelete;
                 var rarityTargets = GetSelectedItemsIncludingCategories();
                 bool canSetRarity = rarityTargets.Count > 0;
 
@@ -1230,6 +1242,7 @@ namespace BedrockCosmos.App.UI
                     : (ItemRarity?)null;
                 foreach (var pair in _rarityOptionItems)
                     pair.Value.Checked = sharedRarity.HasValue && sharedRarity.Value == pair.Key;
+                _rarityOptionItems[ItemRarity.None].Visible = !HideNoRarityOption;
 
                 _copyMenuItem.Enabled = canCopy;
                 _cutMenuItem.Enabled = canCut;
@@ -1395,6 +1408,9 @@ namespace BedrockCosmos.App.UI
         // Starts inline-editing the display name of a node, Esc discards the rename.
         public void BeginRename(object node = null)
         {
+            if (!AllowRenaming)
+                return;
+
             node = node ?? _selectionOrder.FirstOrDefault();
             if (node == null)
                 return;
@@ -2177,7 +2193,7 @@ namespace BedrockCosmos.App.UI
 
         public void CutSelection()
         {
-            if (_selectionOrder.Count == 0)
+            if (!CanCut)
                 return;
 
             var targets = _selectionOrder.ToList();
@@ -2196,7 +2212,7 @@ namespace BedrockCosmos.App.UI
 
         public void Paste()
         {
-            if (_clipboard.Count == 0)
+            if (!AllowPasting || _clipboard.Count == 0)
                 return;
 
             // Pasting still allowed from Cuts if Copying is disabled.
@@ -2474,6 +2490,9 @@ namespace BedrockCosmos.App.UI
 
         private bool SetItemRarityCore(ImageItem item, ItemRarity rarity)
         {
+            if (rarity == ItemRarity.None && HideNoRarityOption)
+                return false;
+
             bool changed = false;
 
             if (item.Rarity != rarity)
@@ -2787,7 +2806,7 @@ namespace BedrockCosmos.App.UI
         // Returns true if nodes were deleted, false if nothing selected or a handler cancelled.
         public bool RemoveSelectedNodes()
         {
-            if (_selectionOrder.Count == 0)
+            if (!CanDelete)
                 return false;
 
             // Snapshot, since a handler (dialog) could change the selection.
