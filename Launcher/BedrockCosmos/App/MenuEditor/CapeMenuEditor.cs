@@ -48,6 +48,49 @@ namespace BedrockCosmos.App.MenuEditor
             }
         }
 
+        public static bool? DetectItemCountInHeaders(IEnumerable<ImageCategory> categories)
+        {
+            if (categories == null)
+                return null;
+
+            bool sawStandardHeaderWithoutCount = false;
+
+            foreach (var category in categories)
+            {
+                if (string.IsNullOrEmpty(category.Name))
+                    continue;
+
+                var match = TrailingNumberRegex.Match(category.Name);
+
+                if (match.Success)
+                {
+                    // Only counts if the number equals the real item count.
+                    // Otherwise it's probably part of the name (like "Halloween Cape (2026)").
+                    if (int.TryParse(Regex.Match(match.Value, @"\d+").Value, out int number) &&
+                        number == category.Items.Count)
+                        return true;
+
+                    continue;
+                }
+
+                if (!IsSpecialHeader(category.Name)) // Ignores headers that have special title replacement cases (like Creator Capes).
+                    sawStandardHeaderWithoutCount = true;
+            }
+
+            return sawStandardHeaderWithoutCount ? (bool?)false : null;
+        }
+
+        private static bool IsSpecialHeader(string name)
+        {
+            foreach (var key in HeaderTitleOverrides.Keys)
+            {
+                if (name.StartsWith(key, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+
+            return false;
+        }
+
         public static string StripTrailingNumber(string title)
         {
             if (string.IsNullOrEmpty(title))

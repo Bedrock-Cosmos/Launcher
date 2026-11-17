@@ -616,8 +616,12 @@ namespace BedrockCosmos
             {
                 string json = File.ReadAllText(activeCapesFile);
                 capesDocument = ImageDocument.LoadFromMarketplaceJson(json);
+                bool? hasCounts = CapeMenuEditor.DetectItemCountInHeaders(capesDocument.Categories);
                 CapeMenuEditor.ApplyHeaderTitleOverrides(capesDocument.Categories);
                 CapeTreeView.LoadData(capesDocument.Categories);
+
+                if (activeCapesFile == customCapesFile && hasCounts.HasValue)
+                    SetNodeCountSetting(hasCounts.Value);
             }
             catch
             {
@@ -853,22 +857,18 @@ namespace BedrockCosmos
 
         private void ShowNodeCountButton_Click(object sender, EventArgs e)
         {
-            if (ShowNodeCountButton.NormalBackColor != Color.FromArgb(75, 75, 75))
-            {
-                SettingsManager.EditorNodeCount = false;
-                CapeTreeView.ShowItemCountInHeader = SettingsManager.EditorNodeCount;
-                ShowNodeCountButton.NormalBackColor = Color.FromArgb(75, 75, 75);
-                ShowNodeCountButton.HoverBackColor = Color.FromArgb(75, 75, 75);
-                ShowNodeCountButton.PressedBackColor = Color.FromArgb(75, 75, 75);
-            }
-            else
-            {
-                SettingsManager.EditorNodeCount = true;
-                CapeTreeView.ShowItemCountInHeader = SettingsManager.EditorNodeCount;
-                ShowNodeCountButton.NormalBackColor = Color.FromArgb(0, 188, 71);
-                ShowNodeCountButton.HoverBackColor = Color.FromArgb(0, 188, 71);
-                ShowNodeCountButton.PressedBackColor = Color.FromArgb(0, 188, 71);
-            }   
+            SetNodeCountSetting(!SettingsManager.EditorNodeCount);
+        }
+
+        private void SetNodeCountSetting(bool enabled)
+        {
+            SettingsManager.EditorNodeCount = enabled;
+            CapeTreeView.ShowItemCountInHeader = enabled;
+
+            Color color = enabled ? Color.FromArgb(0, 188, 71) : Color.FromArgb(75, 75, 75);
+            ShowNodeCountButton.NormalBackColor = color;
+            ShowNodeCountButton.HoverBackColor = color;
+            ShowNodeCountButton.PressedBackColor = color;
         }
 
         private void ShowNodeIdsButton_Click(object sender, EventArgs e)
