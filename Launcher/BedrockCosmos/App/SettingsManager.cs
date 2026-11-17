@@ -23,6 +23,7 @@ namespace BedrockCosmos.App
         private static bool _news = true;
         private static bool _editorNodeCount = true; // Might change this to be dependant on the saved menu file rather than a launcher setting.
         private static bool _editorNodeIds = false;
+        private static bool _editorConfirmationDialogs = true;
         private static int _devMenuClicks = 0;
         private static bool _devMenuEnabled = false;
         private static bool _enableLogging = false;
@@ -71,6 +72,12 @@ namespace BedrockCosmos.App
         {
             get { return _editorNodeIds; }
             set { _editorNodeIds = value; SaveSettings(); }
+        }
+
+        internal static bool EditorConfirmationDialogs
+        {
+            get { return _editorConfirmationDialogs; }
+            set { _editorConfirmationDialogs = value; SaveSettings(); }
         }
 
         internal static int DevMenuClicks
@@ -140,6 +147,7 @@ namespace BedrockCosmos.App
                 News = _news,
                 EditorNodeCount = _editorNodeCount,
                 EditorNodeIds = _editorNodeIds,
+                EditorConfirmationDialogs = _editorConfirmationDialogs,
                 DevMenuEnabled = _devMenuEnabled,
                 EnableLogging = _enableLogging,
                 DetailedLogging = _detailedLogging
@@ -168,6 +176,7 @@ namespace BedrockCosmos.App
                     try { _news = settings["News"]?.GetValue<bool>() ?? _news; } catch { }
                     try { _editorNodeCount = settings["EditorNodeCount"]?.GetValue<bool>() ?? _editorNodeCount; } catch { }
                     try { _editorNodeIds = settings["EditorNodeIds"]?.GetValue<bool>() ?? _editorNodeIds; } catch { }
+                    try { _editorConfirmationDialogs = settings["EditorConfirmationDialogs"]?.GetValue<bool>() ?? _editorConfirmationDialogs; } catch { }
                     try { _devMenuEnabled = settings["DevMenuEnabled"]?.GetValue<bool>() ?? _devMenuEnabled; } catch { }
                     try { _enableLogging = settings["EnableLogging"]?.GetValue<bool>() ?? _enableLogging; } catch { }
                     try { _detailedLogging = settings["DetailedLogging"]?.GetValue<bool>() ?? _detailedLogging; } catch { }

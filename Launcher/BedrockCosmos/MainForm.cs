@@ -261,6 +261,14 @@ namespace BedrockCosmos
                 ShowNodeIdsButton.PressedBackColor = Color.FromArgb(0, 188, 71);
             }
 
+            // Menu Editor - Show Confirmation Dialogs
+            if (SettingsManager.EditorConfirmationDialogs)
+            {
+                ShowConfirmationDialogsButton.NormalBackColor = Color.FromArgb(0, 188, 71);
+                ShowConfirmationDialogsButton.HoverBackColor = Color.FromArgb(0, 188, 71);
+                ShowConfirmationDialogsButton.PressedBackColor = Color.FromArgb(0, 188, 71);
+            }
+
             // Logging
             EnableLoggingSwitch.Checked = SettingsManager.EnableLogging;
 
@@ -792,7 +800,6 @@ namespace BedrockCosmos
                 switch (node)
                 {
                     case ImageItem item:
-                        UpdateNodePreview();
                         NodeStatus.Text = $"{item.Title}";
                         if (SettingsManager.EditorNodeIds) { NodeStatus.Text = NodeStatus.Text + $"\n{item.Id}"; }
                         NodeRarityComboBox.Text = item.Rarity.ToString();
@@ -800,26 +807,27 @@ namespace BedrockCosmos
 
                     case ImageCategory category:
                         NodeStatus.Text = category.Name;
+                        NodeRarityComboBox.Text = "-";
                         break;
 
                     default:
                         NodeStatus.Text = string.Empty; // Nothing selected
+                        NodeRarityComboBox.Text = "-";
                         break;
                 }
 
-                //MultipleNodesIcon.Visible = false;
+                UpdateNodePreview();
+                MultipleNodesIcon.Visible = false;
             }
             else
             {
                 NodeStatus.Text = $"{CapeTreeView.GetSelectedNodeCount()} nodes selected.";
                 NodeRarityComboBox.Text = "-";
-                //MultipleNodesIcon.Visible = true;
+                MultipleNodesIcon.Visible = true;
             }
 
             EnableMenuItemToggle.Checked = false;
         }
-
-        int ind = 0;
 
         private void UpdateNodePreview()
         {
@@ -881,6 +889,24 @@ namespace BedrockCosmos
             }
         }
 
+        private void ShowConfirmationDialogsButton_Click(object sender, EventArgs e)
+        {
+            if (ShowConfirmationDialogsButton.NormalBackColor != Color.FromArgb(75, 75, 75))
+            {
+                SettingsManager.EditorConfirmationDialogs = false;
+                ShowConfirmationDialogsButton.NormalBackColor = Color.FromArgb(75, 75, 75);
+                ShowConfirmationDialogsButton.HoverBackColor = Color.FromArgb(75, 75, 75);
+                ShowConfirmationDialogsButton.PressedBackColor = Color.FromArgb(75, 75, 75);
+            }
+            else
+            {
+                SettingsManager.EditorConfirmationDialogs = true;
+                ShowConfirmationDialogsButton.NormalBackColor = Color.FromArgb(0, 188, 71);
+                ShowConfirmationDialogsButton.HoverBackColor = Color.FromArgb(0, 188, 71);
+                ShowConfirmationDialogsButton.PressedBackColor = Color.FromArgb(0, 188, 71);
+            }
+        }
+
         private void NodeToTopButton_Click(object sender, EventArgs e)
         {
             CapeTreeView.MoveSelectedToTop();
@@ -913,48 +939,79 @@ namespace BedrockCosmos
 
         private void RemoveNodeButton_Click(object sender, EventArgs e)
         {
-            int currentNodes = CapeTreeView.GetSelectedNodeCount();
-            string plural = "";
+            CapeTreeView.RemoveSelectedNodes();
+        }
 
-            if (currentNodes != 1)
-                plural = "s";
+        private void CapeTreeView_BeforeDelete(object sender, NodesCancelEventArgs e)
+        {
+            if (!SettingsManager.EditorConfirmationDialogs)
+                return;
 
-            DialogResult result = StyledMessageBox.Show(
+            int count = CapeTreeView.GetSelectedNodeCount();
+            string plural = count != 1 ? "s" : "";
+
+            e.Cancel = StyledMessageBox.Show(
                 this,
-                $"This action will delete {currentNodes} node{plural}! Are you sure that you wish to proceed?",
+                $"This action will delete {count} node{plural}! Are you sure that you wish to proceed?",
                 "Delete",
                 MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning);
+                MessageBoxIcon.Warning) != DialogResult.Yes;
+        }
 
-            if (result == DialogResult.Yes)
-            {
-                CapeTreeView.RemoveSelectedNodes();
-                NodeStatus.Text = "Nodes removed!";
-            }
+        private void CapeTreeView_AfterDelete(object sender, NodesEventArgs e)
+        {
+            NodeStatus.Text = "Nodes removed!";
         }
 
         private void ResetNodesButton_Click(object sender, EventArgs e)
         {
-            DialogResult result = StyledMessageBox.Show(
+            if (SettingsManager.EditorConfirmationDialogs)
+            {
+                DialogResult result = StyledMessageBox.Show(
                 this,
                 "This action will reset all menu items to their initial state! Are you sure that you wish to proceed?",
                 "Reset",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning);
 
-            if (result == DialogResult.Yes)
-            {
-                string json = File.ReadAllText(Path.Combine(PathDefinitions.ResponsesDirectory, @"MainPages\Capes.json"));
-                capesDocument = ImageDocument.LoadFromMarketplaceJson(json);
-                CapeMenuEditor.ApplyHeaderTitleOverrides(capesDocument.Categories);
-                CapeTreeView.LoadData(capesDocument.Categories);
-                NodeStatus.Text = "Nodes reset!";
+                if (result == DialogResult.No)
+                    return;
             }
+
+            string json = File.ReadAllText(Path.Combine(PathDefinitions.ResponsesDirectory, @"MainPages\Capes.json"));
+            capesDocument = ImageDocument.LoadFromMarketplaceJson(json);
+            CapeMenuEditor.ApplyHeaderTitleOverrides(capesDocument.Categories);
+            CapeTreeView.LoadData(capesDocument.Categories);
+            NodeStatus.Text = "Nodes reset!";
         }
 
         private void RenameNodeButton_Click(object sender, EventArgs e)
         {
             CapeTreeView.BeginRename();
+        }
+
+        private void CapeTreeView_AfterRename(object sender, RenameEventArgs e)
+        {
+            if (CapeTreeView.SelectedNodes.Count == 1)
+            {
+                var node = CapeTreeView.SelectedNodes.FirstOrDefault();
+
+                switch (node)
+                {
+                    case ImageItem item:
+                        NodeStatus.Text = $"{item.Title}";
+                        if (SettingsManager.EditorNodeIds) { NodeStatus.Text = NodeStatus.Text + $"\n{item.Id}"; }
+                        break;
+
+                    case ImageCategory category:
+                        NodeStatus.Text = category.Name;
+                        break;
+
+                    default:
+                        NodeStatus.Text = string.Empty; // Nothing selected
+                        break;
+                }
+            }
         }
 
         private void CopyNodeButton_Click(object sender, EventArgs e)

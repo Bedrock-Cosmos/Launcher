@@ -441,7 +441,20 @@ Bedrock Cosmos will always remain free and open-source. Our Discord and GitHub i
         JiKfdmiiNRoJaKIAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="pictureBox1.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="ShowConfirmationDialogsButton.ButtonImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
+        DgAACw4BQL7hQQAAAZlJREFUWEftlrtKA2EUhCNBC5E0dlbWWgh5BBsLQQvtxAcQxMLGXoSAtYpfpYVg
+        RPQFLFKJpYWFNqKFhY2NiDfwwkki7J7M7mY3m8oMfBD+/8zMSZHNFgo9ZRAwBZwAj8BD8/Okn+uKgEXg
+        R/ANzPv5XAWMAK+i/I8Xm/G+3ATsi1LPnvflImBclCm+bNb7OxZQE2VR1Ly/IwEzoiSJaZ+TSUARuBEF
+        xhgwIc4N8xR9XmoByyK8TmCm5a7JUjgtpYAS8CSC213AvIPh1BQCNkVomgWMSji1TQGjwKcITLvAW6aH
+        E1AVYVkWMA7C6QkCyiKkhcB8y52gHG6JEXAhAhT9wIA4V5z7HilgTpijOASOxXkUs74vpOY3uhPGvLDs
+        6IcTsCpMcWwDO+I8jhXfWxcwDDwLQxTVgPdU3EdhD6dSuL0RUhHDcQQXsFcyfx/HRri9EXIvBpPYAnbF
+        eRK3vt8WiHvVypt3328LXIrBbnHt+22BNTHYLdZ9vy3QBxyJ4by5iv2LBhaAM+BDmDvBfuL23BjynT39
+        b/0Ctd9WuP/P4FsAAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="MultipleNodesIcon.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
         DAAACwwBP0AiyAAAAF5JREFUWEftlUEKgDAMBPv/H8ynPFT/oxTsJdiDUCPKDOxlIWFOSSnyZYANWGKf

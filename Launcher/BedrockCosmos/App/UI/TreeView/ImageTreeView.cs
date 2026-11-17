@@ -22,9 +22,50 @@ namespace BedrockCosmos.App.UI
     {
         #region Events
 
-        public event EventHandler SelectionChanged; // Ran when selection changes.
+        public event EventHandler SelectionChanged;
+        public event EventHandler DataChanged;
 
-        public event EventHandler DataChanged; // Ran if an operation takes place (add, remove, move, copy, expand/collapse).
+
+        [Category("Action"), Description("Raised before selected nodes are copied.")]
+        public event EventHandler<NodesCancelEventArgs> BeforeCopy;
+
+        [Category("Action"), Description("Raised after selected nodes have been copied.")]
+        public event EventHandler<NodesEventArgs> AfterCopy;
+
+        [Category("Action"), Description("Raised before selected nodes are cut.")]
+        public event EventHandler<NodesCancelEventArgs> BeforeCut;
+
+        [Category("Action"), Description("Raised after selected nodes have been cut.")]
+        public event EventHandler<NodesEventArgs> AfterCut;
+
+        [Category("Action"), Description("Raised before selected nodes are pasted.")]
+        public event EventHandler<PasteCancelEventArgs> BeforePaste;
+
+        [Category("Action"), Description("Raised after selected nodes have been pasted.")]
+        public event EventHandler<PasteEventArgs> AfterPaste;
+
+        [Category("Action"), Description("Raised before a node is renamed.")]
+        public event EventHandler<RenameCancelEventArgs> BeforeRename;
+
+        [Category("Action"), Description("Raised after a node has been renamed.")]
+        public event EventHandler<RenameEventArgs> AfterRename;
+
+        [Category("Action"), Description("Raised before selected nodes are deleted. Set Cancel to true to stop the deletion.")]
+        public event EventHandler<NodesCancelEventArgs> BeforeDelete;
+
+        [Category("Action"), Description("Raised after selected nodes have been deleted.")]
+        public event EventHandler<NodesEventArgs> AfterDelete;
+
+        protected virtual void OnBeforeCopy(NodesCancelEventArgs e) => BeforeCopy?.Invoke(this, e);
+        protected virtual void OnAfterCopy(NodesEventArgs e) => AfterCopy?.Invoke(this, e);
+        protected virtual void OnBeforeCut(NodesCancelEventArgs e) => BeforeCut?.Invoke(this, e);
+        protected virtual void OnAfterCut(NodesEventArgs e) => AfterCut?.Invoke(this, e);
+        protected virtual void OnBeforePaste(PasteCancelEventArgs e) => BeforePaste?.Invoke(this, e);
+        protected virtual void OnAfterPaste(PasteEventArgs e) => AfterPaste?.Invoke(this, e);
+        protected virtual void OnBeforeRename(RenameCancelEventArgs e) => BeforeRename?.Invoke(this, e);
+        protected virtual void OnAfterRename(RenameEventArgs e) => AfterRename?.Invoke(this, e);
+        protected virtual void OnBeforeDelete(NodesCancelEventArgs e) => BeforeDelete?.Invoke(this, e);
+        protected virtual void OnAfterDelete(NodesEventArgs e) => AfterDelete?.Invoke(this, e);
 
         #endregion
 
@@ -1448,6 +1489,24 @@ namespace BedrockCosmos.App.UI
             if (string.IsNullOrEmpty(newText))
                 return;
 
+            string oldName;
+            if (target is ImageCategory oldCategory)
+                oldName = oldCategory.Name;
+            else if (target is ImageItem oldItem)
+                oldName = oldItem.Title;
+            else
+                return;
+
+            if (newText == oldName)
+                return; // Nothing changed, so no events and no DataChanged.
+
+            var before = new RenameCancelEventArgs(target, oldName, newText);
+            OnBeforeRename(before);
+            if (before.Cancel || string.IsNullOrWhiteSpace(before.NewName))
+                return;
+
+            newText = before.NewName.Trim();
+
             if (target is ImageCategory category)
             {
                 category.Name = newText;
@@ -1474,6 +1533,8 @@ namespace BedrockCosmos.App.UI
             RebuildLayout();
             Invalidate();
             DataChanged?.Invoke(this, EventArgs.Empty);
+
+            OnAfterRename(new RenameEventArgs(target, oldName, newText));
         }
 
         private void CancelRename() => RemoveRenameBox();
@@ -2100,10 +2161,18 @@ namespace BedrockCosmos.App.UI
             if (!AllowCopying || _selectionOrder.Count == 0)
                 return;
 
+            var targets = _selectionOrder.ToList();
+            var before = new NodesCancelEventArgs(targets);
+            OnBeforeCopy(before);
+            if (before.Cancel)
+                return;
+
             _clipboard.Clear();
-            _clipboard.AddRange(_selectionOrder);
+            _clipboard.AddRange(targets);
             _clipboardIsCut = false;
             Invalidate();
+
+            OnAfterCopy(new NodesEventArgs(targets));
         }
 
         public void CutSelection()
@@ -2111,10 +2180,18 @@ namespace BedrockCosmos.App.UI
             if (_selectionOrder.Count == 0)
                 return;
 
+            var targets = _selectionOrder.ToList();
+            var before = new NodesCancelEventArgs(targets);
+            OnBeforeCut(before);
+            if (before.Cancel)
+                return;
+
             _clipboard.Clear();
-            _clipboard.AddRange(_selectionOrder);
+            _clipboard.AddRange(targets);
             _clipboardIsCut = true;
             Invalidate();
+
+            OnAfterCut(new NodesEventArgs(targets));
         }
 
         public void Paste()
@@ -2124,6 +2201,12 @@ namespace BedrockCosmos.App.UI
 
             // Pasting still allowed from Cuts if Copying is disabled.
             if (!_clipboardIsCut && !AllowCopying)
+                return;
+
+            bool wasCut = _clipboardIsCut;
+            var before = new PasteCancelEventArgs(_clipboard, wasCut);
+            OnBeforePaste(before);
+            if (before.Cancel)
                 return;
 
             ImageCategory targetCategory = null;
@@ -2221,6 +2304,8 @@ namespace BedrockCosmos.App.UI
             Invalidate();
             SelectionChanged?.Invoke(this, EventArgs.Empty);
             DataChanged?.Invoke(this, EventArgs.Empty);
+
+            OnAfterPaste(new PasteEventArgs(pastedNodes, wasCut));
         }
 
         #endregion
@@ -2631,7 +2716,21 @@ namespace BedrockCosmos.App.UI
         public ImageCategory AddCategory(string name)
         {
             var category = new ImageCategory { Name = name, Items = new List<ImageItem>() };
-            _categories.Add(category);
+            ImageCategory anchor = null;
+            object firstSelected = _selectionOrder.FirstOrDefault();
+
+            if (firstSelected is ImageCategory selectedCategory)
+                anchor = selectedCategory;
+            else if (firstSelected is ImageItem selectedItem && _parentMap.TryGetValue(selectedItem, out var owner))
+                anchor = owner;
+
+            int anchorIndex = anchor != null ? _categories.IndexOf(anchor) : -1;
+
+            if (anchorIndex >= 0)
+                _categories.Insert(anchorIndex + 1, category);
+            else
+                _categories.Add(category);
+
             RebuildLayout();
             ScrollNodeIntoView(category);
             Invalidate();
@@ -2685,13 +2784,21 @@ namespace BedrockCosmos.App.UI
             return newItem;
         }
 
-        // Removes every currently selected category (and its children) and every currently selected item.
-        public void RemoveSelectedNodes()
+        // Returns true if nodes were deleted, false if nothing selected or a handler cancelled.
+        public bool RemoveSelectedNodes()
         {
             if (_selectionOrder.Count == 0)
-                return;
+                return false;
 
-            foreach (var category in SelectedCategories.ToList())
+            // Snapshot, since a handler (dialog) could change the selection.
+            var targets = _selectionOrder.ToList();
+
+            var before = new NodesCancelEventArgs(targets);
+            OnBeforeDelete(before);
+            if (before.Cancel)
+                return false;
+
+            foreach (var category in targets.OfType<ImageCategory>())
             {
                 foreach (var item in category.Items)
                     _parentMap.Remove(item);
@@ -2699,7 +2806,7 @@ namespace BedrockCosmos.App.UI
                 _categories.Remove(category);
             }
 
-            foreach (var item in SelectedItems.ToList())
+            foreach (var item in targets.OfType<ImageItem>())
             {
                 if (_parentMap.TryGetValue(item, out var owner))
                     owner.Items.Remove(item);
@@ -2712,8 +2819,65 @@ namespace BedrockCosmos.App.UI
             Invalidate();
             SelectionChanged?.Invoke(this, EventArgs.Empty);
             DataChanged?.Invoke(this, EventArgs.Empty);
+
+            OnAfterDelete(new NodesEventArgs(targets));
+            return true;
         }
 
         #endregion
+    }
+
+    public class NodesEventArgs : EventArgs
+    {
+        public NodesEventArgs(IEnumerable<object> nodes) { Nodes = nodes.ToList().AsReadOnly(); }
+
+        public IReadOnlyList<object> Nodes { get; }
+        public IEnumerable<ImageCategory> Categories => Nodes.OfType<ImageCategory>();
+        public IEnumerable<ImageItem> Items => Nodes.OfType<ImageItem>();
+    }
+
+    public class NodesCancelEventArgs : CancelEventArgs
+    {
+        public NodesCancelEventArgs(IEnumerable<object> nodes) { Nodes = nodes.ToList().AsReadOnly(); }
+
+        public IReadOnlyList<object> Nodes { get; }
+        public IEnumerable<ImageCategory> Categories => Nodes.OfType<ImageCategory>();
+        public IEnumerable<ImageItem> Items => Nodes.OfType<ImageItem>();
+    }
+
+    public class PasteCancelEventArgs : NodesCancelEventArgs
+    {
+        public PasteCancelEventArgs(IEnumerable<object> nodes, bool isCut) : base(nodes) { IsCut = isCut; }
+        public bool IsCut { get; } // True = Cutting, False = Copying
+    }
+
+    public class PasteEventArgs : NodesEventArgs // Pasted Nodes
+    {
+        public PasteEventArgs(IEnumerable<object> nodes, bool isCut) : base(nodes) { IsCut = isCut; }
+        public bool IsCut { get; }
+    }
+
+    public class RenameCancelEventArgs : CancelEventArgs
+    {
+        public RenameCancelEventArgs(object node, string oldName, string newName)
+        {
+            Node = node; OldName = oldName; NewName = newName;
+        }
+
+        public object Node { get; }
+        public string OldName { get; }
+        public string NewName { get; set; } // Handlers can adjust this (trim, truncate, sanitize) instead of cancelling.
+    }
+
+    public class RenameEventArgs : EventArgs
+    {
+        public RenameEventArgs(object node, string oldName, string newName)
+        {
+            Node = node; OldName = oldName; NewName = newName;
+        }
+
+        public object Node { get; }
+        public string OldName { get; }
+        public string NewName { get; }
     }
 }

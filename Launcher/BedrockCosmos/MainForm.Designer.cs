@@ -70,7 +70,8 @@
             this.BackgroundModeTitleLabel = new System.Windows.Forms.Label();
             this.BackgroundModeSwitch = new BedrockCosmos.App.UI.Switch();
             this.MenuEditorPage = new System.Windows.Forms.TabPage();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.ShowConfirmationDialogsButton = new BedrockCosmos.App.UI.RoundButton();
+            this.MultipleNodesIcon = new System.Windows.Forms.PictureBox();
             this.ActiveNodePreview = new BedrockCosmos.App.UI.RoundButton();
             this.ShowNodeIdsButton = new BedrockCosmos.App.UI.RoundButton();
             this.ShowNodeCountButton = new BedrockCosmos.App.UI.RoundButton();
@@ -126,7 +127,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.GitHubIcon)).BeginInit();
             this.SettingsPage.SuspendLayout();
             this.MenuEditorPage.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.MultipleNodesIcon)).BeginInit();
             this.UpdatePage.SuspendLayout();
             this.DevPage.SuspendLayout();
             this.SuspendLayout();
@@ -761,7 +762,8 @@
             // MenuEditorPage
             // 
             this.MenuEditorPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.MenuEditorPage.Controls.Add(this.pictureBox1);
+            this.MenuEditorPage.Controls.Add(this.ShowConfirmationDialogsButton);
+            this.MenuEditorPage.Controls.Add(this.MultipleNodesIcon);
             this.MenuEditorPage.Controls.Add(this.ActiveNodePreview);
             this.MenuEditorPage.Controls.Add(this.ShowNodeIdsButton);
             this.MenuEditorPage.Controls.Add(this.ShowNodeCountButton);
@@ -794,16 +796,45 @@
             this.MenuEditorPage.TabIndex = 6;
             this.MenuEditorPage.Text = "Menu Editor";
             // 
-            // pictureBox1
+            // ShowConfirmationDialogsButton
             // 
-            this.pictureBox1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pictureBox1.BackgroundImage")));
-            this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pictureBox1.Location = new System.Drawing.Point(732, 227);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(32, 32);
-            this.pictureBox1.TabIndex = 4;
-            this.pictureBox1.TabStop = false;
-            this.pictureBox1.Visible = false;
+            this.ShowConfirmationDialogsButton.BackColor = System.Drawing.Color.Transparent;
+            this.ShowConfirmationDialogsButton.ButtonImage = ((System.Drawing.Image)(resources.GetObject("ShowConfirmationDialogsButton.ButtonImage")));
+            this.ShowConfirmationDialogsButton.ButtonImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.ShowConfirmationDialogsButton.ButtonImageSize = new System.Drawing.Size(24, 24);
+            this.ShowConfirmationDialogsButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.ShowConfirmationDialogsButton.DialogResult = System.Windows.Forms.DialogResult.None;
+            this.ShowConfirmationDialogsButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.ShowConfirmationDialogsButton.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.ShowConfirmationDialogsButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.ShowConfirmationDialogsButton.HoverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.ShowConfirmationDialogsButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.ShowConfirmationDialogsButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.ShowConfirmationDialogsButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            this.ShowConfirmationDialogsButton.Location = new System.Drawing.Point(15, 142);
+            this.ShowConfirmationDialogsButton.MinimumSize = new System.Drawing.Size(30, 30);
+            this.ShowConfirmationDialogsButton.Name = "ShowConfirmationDialogsButton";
+            this.ShowConfirmationDialogsButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.ShowConfirmationDialogsButton.PixelOffsetType = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            this.ShowConfirmationDialogsButton.PressedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.ShowConfirmationDialogsButton.PressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.ShowConfirmationDialogsButton.Radius = 5;
+            this.ShowConfirmationDialogsButton.Size = new System.Drawing.Size(32, 32);
+            this.ShowConfirmationDialogsButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            this.ShowConfirmationDialogsButton.TabIndex = 40;
+            this.ShowConfirmationDialogsButton.TooltipText = "Show Confirmation Dialogs";
+            this.ShowConfirmationDialogsButton.Click += new System.EventHandler(this.ShowConfirmationDialogsButton_Click);
+            // 
+            // MultipleNodesIcon
+            // 
+            this.MultipleNodesIcon.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("MultipleNodesIcon.BackgroundImage")));
+            this.MultipleNodesIcon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.MultipleNodesIcon.Location = new System.Drawing.Point(731, 188);
+            this.MultipleNodesIcon.Name = "MultipleNodesIcon";
+            this.MultipleNodesIcon.Size = new System.Drawing.Size(32, 32);
+            this.MultipleNodesIcon.TabIndex = 4;
+            this.MultipleNodesIcon.TabStop = false;
+            this.MultipleNodesIcon.Visible = false;
             // 
             // ActiveNodePreview
             // 
@@ -1065,7 +1096,7 @@
             this.AddCategoryButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.AddCategoryButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.AddCategoryButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.AddCategoryButton.Location = new System.Drawing.Point(304, 42);
+            this.AddCategoryButton.Location = new System.Drawing.Point(335, 42);
             this.AddCategoryButton.MinimumSize = new System.Drawing.Size(10, 10);
             this.AddCategoryButton.Name = "AddCategoryButton";
             this.AddCategoryButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
@@ -1190,7 +1221,7 @@
             this.CopyNodeButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.CopyNodeButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.CopyNodeButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.CopyNodeButton.Location = new System.Drawing.Point(335, 42);
+            this.CopyNodeButton.Location = new System.Drawing.Point(521, 42);
             this.CopyNodeButton.MinimumSize = new System.Drawing.Size(10, 10);
             this.CopyNodeButton.Name = "CopyNodeButton";
             this.CopyNodeButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
@@ -1202,6 +1233,7 @@
             this.CopyNodeButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.CopyNodeButton.TabIndex = 24;
             this.CopyNodeButton.TooltipText = "Copy";
+            this.CopyNodeButton.Visible = false;
             this.CopyNodeButton.Click += new System.EventHandler(this.CopyNodeButton_Click);
             // 
             // CapeTreeView
@@ -1241,6 +1273,9 @@
             this.CapeTreeView.TrackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.CapeTreeView.UncommonRarityColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
             this.CapeTreeView.SelectionChanged += new System.EventHandler(this.CapeTreeView_SelectionChanged);
+            this.CapeTreeView.AfterRename += new System.EventHandler<BedrockCosmos.App.UI.RenameEventArgs>(this.CapeTreeView_AfterRename);
+            this.CapeTreeView.BeforeDelete += new System.EventHandler<BedrockCosmos.App.UI.NodesCancelEventArgs>(this.CapeTreeView_BeforeDelete);
+            this.CapeTreeView.AfterDelete += new System.EventHandler<BedrockCosmos.App.UI.NodesEventArgs>(this.CapeTreeView_AfterDelete);
             // 
             // ResetNodesButton
             // 
@@ -1315,7 +1350,7 @@
             this.AddNodeButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.AddNodeButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.AddNodeButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.AddNodeButton.Location = new System.Drawing.Point(273, 42);
+            this.AddNodeButton.Location = new System.Drawing.Point(304, 42);
             this.AddNodeButton.MinimumSize = new System.Drawing.Size(10, 10);
             this.AddNodeButton.Name = "AddNodeButton";
             this.AddNodeButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
@@ -1882,7 +1917,7 @@
             this.SettingsPage.PerformLayout();
             this.MenuEditorPage.ResumeLayout(false);
             this.MenuEditorPage.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.MultipleNodesIcon)).EndInit();
             this.UpdatePage.ResumeLayout(false);
             this.DevPage.ResumeLayout(false);
             this.DevPage.PerformLayout();
@@ -1976,7 +2011,8 @@
         private App.UI.RoundButton ShowNodeCountButton;
         private App.UI.RoundButton ActiveNodePreview;
         private App.UI.ImageTreeView CapeTreeView;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox MultipleNodesIcon;
+        private App.UI.RoundButton ShowConfirmationDialogsButton;
     }
 }
 
