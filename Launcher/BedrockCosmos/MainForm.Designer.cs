@@ -54,21 +54,26 @@
             this.AboutLabel = new System.Windows.Forms.Label();
             this.AboutBackButton = new System.Windows.Forms.Button();
             this.SettingsPage = new System.Windows.Forms.TabPage();
-            this.SkinPacksEditorButton = new BedrockCosmos.App.UI.RoundButton();
-            this.CapesEditorButton = new BedrockCosmos.App.UI.RoundButton();
-            this.NewsDescriptionLabel = new System.Windows.Forms.Label();
-            this.NewsSwitch = new BedrockCosmos.App.UI.Switch();
-            this.NewsTitleLabel = new System.Windows.Forms.Label();
-            this.DiscordRichPresenceDescription = new System.Windows.Forms.Label();
-            this.DiscordRichPresenceLabel = new System.Windows.Forms.Label();
-            this.DiscordRichPresenceSwitch = new BedrockCosmos.App.UI.Switch();
-            this.LanguageComboBox = new BedrockCosmos.App.UI.GradientComboBox();
-            this.LanguageDescriptionLabel = new System.Windows.Forms.Label();
-            this.LanguageTitleLabel = new System.Windows.Forms.Label();
             this.SettingsBackButton = new System.Windows.Forms.Button();
-            this.BackgroundModeDescriptionLabel = new System.Windows.Forms.Label();
+            this.SettingsPanel = new BedrockCosmos.App.UI.CustomScrollBarPanel();
+            this.SkinPackMenuEditorDescriptionLabel = new System.Windows.Forms.Label();
+            this.CapeMenuEditorDescriptionLabel = new System.Windows.Forms.Label();
+            this.SkinPackMenuEditorTitleLabel = new System.Windows.Forms.Label();
+            this.CapeMenuEditorTitleLabel = new System.Windows.Forms.Label();
+            this.SkinPackMenuEditorButton = new BedrockCosmos.App.UI.RoundButton();
+            this.NewsDescriptionLabel = new System.Windows.Forms.Label();
+            this.CapeMenuEditorButton = new BedrockCosmos.App.UI.RoundButton();
+            this.NewsSwitch = new BedrockCosmos.App.UI.Switch();
             this.BackgroundModeTitleLabel = new System.Windows.Forms.Label();
+            this.NewsTitleLabel = new System.Windows.Forms.Label();
             this.BackgroundModeSwitch = new BedrockCosmos.App.UI.Switch();
+            this.DiscordRichPresenceDescription = new System.Windows.Forms.Label();
+            this.BackgroundModeDescriptionLabel = new System.Windows.Forms.Label();
+            this.DiscordRichPresenceLabel = new System.Windows.Forms.Label();
+            this.LanguageTitleLabel = new System.Windows.Forms.Label();
+            this.DiscordRichPresenceSwitch = new BedrockCosmos.App.UI.Switch();
+            this.LanguageDescriptionLabel = new System.Windows.Forms.Label();
+            this.LanguageComboBox = new BedrockCosmos.App.UI.GradientComboBox();
             this.MenuEditorPage = new System.Windows.Forms.TabPage();
             this.ShowConfirmationDialogsButton = new BedrockCosmos.App.UI.RoundButton();
             this.MultipleNodesIcon = new System.Windows.Forms.PictureBox();
@@ -126,6 +131,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.DiscordIcon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.GitHubIcon)).BeginInit();
             this.SettingsPage.SuspendLayout();
+            this.SettingsPanel.SuspendLayout();
             this.MenuEditorPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MultipleNodesIcon)).BeginInit();
             this.UpdatePage.SuspendLayout();
@@ -478,21 +484,8 @@
             // SettingsPage
             // 
             this.SettingsPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.SettingsPage.Controls.Add(this.SkinPacksEditorButton);
-            this.SettingsPage.Controls.Add(this.CapesEditorButton);
-            this.SettingsPage.Controls.Add(this.NewsDescriptionLabel);
-            this.SettingsPage.Controls.Add(this.NewsSwitch);
-            this.SettingsPage.Controls.Add(this.NewsTitleLabel);
-            this.SettingsPage.Controls.Add(this.DiscordRichPresenceDescription);
-            this.SettingsPage.Controls.Add(this.DiscordRichPresenceLabel);
-            this.SettingsPage.Controls.Add(this.DiscordRichPresenceSwitch);
-            this.SettingsPage.Controls.Add(this.LanguageComboBox);
-            this.SettingsPage.Controls.Add(this.LanguageDescriptionLabel);
-            this.SettingsPage.Controls.Add(this.LanguageTitleLabel);
             this.SettingsPage.Controls.Add(this.SettingsBackButton);
-            this.SettingsPage.Controls.Add(this.BackgroundModeDescriptionLabel);
-            this.SettingsPage.Controls.Add(this.BackgroundModeTitleLabel);
-            this.SettingsPage.Controls.Add(this.BackgroundModeSwitch);
+            this.SettingsPage.Controls.Add(this.SettingsPanel);
             this.SettingsPage.Location = new System.Drawing.Point(4, 22);
             this.SettingsPage.Name = "SettingsPage";
             this.SettingsPage.Padding = new System.Windows.Forms.Padding(3);
@@ -500,68 +493,139 @@
             this.SettingsPage.TabIndex = 1;
             this.SettingsPage.Text = "Settings";
             // 
-            // SkinPacksEditorButton
+            // SettingsBackButton
             // 
-            this.SkinPacksEditorButton.BackColor = System.Drawing.Color.Transparent;
-            this.SkinPacksEditorButton.ButtonImage = null;
-            this.SkinPacksEditorButton.ButtonImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.SkinPacksEditorButton.ButtonImageSize = new System.Drawing.Size(0, 0);
-            this.SkinPacksEditorButton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.SkinPacksEditorButton.DialogResult = System.Windows.Forms.DialogResult.None;
-            this.SkinPacksEditorButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.SkinPacksEditorButton.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.SkinPacksEditorButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.SkinPacksEditorButton.HoverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
-            this.SkinPacksEditorButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
-            this.SkinPacksEditorButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.SkinPacksEditorButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.SkinPacksEditorButton.Location = new System.Drawing.Point(221, 387);
-            this.SkinPacksEditorButton.Name = "SkinPacksEditorButton";
-            this.SkinPacksEditorButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
-            this.SkinPacksEditorButton.PixelOffsetType = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-            this.SkinPacksEditorButton.PressedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
-            this.SkinPacksEditorButton.PressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.SkinPacksEditorButton.Radius = 5;
-            this.SkinPacksEditorButton.Size = new System.Drawing.Size(133, 32);
-            this.SkinPacksEditorButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            this.SkinPacksEditorButton.TabIndex = 27;
-            this.SkinPacksEditorButton.Text = "Edit Skin Packs Tab";
-            this.SkinPacksEditorButton.Click += new System.EventHandler(this.SkinPacksEditorButton_Click);
+            this.SettingsBackButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.SettingsBackButton.BackColor = System.Drawing.Color.Transparent;
+            this.SettingsBackButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("SettingsBackButton.BackgroundImage")));
+            this.SettingsBackButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.SettingsBackButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.SettingsBackButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.SettingsBackButton.FlatAppearance.BorderSize = 0;
+            this.SettingsBackButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.SettingsBackButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.SettingsBackButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.SettingsBackButton.Location = new System.Drawing.Point(17, 394);
+            this.SettingsBackButton.Name = "SettingsBackButton";
+            this.SettingsBackButton.Size = new System.Drawing.Size(25, 25);
+            this.SettingsBackButton.TabIndex = 15;
+            this.SettingsBackButton.UseVisualStyleBackColor = false;
+            this.SettingsBackButton.Click += new System.EventHandler(this.ReturnToHomeScreen);
             // 
-            // CapesEditorButton
+            // SettingsPanel
             // 
-            this.CapesEditorButton.BackColor = System.Drawing.Color.Transparent;
-            this.CapesEditorButton.ButtonImage = null;
-            this.CapesEditorButton.ButtonImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.CapesEditorButton.ButtonImageSize = new System.Drawing.Size(0, 0);
-            this.CapesEditorButton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.CapesEditorButton.DialogResult = System.Windows.Forms.DialogResult.None;
-            this.CapesEditorButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.CapesEditorButton.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.CapesEditorButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.CapesEditorButton.HoverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
-            this.CapesEditorButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
-            this.CapesEditorButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.CapesEditorButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.CapesEditorButton.Location = new System.Drawing.Point(82, 387);
-            this.CapesEditorButton.Name = "CapesEditorButton";
-            this.CapesEditorButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
-            this.CapesEditorButton.PixelOffsetType = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-            this.CapesEditorButton.PressedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
-            this.CapesEditorButton.PressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.CapesEditorButton.Radius = 5;
-            this.CapesEditorButton.Size = new System.Drawing.Size(133, 32);
-            this.CapesEditorButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            this.CapesEditorButton.TabIndex = 26;
-            this.CapesEditorButton.Text = "Edit Capes Tab";
-            this.CapesEditorButton.Click += new System.EventHandler(this.CapesEditorButton_Click);
+            this.SettingsPanel.AutoScroll = true;
+            this.SettingsPanel.AutoScrollMinSize = new System.Drawing.Size(0, 465);
+            this.SettingsPanel.Controls.Add(this.SkinPackMenuEditorDescriptionLabel);
+            this.SettingsPanel.Controls.Add(this.CapeMenuEditorDescriptionLabel);
+            this.SettingsPanel.Controls.Add(this.SkinPackMenuEditorTitleLabel);
+            this.SettingsPanel.Controls.Add(this.CapeMenuEditorTitleLabel);
+            this.SettingsPanel.Controls.Add(this.SkinPackMenuEditorButton);
+            this.SettingsPanel.Controls.Add(this.NewsDescriptionLabel);
+            this.SettingsPanel.Controls.Add(this.CapeMenuEditorButton);
+            this.SettingsPanel.Controls.Add(this.NewsSwitch);
+            this.SettingsPanel.Controls.Add(this.BackgroundModeTitleLabel);
+            this.SettingsPanel.Controls.Add(this.NewsTitleLabel);
+            this.SettingsPanel.Controls.Add(this.BackgroundModeSwitch);
+            this.SettingsPanel.Controls.Add(this.DiscordRichPresenceDescription);
+            this.SettingsPanel.Controls.Add(this.BackgroundModeDescriptionLabel);
+            this.SettingsPanel.Controls.Add(this.DiscordRichPresenceLabel);
+            this.SettingsPanel.Controls.Add(this.LanguageTitleLabel);
+            this.SettingsPanel.Controls.Add(this.DiscordRichPresenceSwitch);
+            this.SettingsPanel.Controls.Add(this.LanguageDescriptionLabel);
+            this.SettingsPanel.Controls.Add(this.LanguageComboBox);
+            this.SettingsPanel.Location = new System.Drawing.Point(7, 30);
+            this.SettingsPanel.Name = "SettingsPanel";
+            this.SettingsPanel.Size = new System.Drawing.Size(800, 351);
+            this.SettingsPanel.TabIndex = 32;
+            this.SettingsPanel.ThumbColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.SettingsPanel.ThumbHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(110)))), ((int)(((byte)(110)))));
+            this.SettingsPanel.TrackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            // 
+            // SkinPackMenuEditorDescriptionLabel
+            // 
+            this.SkinPackMenuEditorDescriptionLabel.BackColor = System.Drawing.Color.Transparent;
+            this.SkinPackMenuEditorDescriptionLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.SkinPackMenuEditorDescriptionLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.SkinPackMenuEditorDescriptionLabel.Location = new System.Drawing.Point(113, 112);
+            this.SkinPackMenuEditorDescriptionLabel.Name = "SkinPackMenuEditorDescriptionLabel";
+            this.SkinPackMenuEditorDescriptionLabel.Size = new System.Drawing.Size(657, 41);
+            this.SkinPackMenuEditorDescriptionLabel.TabIndex = 35;
+            this.SkinPackMenuEditorDescriptionLabel.Text = "Allows you to customize which skin packs from Bedrock Cosmos are shown in Minecra" +
+    "ft\'s classic skins menu.";
+            this.SkinPackMenuEditorDescriptionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // CapeMenuEditorDescriptionLabel
+            // 
+            this.CapeMenuEditorDescriptionLabel.BackColor = System.Drawing.Color.Transparent;
+            this.CapeMenuEditorDescriptionLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.CapeMenuEditorDescriptionLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.CapeMenuEditorDescriptionLabel.Location = new System.Drawing.Point(113, 37);
+            this.CapeMenuEditorDescriptionLabel.Name = "CapeMenuEditorDescriptionLabel";
+            this.CapeMenuEditorDescriptionLabel.Size = new System.Drawing.Size(661, 41);
+            this.CapeMenuEditorDescriptionLabel.TabIndex = 34;
+            this.CapeMenuEditorDescriptionLabel.Text = "Allows you to customize which capes from Bedrock Cosmos are shown in Minecraft\'s " +
+    "cape menu.";
+            this.CapeMenuEditorDescriptionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // SkinPackMenuEditorTitleLabel
+            // 
+            this.SkinPackMenuEditorTitleLabel.AutoSize = true;
+            this.SkinPackMenuEditorTitleLabel.BackColor = System.Drawing.Color.Transparent;
+            this.SkinPackMenuEditorTitleLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SkinPackMenuEditorTitleLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.SkinPackMenuEditorTitleLabel.Location = new System.Drawing.Point(10, 85);
+            this.SkinPackMenuEditorTitleLabel.Name = "SkinPackMenuEditorTitleLabel";
+            this.SkinPackMenuEditorTitleLabel.Size = new System.Drawing.Size(181, 21);
+            this.SkinPackMenuEditorTitleLabel.TabIndex = 33;
+            this.SkinPackMenuEditorTitleLabel.Text = "Skin Pack Menu Editor";
+            // 
+            // CapeMenuEditorTitleLabel
+            // 
+            this.CapeMenuEditorTitleLabel.AutoSize = true;
+            this.CapeMenuEditorTitleLabel.BackColor = System.Drawing.Color.Transparent;
+            this.CapeMenuEditorTitleLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.CapeMenuEditorTitleLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.CapeMenuEditorTitleLabel.Location = new System.Drawing.Point(10, 10);
+            this.CapeMenuEditorTitleLabel.Name = "CapeMenuEditorTitleLabel";
+            this.CapeMenuEditorTitleLabel.Size = new System.Drawing.Size(146, 21);
+            this.CapeMenuEditorTitleLabel.TabIndex = 32;
+            this.CapeMenuEditorTitleLabel.Text = "Cape Menu Editor";
+            // 
+            // SkinPackMenuEditorButton
+            // 
+            this.SkinPackMenuEditorButton.BackColor = System.Drawing.Color.Transparent;
+            this.SkinPackMenuEditorButton.ButtonImage = null;
+            this.SkinPackMenuEditorButton.ButtonImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.SkinPackMenuEditorButton.ButtonImageSize = new System.Drawing.Size(0, 0);
+            this.SkinPackMenuEditorButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.SkinPackMenuEditorButton.DialogResult = System.Windows.Forms.DialogResult.None;
+            this.SkinPackMenuEditorButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.SkinPackMenuEditorButton.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.SkinPackMenuEditorButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.SkinPackMenuEditorButton.HoverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.SkinPackMenuEditorButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.SkinPackMenuEditorButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.SkinPackMenuEditorButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            this.SkinPackMenuEditorButton.Location = new System.Drawing.Point(13, 117);
+            this.SkinPackMenuEditorButton.Name = "SkinPackMenuEditorButton";
+            this.SkinPackMenuEditorButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.SkinPackMenuEditorButton.PixelOffsetType = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            this.SkinPackMenuEditorButton.PressedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.SkinPackMenuEditorButton.PressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.SkinPackMenuEditorButton.Radius = 5;
+            this.SkinPackMenuEditorButton.Size = new System.Drawing.Size(90, 32);
+            this.SkinPackMenuEditorButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            this.SkinPackMenuEditorButton.TabIndex = 31;
+            this.SkinPackMenuEditorButton.Text = "Open";
+            this.SkinPackMenuEditorButton.Click += new System.EventHandler(this.SkinPacksEditorButton_Click);
             // 
             // NewsDescriptionLabel
             // 
             this.NewsDescriptionLabel.BackColor = System.Drawing.Color.Transparent;
             this.NewsDescriptionLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.NewsDescriptionLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.NewsDescriptionLabel.Location = new System.Drawing.Point(78, 289);
+            this.NewsDescriptionLabel.Location = new System.Drawing.Point(69, 409);
             this.NewsDescriptionLabel.Name = "NewsDescriptionLabel";
             this.NewsDescriptionLabel.Size = new System.Drawing.Size(707, 41);
             this.NewsDescriptionLabel.TabIndex = 25;
@@ -569,6 +633,34 @@
     "tom inbox section will also be shown to view announcements you have previously r" +
     "eceived.";
             this.NewsDescriptionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // CapeMenuEditorButton
+            // 
+            this.CapeMenuEditorButton.BackColor = System.Drawing.Color.Transparent;
+            this.CapeMenuEditorButton.ButtonImage = null;
+            this.CapeMenuEditorButton.ButtonImageAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.CapeMenuEditorButton.ButtonImageSize = new System.Drawing.Size(0, 0);
+            this.CapeMenuEditorButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.CapeMenuEditorButton.DialogResult = System.Windows.Forms.DialogResult.None;
+            this.CapeMenuEditorButton.FilledBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.CapeMenuEditorButton.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.CapeMenuEditorButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.CapeMenuEditorButton.HoverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.CapeMenuEditorButton.HoverFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.CapeMenuEditorButton.HoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.CapeMenuEditorButton.InterpolationType = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            this.CapeMenuEditorButton.Location = new System.Drawing.Point(13, 42);
+            this.CapeMenuEditorButton.Name = "CapeMenuEditorButton";
+            this.CapeMenuEditorButton.NormalBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.CapeMenuEditorButton.PixelOffsetType = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            this.CapeMenuEditorButton.PressedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.CapeMenuEditorButton.PressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.CapeMenuEditorButton.Radius = 5;
+            this.CapeMenuEditorButton.Size = new System.Drawing.Size(90, 32);
+            this.CapeMenuEditorButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            this.CapeMenuEditorButton.TabIndex = 30;
+            this.CapeMenuEditorButton.Text = "Open";
+            this.CapeMenuEditorButton.Click += new System.EventHandler(this.CapesEditorButton_Click);
             // 
             // NewsSwitch
             // 
@@ -578,12 +670,24 @@
             this.NewsSwitch.BaseOffColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.NewsSwitch.BaseOnColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.NewsSwitch.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.NewsSwitch.Location = new System.Drawing.Point(23, 299);
+            this.NewsSwitch.Location = new System.Drawing.Point(14, 419);
             this.NewsSwitch.Name = "NewsSwitch";
             this.NewsSwitch.Size = new System.Drawing.Size(40, 20);
             this.NewsSwitch.TabIndex = 24;
             this.NewsSwitch.UseVisualStyleBackColor = false;
             this.NewsSwitch.CheckedChanged += new System.EventHandler(this.NewsSwitch_CheckedChanged);
+            // 
+            // BackgroundModeTitleLabel
+            // 
+            this.BackgroundModeTitleLabel.AutoSize = true;
+            this.BackgroundModeTitleLabel.BackColor = System.Drawing.Color.Transparent;
+            this.BackgroundModeTitleLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BackgroundModeTitleLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.BackgroundModeTitleLabel.Location = new System.Drawing.Point(10, 160);
+            this.BackgroundModeTitleLabel.Name = "BackgroundModeTitleLabel";
+            this.BackgroundModeTitleLabel.Size = new System.Drawing.Size(150, 21);
+            this.BackgroundModeTitleLabel.TabIndex = 13;
+            this.BackgroundModeTitleLabel.Text = "Background Mode";
             // 
             // NewsTitleLabel
             // 
@@ -591,18 +695,33 @@
             this.NewsTitleLabel.BackColor = System.Drawing.Color.Transparent;
             this.NewsTitleLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.NewsTitleLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.NewsTitleLabel.Location = new System.Drawing.Point(19, 265);
+            this.NewsTitleLabel.Location = new System.Drawing.Point(10, 385);
             this.NewsTitleLabel.Name = "NewsTitleLabel";
             this.NewsTitleLabel.Size = new System.Drawing.Size(52, 21);
             this.NewsTitleLabel.TabIndex = 23;
             this.NewsTitleLabel.Text = "News";
+            // 
+            // BackgroundModeSwitch
+            // 
+            this.BackgroundModeSwitch.AutoSize = true;
+            this.BackgroundModeSwitch.BackColor = System.Drawing.Color.Transparent;
+            this.BackgroundModeSwitch.BaseColor = System.Drawing.Color.White;
+            this.BackgroundModeSwitch.BaseOffColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.BackgroundModeSwitch.BaseOnColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.BackgroundModeSwitch.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.BackgroundModeSwitch.Location = new System.Drawing.Point(14, 194);
+            this.BackgroundModeSwitch.Name = "BackgroundModeSwitch";
+            this.BackgroundModeSwitch.Size = new System.Drawing.Size(40, 20);
+            this.BackgroundModeSwitch.TabIndex = 12;
+            this.BackgroundModeSwitch.UseVisualStyleBackColor = false;
+            this.BackgroundModeSwitch.CheckedChanged += new System.EventHandler(this.BackgroundModeToggle_CheckedChanged);
             // 
             // DiscordRichPresenceDescription
             // 
             this.DiscordRichPresenceDescription.BackColor = System.Drawing.Color.Transparent;
             this.DiscordRichPresenceDescription.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.DiscordRichPresenceDescription.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.DiscordRichPresenceDescription.Location = new System.Drawing.Point(78, 139);
+            this.DiscordRichPresenceDescription.Location = new System.Drawing.Point(69, 259);
             this.DiscordRichPresenceDescription.Name = "DiscordRichPresenceDescription";
             this.DiscordRichPresenceDescription.Size = new System.Drawing.Size(707, 41);
             this.DiscordRichPresenceDescription.TabIndex = 22;
@@ -610,17 +729,43 @@
     "while the launcher is open.";
             this.DiscordRichPresenceDescription.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // BackgroundModeDescriptionLabel
+            // 
+            this.BackgroundModeDescriptionLabel.BackColor = System.Drawing.Color.Transparent;
+            this.BackgroundModeDescriptionLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.BackgroundModeDescriptionLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.BackgroundModeDescriptionLabel.Location = new System.Drawing.Point(69, 184);
+            this.BackgroundModeDescriptionLabel.Name = "BackgroundModeDescriptionLabel";
+            this.BackgroundModeDescriptionLabel.Size = new System.Drawing.Size(707, 41);
+            this.BackgroundModeDescriptionLabel.TabIndex = 14;
+            this.BackgroundModeDescriptionLabel.Text = "When enabled, Bedrock Cosmos will minimize to the system tray instead of the task" +
+    "bar. The proxy service will also automatically start/stop when Minecraft is open" +
+    "ed/closed, respectively.";
+            this.BackgroundModeDescriptionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // DiscordRichPresenceLabel
             // 
             this.DiscordRichPresenceLabel.AutoSize = true;
             this.DiscordRichPresenceLabel.BackColor = System.Drawing.Color.Transparent;
             this.DiscordRichPresenceLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.DiscordRichPresenceLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.DiscordRichPresenceLabel.Location = new System.Drawing.Point(19, 115);
+            this.DiscordRichPresenceLabel.Location = new System.Drawing.Point(10, 235);
             this.DiscordRichPresenceLabel.Name = "DiscordRichPresenceLabel";
             this.DiscordRichPresenceLabel.Size = new System.Drawing.Size(177, 21);
             this.DiscordRichPresenceLabel.TabIndex = 20;
             this.DiscordRichPresenceLabel.Text = "Discord Rich Presence";
+            // 
+            // LanguageTitleLabel
+            // 
+            this.LanguageTitleLabel.AutoSize = true;
+            this.LanguageTitleLabel.BackColor = System.Drawing.Color.Transparent;
+            this.LanguageTitleLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LanguageTitleLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.LanguageTitleLabel.Location = new System.Drawing.Point(10, 310);
+            this.LanguageTitleLabel.Name = "LanguageTitleLabel";
+            this.LanguageTitleLabel.Size = new System.Drawing.Size(85, 21);
+            this.LanguageTitleLabel.TabIndex = 17;
+            this.LanguageTitleLabel.Text = "Language";
             // 
             // DiscordRichPresenceSwitch
             // 
@@ -630,12 +775,24 @@
             this.DiscordRichPresenceSwitch.BaseOffColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.DiscordRichPresenceSwitch.BaseOnColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.DiscordRichPresenceSwitch.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.DiscordRichPresenceSwitch.Location = new System.Drawing.Point(23, 149);
+            this.DiscordRichPresenceSwitch.Location = new System.Drawing.Point(14, 269);
             this.DiscordRichPresenceSwitch.Name = "DiscordRichPresenceSwitch";
             this.DiscordRichPresenceSwitch.Size = new System.Drawing.Size(40, 20);
             this.DiscordRichPresenceSwitch.TabIndex = 21;
             this.DiscordRichPresenceSwitch.UseVisualStyleBackColor = false;
             this.DiscordRichPresenceSwitch.CheckedChanged += new System.EventHandler(this.DiscordRichPresenceSwitch_CheckedChanged);
+            // 
+            // LanguageDescriptionLabel
+            // 
+            this.LanguageDescriptionLabel.BackColor = System.Drawing.Color.Transparent;
+            this.LanguageDescriptionLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.LanguageDescriptionLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.LanguageDescriptionLabel.Location = new System.Drawing.Point(160, 341);
+            this.LanguageDescriptionLabel.Name = "LanguageDescriptionLabel";
+            this.LanguageDescriptionLabel.Size = new System.Drawing.Size(611, 32);
+            this.LanguageDescriptionLabel.TabIndex = 18;
+            this.LanguageDescriptionLabel.Text = "Change the language used in the Bedrock Cosmos Launcher.";
+            this.LanguageDescriptionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // LanguageComboBox
             // 
@@ -664,7 +821,7 @@
             this.LanguageComboBox.ItemHeight = 26;
             this.LanguageComboBox.Items.AddRange(new object[] {
             "English"});
-            this.LanguageComboBox.Location = new System.Drawing.Point(23, 222);
+            this.LanguageComboBox.Location = new System.Drawing.Point(14, 342);
             this.LanguageComboBox.Name = "LanguageComboBox";
             this.LanguageComboBox.ScrollBarWidth = 12;
             this.LanguageComboBox.ScrollThumbColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
@@ -674,90 +831,6 @@
             this.LanguageComboBox.StartIndex = 0;
             this.LanguageComboBox.TabIndex = 19;
             this.LanguageComboBox.SelectedIndexChanged += new System.EventHandler(this.LanguageComboBox_SelectedIndexChanged);
-            // 
-            // LanguageDescriptionLabel
-            // 
-            this.LanguageDescriptionLabel.BackColor = System.Drawing.Color.Transparent;
-            this.LanguageDescriptionLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.LanguageDescriptionLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.LanguageDescriptionLabel.Location = new System.Drawing.Point(169, 221);
-            this.LanguageDescriptionLabel.Name = "LanguageDescriptionLabel";
-            this.LanguageDescriptionLabel.Size = new System.Drawing.Size(611, 32);
-            this.LanguageDescriptionLabel.TabIndex = 18;
-            this.LanguageDescriptionLabel.Text = "Change the language used in the Bedrock Cosmos Launcher.";
-            this.LanguageDescriptionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // LanguageTitleLabel
-            // 
-            this.LanguageTitleLabel.AutoSize = true;
-            this.LanguageTitleLabel.BackColor = System.Drawing.Color.Transparent;
-            this.LanguageTitleLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LanguageTitleLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.LanguageTitleLabel.Location = new System.Drawing.Point(19, 190);
-            this.LanguageTitleLabel.Name = "LanguageTitleLabel";
-            this.LanguageTitleLabel.Size = new System.Drawing.Size(85, 21);
-            this.LanguageTitleLabel.TabIndex = 17;
-            this.LanguageTitleLabel.Text = "Language";
-            // 
-            // SettingsBackButton
-            // 
-            this.SettingsBackButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.SettingsBackButton.BackColor = System.Drawing.Color.Transparent;
-            this.SettingsBackButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("SettingsBackButton.BackgroundImage")));
-            this.SettingsBackButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.SettingsBackButton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.SettingsBackButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.SettingsBackButton.FlatAppearance.BorderSize = 0;
-            this.SettingsBackButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.SettingsBackButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.SettingsBackButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.SettingsBackButton.Location = new System.Drawing.Point(17, 394);
-            this.SettingsBackButton.Name = "SettingsBackButton";
-            this.SettingsBackButton.Size = new System.Drawing.Size(25, 25);
-            this.SettingsBackButton.TabIndex = 15;
-            this.SettingsBackButton.UseVisualStyleBackColor = false;
-            this.SettingsBackButton.Click += new System.EventHandler(this.ReturnToHomeScreen);
-            // 
-            // BackgroundModeDescriptionLabel
-            // 
-            this.BackgroundModeDescriptionLabel.BackColor = System.Drawing.Color.Transparent;
-            this.BackgroundModeDescriptionLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.BackgroundModeDescriptionLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.BackgroundModeDescriptionLabel.Location = new System.Drawing.Point(78, 64);
-            this.BackgroundModeDescriptionLabel.Name = "BackgroundModeDescriptionLabel";
-            this.BackgroundModeDescriptionLabel.Size = new System.Drawing.Size(707, 41);
-            this.BackgroundModeDescriptionLabel.TabIndex = 14;
-            this.BackgroundModeDescriptionLabel.Text = "When enabled, Bedrock Cosmos will minimize to the system tray instead of the task" +
-    "bar. The proxy service will also automatically start/stop when Minecraft is open" +
-    "ed/closed, respectively.";
-            this.BackgroundModeDescriptionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // BackgroundModeTitleLabel
-            // 
-            this.BackgroundModeTitleLabel.AutoSize = true;
-            this.BackgroundModeTitleLabel.BackColor = System.Drawing.Color.Transparent;
-            this.BackgroundModeTitleLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BackgroundModeTitleLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.BackgroundModeTitleLabel.Location = new System.Drawing.Point(19, 40);
-            this.BackgroundModeTitleLabel.Name = "BackgroundModeTitleLabel";
-            this.BackgroundModeTitleLabel.Size = new System.Drawing.Size(150, 21);
-            this.BackgroundModeTitleLabel.TabIndex = 13;
-            this.BackgroundModeTitleLabel.Text = "Background Mode";
-            // 
-            // BackgroundModeSwitch
-            // 
-            this.BackgroundModeSwitch.AutoSize = true;
-            this.BackgroundModeSwitch.BackColor = System.Drawing.Color.Transparent;
-            this.BackgroundModeSwitch.BaseColor = System.Drawing.Color.White;
-            this.BackgroundModeSwitch.BaseOffColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
-            this.BackgroundModeSwitch.BaseOnColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.BackgroundModeSwitch.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.BackgroundModeSwitch.Location = new System.Drawing.Point(23, 74);
-            this.BackgroundModeSwitch.Name = "BackgroundModeSwitch";
-            this.BackgroundModeSwitch.Size = new System.Drawing.Size(40, 20);
-            this.BackgroundModeSwitch.TabIndex = 12;
-            this.BackgroundModeSwitch.UseVisualStyleBackColor = false;
-            this.BackgroundModeSwitch.CheckedChanged += new System.EventHandler(this.BackgroundModeToggle_CheckedChanged);
             // 
             // MenuEditorPage
             // 
@@ -1915,7 +1988,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.DiscordIcon)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.GitHubIcon)).EndInit();
             this.SettingsPage.ResumeLayout(false);
-            this.SettingsPage.PerformLayout();
+            this.SettingsPanel.ResumeLayout(false);
+            this.SettingsPanel.PerformLayout();
             this.MenuEditorPage.ResumeLayout(false);
             this.MenuEditorPage.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MultipleNodesIcon)).EndInit();
@@ -1984,8 +2058,6 @@
         private System.Windows.Forms.Label NewsTitleLabel;
         private System.Windows.Forms.Label NewsDescriptionLabel;
         private System.Windows.Forms.TabPage MenuEditorPage;
-        private App.UI.RoundButton SkinPacksEditorButton;
-        private App.UI.RoundButton CapesEditorButton;
         private System.Windows.Forms.Button MenuEditorBackButton;
         private System.Windows.Forms.Label CustomMenuLabel;
         private App.UI.Switch CustomMenuToggle;
@@ -2014,6 +2086,13 @@
         private App.UI.ImageTreeView CapeTreeView;
         private System.Windows.Forms.PictureBox MultipleNodesIcon;
         private App.UI.RoundButton ShowConfirmationDialogsButton;
+        private App.UI.RoundButton CapeMenuEditorButton;
+        private App.UI.RoundButton SkinPackMenuEditorButton;
+        private App.UI.CustomScrollBarPanel SettingsPanel;
+        private System.Windows.Forms.Label SkinPackMenuEditorTitleLabel;
+        private System.Windows.Forms.Label CapeMenuEditorTitleLabel;
+        private System.Windows.Forms.Label SkinPackMenuEditorDescriptionLabel;
+        private System.Windows.Forms.Label CapeMenuEditorDescriptionLabel;
     }
 }
 

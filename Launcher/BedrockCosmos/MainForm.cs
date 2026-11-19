@@ -78,30 +78,46 @@ namespace BedrockCosmos
         }
 
         // Used to scale the background properly in Tile mode
-        protected override void OnPaintBackground(PaintEventArgs e)
-        {
-            if (launcherBackground != null)
-            {
-                e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+        private Bitmap scaledBackground;
 
+        private void RebuildScaledBackground()
+        {
+            scaledBackground?.Dispose();
+            scaledBackground = null;
+
+            if (launcherBackground == null || ClientSize.Width <= 0 || ClientSize.Height <= 0)
+                return;
+
+            scaledBackground = new Bitmap(ClientSize.Width, ClientSize.Height,
+                System.Drawing.Imaging.PixelFormat.Format32bppPArgb); // PArgb is the fastest format to blit.
+
+            using (var g = Graphics.FromImage(scaledBackground))
+            {
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.PixelOffsetMode = PixelOffsetMode.HighQuality;
                 using (var attributes = new ImageAttributes())
                 {
                     attributes.SetWrapMode(WrapMode.TileFlipXY);
-
-                    Rectangle destRect = ClientRectangle;
-                    e.Graphics.DrawImage(
-                        launcherBackground,
-                        destRect,
+                    g.DrawImage(launcherBackground, new Rectangle(Point.Empty, ClientSize),
                         0, 0, launcherBackground.Width, launcherBackground.Height,
-                        GraphicsUnit.Pixel,
-                        attributes);
+                        GraphicsUnit.Pixel, attributes);
                 }
             }
-            else
+        }
+
+        protected override void OnPaintBackground(PaintEventArgs e)
+        {
+            if (launcherBackground == null)
             {
                 base.OnPaintBackground(e);
+                return;
             }
+
+            if (scaledBackground == null || scaledBackground.Size != ClientSize)
+                RebuildScaledBackground();
+
+            if (scaledBackground != null)
+                e.Graphics.DrawImage(scaledBackground, e.ClipRectangle, e.ClipRectangle, GraphicsUnit.Pixel);
         }
 
         // Next two overrides keep the custom background in place if window size is changed or window is minimized.
