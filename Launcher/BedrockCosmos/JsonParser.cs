@@ -512,7 +512,7 @@ namespace BedrockCosmos
             return current?.AsArray();
         }
 
-        private static bool LooksLikeJson(string content)
+        internal static bool LooksLikeJson(string content)
         {
             string trimmedContent = content.TrimStart();
             return trimmedContent.StartsWith("{") || trimmedContent.StartsWith("[");

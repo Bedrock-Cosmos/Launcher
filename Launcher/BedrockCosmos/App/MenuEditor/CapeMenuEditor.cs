@@ -25,6 +25,22 @@ namespace BedrockCosmos.App.MenuEditor
             };
 
         // Gives more friendly names from dictionary to parent nodes in menu editor.
+        public static string NormalizeCategoryName(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                return name;
+
+            name = StripTrailingNumber(name);
+
+            foreach (var pair in HeaderTitleOverrides)
+            {
+                if (name.StartsWith(pair.Key, StringComparison.OrdinalIgnoreCase))
+                    return pair.Value; // First match wins
+            }
+
+            return name;
+        }
+
         public static void ApplyHeaderTitleOverrides(IEnumerable<ImageCategory> categories)
         {
             if (categories == null)
@@ -32,19 +48,8 @@ namespace BedrockCosmos.App.MenuEditor
 
             foreach (var category in categories)
             {
-                if (string.IsNullOrEmpty(category.Name))
-                    continue;
-
-                category.Name = StripTrailingNumber(category.Name);
-
-                foreach (var pair in HeaderTitleOverrides)
-                {
-                    if (category.Name.StartsWith(pair.Key, StringComparison.OrdinalIgnoreCase))
-                    {
-                        category.Name = pair.Value;
-                        break; // first match wins
-                    }
-                }
+                if (!string.IsNullOrEmpty(category.Name))
+                    category.Name = NormalizeCategoryName(category.Name);
             }
         }
 

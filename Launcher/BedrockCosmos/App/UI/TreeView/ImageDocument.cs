@@ -1,9 +1,10 @@
-﻿using System;
+﻿using BedrockCosmos.App.MenuEditor;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.RegularExpressions;
 
 // =============================================================================
 // Bedrock Cosmos - Copyright (c) 2026
@@ -262,6 +263,139 @@ namespace BedrockCosmos.App.UI
 
             if (_primaryRowsArray == null)
                 _primaryRowsArray = rowsArray;
+        }
+
+        public sealed class MergeResult
+        {
+            public int ItemsAdded { get; internal set; }
+            public int CategoriesCreated { get; internal set; }
+
+            // Incoming items that were NOT copied because their Id already existed
+            // (or appeared earlier in the same file).
+            public List<ImageItem> SkippedDuplicates { get; } = new List<ImageItem>();
+
+            // Existing items that were moved to the position given by the new JSON.
+            public List<ImageItem> RepositionedItems { get; } = new List<ImageItem>();
+
+            public int DuplicatesSkipped => SkippedDuplicates.Count;
+            public int ItemsRepositioned => RepositionedItems.Count;
+            public bool HadDuplicates => SkippedDuplicates.Count > 0;
+        }
+
+        public MergeResult MergeFromMarketplaceJson(string json, bool allowDuplicateIds = false)
+        {
+            if (string.IsNullOrWhiteSpace(json))
+                throw new ArgumentException("JSON is empty.", nameof(json));
+
+            // Parsed first, so malformed JSON throws before anything is modified.
+            ImageDocument incoming = LoadFromMarketplaceJson(json);
+            var result = new MergeResult();
+
+            // Existing items by Id, and Ids already handled from the incoming file.
+            var existingById = new Dictionary<string, ImageItem>(StringComparer.OrdinalIgnoreCase);
+            var seenIncomingIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            if (!allowDuplicateIds)
+            {
+                foreach (var category in Categories)
+                    foreach (var item in category.Items)
+                        if (!string.IsNullOrEmpty(item.Id) && !existingById.ContainsKey(item.Id))
+                            existingById[item.Id] = item;
+            }
+
+            foreach (var incomingCategory in incoming.Categories)
+            {
+                var placements = new List<(ImageItem item, bool isNew, ImageItem incomingItem)>();
+
+                foreach (var incomingItem in incomingCategory.Items)
+                {
+                    if (!allowDuplicateIds && !string.IsNullOrEmpty(incomingItem.Id))
+                    {
+                        // Ignores repeats of nodes if already handled.
+                        if (!seenIncomingIds.Add(incomingItem.Id))
+                        {
+                            result.SkippedDuplicates.Add(incomingItem);
+                            continue;
+                        }
+
+                        if (existingById.TryGetValue(incomingItem.Id, out var existingItem))
+                        {
+                            result.SkippedDuplicates.Add(incomingItem);
+                            placements.Add((existingItem, false, incomingItem));
+                            continue;
+                        }
+                    }
+
+                    placements.Add((incomingItem, true, incomingItem));
+                }
+
+                if (placements.Count == 0 && incomingCategory.Items.Count > 0) // Ignores empty categories.
+                    continue;
+
+                string name = CapeMenuEditor.NormalizeCategoryName(incomingCategory.Name);
+                ImageCategory target = FindCategoryForMerge(name);
+
+                if (target == null)
+                {
+                    target = new ImageCategory { Name = name };
+                    Categories.Add(target); // End of the list, JSON row is built on export.
+                    result.CategoriesCreated++;
+                }
+
+                foreach (var placement in placements)
+                {
+                    if (placement.isNew)
+                    {
+                        target.Items.Add(placement.item);
+
+                        // Keep item's original JSON fields by cloning its node.
+                        if (incoming._itemNodes.TryGetValue(placement.item, out var node))
+                            _itemNodes[placement.item] = (JsonObject)node.DeepClone();
+
+                        result.ItemsAdded++;
+                    }
+                    else
+                    {
+                        // Find the category that currently holds this item.
+                        ImageCategory currentOwner = null;
+                        foreach (var category in Categories)
+                        {
+                            if (category.Items.Contains(placement.item))
+                            {
+                                currentOwner = category;
+                                break;
+                            }
+                        }
+
+                        // Leaves as is if already in the right category.
+                        if (ReferenceEquals(currentOwner, target))
+                            continue;
+
+                        currentOwner?.Items.Remove(placement.item);
+                        target.Items.Add(placement.item);
+                        result.RepositionedItems.Add(placement.item);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private ImageCategory FindCategoryForMerge(string normalizedName)
+        {
+            CategoryRole role = GetRole(new ImageCategory { Name = normalizedName });
+
+            foreach (var category in Categories)
+            {
+                if (role != CategoryRole.Standard && GetRole(category) == role)
+                    return category;
+
+                if (string.Equals(StripTrailingCount(category.Name)?.Trim(), normalizedName?.Trim(),
+                        StringComparison.OrdinalIgnoreCase))
+                    return category;
+            }
+
+            return null;
         }
 
         public string ToJson(bool indented = true, bool includeItemCountInCategoryName = false)

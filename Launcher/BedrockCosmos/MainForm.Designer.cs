@@ -1022,6 +1022,7 @@
             this.ImportMenuButton.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             this.ImportMenuButton.TabIndex = 36;
             this.ImportMenuButton.TooltipText = "Import";
+            this.ImportMenuButton.Click += new System.EventHandler(this.ImportMenuButton_Click);
             // 
             // SaveMenuButton
             // 

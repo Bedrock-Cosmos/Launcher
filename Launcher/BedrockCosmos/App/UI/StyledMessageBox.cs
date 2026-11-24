@@ -11,6 +11,31 @@ using System.Windows.Forms;
 
 namespace BedrockCosmos.App.UI
 {
+    public sealed class StyledMessageBoxButton
+    {
+        public StyledMessageBoxButton(string text, Action onClick = null)
+        {
+            Text = text ?? string.Empty;
+            OnClick = onClick;
+        }
+
+        // Used for the standard MessageBoxButtons sets.
+        internal StyledMessageBoxButton(DialogResult result, string text)
+        {
+            Text = text ?? string.Empty;
+            Result = result;
+        }
+
+        public string Text { get; }
+        public Action OnClick { get; }
+        public object Tag { get; set; }
+        public bool IsCancel { get; set; }
+        public bool IsPrimary { get; set; }
+        public bool CloseOnClick { get; set; } = true;
+
+        internal DialogResult Result { get; }
+    }
+
     public sealed class StyledMessageBox : Form
     {
         // Palette
@@ -31,6 +56,7 @@ namespace BedrockCosmos.App.UI
         private const int GlyphGap = 12;          // Space between the glyph and the text.
         private const int ButtonWidth = 84;
         private const int ButtonHeight = 28;
+        private const int ButtonTextPadding = 12; // Per side; buttons grow past ButtonWidth for long text.
         private const int ButtonSpacing = 4;      // Applied on each side of every button.
         private const int ButtonBarPadding = 10;
         private const float TitleFontSize = 10F;
@@ -48,9 +74,10 @@ namespace BedrockCosmos.App.UI
             MessageBoxButtons buttons = MessageBoxButtons.OK,
             MessageBoxIcon icon = MessageBoxIcon.None,
             MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1,
-            Image customIcon = null)
+            Image customIcon = null,
+            bool? showCloseButton = null)
         {
-            return Show((IWin32Window)null, text, caption, buttons, icon, defaultButton, customIcon);
+            return Show((IWin32Window)null, text, caption, buttons, icon, defaultButton, customIcon, showCloseButton);
         }
         public static DialogResult Show(
             IWin32Window owner,
@@ -59,11 +86,45 @@ namespace BedrockCosmos.App.UI
             MessageBoxButtons buttons = MessageBoxButtons.OK,
             MessageBoxIcon icon = MessageBoxIcon.None,
             MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1,
-            Image customIcon = null)
+            Image customIcon = null,
+            bool? showCloseButton = null)
         {
-            using (var dialog = new StyledMessageBox(owner, text, caption ?? DefaultCaption, buttons, icon, defaultButton, customIcon))
+            using (var dialog = new StyledMessageBox(owner, text, caption ?? DefaultCaption,
+                ItemsFor(buttons), icon, (int)defaultButton / 256, customIcon, showCloseButton))
             {
                 return dialog.ShowDialog(owner);
+            }
+        }
+
+        public static StyledMessageBoxButton Show(
+            string text,
+            string caption,
+            IList<StyledMessageBoxButton> buttons,
+            MessageBoxIcon icon = MessageBoxIcon.None,
+            int defaultButtonIndex = 0,
+            Image customIcon = null,
+            bool? showCloseButton = null)
+        {
+            return Show((IWin32Window)null, text, caption, buttons, icon, defaultButtonIndex, customIcon, showCloseButton);
+        }
+        public static StyledMessageBoxButton Show(
+            IWin32Window owner,
+            string text,
+            string caption,
+            IList<StyledMessageBoxButton> buttons,
+            MessageBoxIcon icon = MessageBoxIcon.None,
+            int defaultButtonIndex = 0,
+            Image customIcon = null,
+            bool? showCloseButton = null)
+        {
+            if (buttons == null || buttons.Count == 0)
+                throw new ArgumentException("At least one button is required.", nameof(buttons));
+
+            using (var dialog = new StyledMessageBox(owner, text, caption ?? DefaultCaption,
+                buttons, icon, defaultButtonIndex, customIcon, showCloseButton))
+            {
+                dialog.ShowDialog(owner);
+                return dialog._clicked;
             }
         }
 
@@ -72,9 +133,12 @@ namespace BedrockCosmos.App.UI
         private readonly string _caption;
         private readonly MessageBoxIcon _icon;
         private readonly Image _customIcon;
-        private readonly DialogResult[] _results;
-        private readonly DialogResult _escapeResult;
-        private readonly Dictionary<Control, DialogResult> _buttonMap = new Dictionary<Control, DialogResult>();
+        private readonly IList<StyledMessageBoxButton> _items;
+        private readonly StyledMessageBoxButton _escapeItem;
+        private readonly Dictionary<Control, StyledMessageBoxButton> _buttonMap = new Dictionary<Control, StyledMessageBoxButton>();
+        private readonly bool _showClose;
+        private StyledMessageBoxButton _clicked;
+        private bool _dismissed; // Closed via X / Escape with no button to click.
         private readonly Control _defaultControl;
         private readonly Rectangle _ownerBounds;
         private Bitmap _titleBitmap;
@@ -82,18 +146,16 @@ namespace BedrockCosmos.App.UI
         private int S(int value) => (int)Math.Round(value * _scale);
 
         private StyledMessageBox(IWin32Window owner, string text, string caption,
-            MessageBoxButtons buttons, MessageBoxIcon icon, MessageBoxDefaultButton defaultButton, Image customIcon)
+            IList<StyledMessageBoxButton> items, MessageBoxIcon icon, int defaultIndex, Image customIcon, bool? showCloseButton)
         {
             _scale = DeviceDpi / 96f;
             _text = text ?? string.Empty;
             _caption = caption ?? string.Empty;
             _icon = icon;
             _customIcon = customIcon;
-            _results = ResultsFor(buttons);
-
-            if (Array.IndexOf(_results, DialogResult.Cancel) >= 0) _escapeResult = DialogResult.Cancel;
-            else if (_results.Length == 1) _escapeResult = _results[0];
-            else _escapeResult = DialogResult.None;
+            _items = items;
+            _escapeItem = FindEscapeItem(items);
+            _showClose = showCloseButton ?? (_escapeItem != null); // null = automatic.
 
             var ownerForm = owner == null ? null : Control.FromHandle(owner.Handle) as Form;
             _ownerBounds = ownerForm != null && ownerForm.Visible && ownerForm.WindowState != FormWindowState.Minimized
@@ -102,7 +164,7 @@ namespace BedrockCosmos.App.UI
 
             SuspendLayout();
 
-            AutoScaleMode = AutoScaleMode.None; // Scaled manually via S()
+            AutoScaleMode = AutoScaleMode.None; // Scaled manually via S().
             AutoSize = true;
             AutoSizeMode = AutoSizeMode.GrowAndShrink;
             BackColor = BackdropColor;
@@ -130,7 +192,7 @@ namespace BedrockCosmos.App.UI
 
             root.Controls.Add(BuildTitleBar(ownerForm), 0, 0);
             root.Controls.Add(BuildContent(), 0, 1);
-            root.Controls.Add(BuildButtonBar(defaultButton, out _defaultControl), 0, 2);
+            root.Controls.Add(BuildButtonBar(defaultIndex, out _defaultControl), 0, 2);
 
             Controls.Add(root);
             ResumeLayout(true);
@@ -155,6 +217,49 @@ namespace BedrockCosmos.App.UI
                 case MessageBoxButtons.YesNo: return new[] { DialogResult.Yes, DialogResult.No };
                 case MessageBoxButtons.RetryCancel: return new[] { DialogResult.Retry, DialogResult.Cancel };
                 default: throw new InvalidEnumArgumentException(nameof(buttons), (int)buttons, typeof(MessageBoxButtons));
+            }
+        }
+
+        private static IList<StyledMessageBoxButton> ItemsFor(MessageBoxButtons buttons)
+        {
+            var results = ResultsFor(buttons);
+            var items = new List<StyledMessageBoxButton>(results.Length);
+            foreach (var r in results)
+                items.Add(new StyledMessageBoxButton(r, ButtonTextProvider?.Invoke(r) ?? r.ToString()));
+            return items;
+        }
+
+        // What Escape / X button clicks (button flagged IsCancel, Cancel button, lone button).
+        private static StyledMessageBoxButton FindEscapeItem(IList<StyledMessageBoxButton> items)
+        {
+            foreach (var item in items) if (item.IsCancel) return item;
+            foreach (var item in items) if (item.Result == DialogResult.Cancel) return item;
+            return items.Count == 1 ? items[0] : null;
+        }
+
+        private static DialogResult ResultOf(StyledMessageBoxButton item)
+        {
+            if (item.Result != DialogResult.None) return item.Result;
+            return item.IsCancel ? DialogResult.Cancel : DialogResult.OK;
+        }
+
+        // Runs the button's code, then closes dialog unless CloseOnClick = false.
+        private void ActivateButton(StyledMessageBoxButton item)
+        {
+            item.OnClick?.Invoke();
+            if (!item.CloseOnClick) return;
+            _clicked = item;
+            DialogResult = ResultOf(item);
+        }
+
+        // Escape / title bar X. Clicks escape button if there is one, otherwise just dismisses the dialog.
+        private void Dismiss()
+        {
+            if (_escapeItem != null) ActivateButton(_escapeItem);
+            else if (_showClose)
+            {
+                _dismissed = true;
+                DialogResult = DialogResult.Cancel;
             }
         }
 
@@ -237,7 +342,7 @@ namespace BedrockCosmos.App.UI
                 title.Padding = new Padding(S(10), 0, 0, 0);
             }
 
-            if (_escapeResult != DialogResult.None)
+            if (_showClose)
             {
                 var close = new Label
                 {
@@ -251,7 +356,7 @@ namespace BedrockCosmos.App.UI
                 };
                 close.MouseEnter += (s, e) => { close.BackColor = Color.FromArgb(196, 43, 28); close.ForeColor = Color.White; };
                 close.MouseLeave += (s, e) => { close.BackColor = Color.Transparent; close.ForeColor = TextColor; };
-                close.Click += (s, e) => DialogResult = _escapeResult;
+                close.Click += (s, e) => Dismiss();
                 bar.Controls.Add(close);
             }
 
@@ -297,7 +402,7 @@ namespace BedrockCosmos.App.UI
             return content;
         }
 
-        private Control BuildButtonBar(MessageBoxDefaultButton defaultButton, out Control defaultControl)
+        private Control BuildButtonBar(int defaultIndex, out Control defaultControl)
         {
             var bar = new FlowLayoutPanel
             {
@@ -311,17 +416,17 @@ namespace BedrockCosmos.App.UI
                 WrapContents = false
             };
 
-            int defaultIndex = Math.Min((int)defaultButton / 256, _results.Length - 1);
+            defaultIndex = Math.Max(0, Math.Min(defaultIndex, _items.Count - 1));
             defaultControl = null;
 
             // Right-To-Left flow.
-            for (int i = _results.Length - 1; i >= 0; i--)
+            for (int i = _items.Count - 1; i >= 0; i--)
             {
-                var result = _results[i];
-                var button = CreateButton(result, primary: HighlightDefaultButton && i == defaultIndex);
+                var item = _items[i];
+                var button = CreateButton(item, primary: item.IsPrimary || (HighlightDefaultButton && i == defaultIndex));
                 button.TabIndex = i;
-                button.Click += (s, e) => DialogResult = result;
-                _buttonMap[button] = result;
+                button.Click += (s, e) => ActivateButton(item);
+                _buttonMap[button] = item;
                 if (i == defaultIndex) defaultControl = button;
                 bar.Controls.Add(button);
             }
@@ -329,20 +434,24 @@ namespace BedrockCosmos.App.UI
             return bar;
         }
 
-        private RoundButton CreateButton(DialogResult result, bool primary)
+        private RoundButton CreateButton(StyledMessageBoxButton item, bool primary)
         {
             var secondaryBorder = Color.FromArgb(75, 75, 75);
             var secondaryFill = Color.FromArgb(30, 30, 30);
+
+            var font = new Font("Segoe UI", ButtonFontSize);
+            int textWidth = TextRenderer.MeasureText(item.Text, font).Width;
+            int width = Math.Max(S(ButtonWidth), textWidth + S(ButtonTextPadding) * 2); // Fit long custom text.
 
             var button = new RoundButton
             {
                 BackColor = Color.Transparent,
                 Cursor = Cursors.Hand,
-                Font = new Font("Segoe UI", ButtonFontSize),
+                Font = font,
                 Margin = new Padding(S(ButtonSpacing), 0, S(ButtonSpacing), 0),
                 Radius = 4,
-                Size = new Size(S(ButtonWidth), S(ButtonHeight)),
-                Text = ButtonTextProvider?.Invoke(result) ?? result.ToString()
+                Size = new Size(width, S(ButtonHeight)),
+                Text = item.Text
             };
 
             if (primary)
@@ -392,12 +501,21 @@ namespace BedrockCosmos.App.UI
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            if (e.CloseReason == CloseReason.UserClosing
-                && DialogResult == DialogResult.Cancel
-                && _escapeResult != DialogResult.Cancel)
+            // Closed without a button (Alt+F4, etc.): behave like the escape button, or refuse if none.
+            if (e.CloseReason == CloseReason.UserClosing && _clicked == null && !_dismissed)
             {
-                if (_escapeResult == DialogResult.None) e.Cancel = true;
-                else DialogResult = _escapeResult;
+                if (_escapeItem != null)
+                {
+                    _clicked = _escapeItem;
+                    DialogResult = ResultOf(_escapeItem);
+                    _escapeItem.OnClick?.Invoke();
+                }
+                else if (_showClose)
+                {
+                    _dismissed = true;
+                    DialogResult = DialogResult.Cancel;
+                }
+                else e.Cancel = true;
             }
             base.OnFormClosing(e);
         }
@@ -407,19 +525,19 @@ namespace BedrockCosmos.App.UI
             switch (keyData)
             {
                 case Keys.Escape:
-                    if (_escapeResult != DialogResult.None) DialogResult = _escapeResult;
+                    Dismiss();
                     return true;
 
                 case Keys.Enter:
                     for (Control c = ActiveControl; c != null; c = c.Parent)
                     {
-                        if (_buttonMap.TryGetValue(c, out var focusedResult))
+                        if (_buttonMap.TryGetValue(c, out var focusedItem))
                         {
-                            DialogResult = focusedResult;
+                            ActivateButton(focusedItem);
                             return true;
                         }
                     }
-                    if (_defaultControl != null) DialogResult = _buttonMap[_defaultControl];
+                    if (_defaultControl != null) ActivateButton(_buttonMap[_defaultControl]);
                     return true;
 
                 case Keys.Control | Keys.C:
@@ -436,8 +554,8 @@ namespace BedrockCosmos.App.UI
             sb.AppendLine(line).AppendLine(_caption)
               .AppendLine(line).AppendLine(_text)
               .AppendLine(line);
-            foreach (var r in _results)
-                sb.Append(ButtonTextProvider?.Invoke(r) ?? r.ToString()).Append("   ");
+            foreach (var item in _items)
+                sb.Append(item.Text).Append("   ");
             sb.AppendLine().AppendLine(line);
 
             try { Clipboard.SetText(sb.ToString()); }
@@ -497,6 +615,8 @@ namespace BedrockCosmos.App.UI
 
                 float s = Math.Min(Width, Height);
                 var box = new RectangleF(1, 1, s - 2, s - 2);
+                float glyphCenterX = s / 2f;
+                float glyphCenterY = s / 2f;
                 string glyph = null;
                 Color fill, glyphColor = Color.White;
 
@@ -505,7 +625,7 @@ namespace BedrockCosmos.App.UI
                     case MessageBoxIcon.Error: fill = Color.FromArgb(214, 62, 62); break;
                     case MessageBoxIcon.Warning: fill = Color.FromArgb(255, 185, 0); glyph = "!"; glyphColor = Color.FromArgb(20, 20, 20); break;
                     case MessageBoxIcon.Information: fill = Color.FromArgb(56, 152, 255); glyph = "i"; break;
-                    default: fill = Color.FromArgb(0, 188, 71); glyph = "?"; break;   // Question
+                    default: fill = Color.FromArgb(0, 188, 71); glyph = "?"; break;   // Question.
                 }
 
                 using (var brush = new SolidBrush(fill))
@@ -522,7 +642,7 @@ namespace BedrockCosmos.App.UI
                         g.FillPolygon(brush, tri);
                         using (var pen = new Pen(fill, s * 0.10f) { LineJoin = LineJoin.Round })
                             g.DrawPolygon(pen, tri);
-                        box.Y += s * 0.10f;
+                        glyphCenterY = s * 0.62f; // Triangle's centroid: (0.10 + 0.88 + 0.88) / 3.
                     }
                     else
                     {
@@ -541,10 +661,19 @@ namespace BedrockCosmos.App.UI
                 }
                 else if (glyph != null)
                 {
-                    using (var font = new Font("Segoe UI", s * 0.52f, FontStyle.Bold, GraphicsUnit.Pixel))
+                    using (var family = new FontFamily("Segoe UI"))
+                    using (var path = new GraphicsPath())
                     using (var brush = new SolidBrush(glyphColor))
-                    using (var format = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
-                        g.DrawString(glyph, font, brush, box, format);
+                    {
+                        path.AddString(glyph, family, (int)FontStyle.Bold, s * 0.52f, PointF.Empty, StringFormat.GenericTypographic);
+                        RectangleF ink = path.GetBounds();
+                        using (var move = new Matrix())
+                        {
+                            move.Translate(glyphCenterX - (ink.X + ink.Width / 2f), glyphCenterY - (ink.Y + ink.Height / 2f));
+                            path.Transform(move);
+                        }
+                        g.FillPath(brush, path);
+                    }
                 }
             }
         }

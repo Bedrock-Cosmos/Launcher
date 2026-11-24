@@ -10,9 +10,11 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 // =============================================================================
 // Bedrock Cosmos - Copyright (c) 2026
@@ -973,7 +975,8 @@ namespace BedrockCosmos
                 $"This action will delete {count} node{plural}! Are you sure that you wish to proceed?",
                 "Delete",
                 MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning) != DialogResult.Yes;
+                MessageBoxIcon.Warning,
+                showCloseButton: true) != DialogResult.Yes;
         }
 
         private void CapeTreeView_AfterDelete(object sender, NodesEventArgs e)
@@ -990,9 +993,10 @@ namespace BedrockCosmos
                 "This action will reset all menu items to their initial state! Are you sure that you wish to proceed?",
                 "Reset",
                 MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning);
+                MessageBoxIcon.Warning,
+                showCloseButton: true);
 
-                if (result == DialogResult.No)
+                if (result == DialogResult.No || result == DialogResult.Cancel)
                     return;
             }
 
@@ -1087,7 +1091,8 @@ namespace BedrockCosmos
             using (var dialog = new SaveFileDialog
             {
                 Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*",
-                FileName = defaultPath
+                FileName = defaultPath,
+                Title = "Export JSON file"
             })
             {
                 if (dialog.ShowDialog(this) != DialogResult.OK)
@@ -1097,6 +1102,73 @@ namespace BedrockCosmos
                 File.WriteAllText(dialog.FileName, json, Encoding.UTF8);
                 NodeStatus.Text = "Exported!";
             }
+        }
+
+        private void ImportMenuButton_Click(object sender, EventArgs e)
+        {
+            string userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            string filePath;
+
+            using (var dialog = new OpenFileDialog
+            {
+                Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*",
+                InitialDirectory = userProfile,
+                Title = "Select a JSON file",
+                CheckFileExists = true,
+                AutoUpgradeEnabled = false // Force legacy file dialogue, fixes (Windows?) memory being left behind.
+            })
+            {
+                if (dialog.ShowDialog(this) != DialogResult.OK)
+                    return;
+                filePath = dialog.FileName;
+            }
+
+            var merge = new StyledMessageBoxButton("Merge");
+            var overwrite = new StyledMessageBoxButton("Overwrite");
+
+            var clicked = StyledMessageBox.Show(this,
+                "Select how you would like to import this JSON file.\n\n" +
+                "Merging will combine your current menu configuration with the uploaded JSON file.\n\n" +
+                "Overwriting will fully replace your current menu configuration with the uploaded JSON file " +
+                "(be sure to Export before doing this if you want to save your menu data).",
+                "Upload JSON",
+                new[] { merge, overwrite },
+                MessageBoxIcon.Question,
+                showCloseButton: true);
+
+            if (clicked == null)
+                return;
+
+            string jsonContent = File.ReadAllText(filePath);
+
+            if (!JsonParser.LooksLikeJson(jsonContent))
+                return;
+
+            if (clicked == merge)
+            {
+                ImageDocument.MergeResult result = capesDocument.MergeFromMarketplaceJson(jsonContent, CapeTreeView.GenerateNewIdOnCopy);
+                CapeMenuEditor.ApplyHeaderTitleOverrides(capesDocument.Categories);
+                CapeTreeView.LoadData(capesDocument.Categories);
+
+                if (SettingsManager.EditorConfirmationDialogs && result.HadDuplicates)
+                {
+                    DialogResult resultNote = StyledMessageBox.Show(
+                    this,
+                    "One or more imported nodes already existed in your menu configuration. The positions of these nodes were updated to match your imported JSON file.",
+                    "Duplicate Entry Found",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning,
+                    showCloseButton: true);
+                }
+            }
+            else if (clicked == overwrite)
+            {
+                capesDocument = ImageDocument.LoadFromMarketplaceJson(jsonContent);
+                CapeMenuEditor.ApplyHeaderTitleOverrides(capesDocument.Categories);
+                CapeTreeView.LoadData(capesDocument.Categories);
+            }
+
+            NodeStatus.Text = "Uploaded JSON!";
         }
     }
 }
