@@ -1337,6 +1337,12 @@
             this.CapeTreeView.Name = "CapeTreeView";
             this.CapeTreeView.PastePlacement = BedrockCosmos.App.UI.ImageTreeView.PastePosition.Left;
             this.CapeTreeView.RareRarityColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(120)))), ((int)(((byte)(246)))));
+            this.CapeTreeView.SearchBarBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.CapeTreeView.SearchBarBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+            this.CapeTreeView.SearchBarIconColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.CapeTreeView.SearchBarTextColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.CapeTreeView.SearchDebounceMilliseconds = 250;
+            this.CapeTreeView.SearchMode = BedrockCosmos.App.UI.ImageTreeView.SearchBarMode.Active;
             this.CapeTreeView.SelectedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.CapeTreeView.SelectedHeaderTextColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.CapeTreeView.ShowItemCountInHeader = true;

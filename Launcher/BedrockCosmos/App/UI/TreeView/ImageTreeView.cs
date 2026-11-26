@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 // =============================================================================
@@ -153,7 +155,7 @@ namespace BedrockCosmos.App.UI
         {
             public ImageCategory Category;
             public List<ImageItem> Items;
-            public int StartIndex; // Index in Category.Items of the row's first item.
+            public int StartIndex; // Index in the laid-out item list of the row's first item (same as Category.Items when not filtering).
         }
 
         private readonly List<VisualRow> _rows = new List<VisualRow>();
@@ -208,6 +210,10 @@ namespace BedrockCosmos.App.UI
             }
         }
 
+        [Category("Behavior"), DefaultValue(false)]
+        [Description("When true, clicking nodes multiselects them without holding Ctrl.")]
+        public bool MultiSelectOnClick { get; set; } = false;
+
         #endregion
 
         #region Clipboard
@@ -223,7 +229,7 @@ namespace BedrockCosmos.App.UI
         [Category("Behavior"), DefaultValue(true)] public bool AllowDeleting { get; set; } = true;
         [Category("Behavior"), DefaultValue(true)] public bool AllowDragging { get; set; } = true;
         [Category("Behavior"), DefaultValue(true)] public bool AllowRenaming { get; set; } = true;
-        
+
         public bool CanCopy => AllowCopying && _selectionOrder.Count > 0;
         public bool CanCut => AllowCutting && _selectionOrder.Count > 0;
         public bool CanPaste => AllowPasting && _clipboard.Count > 0 && (_clipboardIsCut || AllowCopying);
@@ -305,6 +311,8 @@ namespace BedrockCosmos.App.UI
             BackColor = IdleBackColor;
             TabStop = true;
 
+            CreateSearchBox();
+
             if (!_isDesignMode)
                 ImageCache.ImageLoaded += OnImageLoaded;
 
@@ -324,6 +332,19 @@ namespace BedrockCosmos.App.UI
                 _autoScrollTimer.Dispose();
 
                 _contextMenu?.Dispose();
+
+                _searchDebounceTimer.Stop();
+                _searchDebounceTimer.Tick -= SearchDebounceTimer_Tick;
+                _searchDebounceTimer.Dispose();
+
+                if (_searchBox != null)
+                {
+                    _searchBox.TextChanged -= SearchBox_TextChanged;
+                    _searchBox.KeyDown -= SearchBox_KeyDown;
+                    _searchBox.Font?.Dispose();
+                    _searchBox.Dispose();
+                    _searchBox = null;
+                }
 
                 if (_renameCommitFilter != null)
                 {
@@ -378,6 +399,8 @@ namespace BedrockCosmos.App.UI
             _categories = categories as List<ImageCategory> ?? categories?.ToList() ?? new List<ImageCategory>();
             RebuildParentMap();
             ClearSelectionInternal();
+            _pinnedVisible.Clear();
+            _filterCollapsed.Clear();
             _scrollOffset = 0;
             RebuildLayout();
             Invalidate();
@@ -393,11 +416,494 @@ namespace BedrockCosmos.App.UI
 
         #endregion
 
+        #region Search bar
+
+        public enum SearchBarMode
+        {
+            None,
+            Passive,
+            Active
+        }
+
+        private const int SearchFieldMargin = 6;
+        private const int SearchFieldPadding = 8;
+        private const int SearchArrowWidth = 26;
+
+        private const int EM_SETCUEBANNER = 0x1501;
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, string lParam);
+
+        private static readonly Regex TrailingCountRegex = new Regex(@"\s*\(\d+\)\s*$", RegexOptions.Compiled);
+
+        private SearchBarMode _searchMode = SearchBarMode.None;
+        private TextBox _searchBox;
+        private bool _searchArrowHot;
+        private string _searchPlaceholder = "Search...";
+        private int _searchBarHeight = 34;
+
+        private string _appliedSearch = string.Empty; // Empty = no search filter.
+
+        // Debounce for searching for fast typing
+        private readonly Timer _searchDebounceTimer = new Timer();
+        private int _searchDebounceMs = 250;
+
+        private sealed class FilterResult
+        {
+            public bool Visible;
+            public List<ImageItem> Items;
+            private HashSet<ImageItem> _set;
+
+            public bool Contains(ImageItem item)
+            {
+                if (_set == null)
+                    _set = new HashSet<ImageItem>(Items);
+
+                return _set.Contains(item);
+            }
+        }
+
+        private readonly Dictionary<ImageCategory, FilterResult> _filterCache = new Dictionary<ImageCategory, FilterResult>();
+
+        // Nodes added/changed during a search stay visible until search changes.
+        private readonly HashSet<object> _pinnedVisible = new HashSet<object>();
+
+        // While filtering, expand/collapse is tracked here instead of in Category.IsExpanded, so searching never changes the saved data.
+        private readonly HashSet<ImageCategory> _filterCollapsed = new HashSet<ImageCategory>();
+
+        private Color _searchBarBackColor = Color.FromArgb(30, 30, 30);
+        private Color _searchBarTextColor = Color.FromArgb(153, 153, 153);
+
+        public Color SearchBarBackColor
+        {
+            get => _searchBarBackColor;
+            set { _searchBarBackColor = value; UpdateSearchBoxColors(); Invalidate(); }
+        }
+
+        public Color SearchBarTextColor
+        {
+            get => _searchBarTextColor;
+            set { _searchBarTextColor = value; UpdateSearchBoxColors(); Invalidate(); }
+        }
+
+        public Color SearchBarBorderColor { get; set; } = Color.FromArgb(60, 60, 60);
+        public Color SearchBarIconColor { get; set; } = Color.FromArgb(153, 153, 153);
+
+        [Category("Behavior"), DefaultValue(SearchBarMode.None)]
+        [Description("None = no search bar. Passive = search on Enter or arrow click. Active = search as the user types.")]
+        public SearchBarMode SearchMode
+        {
+            get => _searchMode;
+            set
+            {
+                if (_searchMode == value)
+                    return;
+
+                _searchMode = value;
+                _searchBox.Visible = value != SearchBarMode.None;
+                _searchArrowHot = false;
+
+                if (value == SearchBarMode.None)
+                {
+                    _searchBox.Text = string.Empty;
+                    ApplySearchFilter(string.Empty);
+                }
+                else if (value == SearchBarMode.Active)
+                {
+                    ApplySearchFilter(_searchBox.Text); // Text typed while Passive becomes live.
+                }
+
+                LayoutSearchBar();
+                RebuildLayout();
+                Invalidate();
+            }
+        }
+
+        [Category("Behavior"), DefaultValue(120)]
+        [Description("Active search only: how long typing must pause (milliseconds) before the search runs. 0 searches on every keystroke.")]
+        public int SearchDebounceMilliseconds
+        {
+            get => _searchDebounceMs;
+            set
+            {
+                _searchDebounceMs = Math.Max(0, value);
+                if (_searchDebounceMs > 0)
+                    _searchDebounceTimer.Interval = _searchDebounceMs;
+            }
+        }
+
+        [Category("Appearance"), DefaultValue(34)]
+        public int SearchBarHeight
+        {
+            get => _searchBarHeight;
+            set
+            {
+                value = Math.Max(20, value);
+                if (_searchBarHeight == value)
+                    return;
+
+                _searchBarHeight = value;
+                LayoutSearchBar();
+                RebuildLayout();
+                Invalidate();
+            }
+        }
+
+        [Category("Appearance"), DefaultValue("Search...")]
+        public string SearchPlaceholderText
+        {
+            get => _searchPlaceholder;
+            set
+            {
+                _searchPlaceholder = value ?? string.Empty;
+                ApplySearchPlaceholder();
+            }
+        }
+
+        // Text currently in the search box, setting it applies search immediately.
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public string SearchText
+        {
+            get => _searchBox.Text;
+            set
+            {
+                _searchBox.Text = value ?? string.Empty;
+
+                if (_searchMode != SearchBarMode.None)
+                    ApplySearchFilter(_searchBox.Text);
+            }
+        }
+
+        [Browsable(false)]
+        public bool IsFiltering => _appliedSearch.Length > 0;
+
+        // Runs search with whatever is currently typed (through Enter key in Passive mode).
+        public void ApplySearch()
+        {
+            if (_searchMode != SearchBarMode.None)
+                ApplySearchFilter(_searchBox.Text);
+        }
+
+        public void ClearSearch()
+        {
+            _searchBox.Text = string.Empty;
+            ApplySearchFilter(string.Empty);
+        }
+
+        private bool SearchBarVisible => _searchMode != SearchBarMode.None;
+
+        private int ViewTop => SearchBarVisible ? _searchBarHeight : 0; // Top of the scrolling area, below search bar.
+
+        private int ViewHeight => Math.Max(0, ClientSize.Height - ViewTop);
+
+        private Point ToViewport(Point controlPoint) => new Point(controlPoint.X, controlPoint.Y - ViewTop);
+
+        private Rectangle GetSearchFieldRect() =>
+            new Rectangle(SearchFieldMargin, SearchFieldMargin, Math.Max(0, ClientSize.Width - SearchFieldMargin * 2), Math.Max(0, _searchBarHeight - SearchFieldMargin * 2));
+
+        private Rectangle GetSearchArrowRect()
+        {
+            if (_searchMode != SearchBarMode.Passive)
+                return Rectangle.Empty;
+
+            var field = GetSearchFieldRect();
+            return new Rectangle(field.Right - SearchArrowWidth, field.Top, SearchArrowWidth, field.Height);
+        }
+
+        private void CreateSearchBox()
+        {
+            _searchBox = new TextBox
+            {
+                BorderStyle = BorderStyle.None,
+                Font = new Font("Segoe UI", 9f),
+                Visible = false,
+                TabStop = true
+            };
+
+            _searchDebounceTimer.Interval = Math.Max(1, _searchDebounceMs);
+            _searchDebounceTimer.Tick += SearchDebounceTimer_Tick;
+
+            _searchBox.TextChanged += SearchBox_TextChanged;
+            _searchBox.KeyDown += SearchBox_KeyDown;
+            _searchBox.HandleCreated += (s, e) => ApplySearchPlaceholder();
+            _searchBox.GotFocus += (s, e) => InvalidateSearchBar();
+            _searchBox.LostFocus += (s, e) => InvalidateSearchBar();
+
+            Controls.Add(_searchBox);
+            UpdateSearchBoxColors();
+            LayoutSearchBar();
+        }
+
+        private void UpdateSearchBoxColors()
+        {
+            if (_searchBox == null)
+                return;
+
+            _searchBox.BackColor = SearchBarBackColor;
+            _searchBox.ForeColor = SearchBarTextColor;
+        }
+
+        private void ApplySearchPlaceholder()
+        {
+            if (_searchBox == null || !_searchBox.IsHandleCreated)
+                return;
+
+            try
+            {
+                SendMessage(_searchBox.Handle, EM_SETCUEBANNER, new IntPtr(1), _searchPlaceholder); // 1 = keep showing while focused.
+            }
+            catch (EntryPointNotFoundException) { } // Not on Windows, placeholder is cosmetic only.
+            catch (DllNotFoundException) { }
+        }
+
+        private void InvalidateSearchBar()
+        {
+            if (SearchBarVisible)
+                Invalidate(new Rectangle(0, 0, ClientSize.Width, _searchBarHeight));
+        }
+
+        private void LayoutSearchBar()
+        {
+            if (_searchBox == null)
+                return;
+
+            var field = GetSearchFieldRect();
+            int right = field.Right - SearchFieldPadding - (_searchMode == SearchBarMode.Passive ? SearchArrowWidth : 0);
+            int left = field.Left + SearchFieldPadding;
+            int width = Math.Max(10, right - left);
+
+            _searchBox.Width = width;
+            _searchBox.Location = new Point(left, field.Top + Math.Max(0, (field.Height - _searchBox.Height) / 2));
+        }
+
+        private void SearchBox_TextChanged(object sender, EventArgs e)
+        {
+            if (_searchMode != SearchBarMode.Active)
+                return;
+
+            if (_searchDebounceMs <= 0)
+            {
+                ApplySearchFilter(_searchBox.Text);
+                return;
+            }
+
+            _searchDebounceTimer.Stop(); // Restart, search only runs once typing pauses.
+            _searchDebounceTimer.Start();
+        }
+
+        private void SearchDebounceTimer_Tick(object sender, EventArgs e)
+        {
+            _searchDebounceTimer.Stop();
+
+            if (_searchMode == SearchBarMode.Active && _searchBox != null)
+                ApplySearchFilter(_searchBox.Text);
+        }
+
+        private void SearchBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true; // Otherwise it dings.
+                ApplySearch();
+            }
+            else if (e.KeyCode == Keys.Escape)
+            {
+                e.SuppressKeyPress = true;
+                ClearSearch();
+            }
+        }
+
+        private void HandleSearchBarMouseDown(MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left)
+                return;
+
+            if (GetSearchArrowRect().Contains(e.Location))
+            {
+                ApplySearch();
+                return;
+            }
+
+            if (GetSearchFieldRect().Contains(e.Location))
+                _searchBox.Focus();
+        }
+
+        private void DrawSearchBar(Graphics g)
+        {
+            using (var barBrush = new SolidBrush(IdleBackColor))
+                g.FillRectangle(barBrush, 0, 0, ClientSize.Width, _searchBarHeight);
+
+            var field = GetSearchFieldRect();
+            if (field.Width <= 0 || field.Height <= 0)
+                return;
+
+            using (var path = RoundedRect(field, Math.Min(CornerRadius, field.Height / 2)))
+            {
+                using (var fieldBrush = new SolidBrush(SearchBarBackColor))
+                    g.FillPath(fieldBrush, path);
+
+                Color border = _searchBox.Focused ? EnabledHighlightColor : SearchBarBorderColor;
+                using (var pen = new Pen(border, 1f))
+                    g.DrawPath(pen, path);
+            }
+
+            var arrow = GetSearchArrowRect();
+            if (!arrow.IsEmpty)
+            {
+                Color iconColor = _searchArrowHot ? EnabledHighlightColor : SearchBarIconColor;
+                int cx = arrow.X + arrow.Width / 2;
+                int cy = arrow.Y + arrow.Height / 2;
+
+                using (var pen = new Pen(iconColor, 1.75f) { StartCap = LineCap.Round, EndCap = LineCap.Round, LineJoin = LineJoin.Round })
+                {
+                    g.DrawLine(pen, cx - 6, cy, cx + 6, cy);
+                    g.DrawLines(pen, new[] { new Point(cx + 1, cy - 5), new Point(cx + 6, cy), new Point(cx + 1, cy + 5) });
+                }
+            }
+        }
+
+        private void DrawNoResults(Graphics g)
+        {
+            using (var font = new Font("Segoe UI", 9f))
+            using (var brush = new SolidBrush(SearchBarTextColor))
+            using (var format = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Near })
+            {
+                var rect = new RectangleF(0, 16, ClientSize.Width - ScrollBarWidth, 24);
+                g.DrawString("No results", font, brush, rect, format);
+            }
+        }
+
+        private void ApplySearchFilter(string text)
+        {
+            _searchDebounceTimer.Stop(); // Any applied search supersedes a pending one.
+
+            string term = (text ?? string.Empty).Trim();
+
+            if (string.Equals(term, _appliedSearch, StringComparison.Ordinal))
+                return;
+
+            CommitRename(); // Node being renamed may disappear.
+
+            _appliedSearch = term;
+            _pinnedVisible.Clear();
+            _filterCollapsed.Clear();
+            _scrollOffset = 0;
+
+            RebuildLayout(); // Also computes the match results that the checks below reuse.
+
+            bool selectionChanged = false; // Deselect nodes hidden from search.
+            var hidden = _selectionOrder.Where(n => !IsNodeVisibleUnderFilter(n)).ToList();
+            if (hidden.Count > 0)
+            {
+                foreach (var node in hidden)
+                    _selectionSet.Remove(node);
+
+                _selectionOrder.RemoveAll(n => !_selectionSet.Contains(n));
+                selectionChanged = true;
+            }
+
+            if (_shiftAnchor != null && !IsNodeVisibleUnderFilter(_shiftAnchor))
+                _shiftAnchor = null;
+
+            Invalidate();
+
+            if (selectionChanged)
+                SelectionChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private bool CategoryNameMatches(ImageCategory category)
+        {
+            string name = category.Name?.Trim() ?? string.Empty;
+
+            if (string.Equals(name, _appliedSearch, StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            string withoutCount = TrailingCountRegex.Replace(name, string.Empty).Trim();
+            return string.Equals(withoutCount, _appliedSearch, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private bool ItemMatches(ImageItem item)
+        {
+            return item.Title != null && item.Title.IndexOf(_appliedSearch, StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        // Returns the items of a category to lay out, shows category if full name is typed.
+        private List<ImageItem> GetVisibleItems(ImageCategory category, out bool categoryVisible)
+        {
+            if (!IsFiltering)
+            {
+                categoryVisible = true;
+                return category.Items;
+            }
+
+            var result = GetFilterResult(category);
+            categoryVisible = result.Visible;
+            return result.Items;
+        }
+
+        private FilterResult GetFilterResult(ImageCategory category)
+        {
+            if (!_filterCache.TryGetValue(category, out var result))
+            {
+                result = ComputeFilterResult(category);
+                _filterCache[category] = result;
+            }
+
+            return result;
+        }
+
+        private FilterResult ComputeFilterResult(ImageCategory category)
+        {
+            if (CategoryNameMatches(category) || _pinnedVisible.Contains(category))
+                return new FilterResult { Visible = true, Items = category.Items };
+
+            var matches = category.Items.Where(i => ItemMatches(i) || _pinnedVisible.Contains(i)).ToList();
+            return new FilterResult { Visible = matches.Count > 0, Items = matches };
+        }
+
+        private bool IsNodeVisibleUnderFilter(object node)
+        {
+            if (!IsFiltering)
+                return true;
+
+            if (node is ImageCategory category)
+                return GetFilterResult(category).Visible;
+
+            if (node is ImageItem item && _parentMap.TryGetValue(item, out var owner))
+                return GetFilterResult(owner).Contains(item);
+
+            return false;
+        }
+
+        private bool IsCategoryExpanded(ImageCategory category)
+        {
+            return IsFiltering ? !_filterCollapsed.Contains(category) : category.IsExpanded;
+        }
+
+        private void PinVisible(IEnumerable<object> nodes)
+        {
+            if (!IsFiltering)
+                return;
+
+            foreach (var node in nodes)
+                if (node != null)
+                    _pinnedVisible.Add(node);
+        }
+
+        private void PinVisible(object node)
+        {
+            if (IsFiltering && node != null)
+                _pinnedVisible.Add(node);
+        }
+
+        #endregion
+
         #region Layout building
 
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
+            LayoutSearchBar();
             RebuildLayout();
             RepositionRenameBoxIfActive();
             Invalidate();
@@ -406,6 +912,7 @@ namespace BedrockCosmos.App.UI
         private void RebuildLayout()
         {
             _rows.Clear();
+            _filterCache.Clear(); // Data or the search text may have changed, results are recomputed lazily.
 
             int usableWidth = Math.Max(ClientSize.Width - ScrollBarWidth, ItemSize + ItemPadding * 2);
             int cellStride = ItemSize + ItemPadding;
@@ -415,12 +922,15 @@ namespace BedrockCosmos.App.UI
 
             foreach (var category in _categories)
             {
+                var items = GetVisibleItems(category, out bool categoryVisible);
+                if (!categoryVisible)
+                    continue;
+
                 _rows.Add(new HeaderVisualRow { Category = category, Top = y, Height = HeaderHeight });
                 y += HeaderHeight;
 
-                if (category.IsExpanded)
+                if (IsCategoryExpanded(category))
                 {
-                    var items = category.Items;
                     for (int i = 0; i < items.Count; i += _itemsPerRow)
                     {
                         int count = Math.Min(_itemsPerRow, items.Count - i);
@@ -446,7 +956,7 @@ namespace BedrockCosmos.App.UI
 
         private void ClampScrollOffset()
         {
-            int maxScroll = Math.Max(0, _contentHeight - ClientSize.Height);
+            int maxScroll = Math.Max(0, _contentHeight - ViewHeight);
             if (_scrollOffset > maxScroll) _scrollOffset = maxScroll;
             if (_scrollOffset < 0) _scrollOffset = 0;
         }
@@ -479,7 +989,7 @@ namespace BedrockCosmos.App.UI
 
         private void ScrollRangeIntoView(int top, int bottom)
         {
-            int viewportHeight = ClientSize.Height;
+            int viewportHeight = ViewHeight;
 
             if (bottom - top > viewportHeight)
                 _scrollOffset = top; // Anchors to top if range is taller than viewport.
@@ -617,10 +1127,15 @@ namespace BedrockCosmos.App.UI
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.Clear(IdleBackColor);
 
+            // Rows shifted below the search bar if enabled.
+            var state = g.Save();
+            g.SetClip(new Rectangle(0, ViewTop, ClientSize.Width, ViewHeight));
+            g.TranslateTransform(0, ViewTop);
+
             if (_rows.Count > 0)
             {
                 int firstIndex = FindFirstVisibleRowIndex();
-                int viewBottom = _scrollOffset + ClientSize.Height;
+                int viewBottom = _scrollOffset + ViewHeight;
 
                 for (int i = firstIndex; i < _rows.Count; i++)
                 {
@@ -640,8 +1155,17 @@ namespace BedrockCosmos.App.UI
                         DrawCategoryDropLine(g, drawTop + row.Height);
                 }
             }
+            else if (IsFiltering)
+            {
+                DrawNoResults(g);
+            }
+
+            g.Restore(state);
 
             DrawScrollBar(g);
+
+            if (SearchBarVisible)
+                DrawSearchBar(g);
         }
 
         private void DrawHeaderRow(Graphics g, HeaderVisualRow row, int drawTop)
@@ -666,7 +1190,7 @@ namespace BedrockCosmos.App.UI
 
             using (var arrowBrush = new SolidBrush(selected ? SelectedHeaderTextColor : HeaderTextColor))
             {
-                Point[] points = category.IsExpanded
+                Point[] points = IsCategoryExpanded(category)
                     ? new[]
                     {
                         new Point(arrowX, arrowY - arrowSize / 2),
@@ -911,20 +1435,20 @@ namespace BedrockCosmos.App.UI
 
         #region Custom scrollbar
 
-        private Rectangle GetTrackRect() => new Rectangle(ClientSize.Width - ScrollBarWidth, 0, ScrollBarWidth, ClientSize.Height);
+        private Rectangle GetTrackRect() => new Rectangle(ClientSize.Width - ScrollBarWidth, ViewTop, ScrollBarWidth, ViewHeight);
 
         private Rectangle GetThumbRect()
         {
             var track = GetTrackRect();
-            if (_contentHeight <= ClientSize.Height)
+            if (_contentHeight <= ViewHeight)
                 return Rectangle.Empty;
 
-            double visibleRatio = (double)ClientSize.Height / _contentHeight;
+            double visibleRatio = (double)ViewHeight / _contentHeight;
             int thumbHeight = Math.Max(MinThumbHeight, (int)(track.Height * visibleRatio));
 
-            int scrollRange = Math.Max(1, _contentHeight - ClientSize.Height);
+            int scrollRange = Math.Max(1, _contentHeight - ViewHeight);
             double scrollRatio = (double)_scrollOffset / scrollRange;
-            int thumbTop = (int)(scrollRatio * (track.Height - thumbHeight));
+            int thumbTop = track.Y + (int)(scrollRatio * (track.Height - thumbHeight));
 
             return new Rectangle(track.X + 2, thumbTop, track.Width - 4, thumbHeight);
         }
@@ -956,6 +1480,12 @@ namespace BedrockCosmos.App.UI
             if (_renameTextBox != null)
                 CommitRename();
 
+            if (SearchBarVisible && e.Y < ViewTop)
+            {
+                HandleSearchBarMouseDown(e);
+                return;
+            }
+
             Focus();
 
             if (e.Button == MouseButtons.Right)
@@ -978,12 +1508,12 @@ namespace BedrockCosmos.App.UI
 
             if (e.X >= ClientSize.Width - ScrollBarWidth)
             {
-                if (e.Y < GetThumbRect().Top) ScrollByPixels(-ClientSize.Height);
-                else ScrollByPixels(ClientSize.Height);
+                if (e.Y < GetThumbRect().Top) ScrollByPixels(-ViewHeight);
+                else ScrollByPixels(ViewHeight);
                 return;
             }
 
-            var hit = HitTest(e.Location);
+            var hit = HitTest(ToViewport(e.Location));
 
             if (hit.Node is ImageCategory hitCategory)
             {
@@ -1004,14 +1534,16 @@ namespace BedrockCosmos.App.UI
 
             if (hit.Node == null)
             {
-                ClearSelection();
+                if (!MultiSelectOnClick) // Doesn't deselect everything when clicking empty space if multiselect is default.
+                    ClearSelection();
+
                 return;
             }
 
             bool shift = (ModifierKeys & Keys.Shift) == Keys.Shift;
 
-            // Both items and category headers can be dragged.
-            bool isDraggableCandidate = AllowDragging && (hit.Node is ImageItem || hit.Node is ImageCategory);
+            // Both items and category headers can be dragged, dragging disabled whens searching.
+            bool isDraggableCandidate = AllowDragging && !IsFiltering && (hit.Node is ImageItem || hit.Node is ImageCategory);
 
             if (isDraggableCandidate && _selectionSet.Contains(hit.Node) && !shift)
             {
@@ -1039,7 +1571,7 @@ namespace BedrockCosmos.App.UI
                 var track = GetTrackRect();
                 var thumb = GetThumbRect();
                 int trackRange = Math.Max(1, track.Height - thumb.Height);
-                int scrollRange = Math.Max(1, _contentHeight - ClientSize.Height);
+                int scrollRange = Math.Max(1, _contentHeight - ViewHeight);
 
                 int deltaPixels = e.Y - _dragStartMouseY;
                 _scrollOffset = _dragStartScrollOffset + (int)(deltaPixels * ((double)scrollRange / trackRange));
@@ -1051,9 +1583,9 @@ namespace BedrockCosmos.App.UI
 
             if (_isDragging)
             {
-                _lastDragMouseLocation = e.Location;
-                UpdateActiveDropTarget(e.Location);
-                UpdateAutoScroll(e.Location);
+                _lastDragMouseLocation = ToViewport(e.Location);
+                UpdateActiveDropTarget(_lastDragMouseLocation);
+                UpdateAutoScroll(_lastDragMouseLocation);
                 Invalidate();
                 return;
             }
@@ -1065,11 +1597,22 @@ namespace BedrockCosmos.App.UI
                 if (Math.Abs(dx) > DragThreshold || Math.Abs(dy) > DragThreshold)
                 {
                     BeginDrag();
-                    _lastDragMouseLocation = e.Location;
-                    UpdateActiveDropTarget(e.Location);
+                    _lastDragMouseLocation = ToViewport(e.Location);
+                    UpdateActiveDropTarget(_lastDragMouseLocation);
                     Invalidate();
                 }
                 return;
+            }
+
+            if (SearchBarVisible)
+            {
+                bool arrowHot = GetSearchArrowRect().Contains(e.Location);
+                if (arrowHot != _searchArrowHot)
+                {
+                    _searchArrowHot = arrowHot;
+                    Cursor = arrowHot ? Cursors.Hand : Cursors.Default;
+                    InvalidateSearchBar();
+                }
             }
 
             bool wasHot = _thumbHot;
@@ -1101,6 +1644,14 @@ namespace BedrockCosmos.App.UI
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
+
+            if (_searchArrowHot)
+            {
+                _searchArrowHot = false;
+                Cursor = Cursors.Default;
+                InvalidateSearchBar();
+            }
+
             if (_thumbHot)
             {
                 _thumbHot = false;
@@ -1117,10 +1668,10 @@ namespace BedrockCosmos.App.UI
         protected override void OnMouseDoubleClick(MouseEventArgs e)
         {
             base.OnMouseDoubleClick(e);
-            if (e.X >= ClientSize.Width - ScrollBarWidth)
+            if (e.X >= ClientSize.Width - ScrollBarWidth || e.Y < ViewTop)
                 return;
 
-            var hit = HitTest(e.Location);
+            var hit = HitTest(ToViewport(e.Location));
 
             // Prevents caret from being affected by double-clicking to expand a tree.
             if (hit.Node is ImageCategory category && !hit.OnHeaderArrow /*&& !hit.OnHeaderIndicator*/) // Can uncomment if OnHeaderIndicator functionality is re-enabled.
@@ -1169,6 +1720,10 @@ namespace BedrockCosmos.App.UI
             {
                 EndDragState();
                 Invalidate();
+            }
+            else if (e.KeyCode == Keys.Escape && _selectionOrder.Count > 0)
+            {
+                ClearSelection();
             }
         }
 
@@ -1287,10 +1842,13 @@ namespace BedrockCosmos.App.UI
             if (location.X >= ClientSize.Width - ScrollBarWidth)
                 return;
 
-            var hit = HitTest(location);
+            var hit = HitTest(ToViewport(location)); // Location stays in control coordinates for the menu.
 
             if (hit.Node == null)
-                ClearSelection();
+            {
+                if (!MultiSelectOnClick)
+                    ClearSelection();
+            }
             else if (!_selectionSet.Contains(hit.Node))
                 SelectNode(hit.Node);
 
@@ -1546,6 +2104,7 @@ namespace BedrockCosmos.App.UI
                 return;
             }
 
+            PinVisible(target); // Doesn't hide nodes renamed while searching.
             RebuildLayout();
             Invalidate();
             DataChanged?.Invoke(this, EventArgs.Empty);
@@ -1680,7 +2239,7 @@ namespace BedrockCosmos.App.UI
                 {
                     int indicatorX = GetHeaderIndicatorX();
                     int textWidth = Math.Max(0, indicatorX - HeaderTextStartX - 8);
-                    int drawTop = row.Top - _scrollOffset;
+                    int drawTop = row.Top - _scrollOffset + ViewTop;
 
                     bounds = new RectangleF(HeaderTextStartX, drawTop, textWidth, row.Height);
                     return true;
@@ -1694,7 +2253,7 @@ namespace BedrockCosmos.App.UI
 
                     int cellStride = ItemSize + ItemPadding;
                     int x = ItemPadding + index * cellStride;
-                    int drawTop = row.Top - _scrollOffset;
+                    int drawTop = row.Top - _scrollOffset + ViewTop;
 
                     bounds = new RectangleF(x - 4, drawTop + ItemSize + 2, ItemSize + 8, ItemLabelHeight);
                     return true;
@@ -1714,11 +2273,11 @@ namespace BedrockCosmos.App.UI
         {
             int direction = 0;
 
-            if (_contentHeight > ClientSize.Height)
+            if (_contentHeight > ViewHeight)
             {
                 if (location.Y < AutoScrollEdgeSize && _scrollOffset > 0)
                     direction = -1;
-                else if (location.Y > ClientSize.Height - AutoScrollEdgeSize && _scrollOffset < _contentHeight - ClientSize.Height)
+                else if (location.Y > ViewHeight - AutoScrollEdgeSize && _scrollOffset < _contentHeight - ViewHeight)
                     direction = 1;
             }
 
@@ -1753,7 +2312,7 @@ namespace BedrockCosmos.App.UI
         // Faster the closer the cursor is to the exact top/bottom edge, slower near the inner boundary of the trigger zone.
         private int ComputeAutoScrollSpeed(int y)
         {
-            int distanceFromEdge = y < AutoScrollEdgeSize ? y : ClientSize.Height - y;
+            int distanceFromEdge = y < AutoScrollEdgeSize ? y : ViewHeight - y;
             distanceFromEdge = Math.Max(0, Math.Min(AutoScrollEdgeSize, distanceFromEdge));
 
             double t = 1.0 - (double)distanceFromEdge / AutoScrollEdgeSize;
@@ -2092,6 +2651,9 @@ namespace BedrockCosmos.App.UI
         {
             if (AutoExpandCategoryOnInsert && category != null && !category.IsExpanded)
                 category.IsExpanded = true;
+
+            if (AutoExpandCategoryOnInsert && category != null)
+                _filterCollapsed.Remove(category);
         }
 
         public void MoveItemToCategory(ImageItem item, ImageCategory targetCategory, ImageItem insertBefore = null)
@@ -2311,6 +2873,8 @@ namespace BedrockCosmos.App.UI
             if (pastedNodes.Count == 0)
                 return;
 
+            PinVisible(pastedNodes);
+
             ClearSelectionInternal();
             foreach (var node in pastedNodes)
                 AddToSelection(node);
@@ -2330,7 +2894,7 @@ namespace BedrockCosmos.App.UI
 
         private void SelectNode(object node)
         {
-            bool ctrl = (ModifierKeys & Keys.Control) == Keys.Control;
+            bool ctrl = MultiSelectOnClick || (ModifierKeys & Keys.Control) == Keys.Control;
             bool shift = (ModifierKeys & Keys.Shift) == Keys.Shift;
 
             if (shift && _shiftAnchor != null)
@@ -2355,11 +2919,17 @@ namespace BedrockCosmos.App.UI
 
         private IEnumerable<object> FlattenSelectableNodes()
         {
+            // Only what is actually on screen: honors the search filter and collapsed categories.
             foreach (var category in _categories)
             {
+                var items = GetVisibleItems(category, out bool categoryVisible);
+                if (!categoryVisible)
+                    continue;
+
                 yield return category;
-                if (category.IsExpanded)
-                    foreach (var item in category.Items)
+
+                if (IsCategoryExpanded(category))
+                    foreach (var item in items)
                         yield return item;
             }
         }
@@ -2434,6 +3004,17 @@ namespace BedrockCosmos.App.UI
 
         public void ToggleCategoryExpansion(ImageCategory category)
         {
+            if (IsFiltering)
+            {
+                // Search results are always shown expanded first.
+                if (!_filterCollapsed.Add(category))
+                    _filterCollapsed.Remove(category);
+
+                RebuildLayout();
+                Invalidate();
+                return;
+            }
+
             category.IsExpanded = !category.IsExpanded;
             RebuildLayout();
             Invalidate();
@@ -2443,6 +3024,7 @@ namespace BedrockCosmos.App.UI
         public void ExpandAll()
         {
             foreach (var category in _categories) category.IsExpanded = true;
+            _filterCollapsed.Clear();
             RebuildLayout();
             Invalidate();
             DataChanged?.Invoke(this, EventArgs.Empty);
@@ -2451,6 +3033,8 @@ namespace BedrockCosmos.App.UI
         public void CollapseAll()
         {
             foreach (var category in _categories) category.IsExpanded = false;
+            if (IsFiltering)
+                foreach (var category in _categories) _filterCollapsed.Add(category);
             RebuildLayout();
             Invalidate();
             DataChanged?.Invoke(this, EventArgs.Empty);
@@ -2750,6 +3334,7 @@ namespace BedrockCosmos.App.UI
             else
                 _categories.Add(category);
 
+            PinVisible(category);
             RebuildLayout();
             ScrollNodeIntoView(category);
             Invalidate();
@@ -2796,6 +3381,7 @@ namespace BedrockCosmos.App.UI
             _parentMap[newItem] = targetCategory;
             MaybeAutoExpand(targetCategory);
 
+            PinVisible(newItem);
             RebuildLayout();
             ScrollNodeIntoView(newItem);
             Invalidate();
